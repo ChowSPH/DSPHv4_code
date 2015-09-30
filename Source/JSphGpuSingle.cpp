@@ -787,6 +787,7 @@ void JSphGpuSingle::SaveData(){
   }
   //-Recupera datos de floatings en GPU.
   if(FtCount){
+    TmgStart(Timers,TMG_SuDownData);
     cudaMemcpy(FtoCenter,FtoCenterg,sizeof(double3)*FtCount,cudaMemcpyDeviceToHost);
     for(unsigned cf=0;cf<FtCount;cf++)FtObjs[cf].center=FtoCenter[cf];
     tfloat3 *aux=(tfloat3 *)FtoCenter;
@@ -794,6 +795,7 @@ void JSphGpuSingle::SaveData(){
     for(unsigned cf=0;cf<FtCount;cf++)FtObjs[cf].fvel=aux[cf];
     cudaMemcpy(aux,FtoOmegag,sizeof(float3)*FtCount,cudaMemcpyDeviceToHost);
     for(unsigned cf=0;cf<FtCount;cf++)FtObjs[cf].fomega=aux[cf];
+    TmgStop(Timers,TMG_SuDownData);
   }
   //-Reune informacion adicional.
   TmgStart(Timers,TMG_SuSavePart);

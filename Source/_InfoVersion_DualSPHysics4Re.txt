@@ -293,17 +293,25 @@
 
 [30-09-2015]
   - Preparing initial files to share with GIT. (30-09-2015)
+  - Cleaning Types.h. (v4.0.001 / 30-09-2015)
+  - Review timers. (v4.0.001 / 30-09-2015)
   
   
   
   
 
+- Check timers for Shifting.
+- Check timers for Ren correction.
+- Use DT_ALLPARTICLES like an option?
+- Remove RunFloating_Old().
+- Add code for external forces by Stephen.
 - Check save dt in csv file.  
 - Configure project with debug.
 - Check restart with floatings and DEM.
 - Replace ptxasinfo by CUDA functions.
 - Test performance using psimple and pdouble. Remove code for psimple?
 - Use radixsort algorithm (with OpenMP) in celldivide on CPU.
+- Remove JTimersStep.  
 - Remove JSaveCsv.  
 - Remove JDgKerPrint.  
 - Remove DGSAVE.  

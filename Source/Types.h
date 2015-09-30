@@ -25,32 +25,13 @@
 #define HIDE_AWAS      //-Mantiene compatibilidad sin AWAS.
 
 
-
-#define CUDACHECKASYN  //-Activa la comprobacion de errores tras las operaciones asincronas.
-
 #define CELLDIV_OVERMEMORYNP 0.05f  //-Mermoria que se reserva de mas para la gestion de particulas en JCellDivGpu.
-#define CELLDIV_OVERMEMORYCELLS 1 //-Numero celdas que se incrementa en cada dimension al reservar memoria para celdas en JCellDivGpu.
+#define CELLDIV_OVERMEMORYCELLS 1   //-Numero celdas que se incrementa en cada dimension al reservar memoria para celdas en JCellDivGpu.
 #define PERIODIC_OVERMEMORYNP 0.05f //-Mermoria que se reserva de mas para la creacion de particulas periodicas en JSphGpuSingle::RunPeriodic().
 
-//#define CELLDIV_OVERMEMORYNP 0.f //0.05f  //-Mermoria que se reserva de mas para la gestion de particulas en JCellDivGpu.
-//#define CELLDIV_OVERMEMORYCELLS 0 //1 //-Numero celdas que se incrementa en cada dimension al reservar memoria para celdas en JCellDivGpu.
-//#define PERIODIC_OVERMEMORYNP 0.f //0.05f //-Mermoria que se reserva de mas para la creacion de particulas periodicas en JSphGpuSingle::RunPeriodic().
+//#define DISABLE_TIMERS           //-Compilado sin timers.
 
-
-//#define CUDACHECKASYN  //-Activa la comprobacion de errores tras las operaciones asincronas.
-
-//Definen distintas configuraciones de compilacion (en propiedades del proyecto).
-//Configuracion normal        //-Compilado con timers y SvTimers=0, SvMpiData=1, SvMpiInfo=0
-//#define _CODE_FAST          //-Compilado sin timers y SvTimers=0, SvMpiData=0, SvMpiInfo=0
-
-
-//#define DG_PRINTINFO  //-Activa la visualizacion de informacion para debug.
-//#define DG_USECHECKMPICPU  //-Activa el uso de CheckMpi para comprbar el funcionamiento de la version MPI.
-//#define DG_USECHECKMPIGPU  //-Activa el uso de CheckMpi para comprbar el funcionamiento de la version MPI.
-//#define DG_CHECKMPI_SAVEPOSTSORT false  //-Genera ficheros PostSort de cada step.
-//#define DG_SENDHALOID   //-Envia el Id como parte del halo (necesario para debug con USECHECKMPI).  
-
-//#define DT_ALLPARTICLES  //-Activar/desactivar el usar todas las particulas (no solo fluidas) para el calculo del dt.
+//#define DT_ALLPARTICLES          //-Activar/desactivar el usar todas las particulas (no solo fluidas) para el calculo del dt.
 
 #define _WITHOMP //-Activar/desactivar tb en Props config -> C/C++ -> Lenguaje -> OpenMp
 
@@ -61,23 +42,13 @@
 #define LIMIT_COMPUTELIGHT_OMP 100000
 //#define LIMIT_COMPUTEHEAVY_OMP 20000
 #define LIMIT_PREINTERACTION_OMP 100000
-#define LIMIT_TRIANGLESCELLS_OMP 3000
-
-
-
-//#define USE_SYMMETRY true //-Activa o desactiva el computo de fuerzas aprovechando la simetria.
-
-//#define HIDE_PRIVATE //-Oculta determinadas funciones o informaciones para la version online.
 
 //#define _WITHGPU 1 //<-Esta definida en las propiedades del proyecto.
 
-#define MPI_BOUND_WEIGHT 0
 
 #define BORDER_MAP 0.001
 
 #define ALMOSTZERO 1e-18f
-
-#define OVERPI 0.318309886  ///<Valor de 1/PI.
 
 #define RHOPCERO 1000.f
 #define OVERRHOPCERO 0.001f
@@ -200,6 +171,11 @@ typedef enum{
     PART_BoundFt_Fluid=12    ///<Both floating and fluid particles.
 }TpParticle;
 
+typedef enum{ FTMODE_None=0,FTMODE_Sph=1,FTMODE_Dem=2 }TpFtMode;  //-Modo de interaccion para Floatings.
+#define USE_FLOATING (ftmode!=FTMODE_None)
+#define USE_NOFLOATING (ftmode==FTMODE_None)
+#define USE_DEM (ftmode==FTMODE_Dem)
+
 ///Order of the axis to reorder particles in cells.
 typedef enum{ 
     ORDER_None=0,
@@ -210,13 +186,6 @@ typedef enum{
     ORDER_ZXY=5,
     ORDER_ZYX=6 
 }TpCellOrder;  
-
-#define FTCODENOFLOATING 0xffff //-Codigo para indicar que la particula no es floating en interaccion de fuerzas.
-
-typedef enum{ FTMODE_None=0,FTMODE_Sph=1,FTMODE_Dem=2 }TpFtMode;  //-Modo de interaccion para Floatings.
-#define USE_FLOATING (ftmode!=FTMODE_None)
-#define USE_NOFLOATING (ftmode==FTMODE_None)
-#define USE_DEM (ftmode==FTMODE_Dem)
 
 ///Devuelve el nombre de CellOrder en texto.
 inline const char* GetNameCellOrder(TpCellOrder cellorder){
@@ -361,18 +330,6 @@ inline const char* GetNameCellMode(TpCellMode cellmode){
   }
   return("???");
 }
-
-
-/////Codificacion de celdas para posicion. OLD
-////#define PC_MaxCellx 2047
-////#define PC_MaxCelly 2047
-////#define PC_MaxCellz 1023
-//#define PC_Cellx(v) ((*((unsigned*)&v))>>21)
-//#define PC_Celly(v) (((*((unsigned*)&v))>>10)&2047)
-//#define PC_Cellz(v) ((*((unsigned*)&v))&1023)
-////#define PC_CellCodeu(cx,cy,cz) ((cx<<21)|(cy<<10)|cz)
-////inline float PC_CellCode(unsigned cx,unsigned cy,unsigned cz){ cx=(cx<<21)|(cy<<10)|cz; return(*((float*)(&cx))); }
-////inline float PC_CellCodeOut(){ return(PC_CellCode(PC_MaxCellx,PC_MaxCelly,PC_MaxCellz)); }
 
 ///Codificacion de celdas para posicion.
 #define PC__CodeOut 0xffffffff

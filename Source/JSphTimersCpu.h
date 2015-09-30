@@ -20,7 +20,7 @@
 #ifndef _JSphTimersCpu_
 #define _JSphTimersCpu_
 
-#ifdef _CODE_FAST
+#ifdef DISABLE_TIMERS
   #define TmcStart(x,y) ;
   #define TmcStop(x,y) ;
 #else

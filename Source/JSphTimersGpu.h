@@ -20,7 +20,7 @@
 #ifndef _JSphTimersGpu_
 #define _JSphTimersGpu_
 
-#ifdef _CODE_FAST
+#ifdef DISABLE_TIMERS
   #define TmgStart(x,y) ;
   #define TmgStop(x,y) ;
 #else

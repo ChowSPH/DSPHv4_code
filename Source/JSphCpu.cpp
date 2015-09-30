@@ -493,6 +493,7 @@ void JSphCpu::PreInteraction_Forces(TpInter tinter){
     velmax=max(velmax,v2);
   }
   VelMax=sqrt(velmax);
+  //printf("------>cpu VelMax:%g\n",VelMax);
   ViscDtMax=0;
   TmcStop(Timers,TMC_CfPreForces);
 }

@@ -870,6 +870,7 @@ void JSphGpu::PreInteraction_Forces(TpInter tinter){
   cusph::ComputeVelMod(Np-pini,Velrhopg+pini,ViscDtg);
   float velmax=cusph::ReduMaxFloat(Np-pini,pini,ViscDtg,CellDiv->GetAuxMem(cusph::ReduMaxFloatSize(Np-pini)));
   VelMax=sqrt(velmax);
+  //printf("------> VelMax:%g\n",VelMax);
   cudaMemset(ViscDtg,0,sizeof(float)*Np);           //ViscDtg[]=0
   ViscDtMax=0;
   CheckCudaError("PreInteraction_Forces","Failed calculating VelMax.");

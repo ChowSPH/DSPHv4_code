@@ -14,8 +14,8 @@
 Intermediate/
 ipch/
 
-## Ignora directorio para combinar codigo _SourceFull 
-Source/_SourceFull/
+## Ignora otras carpetas
+Addons/
 
 ## Ignora todo del directorio Run excepto lo basico.
 Run/*
