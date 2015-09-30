@@ -295,17 +295,16 @@
   - Preparing initial files to share with GIT. (30-09-2015)
   - Cleaning Types.h. (v4.0.001 / 30-09-2015)
   - Review timers. (v4.0.001 / 30-09-2015)
-  
+  - Error solved when DT_ALLPARTICLES was disabled. (v4.0.002 / 30-09-2015)
+  - Now DT_ALLPARTICLES is an option in XML file. (v4.0.002 / 30-09-2015)
   
   
   
 
 - Check timers for Shifting.
 - Check timers for Ren correction.
-- Use DT_ALLPARTICLES like an option?
 - Remove RunFloating_Old().
 - Add code for external forces by Stephen.
-- Check save dt in csv file.  
 - Configure project with debug.
 - Check restart with floatings and DEM.
 - Replace ptxasinfo by CUDA functions.

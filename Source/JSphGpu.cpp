@@ -862,15 +862,10 @@ void JSphGpu::PreInteraction_Forces(TpInter tinter){
   PreInteractionVars_Forces(tinter,0,Np,Npb);
 
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
-  #ifdef DT_ALLPARTICLES
-    const unsigned pini=0;
-  #else
-    const unsigned pini=Npb;
-  #endif
+  const unsigned pini=(DtAllParticles? 0: Npb);
   cusph::ComputeVelMod(Np-pini,Velrhopg+pini,ViscDtg);
-  float velmax=cusph::ReduMaxFloat(Np-pini,pini,ViscDtg,CellDiv->GetAuxMem(cusph::ReduMaxFloatSize(Np-pini)));
+  float velmax=cusph::ReduMaxFloat(Np-pini,0,ViscDtg,CellDiv->GetAuxMem(cusph::ReduMaxFloatSize(Np-pini)));
   VelMax=sqrt(velmax);
-  //printf("------> VelMax:%g\n",VelMax);
   cudaMemset(ViscDtg,0,sizeof(float)*Np);           //ViscDtg[]=0
   ViscDtMax=0;
   CheckCudaError("PreInteraction_Forces","Failed calculating VelMax.");

@@ -111,7 +111,7 @@ void JSph::InitVars(){
   memset(DemObjs,0,sizeof(StDemData)*DemObjsSize);  //(DEM)
   RhopOut=true; RhopOutMin=700; RhopOutMax=1300;
   TimeMax=TimePart=0;
-  DtIni=DtMin=0; CoefDtMin=0; 
+  DtIni=DtMin=0; CoefDtMin=0; DtAllParticles=false;
   PartsOutMax=0;
   NpMinimum=0;
 
@@ -417,6 +417,7 @@ void JSph::LoadCaseConfig(){
   DtIni=eparms.GetValueDouble("DtIni",true,0);
   DtMin=eparms.GetValueDouble("DtMin",true,0);
   CoefDtMin=eparms.GetValueFloat("CoefDtMin",true,0.05f);
+  DtAllParticles=(eparms.GetValueInt("DtAllParticles",true,0)==1);
 
   string filedtfixed=eparms.GetValueStr("DtFixed",true);
   if(!filedtfixed.empty()){
@@ -794,6 +795,7 @@ void JSph::VisuConfig()const{
   Log->Print(fun::VarStr("CFLnumber",CFLnumber));
   Log->Print(fun::VarStr("DtIni",DtIni));
   Log->Print(fun::VarStr("DtMin",DtMin));
+  Log->Print(fun::VarStr("DtAllParticles",DtAllParticles));
   if(DtFixed)Log->Print(fun::VarStr("DtFixed",DtFixed->GetFile()));
   Log->Print(fun::VarStr("MassFluid",MassFluid));
   Log->Print(fun::VarStr("MassBound",MassBound));

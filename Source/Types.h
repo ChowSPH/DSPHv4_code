@@ -31,8 +31,6 @@
 
 //#define DISABLE_TIMERS           //-Compilado sin timers.
 
-//#define DT_ALLPARTICLES          //-Activar/desactivar el usar todas las particulas (no solo fluidas) para el calculo del dt.
-
 #define _WITHOMP //-Activar/desactivar tb en Props config -> C/C++ -> Lenguaje -> OpenMp
 
 #define MAXTHREADS_OMP 64

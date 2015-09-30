@@ -480,12 +480,8 @@ void JSphCpu::PreInteraction_Forces(TpInter tinter){
   //-Inicializa arrays.
   PreInteractionVars_Forces(tinter,0,Np,Npb);
 
-    //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
-#ifdef DT_ALLPARTICLES
-    const unsigned pini=0;
-  #else
-    const unsigned pini=Npb;
-  #endif
+  //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
+  const unsigned pini=(DtAllParticles? 0: Npb);
   float velmax=0;
   for(unsigned p=pini;p<Np;p++){
     const tfloat4 v=Velrhopc[p];
@@ -493,7 +489,6 @@ void JSphCpu::PreInteraction_Forces(TpInter tinter){
     velmax=max(velmax,v2);
   }
   VelMax=sqrt(velmax);
-  //printf("------>cpu VelMax:%g\n",VelMax);
   ViscDtMax=0;
   TmcStop(Timers,TMC_CfPreForces);
 }
