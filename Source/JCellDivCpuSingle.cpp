@@ -30,7 +30,7 @@ JCellDivCpuSingle::JCellDivCpuSingle(bool stable,bool floating,byte periactive,T
 //==============================================================================
 // Calcula limites del dominio en celdas ajustando al fluido (CellDomainMin/Max). 
 // Si hay alguna particula excluida de tipo boundary (incluidas floating) genera
-// excepcion y mostrando su info.
+// excepcion y muestra su info.
 //==============================================================================
 void JCellDivCpuSingle::CalcCellDomain(const unsigned *dcellc,const word* codec,const unsigned* idpc,const tdouble3* posc){
   //-Calcula dominio del contorno.
@@ -55,15 +55,8 @@ void JCellDivCpuSingle::CalcCellDomain(const unsigned *dcellc,const word* codec,
 // En caso de que el dominio sea nulo CellDomainMin=CellDomainMax=(0,0,0).
 //==============================================================================
 void JCellDivCpuSingle::MergeMapCellBoundFluid(const tuint3 &celbmin,const tuint3 &celbmax,const tuint3 &celfmin,const tuint3 &celfmax,tuint3 &celmin,tuint3 &celmax)const{
-  //char cad[256]; sprintf(cad,"celb=(%u,%u,%u)-(%u,%u,%u)  Npb:%u",celbmin.x,celbmin.y,celbmin.z,celbmax.x,celbmax.y,celbmax.z,Npb); Log->Print(cad);
-  //if(UseFluidDomain){
-    celmin=TUint3(max(min(celbmin.x,celfmin.x),(celfmin.x>=Hdiv? celfmin.x-Hdiv: 0)),max(min(celbmin.y,celfmin.y),(celfmin.y>=Hdiv? celfmin.y-Hdiv: 0)),max(min(celbmin.z,celfmin.z),(celfmin.z>=Hdiv? celfmin.z-Hdiv: 0)));
-    celmax=TUint3(min(max(celbmax.x,celfmax.x),celfmax.x+Hdiv),min(max(celbmax.y,celfmax.y),celfmax.y+Hdiv),min(max(celbmax.z,celfmax.z),celfmax.z+Hdiv));
- // }
- // else{
-    //celmin=MinValues(celbmin,celfmin);
-    //celmax=MaxValues(celbmax,celfmax);
- // }
+  celmin=TUint3(max(min(celbmin.x,celfmin.x),(celfmin.x>=Hdiv? celfmin.x-Hdiv: 0)),max(min(celbmin.y,celfmin.y),(celfmin.y>=Hdiv? celfmin.y-Hdiv: 0)),max(min(celbmin.z,celfmin.z),(celfmin.z>=Hdiv? celfmin.z-Hdiv: 0)));
+  celmax=TUint3(min(max(celbmax.x,celfmax.x),celfmax.x+Hdiv),min(max(celbmax.y,celfmax.y),celfmax.y+Hdiv),min(max(celbmax.z,celfmax.z),celfmax.z+Hdiv));
   if(celmax.x>=DomCells.x)celmax.x=DomCells.x-1;
   if(celmax.y>=DomCells.y)celmax.y=DomCells.y-1;
   if(celmax.z>=DomCells.z)celmax.z=DomCells.z-1;
@@ -79,7 +72,6 @@ void JCellDivCpuSingle::PrepareNct(){
   Ncx=CellDomainMax.x-CellDomainMin.x+1;
   Ncy=CellDomainMax.y-CellDomainMin.y+1;
   Ncz=CellDomainMax.z-CellDomainMin.z+1;
-  //printf("======  ncx:%u ncy:%u ncz:%u\n",Ncx,Ncy,Ncz);
   Nsheet=Ncx*Ncy; Nct=Nsheet*Ncz; Nctt=SizeBeginCell(Nct);
   if(Nctt!=unsigned(Nctt))RunException("PrepareNct","The number of cells is too big.");
   BoxIgnore=Nct; 
@@ -215,7 +207,6 @@ void JCellDivCpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   NpbOut=NpfOut=NpbOutIgnore=NpfOutIgnore=0;
   NpFinal=NpbFinal=0;
   NpfOutRhop=NpfOutMove=NpbIgnore=0;
-  //printf("---> Npb1:%u  Npf1:%u  Npb2:%u  Npf2:%u\n",Npb1,Npf1,Npb2,Npf2);
 
   //-Comprueba si hay memoria reservada y si es suficiente para Nptot.
   CheckMemoryNp(Nptot);
@@ -254,8 +245,6 @@ void JCellDivCpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   NpfOut=CellSize(BoxFluidOut);
   NpbOutIgnore=CellSize(BoxBoundOutIgnore);
   NpfOutIgnore=CellSize(BoxFluidOutIgnore);
-  //printf("---> Nct:%u  BoxBoundOut:%u  SizeBeginEndCell:%u\n",Nct,BoxBoundOut,SizeBeginEndCell(Nct));
-  //printf("---> NpbIgnore:%u  NpbOut:%u  NpfOut:%u  NpfOutIgnore:%u\n",NpbIgnore,NpbOut,NpfOut,NpfOutIgnore);
   NpFinal=Nptot-NpbOut-NpfOut-NpbOutIgnore-NpfOutIgnore;
   NpbFinal=Npb1+Npb2-NpbOut-NpbOutIgnore;
 

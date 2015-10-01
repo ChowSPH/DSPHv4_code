@@ -269,7 +269,6 @@ void JCellDivCpu::CalcCellDomainBound(unsigned n,unsigned pini,unsigned n2,unsig
     cellmin=MinValues(cellmin,cmin);
     cellmax=MaxValues(cellmax,cmax);
   }
-  //char cad[512]; sprintf(cad,"CalcDomainBound> cell:(%s)-(%s)",fun::Uint3Str(cellmin).c_str(),fun::Uint3Str(cellmax).c_str()); Log->PrintDbg(cad);
 }
 
 //==============================================================================

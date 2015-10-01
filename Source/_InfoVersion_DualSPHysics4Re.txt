@@ -298,6 +298,7 @@
   - Error solved when DT_ALLPARTICLES was disabled. (v4.0.002 / 30-09-2015)
   - Now DT_ALLPARTICLES is an option in XML file. (v4.0.002 / 30-09-2015)
   - Replaces long long by llong to improve uniformity of the code. (v4.0.003 / 01-10-2015)
+  - Link SaveMapCellsVtk with option SvDomainVtk but limited by number of cells. (v4.0.004 / 01-10-2015)
   
   
   
@@ -305,14 +306,16 @@
   
   
 Remaining issues:
-================== 
+==================
+- Review use of OverMemoryCells.
+
 - Use of SDAT_info?
 - TDeltaSph, when is DynamicExt used?
 - Is FtPause ok?
 - Example with DtFixed.
 - Test periodic one-axis and two-axis.
 - Examples with DomainLimits
-- MkList, when is it used? 
+- MkList, when is it used? LoadCodeParticles
 - Remove references to MapMove.
 
 - Check timers for Shifting.

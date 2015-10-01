@@ -185,7 +185,6 @@ void JSphGpuSingle::ConfigDomain(){
 
   //-Configura division celdas.
   ConfigCellDivision();
-  //if(Map_Cells.x<200 && Map_Cells.y<200 && Map_Cells.z<200)SaveMapCellsVtk(Scell);
   //-Establece dominio de simulacion local dentro de Map_Cells y calcula DomCellCode.
   SelecDomain(TUint3(0,0,0),Map_Cells);
   //-Calcula celda inicial de particulas y comprueba si hay excluidas inesperadas.
@@ -218,7 +217,6 @@ void JSphGpuSingle::ConfigDomain(){
 void JSphGpuSingle::ResizeParticlesSize(unsigned newsize,float oversize,bool updatedivide){
   TmgStart(Timers,TMG_SuResizeNp);
   newsize+=(oversize>0? unsigned(oversize*newsize): 0);
-  //sprintf(Cad,"++>ResizeParticlesSize> GpuParticlesSize:%u newsize:%u",GpuParticlesSize,newsize); Log->PrintDbg(Cad);
   FreeCpuMemoryParticles();
   CellDivSingle->FreeMemoryGpu();
   ResizeGpuMemoryParticles(newsize);
@@ -237,10 +235,6 @@ void JSphGpuSingle::ResizeParticlesSize(unsigned newsize,float oversize,bool upd
 void JSphGpuSingle::RunPeriodic(){
   const char met[]="RunPeriodic";
   TmgStart(Timers,TMG_SuPeriodic);
-//  sprintf(Cad,"===========> %u> RunPeriodic  Part:%u",Nstep,Part); Log->PrintDbg(Cad);
-//  DgSaveVtkParticlesGpu("file_Pre.vtk",Part,0,Np,true,true,true,true);
-//  RunException(met,"Stoppp ini...");
-
   //-Guarda numero de periodicas actuales.
   NpfPerM1=NpfPer;
   NpbPerM1=NpbPer;
@@ -256,17 +250,14 @@ void JSphGpuSingle::RunPeriodic(){
     //-Calcula rango de particulas a examinar (bound o fluid).
     const unsigned pini=(ctype? npb0: 0);
     const unsigned num= (ctype? npf0: npb0);
-    //sprintf(Cad,"-> %u> ctype:%u_%s pini:%u num:%u",Nstep,ctype,(ctype? "fluid": "bound"),pini,num); Log->PrintDbg(Cad);
     //-Busca periodicas en cada eje (X, Y e Z).
     for(unsigned cper=0;cper<3;cper++)if((cper==0 && PeriActive&1) || (cper==1 && PeriActive&2) || (cper==2 && PeriActive&4)){
       tdouble3 perinc=(cper==0? PeriXinc: (cper==1? PeriYinc: PeriZinc));
-      //-Primero busca en la lista de periodicas nuevas y despues en la lista inicial de particulas.
-      //sprintf(Cad,"---> %u> cper:%u_%s",Nstep,cper,(!cper? "X": (cper==1? "Y": "Z"))); Log->PrintDbg(Cad);
+      //-Primero busca en la lista de periodicas nuevas y despues en la lista inicial de particulas (necesario para periodicas en mas de un eje).
       for(unsigned cblock=0;cblock<2;cblock++){//-0:periodicas nuevas, 1:particulas originales
         const unsigned nper=(ctype? NpfPer: NpbPer); //-Numero de periodicas nuevas del tipo a procesar.
         const unsigned pini2=(cblock? pini: Np-nper);
         const unsigned num2= (cblock? num:  nper);
-        //sprintf(Cad,"-----> %u> cblock:%u_%s pini2:%u num2:%u NpbPer:%u NpfPer:%u",Nstep,cblock,(cblock? "Parts_old": "Parts_new"),pini2,num2,NpbPer,NpfPer); Log->PrintDbg(Cad);
         //-Repite la busqueda si la memoria disponible resulto insuficiente y hubo que aumentarla.
         bool run=true;
         while(run && num2){
@@ -297,15 +288,13 @@ void JSphGpuSingle::RunPeriodic(){
             //-Actualiza numero de periodicas nuevas.
             if(!ctype)NpbPer+=count;
             else NpfPer+=count;
-            //DgSaveVtkParticlesGpu((!ctype? "filebound.vtk": "filefluid.vtk"),Nstep,0,Np,true,true,true,true);
           }
         }
       }
     }
   }
-  //DgSaveVtkParticlesGpu("file_Pos.vtk",Part,0,Np,true,true,true,true);
-  //RunException(met,"Stoppp fin...");
   TmgStop(Timers,TMG_SuPeriodic);
+  CheckCudaError(met,"Failed in creation of periodic particles.");
 }
 
 //==============================================================================
@@ -313,9 +302,7 @@ void JSphGpuSingle::RunPeriodic(){
 //==============================================================================
 void JSphGpuSingle::RunCellDivide(bool updateperiodic){
   const char met[]="RunCellDivide";
-
   //-Crea nuevas particulas periodicas y marca las viejas para ignorarlas.
-  //sprintf(Cad,"DVPRE--> Np:%u  NpbPer:%u  NpfPer:%u",Np,NpbPer,NpfPer); Log->PrintDbg(Cad);
   if(updateperiodic && PeriActive)RunPeriodic();
 
   //-Inicia Divide.

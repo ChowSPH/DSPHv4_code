@@ -283,7 +283,6 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(VelrhopPreg);
   ArraysGpu->Free(SpsTaug);
   //-Resizes GPU memory allocation.
-  //sprintf(Cad,"++>ResizeGpuMemoryParticles> GpuParticlesSize:%u npnew:%u",GpuParticlesSize,npnew); Log->PrintDbg(Cad);
   const double mbparticle=(double(MemGpuParticles)/(1024*1024))/GpuParticlesSize; //-MB por particula.
   Log->Printf("**JSphGpu: Requesting gpu memory for %u particles: %.1f MB.",npnew,mbparticle*npnew);
   ArraysGpu->SetArraySize(npnew);
@@ -439,12 +438,12 @@ void JSphGpu::ConstantDataUp(){
 // Sube datos de particulas a la GPU.
 //==============================================================================
 void JSphGpu::ParticlesDataUp(unsigned n){
-  cudaMemcpy(Idpg,Idp,sizeof(unsigned)*n,cudaMemcpyHostToDevice);
-  cudaMemcpy(Codeg,Code,sizeof(word)*n,cudaMemcpyHostToDevice);
-  cudaMemcpy(Dcellg,Dcell,sizeof(unsigned)*n,cudaMemcpyHostToDevice);
-  cudaMemcpy(Posxyg,Posxy,sizeof(double2)*n,cudaMemcpyHostToDevice);
-  cudaMemcpy(Poszg,Posz,sizeof(double)*n,cudaMemcpyHostToDevice);
-  cudaMemcpy(Velrhopg,Velrhop,sizeof(float4)*n,cudaMemcpyHostToDevice);
+  cudaMemcpy(Idpg    ,Idp    ,sizeof(unsigned)*n,cudaMemcpyHostToDevice);
+  cudaMemcpy(Codeg   ,Code   ,sizeof(word)*n    ,cudaMemcpyHostToDevice);
+  cudaMemcpy(Dcellg  ,Dcell  ,sizeof(unsigned)*n,cudaMemcpyHostToDevice);
+  cudaMemcpy(Posxyg  ,Posxy  ,sizeof(double2)*n ,cudaMemcpyHostToDevice);
+  cudaMemcpy(Poszg   ,Posz   ,sizeof(double)*n  ,cudaMemcpyHostToDevice);
+  cudaMemcpy(Velrhopg,Velrhop,sizeof(float4)*n  ,cudaMemcpyHostToDevice);
   CheckCudaError("ParticlesDataUp","Failed copying data to GPU.");
 }
 
@@ -647,7 +646,6 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
   JPtxasInfo pt;
   if(fun::FileExists(PtxasFile)){
     pt.LoadFile(PtxasFile);
-    //RunException(met,"Stop...");
     if(smgpu==20&&!pt.CheckSm(20))RunException(met,"Code is not compiled for sm20.");
     if(smgpu==30&&!pt.CheckSm(30)){
       if(!pt.CheckSm(20))RunException(met,"Code is not compiled for sm20 and sm30.");
@@ -660,7 +658,7 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
     Log->Printf("Use code for compute capability %3.1f on hardware %3.1f",float(smcode)/10,float(smgpu)/10);
   }
   else Log->Print("**Without optimization of registers.");
-  pt.SaveCsv(DirOut+"ptxas_info.csv");
+  //pt.SaveCsv(DirOut+"ptxas_info.csv");
   BlockSizesStr="";
   if(CellMode==CELLMODE_2H||CellMode==CELLMODE_H){
     const TpFtMode ftmode=(CaseNfloat? (UseDEM? FTMODE_Dem: FTMODE_Sph): FTMODE_None);

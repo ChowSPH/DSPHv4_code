@@ -664,7 +664,6 @@ void JSph::LoadCodeParticles(unsigned np,const unsigned *idp,word *code)const{
     else if(id<finfloating){
       cod=CodeSetType(cod,PART_BoundFt,cmk-MkListFixed-MkListMoving);
       if(cmk-MkListFixed-MkListMoving>=FtCount)RunException(met,"Floating code of particles was not found.");
-      //{ char cad[1024]; sprintf(cad,"++> p[%u] id:%u code:%u typevalue:%u",p,id,cod,CODE_GetTypeValue(cod)); Log->PrintDbg(cad); }
     }
     else{
       cod=CodeSetType(cod,PART_Fluid,cmk-MkListBound);
@@ -869,21 +868,17 @@ void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* 
     Map_PosMax=OrderCodeValue(CellOrder,Map_PosMax);
     Map_Size=OrderCodeValue(CellOrder,Map_Size);
     //-Modifica config periodica.
-      bool perix=PeriX,periy=PeriY,periz=PeriZ;
+    bool perix=PeriX,periy=PeriY,periz=PeriZ;
     bool perixy=PeriXY,perixz=PeriXZ,periyz=PeriYZ;
-      tdouble3 perixinc=PeriXinc,periyinc=PeriYinc,perizinc=PeriZinc;
-    //sprintf(Cad,"CellOrder---->0 PeriX:%s PeriY:%s PeriZ:%s",(PeriX?"True":"False"),(PeriY?"True":"False"),(PeriZ?"True":"False")); Log->PrintDbg(Cad);
-    //sprintf(Cad,"CellOrder---->0 PeriXinc:%s PeriYinc:%s PeriZinc:%s",fun::Float3gStr(PeriXinc).c_str(),fun::Float3gStr(PeriYinc).c_str(),fun::Float3gStr(PeriZinc).c_str()); Log->PrintDbg(Cad);
-      tuint3 v={1,2,3};
-    //sprintf(Cad,"CellOrder---->0 v:(%u,%u,%u)",v.x,v.y,v.z); Log->PrintDbg(Cad);
-      v=OrderCode(v);
-    //sprintf(Cad,"CellOrder---->1 v:(%u,%u,%u)",v.x,v.y,v.z); Log->PrintDbg(Cad);
+    tdouble3 perixinc=PeriXinc,periyinc=PeriYinc,perizinc=PeriZinc;
+    tuint3 v={1,2,3};
+    v=OrderCode(v);
     if(v.x==2){ PeriX=periy; PeriXinc=OrderCode(periyinc); }
-      if(v.x==3){ PeriX=periz; PeriXinc=OrderCode(perizinc); }
-      if(v.y==1){ PeriY=perix; PeriYinc=OrderCode(perixinc); }
-      if(v.y==3){ PeriY=periz; PeriYinc=OrderCode(perizinc); }
-      if(v.z==1){ PeriZ=perix; PeriZinc=OrderCode(perixinc); }
-      if(v.z==2){ PeriZ=periy; PeriZinc=OrderCode(periyinc); }
+    if(v.x==3){ PeriX=periz; PeriXinc=OrderCode(perizinc); }
+    if(v.y==1){ PeriY=perix; PeriYinc=OrderCode(perixinc); }
+    if(v.y==3){ PeriY=periz; PeriYinc=OrderCode(perizinc); }
+    if(v.z==1){ PeriZ=perix; PeriZinc=OrderCode(perixinc); }
+    if(v.z==2){ PeriZ=periy; PeriZinc=OrderCode(periyinc); }
     if(perixy){
       PeriXY=(CellOrder==ORDER_XYZ||CellOrder==ORDER_YXZ);
       PeriXZ=(CellOrder==ORDER_XZY||CellOrder==ORDER_YZX);
@@ -899,12 +894,8 @@ void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* 
       PeriXZ=(CellOrder==ORDER_YXZ||CellOrder==ORDER_ZXY);
       PeriYZ=(CellOrder==ORDER_XYZ||CellOrder==ORDER_XZY);
     }
-    //sprintf(Cad,"CellOrder---->1 PeriX:%s PeriY:%s PeriZ:%s",(PeriX?"True":"False"),(PeriY?"True":"False"),(PeriZ?"True":"False")); Log->PrintDbg(Cad);
-    //sprintf(Cad,"CellOrder---->1 PeriXinc:%s PeriYinc:%s PeriZinc:%s",fun::Float3gStr(PeriXinc).c_str(),fun::Float3gStr(PeriYinc).c_str(),fun::Float3gStr(PeriZinc).c_str()); Log->PrintDbg(Cad);
   }
   PeriActive=(PeriX? 1: 0)+(PeriY? 2: 0)+(PeriZ? 4: 0);
-  //-Aplica MapMove a los datos de posición.
-  //if(MapMove!=TDouble3(0))for(unsigned p=0;p<np;p++)pos[p]=pos[p]+MapMove;
 }
 
 //==============================================================================
@@ -964,6 +955,12 @@ void JSph::ConfigCellDivision(){
   Log->Print(fun::VarStr("CellMode",string(GetNameCellMode(CellMode))));
   Log->Print(fun::VarStr("Hdiv",Hdiv));
   Log->Print(string("MapCells=(")+fun::Uint3Str(OrderDecode(Map_Cells))+")");
+  //-Creates VTK file with cells of map.
+  if(SvDomainVtk){
+    const llong n=llong(Map_Cells.x)*llong(Map_Cells.y)*llong(Map_Cells.z);
+    if(n<1000000)SaveMapCellsVtk(Scell);
+    else Log->Print("\n*** Attention: File MapCells.vtk was not created because number of cells is too high.\n");
+  }
 }
 
 //==============================================================================
@@ -1064,7 +1061,6 @@ void JSph::CalcFloatingRadius(unsigned np,const tdouble3 *pos,const unsigned *id
       if(r2max<r2)r2max=r2;
     }
     fobj->radius=float(sqrt(r2max)*overradius);
-    //Log->Printf("----> Floating[%u] radius:%f",cf,fobj->radius);
     if(radiusmax<fobj->radius)radiusmax=fobj->radius;
   }
   //-Libera memoria.
