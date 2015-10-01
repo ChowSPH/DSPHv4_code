@@ -83,7 +83,6 @@ llong JPartsOut::GetAllocMemory()const{
   if(Pos)s+=sizeof(tdouble3)*Size;
   if(Vel)s+=sizeof(tfloat3)*Size;
   if(Rhop)s+=sizeof(float)*Size;
-  //Reservada en otros objetos
   return(s);
 }
 

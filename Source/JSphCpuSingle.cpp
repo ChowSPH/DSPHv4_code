@@ -411,9 +411,6 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   TmcStart(Timers,TMC_NlOutCheck);
   unsigned npfout=CellDivSingle->GetNpOut();
   if(npfout){
-    //string computo=(TStep==STEP_Symplectic? "Symplectic-Corr": "Verlet");
-    //if(TStep==STEP_Symplectic && (PosPrec || VelrhopPrec))computo="Symplectic-Pre";
-    //Log->Printf("RunCellDivide> Nstep:%u  nout:%u  Su:%s",Nstep,npfout,computo.c_str());
     unsigned* idp=ArraysCpu->ReserveUint();
     tdouble3* pos=ArraysCpu->ReserveDouble3();
     tfloat3* vel=ArraysCpu->ReserveFloat3();
@@ -427,9 +424,6 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   }
   TmcStop(Timers,TMC_NlOutCheck);
   BoundChanged=false;
-  if(0){
-    DgSaveVtkParticlesCpu("DgParts.vtk",Nstep,0,Np,Posc,Codec,Idpc,Velrhopc);
-  }
 }
 
 //------------------------------------------------------------------------------
@@ -907,9 +901,7 @@ void JSphCpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
   TimerPart.Start();
   Log->Print(string("\n[Initialising simulation (")+RunCode+")  "+fun::GetDateTime()+"]");
   PrintHeadPart();
-  //RunException(met,"Stopppppp");
   while(TimeStep<TimeMax){
-    //printf("->> Nstep:%u\n",Nstep);
     if(ViscoTime)Visco=ViscoTime->GetVisco(float(TimeStep));
     double stepdt=ComputeStep();
     if(PartDtMin>stepdt)PartDtMin=stepdt; if(PartDtMax<stepdt)PartDtMax=stepdt;

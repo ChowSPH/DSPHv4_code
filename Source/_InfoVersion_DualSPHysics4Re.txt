@@ -300,12 +300,13 @@
   - Replaces long long by llong to improve uniformity of the code. (v4.0.003 / 01-10-2015)
   - Link SaveMapCellsVtk with option SvDomainVtk but limited by number of cells. (v4.0.004 / 01-10-2015)
   - Now CELLDIV_OVERMEMORYCELLS is really used to allocate memory for cells. (v4.0.005 / 01-10-2015)
-  
+  - Minor changes. (v4.0.006 / 01-10-2015)
 
   
   
 Remaining issues:
 ==================
+- Remove //Log->Print //print
 - Use of SDAT_info?
 - TDeltaSph, when is DynamicExt used?
 - Is FtPause ok?

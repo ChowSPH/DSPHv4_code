@@ -33,8 +33,6 @@
 #include <iostream>
 #include <fstream>
 
-//#define DG_JCellDivGpu //-En JCellDivGpu comprueba que el resultado de PreSort es valido.
-
 class JCellDivGpu : protected JObjectGpu
 {
 protected:

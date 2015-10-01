@@ -312,11 +312,11 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
   TmgStart(Timers,TMG_NlSortData);
   {
     unsigned* idpg=ArraysGpu->ReserveUint();
-    word* codeg=ArraysGpu->ReserveWord();
+    word*     codeg=ArraysGpu->ReserveWord();
     unsigned* dcellg=ArraysGpu->ReserveUint();
-    double2* posxyg=ArraysGpu->ReserveDouble2();
-    double* poszg=ArraysGpu->ReserveDouble();
-    float4* velrhopg=ArraysGpu->ReserveFloat4();
+    double2*  posxyg=ArraysGpu->ReserveDouble2();
+    double*   poszg=ArraysGpu->ReserveDouble();
+    float4*   velrhopg=ArraysGpu->ReserveFloat4();
     CellDivSingle->SortBasicArrays(Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,idpg,codeg,dcellg,posxyg,poszg,velrhopg);
     swap(Idpg,idpg);           ArraysGpu->Free(idpg);
     swap(Codeg,codeg);         ArraysGpu->Free(codeg);
@@ -353,41 +353,12 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
   //-Recupera posiciones de floatings.
   if(CaseNfloat)cusph::CalcRidp(PeriActive!=0,Np-Npb,Npb,CaseNpb,CaseNpb+CaseNfloat,Codeg,Idpg,FtRidpg);
   TmgStop(Timers,TMG_NlSortData);
-  //Log->Printf("DVFIN--> Np:%u  Npb:%u  NpbOk:%u",Np,Npb,NpbOk);
-  //DgSaveVtkParticlesGpu("file_Div.vtk",Part,0,Np,true,true,true,true);
 
   //-Gestion de particulas excluidas (contorno y fluid).
   TmgStart(Timers,TMG_NlOutCheck);
   unsigned npout=CellDivSingle->GetNpOut();
   if(npout){
-    //string computo=(TStep==STEP_Symplectic? "Symplectic-Corr": "Verlet");
-    //if(TStep==STEP_Symplectic && (PoszPreg || VelrhopPreg))computo="Symplectic-Pre";
-    //Log->Printf("RunCellDivide> Nstep:%u  nout:%u  Su:%s",Nstep,npout,computo.c_str());
     ParticlesDataDown(npout,Np,true,true,false);
-
-    {//lerr
-      //Log->Printf("%u_> npout:%u",Nstep,npout);
-      //Log->Printf("%u_> id:%u",Nstep,Idp[0]);
-    }
-  //if(1){
-  //  unsigned *hidp=new unsigned[Np];
-  //  unsigned *hdcell=new unsigned[Np];
-  //  cudaMemcpy(hidp,Idpg,sizeof(unsigned)*Np,cudaMemcpyDeviceToHost);
-  //  cudaMemcpy(hdcell,Dcellg,sizeof(unsigned)*Np,cudaMemcpyDeviceToHost);
-  //  ParticlesDataDown(Np,0,true,true,true);
-  //  Log->Printf("\n0----> Npb:%u Np:%u",Npb,Np);
-  //  for(unsigned p=Npb;p<Np;p++){
-  //    Log->Printf("0----> idp[%u]:%u dcell:%u",p,hidp[p],hdcell[p]);
-  //    //if(Idp[p]==134)Log->Printf("0----> idp[%u]:%u dcell:%u Ps=(%g,%g,%g)",p,Idp[p],hdcell[p],Posxy[p].x,Posxy[p].y,Posz[p]);
-  //    if(CODE_GetSpecialValue(Code[p])>CODE_NORMAL){
-  //      //Log->Printf("0---> Ps[%u]=(%g,%g,%g) dcell:%u",p,Posxy[p].x,Posxy[p].y,Posz[p],hdcell[p]);
-  //    }
-  //  }
-  //  delete[] hidp;
-  //  delete[] hdcell;
-  //}
-
-
     CellDivSingle->CheckParticlesOut(npout,Idp,AuxPos,AuxRhop,Code);
     AddParticlesOut(npout,Idp,AuxPos,AuxVel,AuxRhop,CellDivSingle->GetNpfOutRhop(),CellDivSingle->GetNpfOutMove());
   }
@@ -716,10 +687,8 @@ void JSphGpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
   TimerPart.Start();
   Log->Print(string("\n[Initialising simulation (")+RunCode+")  "+fun::GetDateTime()+"]");
   PrintHeadPart();
-  //RunException(met,"Stopppppp");
   while(TimeStep<TimeMax){
-    //printf("->> Nstep:%u\n",Nstep);
-      if(ViscoTime)Visco=ViscoTime->GetVisco(float(TimeStep));
+    if(ViscoTime)Visco=ViscoTime->GetVisco(float(TimeStep));
     double stepdt=ComputeStep();
     if(PartDtMin>stepdt)PartDtMin=stepdt; if(PartDtMax<stepdt)PartDtMax=stepdt;
     if(CaseNmoving)RunMotion(stepdt);

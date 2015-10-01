@@ -21,10 +21,6 @@
 #include "TypesDef.h"
 #include <cuda_runtime_api.h>
 
-//#define DG_LimitsCell //-En LimitsCell() comprueba que el resultado sea correcto.
-//#define DG_LimitsPos //-En LimitsPos() comprueba que el resultado sea correcto.
-//#define DG_GetRangeParticlesCells //-En GetParticlesCellRange() comprueba que el resultado sea correcto.
-
 class JLog2;
 
 #define DIVBSIZE 256
@@ -32,17 +28,6 @@ class JLog2;
 namespace cudiv{
 
 typedef enum{ ORDER_XYZ=1,ORDER_YZX=2,ORDER_XZY=3 }TpCellOrder;  //-Orden de ejes en ordenacion de particulas en celdas.
-
-//template <byte torder> __device__ float GetSortX(const float3 &v){ return(torder==2? v.y: v.x); }
-//template <byte torder> __device__ float GetSortY(const float3 &v){ return(torder==1? v.y: v.z); }
-//template <byte torder> __device__ float GetSortZ(const float3 &v){ return(torder==1? v.z: (torder==2? v.x: v.y)); }
-//template <byte torder> __host__ __device__ float3 GetSort(const float3 &v){ return(torder==2? make_float3(v.y,v.z,v.x): (torder==3? make_float3(v.x,v.z,v.y): v)); }
-/*template <byte torder> __host__ __device__ float3 GetSort(const float3 &v){ 
-  if(torder==2){ float3 r; r.x=v.y; r.y=v.z; r.z=v.x; return(r); }
-  else if(torder==3){ float3 r; r.x=v.x; r.y=v.z; r.z=v.y; return(r); }
-  else return(v);
-}*/
-
 
 inline float3 Float3(const tfloat3& v){ float3 p={v.x,v.y,v.z}; return(p); }
 inline float3 Float3(float x,float y,float z){ float3 p={x,y,z}; return(p); }
@@ -65,12 +50,6 @@ void SortDataParticles(unsigned np,unsigned pini,const unsigned *sortpart,const 
 void SortDataParticles(unsigned np,unsigned pini,const unsigned *sortpart,const float *a,const float *b,float *a2,float *b2);
 void SortDataParticles(unsigned np,unsigned pini,const unsigned *sortpart,const double2 *a,const double *b,const float4 *c,double2 *a2,double *b2,float4 *c2);
 void SortDataParticles(unsigned np,unsigned pini,const unsigned *sortpart,const tsymatrix3f *a,tsymatrix3f *a2);
-
-//inline unsigned GetRangeParticlesCellsSizeAux(unsigned celini,unsigned celfin){ unsigned n=2,s=(((celfin-celini)/DIVBSIZE)+1); return((s*n + ((s/DIVBSIZE)+1)*n) + DIVBSIZE); } 
-//void GetRangeParticlesCells(unsigned celini,unsigned celfin,const int2 *begcell,unsigned *aux,unsigned &pmin,unsigned &pmax,JLog2 *log);
-
-//inline unsigned GetParticlesCellsSizeAux(unsigned celini,unsigned celfin){ unsigned n=1,s=(((celfin-celini)/DIVBSIZE)+1); return((s*n + ((s/DIVBSIZE)+1)*n) + DIVBSIZE); }  
-//unsigned GetParticlesCells(unsigned celini,unsigned celfin,const int2 *begcell,unsigned *aux,JLog2 *log);
 
 }
 

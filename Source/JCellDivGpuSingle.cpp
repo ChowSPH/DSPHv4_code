@@ -18,10 +18,6 @@
 #include "JCellDivGpuSingle.h"
 #include "JCellDivGpuSingle_ker.h"
 #include "Functions.h"
-#ifdef DG_JCellDivGpu
-  #include "JFormatFiles2.h"
-  #include "JBuffer.h"
-#endif
 
 using namespace std;
 
@@ -58,15 +54,8 @@ void JCellDivGpuSingle::CalcCellDomain(const unsigned *dcellg,const word* codeg)
 // En caso de que el dominio sea nulo CellDomainMin=CellDomainMax=(0,0,0).
 //==============================================================================
 void JCellDivGpuSingle::MergeMapCellBoundFluid(const tuint3 &celbmin,const tuint3 &celbmax,const tuint3 &celfmin,const tuint3 &celfmax,tuint3 &celmin,tuint3 &celmax)const{
-  //char cad[256]; sprintf(cad,"celb=(%u,%u,%u)-(%u,%u,%u)  Npb:%u",celbmin.x,celbmin.y,celbmin.z,celbmax.x,celbmax.y,celbmax.z,Npb); Log->Print(cad);
-  //if(UseFluidDomain){
-    celmin=TUint3(max(min(celbmin.x,celfmin.x),(celfmin.x>=Hdiv? celfmin.x-Hdiv: 0)),max(min(celbmin.y,celfmin.y),(celfmin.y>=Hdiv? celfmin.y-Hdiv: 0)),max(min(celbmin.z,celfmin.z),(celfmin.z>=Hdiv? celfmin.z-Hdiv: 0)));
-    celmax=TUint3(min(max(celbmax.x,celfmax.x),celfmax.x+Hdiv),min(max(celbmax.y,celfmax.y),celfmax.y+Hdiv),min(max(celbmax.z,celfmax.z),celfmax.z+Hdiv));
- // }
- // else{
-    //celmin=MinValues(celbmin,celfmin);
-    //celmax=MaxValues(celbmax,celfmax);
- // }
+  celmin=TUint3(max(min(celbmin.x,celfmin.x),(celfmin.x>=Hdiv? celfmin.x-Hdiv: 0)),max(min(celbmin.y,celfmin.y),(celfmin.y>=Hdiv? celfmin.y-Hdiv: 0)),max(min(celbmin.z,celfmin.z),(celfmin.z>=Hdiv? celfmin.z-Hdiv: 0)));
+  celmax=TUint3(min(max(celbmax.x,celfmax.x),celfmax.x+Hdiv),min(max(celbmax.y,celfmax.y),celfmax.y+Hdiv),min(max(celbmax.z,celfmax.z),celfmax.z+Hdiv));
   if(celmax.x>=DomCells.x)celmax.x=DomCells.x-1;
   if(celmax.y>=DomCells.y)celmax.y=DomCells.y-1;
   if(celmax.z>=DomCells.z)celmax.z=DomCells.z-1;
@@ -82,7 +71,6 @@ void JCellDivGpuSingle::PrepareNct(){
   Ncx=CellDomainMax.x-CellDomainMin.x+1;
   Ncy=CellDomainMax.y-CellDomainMin.y+1;
   Ncz=CellDomainMax.z-CellDomainMin.z+1;
-  //printf("======  ncx:%u ncy:%u ncz:%u\n",Ncx,Ncy,Ncz);
   Nsheet=Ncx*Ncy; Nct=Nsheet*Ncz; Nctt=SizeBeginEndCell(Nct);
   if(Nctt!=unsigned(Nctt))RunException("PrepareNct","The number of cells is too big.");
   BoxIgnore=Nct; 
@@ -91,8 +79,6 @@ void JCellDivGpuSingle::PrepareNct(){
   BoxFluidOut=BoxBoundOut+1; 
   BoxBoundOutIgnore=BoxFluidOut+1;
   BoxFluidOutIgnore=BoxBoundOutIgnore+1;
-  //Log->Printf("--->PrepareNct> BoxIgnore:%u BoxFluid:%u BoxBoundOut:%u BoxFluidOut:%u",BoxIgnore,BoxFluid,BoxBoundOut,BoxFluidOut);
-  //Log->Printf("--->PrepareNct> BoxBoundOutIgnore:%u BoxFluidOutIgnore:%u",BoxBoundOutIgnore,BoxFluidOutIgnore);
 }
 
 //==============================================================================
@@ -103,34 +89,6 @@ void JCellDivGpuSingle::PrepareNct(){
 void JCellDivGpuSingle::PreSort(const unsigned *dcellg,const word *codeg){
   if(DivideFull)cudiv::PreSortFull(Nptot,DomCellCode,dcellg,codeg,CellDomainMin,TUint3(Ncx,Ncy,Ncz),CellPart,SortPart,Log);
   else cudiv::PreSortFluid(Npf1,Npb1,DomCellCode,dcellg,codeg,CellDomainMin,TUint3(Ncx,Ncy,Ncz),CellPart,SortPart,Log);
-#ifdef DG_JCellDivGpu
-  tfloat4 *poscellh=new tfloat4[Np];
-  unsigned *num=new unsigned[Np];
-  unsigned *cellparth=new unsigned[Np];
-  cudaMemcpy(poscellh,poscellg,sizeof(float4)*Np,cudaMemcpyDeviceToHost);
-  for(unsigned p=0;p<Np;p++)num[p]=p;
-  cudaMemcpy(cellparth,CellPart,sizeof(unsigned)*(Np),cudaMemcpyDeviceToHost);
-//  unsigned nctot2=Nctot*2;
-  char cad[512];
-  for(unsigned p=0;p<Np;p++){
-    if(cellparth[p]>=Nctt){
-      sprintf(cad,"PreSort> Valor no valido de CellPart. cellpart[%u]=%u",p,cellparth[p]); Log->Print(cad);
-    }  
-    else if(p>=Npb&&cellparth[p]<BoxFluid){
-      sprintf(cad,"PreSort> Valor de fluida no valido para CellPart. cellpart[%u]=%u",p,cellparth[p]); Log->Print(cad);
-    }  
-  }
-  //JBuffer buf(1024*1024,1024*512);
-  //buf.InStr("POINTSDATA"); buf.InUint(Np); buf.InFloat3Vec(Np,posh);
-  //buf.InStr("CellPart:unsigned_int");      buf.InUintVec(Np,cellparth);
-  //buf.InStr("Num:unsigned_int");           buf.InUintVec(Np,num);
-  //buf.InStr("END"); 
-  //JFormatFiles2::PointsToVtk(DirOut+"_CellPart.vtk",&buf);
-
-  delete[] poscellh;
-  delete[] num;
-  delete[] cellparth;
-#endif
 }
 
 //==============================================================================
@@ -150,7 +108,6 @@ void JCellDivGpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   NpbOut=NpfOut=NpbOutIgnore=NpfOutIgnore=0;
   NpFinal=NpbFinal=0;
   NpfOutRhop=NpfOutMove=NpbIgnore=0;
-  //printf("---> Npb1:%u  Npf1:%u  Npb2:%u  Npf2:%u\n",Npb1,Npf1,Npb2,Npf2);
 
   //-Comprueba si hay memoria reservada y si es suficiente para Nptot.
   CheckMemoryNp(Nptot);
@@ -177,8 +134,6 @@ void JCellDivGpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
     BoundDivideOk=true; BoundDivideCellMin=CellDomainMin; BoundDivideCellMax=CellDomainMax;
   }
   else DivideFull=false;
-//  if(DivideFull)Log->PrintDbg("--> DivideFull=TRUE"); else Log->PrintDbg("--> DivideFull=FALSE");
-//  Log->PrintDbg(string("--> CellDomain:%s")+fun::Uint3RangeStr(CellDomainMin,CellDomainMax));
 
   //-Calcula CellPart[] y asigna valores consecutivos a SortPart[].
   TmgStart(timers,TMG_NlPreSort);
@@ -203,8 +158,6 @@ void JCellDivGpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   NpfOut=beginendcell[3]-beginendcell[2];
   NpbOutIgnore=beginendcell[5]-beginendcell[4];
   NpfOutIgnore=beginendcell[7]-beginendcell[6];
-  //printf("---> Nct:%u  BoxBoundOut:%u  SizeBeginEndCell:%u\n",Nct,BoxBoundOut,SizeBeginEndCell(Nct));
-  //printf("---> NpbIgnore:%u  NpbOut:%u  NpfOut:%u  NpfOutIgnore:%u\n",NpbIgnore,NpbOut,NpfOut,NpfOutIgnore);
   NpFinal=Nptot-NpbOut-NpfOut-NpbOutIgnore-NpfOutIgnore;
   NpbFinal=Npb1+Npb2-NpbOut-NpbOutIgnore;
 

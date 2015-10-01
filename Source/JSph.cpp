@@ -1274,30 +1274,6 @@ void JSph::SaveData(unsigned npok,const unsigned *idp,const tdouble3 *pos,const 
   ,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus)
 {
   const char met[]="SaveData";
-
-  //const unsigned DGpart=441;  //-Para Solidsp1.xml
-  //if(1 && DGpart<npok){
-  //  JSaveCsv sv(DirOut+(Cpu? "_ParticleCpu.csv": "_ParticleGpu.csv"),true);
-  //  sv.AddHead("Part;Time;Posz;Velz");
-  //  sv.AddValue(Part);
-  //  sv.AddValue(TimeStep);
-  //  sv.AddValue(pos[DGpart].z); sv.AddValue(vel[DGpart].z);
-  //  sv.AddEndl();
-  //  sv.SaveData();
-  //}
-  //const unsigned DGpart=441; //-Para Solidsp2.xml
-  //if(1 && DGpart+1<npok){
-  //  JSaveCsv sv(DirOut+(Cpu? "_ParticleCpu.csv": "_ParticleGpu.csv"),true);
-  //  sv.AddHead("Part;Time;Posz1;Posz2");
-  //  sv.AddValue(Part);
-  //  sv.AddValue(TimeStep);
-  //  double pz1=pos[DGpart].z,pz2=pos[DGpart+1].z;
-  //  if(idp[DGpart]!=DGpart)std::swap(pz1,pz2);
-  //  sv.AddValue(pz1); sv.AddValue(pz2);
-  //  sv.AddEndl();
-  //  sv.SaveData();
-  //}
-
   string suffixpartx=fun::PrintStr("_%04d",Part);
 
   //-Contabiliza nuevas particulas excluidas

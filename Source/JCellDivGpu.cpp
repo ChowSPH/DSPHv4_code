@@ -189,15 +189,6 @@ void JCellDivGpu::VisuBoundaryOut(unsigned p,unsigned id,tdouble3 pos,word code)
 }
 
 //==============================================================================
-// Devuelve coordenadas de celda a partir de una posicion.
-//==============================================================================
-//tuint3 JCellDivGpu::GetMapCell(const tfloat3 &pos)const{ pdtecell
-//  float dx=pos.x-MapPosMin.x,dy=pos.y-MapPosMin.y,dz=pos.z-MapPosMin.z;
-//  unsigned cx=unsigned(dx*OvScell),cy=unsigned(dy*OvScell),cz=unsigned(dz*OvScell);
-//  return(TUint3(cx,cy,cz));
-//}
-
-//==============================================================================
 // Calcula posiciones minimas y maximas del rango de particulas Bound indicado.
 // En code[] ya estan marcadas las particulas excluidas.
 //==============================================================================
@@ -213,7 +204,6 @@ void JCellDivGpu::CalcCellDomainBound(unsigned n,unsigned pini,unsigned n2,unsig
     cellmin=MinValues(cellmin,cmin);
     cellmax=MaxValues(cellmax,cmax);
   }
-  //Log->Printf("CalcDomainBound> cell:(%s)-(%s)",fun::Uint3Str(cellmin).c_str(),fun::Uint3Str(cellmax).c_str());
 }
 
 //==============================================================================
@@ -232,7 +222,6 @@ void JCellDivGpu::CalcCellDomainFluid(unsigned n,unsigned pini,unsigned n2,unsig
     cellmin=MinValues(cellmin,cmin);
     cellmax=MaxValues(cellmax,cmax);
   }
-  //Log->Printf("CalcDomainFluid> cell:(%s)-(%s)",fun::Uint3Str(cellmin).c_str(),fun::Uint3Str(cellmax).c_str());
 }
 
 //==============================================================================
@@ -250,20 +239,6 @@ int2 JCellDivGpu::CellBeginEnd(unsigned cell)const{
   cudaMemcpy(&v,BeginEndCell+cell,sizeof(int2),cudaMemcpyDeviceToHost);
   return(v);
 }
-
-//==============================================================================
-// Devuelve un nombre de fichero formado por los datos indicados.
-//==============================================================================
-/*std::string JCellDivGpu::GetFileName(std::string name,std::string ext,int num)const{
-  int r=Log->GetMpiRank();
-  if(r>=0)name=string("p")+fun::IntStr(r)+"_"+name;
-  if(num>=0){
-    char cad[64];
-    sprintf(cad,"%04d",num);
-    name=name+cad;
-  }
-  return(DirOut+name+ext);
-}*/
 
 //==============================================================================
 // Ordena arrays basicos segun SortPart. 
