@@ -147,10 +147,9 @@ void JCellDivGpu::CheckMemoryNp(unsigned npmin){
 //==============================================================================
 void JCellDivGpu::CheckMemoryNct(unsigned nctmin){
   if(SizeNct<nctmin){
-    unsigned OverMemoryCells=1;
     unsigned overnct=0;
     if(OverMemoryCells>0){
-      ullong nct=ullong(Ncx+1)*ullong(Ncy+1)*ullong(Ncz+1);
+      ullong nct=ullong(Ncx+OverMemoryCells)*ullong(Ncy+OverMemoryCells)*ullong(Ncz+OverMemoryCells);
       ullong nctt=SizeBeginEndCell(nct);
       if(nctt!=unsigned(nctt))RunException("CheckMemoryNct","The number of cells is too big.");
       overnct=unsigned(nct);

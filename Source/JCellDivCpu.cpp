@@ -166,10 +166,9 @@ void JCellDivCpu::CheckMemoryNp(unsigned npmin){
 //==============================================================================
 void JCellDivCpu::CheckMemoryNct(unsigned nctmin){
   if(SizeNct<nctmin){
-    unsigned OverMemoryCells=1;
     unsigned overnct=0;
     if(OverMemoryCells>0){
-      ullong nct=ullong(Ncx+1)*ullong(Ncy+1)*ullong(Ncz+1);
+      ullong nct=ullong(Ncx+OverMemoryCells)*ullong(Ncy+OverMemoryCells)*ullong(Ncz+OverMemoryCells);
       ullong nctt=SizeBeginCell(nct);
       if(nctt!=unsigned(nctt))RunException("CheckMemoryNct","The number of cells is too big.");
       overnct=unsigned(nct);
