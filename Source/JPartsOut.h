@@ -58,7 +58,7 @@ public:
   JPartsOut(unsigned sizeini=2000);
   ~JPartsOut();
   void Reset();
-  long long GetAllocMemory()const;
+  llong GetAllocMemory()const;
   void AddParticles(unsigned np,const unsigned* idp,const tdouble3* pos,const tfloat3* vel,const float* rhop,unsigned outrhop,unsigned outmove);
 
   unsigned GetSize()const{ return(Size); }

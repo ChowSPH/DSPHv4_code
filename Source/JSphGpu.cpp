@@ -145,9 +145,9 @@ void JSphGpu::AllocGpuMemoryFixed(){
     m=sizeof(double3)*FtCount;
     cudaMalloc((void**)&FtoCenterg,m);  MemGpuFixed+=m;
     m=sizeof(float3)*CaseNfloat;
-    cudaMalloc((void**)&FtoVelg,m); MemGpuFixed+=m;
+    cudaMalloc((void**)&FtoVelg,m);     MemGpuFixed+=m;
     m=sizeof(float3)*FtCount;
-    cudaMalloc((void**)&FtoOmegag,m); MemGpuFixed+=m;
+    cudaMalloc((void**)&FtoOmegag,m);   MemGpuFixed+=m;
   }
   if(UseDEM){ //(DEM)
     size_t m=sizeof(float4)*DemObjsSize;
@@ -389,7 +389,7 @@ llong JSphGpu::GetAllocMemoryCpu()const{
 // Devuelve la memoria reservada en gpu.
 //==============================================================================
 llong JSphGpu::GetAllocMemoryGpu()const{  
-  long long s=0;
+  llong s=0;
   //Reservada en AllocGpuMemoryParticles()
   s+=MemGpuParticles;
   //Reservada en AllocGpuMemoryFixed()
@@ -536,7 +536,6 @@ void JSphGpu::SelecDevice(int gpuid){
     Log->Print("[GPU Hardware]");
     if(gpuid<0)Hardware=fun::PrintStr("Gpu_%d?=\"%s\"",GpuSelect,GpuName.c_str());
     else Hardware=fun::PrintStr("Gpu_%d=\"%s\"",GpuSelect,GpuName.c_str());
-
     if(gpuid<0)Log->Printf("Device default: %d  \"%s\"",GpuSelect,GpuName.c_str());
     else Log->Printf("Device selected: %d  \"%s\"",GpuSelect,GpuName.c_str());
     Log->Printf("Compute capability: %.1f",float(GpuCompute)/10);

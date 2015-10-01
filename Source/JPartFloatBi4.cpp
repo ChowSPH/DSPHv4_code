@@ -81,8 +81,8 @@ void JPartFloatBi4Save::ResetPart(){
 //==============================================================================
 // Devuelve la memoria reservada.
 //==============================================================================
-long long JPartFloatBi4Save::GetAllocMemory()const{  
-  long long s=0;
+llong JPartFloatBi4Save::GetAllocMemory()const{  
+  llong s=0;
   s+=Data->GetAllocMemory();
   if(HeadMkbound)s=s+sizeof(word)    *FtCount;
   if(HeadBegin)  s=s+sizeof(unsigned)*FtCount;

@@ -215,8 +215,8 @@ void JArraysCpu::Reset(){
 //==============================================================================
 // Devuelve la cantidad de memoria reservada.
 //==============================================================================
-long long JArraysCpu::GetAllocMemoryCpu()const{ 
-  long long m=Arrays1b->GetAllocMemoryCpu();
+llong JArraysCpu::GetAllocMemoryCpu()const{ 
+  llong m=Arrays1b->GetAllocMemoryCpu();
   m+=Arrays2b->GetAllocMemoryCpu();
   m+=Arrays4b->GetAllocMemoryCpu();
   m+=Arrays8b->GetAllocMemoryCpu();

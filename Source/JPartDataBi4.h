@@ -39,6 +39,7 @@
 //# - Ahora el metodo SaveFileInfo() graba los datos generales al principio
 //#   del fichero. (12/01/2014)
 //# - Grabacion de datos propios de Splitting. (26/01/2014)
+//# - Remplaza long long por llong. (01-10-2015)
 //#############################################################################
 
 /// \file JPartDataBi4.h \brief Declares the class \ref JPartDataBi4.
@@ -90,7 +91,7 @@ class JPartDataBi4 : protected JObject
   void ResetData();
   void ResetPart();
 
-  long long GetAllocMemory()const;
+  llong GetAllocMemory()const;
   static std::string GetFileNamePart(unsigned cpart,unsigned piece=0,unsigned npiece=1);
   static std::string GetFileNameCase(const std::string &casename,unsigned piece=0,unsigned npiece=1);
   static std::string GetFileNameInfo(unsigned piece=0,unsigned npiece=1);

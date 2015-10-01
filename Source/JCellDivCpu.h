@@ -82,8 +82,8 @@ protected:
   tdouble3 *VSortDouble3;//-Para ordenar vectores tdouble3 (apunta a VSort).
   tsymatrix3f *VSortSymmatrix3f;//-Para ordenar vectores tsymatrix3f (apunta a VSort).
 
-  long long MemAllocNp;  //-Mermoria reservada para particulas.
-  long long MemAllocNct; //-Mermoria reservada para celdas.
+  llong MemAllocNp;  //-Mermoria reservada para particulas.
+  llong MemAllocNct; //-Mermoria reservada para celdas.
 
   unsigned Ndiv,NdivFull;
 

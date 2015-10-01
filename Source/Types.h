@@ -106,11 +106,11 @@ typedef struct{
 typedef struct{ //(DEM)
   float mass;          ///<Mass of the object.
   float massp;         ///<Mass of the particle of the floating object.
-  float young;               ///<Young Modulus of the floating object.
-  float poisson;             ///<Poisson coefficient of the floating object.
-  float kfric;               ///<Kinetic friction coefficient of the floating object.
+  float young;         ///<Young Modulus of the floating object.
+  float poisson;       ///<Poisson coefficient of the floating object.
+  float kfric;         ///<Kinetic friction coefficient of the floating object.
   float tau;           ///<Value of (1-poisson^2)/young
-  float restitu;         ///<Restitution Coefficient.
+  float restitu;       ///<Restitution Coefficient.
 }StDemData;
 
 ///Controls the output of information on the screen and/or log.

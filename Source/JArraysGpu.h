@@ -26,6 +26,7 @@
 //# - Se añadio tipos double de 24 bytes. (07/05/2013)
 //# - En SetArraySize() se libera toda la memoria antes de volver a reservar 
 //#   mas memoria. (23/12/2013)
+//# - Remplaza long long por llong. (01-10-2015)
 //#############################################################################
 
 #include "JObjectGpu.h"
@@ -65,7 +66,7 @@ public:
   void SetArraySize(unsigned size);
   unsigned GetArraySize()const{ return(ArraySize); }
 
-  long long GetAllocMemoryGpu()const{ return((long long)(Count)*ElementSize*ArraySize); };
+  llong GetAllocMemoryGpu()const{ return((llong)(Count)*ElementSize*ArraySize); };
 
   void* Reserve();
   void Free(void *pointer);
@@ -96,7 +97,7 @@ public:
   JArraysGpu();
   ~JArraysGpu();
   void Reset();
-  long long GetAllocMemoryGpu()const;
+  llong GetAllocMemoryGpu()const;
   
   void SetArrayCount(TpArraySize tsize,unsigned count){ GetArrays(tsize)->SetArrayCount(count); }
   void AddArrayCount(TpArraySize tsize,unsigned count=1){ SetArrayCount(tsize,GetArrayCount(tsize)+count); }

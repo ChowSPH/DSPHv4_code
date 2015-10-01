@@ -171,7 +171,7 @@ protected:
   double DtIni;       //-Dt inicial 
   double DtMin;       //-Dt minimo permitido (si el calculado es menor se sustituye por DtMin).
   float CoefDtMin;    //-Coefficient to calculate minimum time step. dtmin=coefdtmin*h/speedsound (def=0.03)
-  bool DtAllParticles; //-Velocity of particles used to calculate DT. 1:All, 0:Only fluid (def=0)
+  bool DtAllParticles; //-Velocity of particles used to calculate DT. 1:All, 0:Only fluid/floating (def=0)
   JSphDtFixed* DtFixed;
   JSaveDt* SaveDt;
 
@@ -282,8 +282,8 @@ protected:
   double PartDtMin,PartDtMax; //-Valores minimo y maximo de dt en el PART actual.
 
   //-Valores maximos (o casi) alcanzados durante la simulacion.
-  long long MaxMemoryCpu;  //-Cantidad de memoria Cpu reservada.
-  long long MaxMemoryGpu;  //-Cantidad de memoria Gpu reservada.
+  llong MaxMemoryCpu;  //-Cantidad de memoria Cpu reservada.
+  llong MaxMemoryGpu;  //-Cantidad de memoria Gpu reservada.
   unsigned MaxParticles;  //-Numero maximo de particulas.
   unsigned MaxCells;      //-Numero maximo de celdas.
 
@@ -307,7 +307,7 @@ protected:
   
 
   void AllocMemoryFloating(unsigned ftcount);
-  long long GetAllocMemoryCpu()const;
+  llong GetAllocMemoryCpu()const;
 
   void LoadConfig(const JCfgRun *cfg);
   void LoadCaseConfig();
@@ -349,7 +349,7 @@ protected:
   void CalcFloatingRadius(unsigned np,const tdouble3 *pos,const unsigned *idp);
   tdouble3 UpdatePeriodicPos(tdouble3 ps)const;
 
-  void PrintSizeNp(unsigned np,long long size)const;
+  void PrintSizeNp(unsigned np,llong size)const;
   void PrintHeadPart();
 
   void ConfigSaveData(unsigned piece,unsigned pieces,std::string div);

@@ -28,6 +28,7 @@
 //# =========
 //# - Implementacion. (04-12-2014)
 //# - Implementacion independiente de StFloatingData en Types.h. (11-05-2015)
+//# - Remplaza long long por llong. (01-10-2015)
 //#############################################################################
 
 /// \file JPartFloatBi4.h \brief Declares the class \ref JPartFloatBi4Save and class \ref JPartFloatBi4Load.
@@ -87,7 +88,7 @@ class JPartFloatBi4Save : protected JObject
   void ResetData();
   void ResetPart();
 
-  long long GetAllocMemory()const;
+  llong GetAllocMemory()const;
   static std::string GetFileNamePart();
 
   //Grabacion de datos:

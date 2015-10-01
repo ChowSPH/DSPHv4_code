@@ -27,6 +27,7 @@
 //# Cambios:
 //# =========
 //# - Implementacion. (23/11/2013 <-> 23/11/2013)
+//# - Remplaza long long por llong. (01-10-2015)
 //#############################################################################
 
 /// \file JPartOutBi4Save.h \brief Declares the class \ref JPartOutBi4Save.
@@ -82,7 +83,7 @@ class JPartOutBi4Save : protected JObject
   void ResetData();
   void ResetPart();
 
-  long long GetAllocMemory()const;
+  llong GetAllocMemory()const;
   static std::string GetFileNamePart(unsigned block,unsigned piece=0,unsigned npiece=1);
 
   //Grabacion de datos:

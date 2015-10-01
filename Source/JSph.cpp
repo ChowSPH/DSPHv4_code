@@ -253,9 +253,9 @@ void JSph::AllocMemoryFloating(unsigned ftcount){
 //==============================================================================
 /// Returns the allocated memory in CPU.
 //==============================================================================
-long long JSph::GetAllocMemoryCpu()const{  
+llong JSph::GetAllocMemoryCpu()const{  
   //-Allocated in AllocMemoryCase().
-  long long s=0;
+  llong s=0;
   //-Allocated in AllocMemoryFloating().
   if(FtObjs)s+=sizeof(StFloatingData)*FtCount;
   //-Allocated in other objects.
@@ -497,7 +497,6 @@ void JSph::LoadCaseConfig(){
     const JSpacePartBlock &block=parts.GetBlock(c);
     if(block.Type==PT_Moving){
       if(MotionObjCount>=255)RunException(met,"The number of mobile objects exceeds the maximum.");
-      //printf("block[%2d]=%d -> %d\n",c,block.GetBegin(),block.GetCount());
       MotionObjBegin[MotionObjCount]=block.GetBegin();
       MotionObjBegin[MotionObjCount+1]=MotionObjBegin[MotionObjCount]+block.GetCount();
       if(WaveGen)WaveGen->ConfigPaddle(block.GetMkType(),MotionObjCount,block.GetBegin(),block.GetCount());
@@ -542,12 +541,9 @@ void JSph::LoadCaseConfig(){
       const JSpacePartBlock &block=parts.GetBlock(c);
       if(block.Type!=PT_Fluid){
         unsigned cmk=0;
-        //Log->Printf("___> Busca:%u",unsigned(block.GetMk()));
         for(;cmk<MkListBound && MkList[cmk].mk!=unsigned(block.GetMk());cmk++);
-        //Log->Printf("___> Busca res:%u",cmk);
         if(cmk>=MkListBound)RunException(met,"Error loading DEM objects.");
         const unsigned tav=CODE_GetTypeAndValue(MkList[c].code);
-        //Log->Printf("___> tav[%u]:%u",cmk,tav);
         if(block.Type==PT_Floating){
           const JSpacePartBlock_Floating &fblock=(const JSpacePartBlock_Floating &)block;
           DemObjs[tav].mass=(float)fblock.GetMassbody();
@@ -590,12 +586,6 @@ void JSph::LoadMkInfo(const JSpaceParts *parts){
   MkListFloat=parts->CountBlocks(PT_Floating);
   MkListFluid=parts->CountBlocks(PT_Fluid);
   MkListBound=MkListFixed+MkListMoving+MkListFloat;
-  //Log->Printf("__MkInfo> MkListSize  :%u",MkListSize);
-  //Log->Printf("__MkInfo> MkListFixed :%u",MkListFixed);
-  //Log->Printf("__MkInfo> MkListMoving:%u",MkListMoving);
-  //Log->Printf("__MkInfo> MkListFloat :%u",MkListFloat);
-  //Log->Printf("__MkInfo> MkListFluid :%u",MkListFluid);
-  //Log->Printf("__MkInfo> MkListBound :%u",MkListBound);
   //-Allocates memory.
   MkList=new StMkInfo[MkListSize];
   //-Gets info for each block of particles.
@@ -611,7 +601,6 @@ void JSph::LoadMkInfo(const JSpaceParts *parts){
       case PT_Floating:  MkList[c].code=CodeSetType(0,PART_BoundFt,c-MkListFixed-MkListMoving);  break;
       case PT_Fluid:     MkList[c].code=CodeSetType(0,PART_Fluid,c-MkListBound);                 break;
     }
-    //Log->Printf("__MkInfo> [%u] mk: %2u(%2u) beging:%u count:%u",c,MkList[c].mk,MkList[c].mktype,MkList[c].begin,MkList[c].count);
   }
 }
 
@@ -817,7 +806,6 @@ void JSph::VisuConfig()const{
     Log->Print(fun::VarStr("RhopOutMin",RhopOutMin));
     Log->Print(fun::VarStr("RhopOutMax",RhopOutMax));
   }
-  //if(MapMove!=TDouble3(0))Log->Print(fun::VarStr("MapMove",MapMove));
   if(CteB==0)RunException(met,"Constant \'b\' can not be zero.\n\'b\' is zero when fluid height is zero (or fluid particles were not created)");
 }
 
@@ -1119,7 +1107,7 @@ tdouble3 JSph::UpdatePeriodicPos(tdouble3 ps)const{
 // Muestra un mensaje con la memoria reservada para los datos basicos de las
 // particulas.
 //==============================================================================
-void JSph::PrintSizeNp(unsigned np,long long size)const{
+void JSph::PrintSizeNp(unsigned np,llong size)const{
   Log->Printf("**Requested %s memory for %u particles: %.1f MB.",(Cpu? "cpu": "gpu"),np,double(size)/(1024*1024));
 }
 

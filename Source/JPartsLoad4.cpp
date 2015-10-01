@@ -78,8 +78,8 @@ void JPartsLoad4::AllocMemory(unsigned count){
 //==============================================================================
 // Devuelve la memoria reservada en cpu.
 //==============================================================================
-long long JPartsLoad4::GetAllocMemory()const{  
-  long long s=0;
+llong JPartsLoad4::GetAllocMemory()const{  
+  llong s=0;
   //Reservada en AllocMemory()
   if(Idp)s+=sizeof(unsigned)*Count;
   if(Pos)s+=sizeof(tdouble3)*Count;

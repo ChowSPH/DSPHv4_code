@@ -76,8 +76,8 @@ void JPartsOut::AllocMemory(unsigned size,bool reset){
 //==============================================================================
 /// Returns the allocated memory in CPU.
 //==============================================================================
-long long JPartsOut::GetAllocMemory()const{  
-  long long s=0;
+llong JPartsOut::GetAllocMemory()const{  
+  llong s=0;
   //Reservada en AllocMemory()
   if(Idp)s+=sizeof(unsigned)*Size;
   if(Pos)s+=sizeof(tdouble3)*Size;

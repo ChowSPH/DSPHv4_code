@@ -30,6 +30,7 @@
 //# - Carga particulas excluidas de BI2 y BI3. (05/03/2013)
 //# - Arranque de simulaciones iniciadas a partir de BI2 y BI3. (05/03/2013)
 //# - Las funcion GetAllocMemory() devuelve long long. (05/04/2013)
+//# - Remplaza long long por llong. (01-10-2015)
 //#############################################################################
 
 #include "TypesDef.h"
@@ -110,7 +111,7 @@ public:
   tdouble3 GetCasePosMin()const{ return(CasePosMin); }
   tdouble3 GetCasePosMax()const{ return(CasePosMax); }
 
-  long long GetAllocMemory()const;
+  llong GetAllocMemory()const;
 };
 
 #endif

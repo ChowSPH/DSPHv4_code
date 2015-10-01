@@ -22,6 +22,7 @@
 //# Cambios:
 //# =========
 //# - Codigo creado a partir de JArraysGpu para usar con memoria CPU. (10/03/2014)
+//# - Remplaza long long por llong. (01-10-2015)
 //#############################################################################
 
 #include "JObject.h"
@@ -64,7 +65,7 @@ public:
   void SetArraySize(unsigned size);
   unsigned GetArraySize()const{ return(ArraySize); }
 
-  long long GetAllocMemoryCpu()const{ return((long long)(Count)*ElementSize*ArraySize); };
+  llong GetAllocMemoryCpu()const{ return((llong)(Count)*ElementSize*ArraySize); };
 
   void* Reserve();
   void Free(void *pointer);
@@ -95,7 +96,7 @@ public:
   JArraysCpu();
   ~JArraysCpu();
   void Reset();
-  long long GetAllocMemoryCpu()const;
+  llong GetAllocMemoryCpu()const;
   
   void SetArrayCount(TpArraySize tsize,unsigned count){ GetArrays(tsize)->SetArrayCount(count); }
   void AddArrayCount(TpArraySize tsize,unsigned count=1){ SetArrayCount(tsize,GetArrayCount(tsize)+count); }

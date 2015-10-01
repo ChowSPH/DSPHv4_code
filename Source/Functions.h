@@ -46,6 +46,7 @@
 //# - Nuevas funcion StrTrimRepeated(). (08/05/2014)
 //# - Nuevas funcion StrRepeat(). (03/10/2014)
 //# - Nuevas funciones GetFirstValueXXX(). (15/12/2014)
+//# - Remplaza long long por llong. (01-10-2015)
 //#############################################################################
 
 /// \file Functions.h \brief Declares basic/general functions for the entire application.
@@ -156,10 +157,10 @@ bool FileMask(std::string text,std::string mask);
 
 typedef enum{ BigEndian=1,LittleEndian=0 }TpByteOrder;
 TpByteOrder GetByteOrder();
-void ReverseByteOrder(long long *data,int count,long long *result);
+void ReverseByteOrder(llong *data,int count,llong *result);
 void ReverseByteOrder(int *data,int count,int *result);
 void ReverseByteOrder(short *data,int count,short *result);
-inline void ReverseByteOrder(long long *data,int count){ ReverseByteOrder(data,count,data); }
+inline void ReverseByteOrder(llong *data,int count){ ReverseByteOrder(data,count,data); }
 inline void ReverseByteOrder(int *data,int count){ ReverseByteOrder(data,count,data); }
 inline void ReverseByteOrder(short *data,int count){ ReverseByteOrder(data,count,data); }
 

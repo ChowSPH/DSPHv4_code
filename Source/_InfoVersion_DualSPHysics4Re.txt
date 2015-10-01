@@ -297,12 +297,26 @@
   - Review timers. (v4.0.001 / 30-09-2015)
   - Error solved when DT_ALLPARTICLES was disabled. (v4.0.002 / 30-09-2015)
   - Now DT_ALLPARTICLES is an option in XML file. (v4.0.002 / 30-09-2015)
+  - Replaces long long by llong to improve uniformity of the code. (v4.0.003 / 01-10-2015)
   
   
   
 
+  
+  
+Remaining issues:
+================== 
+- Use of SDAT_info?
+- TDeltaSph, when is DynamicExt used?
+- Is FtPause ok?
+- Example with DtFixed.
+- Test periodic one-axis and two-axis.
+- Examples with DomainLimits
+- MkList, when is it used? 
+- Remove references to MapMove.
+
 - Check timers for Shifting.
-- Check timers for Ren correction.
+- Check timers for Ren correction or remove Ren correction...
 - Remove RunFloating_Old().
 - Add code for external forces by Stephen.
 - Configure project with debug.

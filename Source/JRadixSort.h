@@ -31,6 +31,7 @@
 //# - Se corrigio error cuando no se indicaba el numero de hilos correcto. Ahora
 //#   se indica si se quiere usoar OMP o una version secuencial. (30-12-2013)
 //# - Nuevo metodo MakeIndex(). (30-12-2013)
+//# - Remplaza unsigned long long por ullong. (01-10-2015)
 //#############################################################################
 
 #include "JObject.h"
@@ -48,7 +49,7 @@ private:
 
   bool Type32;
   unsigned *InitData32;
-  unsigned long long *InitData64;
+  ullong *InitData64;
 
   unsigned *Index;
   unsigned *PrevIndex;
@@ -65,9 +66,9 @@ private:
   unsigned Nkeys;
 
   unsigned *Data32;
-  unsigned long long *Data64;
+  ullong *Data64;
   unsigned *PrevData32;
-  unsigned long long *PrevData64;
+  ullong *PrevData64;
 
   unsigned *BeginKeys;
 
@@ -89,23 +90,23 @@ public:
   void Reset();
 
   void Sort(bool makeindex,unsigned size,unsigned *data,unsigned nbits);
-  void Sort(bool makeindex,unsigned size,unsigned long long *data,unsigned nbits);
+  void Sort(bool makeindex,unsigned size,ullong *data,unsigned nbits);
 
   void Sort(bool makeindex,unsigned size,unsigned *data){ Sort(makeindex,size,data,CalcNbits(size,data)); }
-  void Sort(bool makeindex,unsigned size,unsigned long long *data){ Sort(makeindex,size,data,CalcNbits(size,data)); }
+  void Sort(bool makeindex,unsigned size,ullong *data){ Sort(makeindex,size,data,CalcNbits(size,data)); }
 
   void MakeIndex(unsigned size,const unsigned *data){ MakeIndex(size,data,CalcNbits(size,data)); }
-  void MakeIndex(unsigned size,const unsigned long long *data){ MakeIndex(size,data,CalcNbits(size,data)); }
+  void MakeIndex(unsigned size,const ullong *data){ MakeIndex(size,data,CalcNbits(size,data)); }
 
   void MakeIndex(unsigned size,const unsigned *data,unsigned nbits);
-  void MakeIndex(unsigned size,const unsigned long long *data,unsigned nbits);
+  void MakeIndex(unsigned size,const ullong *data,unsigned nbits);
 
 
   unsigned BitsSize(unsigned v)const;
-  unsigned BitsSize(unsigned long long v)const;
+  unsigned BitsSize(ullong v)const;
 
   unsigned CalcNbits(unsigned size,const unsigned *data)const;
-  unsigned CalcNbits(unsigned size,const unsigned long long *data)const;
+  unsigned CalcNbits(unsigned size,const ullong *data)const;
 
   void SortData(unsigned size,const byte *data,byte *result);
   void SortData(unsigned size,const unsigned *data,unsigned *result);

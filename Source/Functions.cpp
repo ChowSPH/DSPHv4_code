@@ -628,7 +628,7 @@ TpByteOrder GetByteOrder(){
 //==============================================================================
 /// Reverses the order of the bytes to exchange BigEndian and LittleEndian.
 //==============================================================================
-void ReverseByteOrder(long long *data,int count,long long *result){
+void ReverseByteOrder(llong *data,int count,llong *result){
   for(int c=0;c<count;c++){
     unsigned int v=((unsigned int*)data)[c*2+1];
     unsigned int v2=((unsigned int*)data)[c*2];

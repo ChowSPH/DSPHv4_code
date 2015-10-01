@@ -81,8 +81,8 @@ void JPartDataBi4::ResetPart(){
 //==============================================================================
 // Devuelve la memoria reservada.
 //==============================================================================
-long long JPartDataBi4::GetAllocMemory()const{  
-  long long s=0;
+llong JPartDataBi4::GetAllocMemory()const{  
+  llong s=0;
   s+=Data->GetAllocMemory();
   return(s);
 }

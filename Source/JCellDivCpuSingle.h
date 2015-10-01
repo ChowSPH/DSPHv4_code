@@ -57,7 +57,6 @@ public:
   //void ConfigInit(TpCellMode cellmode,unsigned np,unsigned npb);
   //void Divide(bool boundchanged,const unsigned* idp,const tdouble3* pos,const unsigned *cell,const word *code,TimersCpu timers);
 
-  //long long GetAllocMemory()const{ return(JCellDivCpu::GetAllocMemory()); }
 
   //void DgSaveCsvBeginCell(std::string filename,int numfile);
 };

@@ -106,10 +106,7 @@ void JSphGpuSingle::LoadConfig(JCfgRun *cfg){
   PtxasFile=cfg->PtxasFile;
   //-Carga configuracion basica general
   JSph::LoadConfig(cfg);
-  //-Carga configuracion especial
-  if(!fun::FileExists(FileXml))RunException(met,"Case configuration was not found.",FileXml);
-  JXml xml; xml.LoadFile(FileXml);
-
+  //-Checks compatibility of selected options.
   if(RenCorrection && UseDEM)RunException(met,"Ren correction is not implemented with Floatings-DEM.");
   Log->Print("**Special case configuration is loaded");
 }
@@ -128,12 +125,10 @@ void JSphGpuSingle::LoadCaseParticles(){
   if(Simulate2D&&PeriY)RunException("LoadCaseParticles","Can not use periodic conditions in Y with 2D simulations");
   CasePosMin=PartsLoaded->GetCasePosMin();
   CasePosMax=PartsLoaded->GetCasePosMax();
-  //Log->Print(string("-->CasePos(file)=")+fun::Double3gRangeStr(CasePosMin,CasePosMax));
 
   //-Calcula limites reales de la simulacion.
   if(PartsLoaded->MapSizeLoaded())PartsLoaded->GetMapSize(MapRealPosMin,MapRealPosMax);
   else{
-    //sprintf(Cad,"-->MapPos=(%f,%f,%f)-(%f,%f,%f)",Map_PosMin.x,Map_PosMin.y,Map_PosMin.z,Map_PosMax.x,Map_PosMax.y,Map_PosMax.z); Log->Print(Cad);
     PartsLoaded->CalculeLimits(double(H)*BORDER_MAP,Dp/2.,PeriX,PeriY,PeriZ,MapRealPosMin,MapRealPosMax);
     ResizeMapLimits();
   }
@@ -142,13 +137,9 @@ void JSphGpuSingle::LoadCaseParticles(){
     PartBeginTotalNp=PartsLoaded->GetPartBeginTotalNp();
   }
   Log->Print(string("MapRealPos(final)=")+fun::Double3gRangeStr(MapRealPosMin,MapRealPosMax));
-
-  //if(MapMove!=TDouble3(0)){
-  //  MapRealPosMin=MapRealPosMin+MapMove; MapRealPosMax=MapRealPosMax+MapMove;
-  //  Log->Print(string("MapRealPos(moved)=")+fun::Double3gRangeStr(MapRealPosMin,MapRealPosMax));
-  //}
   MapRealSize=MapRealPosMax-MapRealPosMin;
   Log->Print("**Initial state of particles is loaded");
+
   //-Configura limites de ejes periodicos
   if(PeriX)PeriXinc.x=-MapRealSize.x;
   if(PeriY)PeriYinc.y=-MapRealSize.y;
@@ -167,7 +158,6 @@ void JSphGpuSingle::LoadCaseParticles(){
 //==============================================================================
 void JSphGpuSingle::ConfigDomain(){
   const char* met="ConfigDomain";
-  //if(CaseNp!=PartsLoaded->GetCount())RunException(met,"The number of particles is invalid.");
   //-Calcula numero de particulas.
   Np=PartsLoaded->GetCount(); Npb=CaseNpb; NpbOk=Npb;
   //-Reserva memoria fija para moving y floating.

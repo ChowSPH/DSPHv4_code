@@ -175,8 +175,8 @@ void JArraysGpu::Reset(){
 //==============================================================================
 // Devuelve la cantidad de memoria reservada.
 //==============================================================================
-long long JArraysGpu::GetAllocMemoryGpu()const{ 
-  long long m=Arrays1b->GetAllocMemoryGpu();
+llong JArraysGpu::GetAllocMemoryGpu()const{ 
+  llong m=Arrays1b->GetAllocMemoryGpu();
   m+=Arrays2b->GetAllocMemoryGpu();
   m+=Arrays4b->GetAllocMemoryGpu();
   m+=Arrays8b->GetAllocMemoryGpu();
