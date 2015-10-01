@@ -269,7 +269,8 @@ inline tfloat3 OrderCodeValue(TpCellOrder order,const tfloat3 &v){
     case ORDER_ZYX:   return(ReOrderZYX(v));
   }
   return(v);
-} 
+}
+
 ///Devuelve valor tfloat3 en el orden original.
 inline tfloat3 OrderDecodeValue(TpCellOrder order,const tfloat3 &v){ return(OrderCodeValue(GetDecodeOrder(order),v)); }
 
@@ -283,7 +284,8 @@ inline tdouble3 OrderCodeValue(TpCellOrder order,const tdouble3 &v){
     case ORDER_ZYX:   return(ReOrderZYX(v));
   }
   return(v);
-} 
+}
+
 ///Devuelve valor tdouble3 en el orden original.
 inline tdouble3 OrderDecodeValue(TpCellOrder order,const tdouble3 &v){ return(OrderCodeValue(GetDecodeOrder(order),v)); }
 
@@ -297,7 +299,8 @@ inline tuint3 OrderCodeValue(TpCellOrder order,const tuint3 &v){
     case ORDER_ZYX:   return(ReOrderZYX(v));
   }
   return(v);
-} 
+}
+
 ///Devuelve valor tuint3 en el orden original.
 inline tuint3 OrderDecodeValue(TpCellOrder order,const tuint3 &v){ return(OrderCodeValue(GetDecodeOrder(order),v)); }
 

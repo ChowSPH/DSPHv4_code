@@ -82,12 +82,11 @@ unsigned JSphDtFixed::GetAllocMemory()const{
 void JSphDtFixed::LoadFile(std::string file){
   const char met[]="LoadFile";
   Reset();
-  //printf("---> LoadFile> [%s]\n",file.c_str());
   ifstream pf;
   pf.open(file.c_str());
   if(pf){
     pf.seekg(0,ios::end);
-    unsigned len=(unsigned)pf.tellg();   //printf("FileSize: %u\n",len);
+    unsigned len=(unsigned)pf.tellg();
     pf.seekg(0,ios::beg);
     Resize(SIZEINITIAL);
     Count=0;
@@ -98,11 +97,9 @@ void JSphDtFixed::LoadFile(std::string file){
       if(!pf.fail()){
         if(Count>=Size){
           unsigned newsize=unsigned(double(len)/double(pf.tellg())*1.05*(Count+1))+100;
-          //printf("---> Size: %u -> %u   tellg: %u / %u\n",Size,newsize,unsigned(pf.tellg()),len);
           Resize(newsize);
         } 
         Times[Count]=time; Values[Count]=value;
-        //printf("[%u]>  t:%f  v:%f\n",Count,time,value);
         Count++;
       }
     }
@@ -137,7 +134,6 @@ double JSphDtFixed::GetDt(double timestep,double dtvar){
   }
   double dterror=ret-dtvar;
   if(DtError<dterror)DtError=dterror;
-  //printf("---> DtFixed:%f  DtVar:%f  DtError:%f\n",ret,dtvar,DtError);
   return(ret);
 }
 

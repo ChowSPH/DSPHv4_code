@@ -351,7 +351,6 @@ void JSph::LoadConfig(const JCfgRun *cfg){
   }
   RhopOut=(RhopOutMin<RhopOutMax);
   if(!RhopOut){ RhopOutMin=-FLT_MAX; RhopOutMax=FLT_MAX; }
-  //MapMove=cfg->MapMove;
 }
 
 //==============================================================================
@@ -860,7 +859,6 @@ void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* 
     OrderCodeData(CellOrder,np,velrhop);
     //-Modifica otras constantes.
     Gravity=OrderCodeValue(CellOrder,Gravity);
-    //MapMove=OrderCodeValue(CellOrder,MapMove);
     MapRealPosMin=OrderCodeValue(CellOrder,MapRealPosMin);
     MapRealPosMax=OrderCodeValue(CellOrder,MapRealPosMax);
     MapRealSize=OrderCodeValue(CellOrder,MapRealSize);
@@ -899,10 +897,9 @@ void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* 
 }
 
 //==============================================================================
-// Convierte pos[] y vel[] al orden dimensional original y sin MapMove.
+// Convierte pos[] y vel[] al orden dimensional original.
 //==============================================================================
 void JSph::DecodeCellOrder(unsigned np,tdouble3 *pos,tfloat3 *vel)const{
-  //if(MapMove!=TDouble3(0))for(unsigned p=0;p<np;p++)pos[p]=pos[p]-MapMove;
   if(CellOrder!=ORDER_XYZ){
     OrderDecodeData(CellOrder,np,pos);
     OrderDecodeData(CellOrder,np,vel);

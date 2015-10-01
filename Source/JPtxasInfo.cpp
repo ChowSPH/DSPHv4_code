@@ -27,6 +27,9 @@ using std::ifstream;
 using std::ofstream;
 using std::endl;
 
+//##############################################################################
+//# JPtxasInfoKer
+//##############################################################################
 //==============================================================================
 /// Constructor.
 //==============================================================================
@@ -34,6 +37,9 @@ JPtxasInfoKer::JPtxasInfoKer(){
   ClassName="JPtxasInfoKer";
   Reset();
 }
+
+//==============================================================================
+/// Constructor.
 //==============================================================================
 JPtxasInfoKer::JPtxasInfoKer(const JPtxasInfoKer &ker){
   ClassName="JPtxasInfoKer";
@@ -155,10 +161,9 @@ void JPtxasInfoKer::Print()const{
   for(unsigned c=0;c<TemplateArgs.size();c++)printf("  TemplateArgs[%u]=[%s]:[%s]\n",c,TemplateArgs[c]->type.c_str(),TemplateArgs[c]->value.c_str());
 }
 
-//==============================================================================
 //##############################################################################
-//==============================================================================
-
+//# JPtxasInfo
+//##############################################################################
 //==============================================================================
 /// Constructor.
 //==============================================================================
@@ -300,7 +305,6 @@ void JPtxasInfo::LoadFile(const std::string &file){
       else if(pos<0 && int(line.find(" bytes stack frame"))>=0){
         //-Obtains stack frame of kernel.
         int pos2=int(line.find(" bytes stack frame")); 
-        //printf("------------> [%s]\n",line.c_str());
         string tx=fun::StrTrim(line.substr(0,pos2));
         stackframe=atoi(tx.c_str());
       }
@@ -412,36 +416,57 @@ int JPtxasInfo::GetKernelIdx(const std::string &kername)const{
   }
   return(n!=1? -1: idx);
 }
+
+//==============================================================================
+/// Returns the number of requested kernel (-1 it was not found).
 //==============================================================================
 int JPtxasInfo::GetKernelIdx(const std::string &kername,unsigned v1)const{
   std::string kname=kername+fun::PrintStr("_%u",v1);
   return(GetKernelIdx(kname));
 }
+
+//==============================================================================
+/// Returns the number of requested kernel (-1 it was not found).
 //==============================================================================
 int JPtxasInfo::GetKernelIdx(const std::string &kername,unsigned v1,unsigned v2)const{
   std::string kname=kername+fun::PrintStr("_%u_%u",v1,v2);
   return(GetKernelIdx(kname));
 }
+
+//==============================================================================
+/// Returns the number of requested kernel (-1 it was not found).
 //==============================================================================
 int JPtxasInfo::GetKernelIdx(const std::string &kername,unsigned v1,unsigned v2,unsigned v3)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u",v1,v2,v3);
   return(GetKernelIdx(kname));
 }
+
+//==============================================================================
+/// Returns the number of requested kernel (-1 it was not found).
 //==============================================================================
 int JPtxasInfo::GetKernelIdx(const std::string &kername,unsigned v1,unsigned v2,unsigned v3,unsigned v4)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u_%u",v1,v2,v3,v4);
   return(GetKernelIdx(kname));
 }
+
+//==============================================================================
+/// Returns the number of requested kernel (-1 it was not found).
 //==============================================================================
 int JPtxasInfo::GetKernelIdx(const std::string &kername,unsigned v1,unsigned v2,unsigned v3,unsigned v4,unsigned v5)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u_%u_%u",v1,v2,v3,v4,v5);
   return(GetKernelIdx(kname));
 }
+
+//==============================================================================
+/// Returns the number of requested kernel (-1 it was not found).
 //==============================================================================
 int JPtxasInfo::GetKernelIdx(const std::string &kername,unsigned v1,unsigned v2,unsigned v3,unsigned v4,unsigned v5,unsigned v6)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u_%u_%u_%u",v1,v2,v3,v4,v5,v6);
   return(GetKernelIdx(kname));
 }
+
+//==============================================================================
+/// Returns the number of requested kernel (-1 it was not found).
 //==============================================================================
 int JPtxasInfo::GetKernelIdx(const std::string &kername,unsigned v1,unsigned v2,unsigned v3,unsigned v4,unsigned v5,unsigned v6,unsigned v7)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u_%u_%u_%u_%u",v1,v2,v3,v4,v5,v6,v7);
@@ -484,36 +509,57 @@ tuint2 JPtxasInfo::GetData(const std::string &kername,unsigned sm)const{
   }
   return(n!=1? TUint2(0): ret);
 }
+
+//==============================================================================
+/// Returns the data of the requested kernel.
 //==============================================================================
 tuint2 JPtxasInfo::GetData(const std::string &kername,unsigned sm,unsigned v1)const{
   std::string kname=kername+fun::PrintStr("_%u",v1);
   return(GetData(kname,sm));
 }
+
+//==============================================================================
+/// Returns the data of the requested kernel.
 //==============================================================================
 tuint2 JPtxasInfo::GetData(const std::string &kername,unsigned sm,unsigned v1,unsigned v2)const{
   std::string kname=kername+fun::PrintStr("_%u_%u",v1,v2);
   return(GetData(kname,sm));
 }
+
+//==============================================================================
+/// Returns the data of the requested kernel.
 //==============================================================================
 tuint2 JPtxasInfo::GetData(const std::string &kername,unsigned sm,unsigned v1,unsigned v2,unsigned v3)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u",v1,v2,v3);
   return(GetData(kname,sm));
 }
+
+//==============================================================================
+/// Returns the data of the requested kernel.
 //==============================================================================
 tuint2 JPtxasInfo::GetData(const std::string &kername,unsigned sm,unsigned v1,unsigned v2,unsigned v3,unsigned v4)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u_%u",v1,v2,v3,v4);
   return(GetData(kname,sm));
 }
+
+//==============================================================================
+/// Returns the data of the requested kernel.
 //==============================================================================
 tuint2 JPtxasInfo::GetData(const std::string &kername,unsigned sm,unsigned v1,unsigned v2,unsigned v3,unsigned v4,unsigned v5)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u_%u_%u",v1,v2,v3,v4,v5);
   return(GetData(kname,sm));
 }
+
+//==============================================================================
+/// Returns the data of the requested kernel.
 //==============================================================================
 tuint2 JPtxasInfo::GetData(const std::string &kername,unsigned sm,unsigned v1,unsigned v2,unsigned v3,unsigned v4,unsigned v5,unsigned v6)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u_%u_%u_%u",v1,v2,v3,v4,v5,v6);
   return(GetData(kname,sm));
 }
+
+//==============================================================================
+/// Returns the data of the requested kernel.
 //==============================================================================
 tuint2 JPtxasInfo::GetData(const std::string &kername,unsigned sm,unsigned v1,unsigned v2,unsigned v3,unsigned v4,unsigned v5,unsigned v6,unsigned v7)const{
   std::string kname=kername+fun::PrintStr("_%u_%u_%u_%u_%u_%u_%u",v1,v2,v3,v4,v5,v6,v7);

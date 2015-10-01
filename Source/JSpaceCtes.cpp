@@ -99,7 +99,6 @@ void JSpaceCtes::ReadXmlDef(JXml *sxml,TiXmlElement* node){
   double chdp=sxml->ReadElementDouble(node,"coefh","hdp",true,0);
   if(!ch && !chdp)ch=sxml->ReadElementDouble(node,"coefh","value");
   SetCoefH(ch); SetCoefHdp(chdp);
-  //printf("----------> ch:%f chdp:%f coefh:%f coefhdp:%f\n",ch,chdp,GetCoefH(),GetCoefHdp());
   SetGamma(sxml->ReadElementDouble(node,"gamma","value"));
   SetRhop0(sxml->ReadElementDouble(node,"rhop0","value"));
   EpsDefined=sxml->ExistsElement(node,"eps");
@@ -139,7 +138,6 @@ void JSpaceCtes::WriteXmlDef(JXml *sxml,TiXmlElement* node)const{
   else JXml::AddAttribute(JXml::AddElementAttrib(node,"coefh","value",GetCoefH()),"comment","Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
   JXml::AddAttribute(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"comment","Politropic constant for water used in the state equation");
   JXml::AddAttribute(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"comment","Reference density of the fluid");
-  //JXml::AddElementAttrib(node,"eps","value",GetEps());
   WriteXmlElementAuto(sxml,node,"h",GetH(),GetHAuto());
   WriteXmlElementAuto(sxml,node,"b",GetB(),GetBAuto());
   WriteXmlElementAuto(sxml,node,"massbound",GetMassBound(),GetMassBoundAuto());

@@ -18,7 +18,6 @@
 /// \file JPartOutBi4Save.cpp \brief Implements the class \ref JPartOutBi4Save
 
 #include "JPartOutBi4Save.h"
-//#include "JBinaryData.h"
 #include "Functions.h"
 #include <fstream>
 #include <cmath>

@@ -31,25 +31,6 @@ typedef long long llong;
 typedef unsigned long long ullong;
 
 
-
-/////Structure of 2 variables of type word.
-//typedef struct{
-//  word x,y;
-//}tword2;
-//
-//inline tword2 TWord2(unsigned v){ tword2 p={v,v}; return(p); }
-//inline tword2 TWord2(unsigned x,unsigned y){ tword2 p={x,y}; return(p); }
-//inline bool operator ==(const tword2& a, const tword2& b){ return(a.x==b.x&&a.y==b.y); }
-//inline bool operator !=(const tword2& a, const tword2& b){ return(a.x!=b.x||a.y!=b.y); }
-//inline tword2 operator +(const tword2& a, const tword2& b){ return(TWord2(a.x+b.x,a.y+b.y)); }
-//inline tword2 operator -(const tword2& a, const tword2& b){ return(TWord2(a.x-b.x,a.y-b.y)); }
-//inline tword2 operator *(const tword2& a, const tword2& b){ return(TWord2(a.x*b.x,a.y*b.y)); }
-//inline tword2 operator /(const tword2& a, const tword2& b){ return(TWord2(a.x/b.x,a.y/b.y)); }
-//inline tword2 MinValues(const tword2& a, const tword2& b){ return(TWord2((a.x<=b.x? a.x: b.x),(a.y<=b.y? a.y: b.y))); }
-//inline tword2 MaxValues(const tword2& a, const tword2& b){ return(TWord2((a.x>=b.x? a.x: b.x),(a.y>=b.y? a.y: b.y))); }
-//inline word TWord2Get(const tword2& a,unsigned c){ return(!c? a.x: a.y); }
-//inline tword2 TWord2Set(const tword2& a,unsigned c,unsigned v){ return(TWord2((c? a.x: v),(c!=1? a.y: v))); }
-
 ///Structure of 2 variables of type unsigned.
 typedef struct{
   unsigned x,y;

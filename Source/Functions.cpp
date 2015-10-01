@@ -513,7 +513,6 @@ std::string GetExtension(const std::string &file){
   int pos=(int)file.find_last_of(".");
   int posmin=std::max((int)file.find_last_of("/"),(int)file.find_last_of("\\"));
   if(pos>=0&&pos>posmin)ext=file.substr(pos+1);
-  //printf("[%s].[%s]\n",file.c_str(),ext.c_str());
   return(ext);
 }
 

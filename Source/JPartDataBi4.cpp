@@ -18,7 +18,6 @@
 /// \file JPartDataBi4.cpp \brief Implements the class \ref JPartDataBi4
 
 #include "JPartDataBi4.h"
-//#include "JBinaryData.h"
 #include "Functions.h"
 
 #include <fstream>
@@ -159,9 +158,6 @@ std::string JPartDataBi4::GetFileData(std::string casename,std::string dirname,u
   return(file);
 }
 
-
-
-
 //==============================================================================
 /// Configuracion de variables basicas.
 //==============================================================================
@@ -270,7 +266,6 @@ JBinaryData* JPartDataBi4::AddPartInfo(unsigned cpart,double timestep,unsigned n
   return(Part);
 }
 
-
 //==============================================================================
 /// Añade datos de particulas de de nuevo part.
 //==============================================================================
@@ -313,7 +308,6 @@ void JPartDataBi4::SaveFileData(std::string fname){
   //-Graba fichero.
   Data->SaveFile(Dir+fname,false,true);
   Part->RemoveArrays();
-  //Data->SaveFileXml(Dir+fun::GetWithoutExtension(fname)+"__.xml");
 }
 
 //==============================================================================

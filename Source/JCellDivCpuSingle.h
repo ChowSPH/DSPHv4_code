@@ -38,11 +38,6 @@ protected:
   void MakeSortFluid(unsigned np,unsigned pini,const unsigned* cellpart,unsigned* begincell,unsigned* partsincell,unsigned* sortpart)const;
   void PreSort(const unsigned* dcellc,const word* codec);
 
-  //void PreSortBound(const unsigned *cell,const word* code);
-  //void PreSortFluid(const unsigned *cell,const word* code);
-  //void MakeSortFull();
-  //void MakeSortFluid();
-
 public:
   JCellDivCpuSingle(bool stable,bool floating,byte periactive,TpCellOrder cellorder,TpCellMode cellmode,float scell,tdouble3 mapposmin,tdouble3 mapposmax,tuint3 mapcells,unsigned casenbound,unsigned casenfixed,unsigned casenpb,JLog2 *log,std::string dirout);
 
@@ -51,14 +46,6 @@ public:
   ullong GetAllocMemory()const{ return(JCellDivCpu::GetAllocMemory()); }
   ullong GetAllocMemoryNp()const{ return(JCellDivCpu::GetAllocMemoryNp()); };
   ullong GetAllocMemoryNct()const{ return(JCellDivCpu::GetAllocMemoryNct()); };
-
-
-
-  //void ConfigInit(TpCellMode cellmode,unsigned np,unsigned npb);
-  //void Divide(bool boundchanged,const unsigned* idp,const tdouble3* pos,const unsigned *cell,const word *code,TimersCpu timers);
-
-
-  //void DgSaveCsvBeginCell(std::string filename,int numfile);
 };
 
 #endif

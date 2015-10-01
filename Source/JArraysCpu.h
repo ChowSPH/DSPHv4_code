@@ -115,7 +115,6 @@ public:
   double*      ReserveDouble(){     return((double*)Arrays8b->Reserve());       }
   tdouble2*    ReserveDouble2(){    return((tdouble2*)Arrays16b->Reserve());    }
   tdouble3*    ReserveDouble3(){    return((tdouble3*)Arrays24b->Reserve());    }
-  //tdouble4*  ReserveDouble4(){    return((double4*)Arrays32b->Reserve());     }
   tsymatrix3f* ReserveSymatrix3f(){ return((tsymatrix3f*)Arrays24b->Reserve()); }
 
   void Free(byte        *pointer){ Arrays1b->Free(pointer);  }
@@ -127,7 +126,6 @@ public:
   void Free(double      *pointer){ Arrays8b->Free(pointer);  }
   void Free(tdouble2    *pointer){ Arrays16b->Free(pointer); }
   void Free(tdouble3    *pointer){ Arrays24b->Free(pointer); }
-  //void Free(double4   *pointer){ Arrays32b->Free(pointer); }
   void Free(tsymatrix3f *pointer){ Arrays24b->Free(pointer); }
 };
 

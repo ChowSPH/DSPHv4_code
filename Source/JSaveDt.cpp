@@ -27,7 +27,6 @@
 #include <sstream>
 
 using namespace std;
-//using std::string;
 
 //##############################################################################
 //# JSaveDt
@@ -222,7 +221,6 @@ void JSaveDt::AddLastValues(){
 void JSaveDt::AddValues(double timestep,double dtfinal,double dt1,double dt2,double acemax,double viscdtmax,double velmax){
   if(TimeStart<=timestep && timestep<=TimeFinish){
     unsigned interval=unsigned((timestep-TimeStart)/TimeInterval);
-    //Log->Printf("----> interval:%u  timestep:%f",interval,timestep);
     if(LastInterval!=interval && LastDtf.num){
       AddLastValues();
       if(Count>=SizeValuesSave)SaveFileValues();

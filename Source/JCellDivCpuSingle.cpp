@@ -253,55 +253,5 @@ void JCellDivCpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   TmcStop(timers,TMC_NlMakeSort);
 }
 
-//==============================================================================
-// Graba fichero csv con datos de las particulas.
-//==============================================================================
-/*void JCellDivCpuSingle::DgSaveCsvBeginCell(std::string filename,int numfile){
-  const char met[]="DgSaveCsvBeginCell";
-  int mpirank=Log->GetMpiRank();
-  if(mpirank>=0)filename=string("p")+fun::IntStr(mpirank)+"_"+filename;
-  if(numfile>=0){
-    string ext=fun::GetExtension(filename);
-    filename=fun::GetWithoutExtension(filename);
-    char cad[64];
-    sprintf(cad,"%04d",numfile);
-    filename=filename+cad+"."+ext;
-  }
-  filename=DirOut+filename;
-  //-Genera fichero CSV.
-  ofstream pf;
-  pf.open(filename.c_str());
-  if(pf){
-    char cad[1024];
-    sprintf(cad,"Ncx:%u;Ncy:%u;Ncz:%u;Nct:%u",Ncx,Ncy,Ncz,Nct);  pf << cad << endl;
-    pf << "Cell;Cellxyz;Value" << endl;
-    unsigned dif=0;
-    for(unsigned c=0;c<Nctt;c++){
-      if(c==BoxBoundOut)dif++;
-      else{
-        pf << fun::UintStr(c-dif);
-        if(c==BoxIgnore)pf<< ";BoxIgnore";
-        else if(c==BoxBoundOut)pf<< ";BoxBoundOut";
-        else if(c==BoxFluidOut)pf<< ";BoxFluidOut";
-        else if(c>BoxFluidOut)pf<< ";???";
-        else{
-          unsigned box=(c<BoxFluid? c: c-BoxFluid);
-          const int cz=int(box/Nsheet);
-          int bx=box-(cz*Nsheet);
-          const int cy=int(bx/Ncx);
-          const int cx=bx-(cy*Ncx);
-          sprintf(cad,";%c_%u_%u_%u",(c<BoxFluid? 'B': 'F'),cx,cy,cz);
-          pf<< cad;
-        }
-        pf << endl;
-      }
-    }
-    if(pf.fail())RunException(met,"Failed writing to file.",filename);
-    pf.close();
-  }
-  else RunException(met,"File could not be opened.",filename);
-}*/
-
-
 
 

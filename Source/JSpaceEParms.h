@@ -24,6 +24,7 @@
 //#   valor entre varios dentro del atributo Value. (04/12/2011)
 //# - Traduccion de comentarios al ingles. (10/02/2012)
 //# - Nuevo metodo GetValueNumStr() para leer atributos string. (10/11/2012)
+//# - Nuevo metodo GetValueDouble3() para leer atributos tdouble3. (01-10-2015)
 //#############################################################################
 
 /// \file JSpaceEParms.h \brief Declares the class \ref JSpaceEParms.
@@ -34,6 +35,7 @@
 #include <string>
 #include <vector>
 #include "JObject.h"
+#include "TypesDef.h"
 
 class JXml;
 class TiXmlElement;
@@ -81,6 +83,7 @@ public:
   double GetValueDouble(const std::string &key,bool optional=false,double valdef=0){ return(GetValueNumDouble(key,0,optional,valdef)); }
   float GetValueFloat(const std::string &key,bool optional=false,float valdef=0){ return(GetValueNumFloat(key,0,optional,valdef)); }
   std::string GetValueStr(const std::string &key,bool optional=false,std::string valdef=""){ return(GetValueNumStr(key,0,optional,valdef)); }
+  tdouble3 GetValueDouble3(const std::string &key,bool optional=false,tdouble3 valdef=TDouble3(0)){ return(TDouble3(GetValueNumDouble(key,0,optional,valdef.x),GetValueNumDouble(key,1,optional,valdef.y),GetValueNumDouble(key,2,optional,valdef.z))); }
 
   unsigned Count()const{ return(unsigned(List.size())); }
   std::string ToString(unsigned pos)const;

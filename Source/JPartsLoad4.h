@@ -73,17 +73,10 @@ protected:
   tdouble3 *Pos;
   tfloat4 *VelRhop;
 
-
-  //unsigned PartBegin;
-  //float PartBeginTimeStep;
-
-
   void AllocMemory(unsigned count);
   template<typename T> T* SortParticles(const unsigned *vsort,unsigned count,T *v)const;
   void SortParticles();
   void CalculateCasePos();
-  //static void CalcPosLimits(unsigned n,const tdouble3 *posd,tdouble3 &posmin,tdouble3 &posmax);
-  //static void CalcPosLimits(unsigned n,const tfloat3 *pos,tdouble3 &posmin,tdouble3 &posmax);
 
 public:
   JPartsLoad4();

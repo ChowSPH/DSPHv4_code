@@ -173,6 +173,7 @@ TiXmlElement* JSpacePartBlock_Moving::WriteXml(JXml *sxml,TiXmlElement* ele)cons
   return(ele);
 }
 
+
 //##############################################################################
 //# JSpacePartBlock_Floating
 //##############################################################################
@@ -200,6 +201,7 @@ TiXmlElement* JSpacePartBlock_Floating::WriteXml(JXml *sxml,TiXmlElement* ele)co
   if(Omegaini!=TDouble3(0))sxml->AddElementDouble3(ele,"omegaini",Omegaini);
   return(ele);
 }
+
 
 //##############################################################################
 //# JSpaceParts
@@ -422,6 +424,7 @@ void JSpaceParts::LoadProperties(const JSpaceProperties *props){
   //-Update property info in blocks.
   for(unsigned c=0;c<Blocks.size();c++)Blocks[c]->UpdateProperty();
 }
+
 
 //##############################################################################
 //# JSpacePartsGetMk

@@ -42,8 +42,6 @@
 #include <vector>
 #include <fstream>
 
-//class JBinaryData;
-
 //##############################################################################
 //# JPartOutBi4Save
 //##############################################################################
@@ -71,7 +69,6 @@ class JPartOutBi4Save : protected JObject
   unsigned BlockNoutMax; ///<Numero maximo de particulas que se deberian meter por bloque.
 
   unsigned Cpart;    ///<Numero de PART.
-
 
   static std::string GetNamePart(unsigned cpart);
   JBinaryData* AddPartOut(unsigned cpart,double timestep,unsigned nout,const unsigned *idp,const ullong *idpd,const tfloat3 *pos,const tdouble3 *posd,const tfloat3 *vel,const float *rhop);

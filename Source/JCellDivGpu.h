@@ -71,10 +71,6 @@ protected:
   int2 *BeginEndCell;  //-Contiene el principio y final de cada celda. 
   // BeginEndCell=[BoundOk(nct),BoundIgnore(1),Fluid(nct),BoundOut(1),FluidOut(1),BoundOutIgnore(1),FluidOutIgnore(1)]
 
-  //unsigned SizeNpOld;
-  //unsigned SizeNctOld;
-
-
   ullong MemAllocGpuNp;  //-Mermoria reservada en Gpu para particulas.
   ullong MemAllocGpuNct; //-Mermoria reservada en Gpu para celdas.
 
@@ -123,7 +119,6 @@ protected:
   ullong GetAllocMemoryGpu()const{ return(GetAllocMemoryGpuNp()+GetAllocMemoryGpuNct()); };
 
   void VisuBoundaryOut(unsigned p,unsigned id,tdouble3 pos,word check)const;
-  //tuint3 GetMapCell(const tfloat3 &pos)const;
   void CalcCellDomainBound(unsigned n,unsigned pini,unsigned n2,unsigned pini2,const unsigned* dcellg,const word* codeg,tuint3 &cellmin,tuint3 &cellmax);
   void CalcCellDomainFluid(unsigned n,unsigned pini,unsigned n2,unsigned pini2,const unsigned* dcellg,const word* codeg,tuint3 &cellmin,tuint3 &cellmax);
 
@@ -150,8 +145,6 @@ public:
   TpCellMode GetCellMode()const{ return(CellMode); }
   unsigned GetHdiv()const{ return(Hdiv); }
   float GetScell()const{ return(Scell); }
-//  tuint3 GetDomCells()const{ return(DomCells); };
-//  unsigned GetCellCode()const{ return(DomCellCode); };
 
   unsigned GetNct()const{ return(Nct); }
   unsigned GetNcx()const{ return(Ncx); }
@@ -175,16 +168,7 @@ public:
   unsigned GetNpfOutMove()const{ return(NpfOutMove); }
   unsigned GetNpfOutRhop()const{ return(NpfOutRhop); }
 
-  //const unsigned* GetCellPart()const{ return(CellPart); }
   const int2* GetBeginCell(){ return(BeginEndCell); }
-
-  //uint2 GetRangeParticlesCells(bool fluid,unsigned celini,unsigned celfin)const;
-  //unsigned GetParticlesCells(unsigned celini,unsigned celfin);
-
-
-  //tuint3 DgGetCell(const tfloat3 &pos)const;
-  //void DgSaveVktIdx(std::string file,unsigned np,const unsigned *idx,const unsigned *idp,const tfloat3 *pos)const;
-  //void DgSaveVktRange(std::string file,unsigned pini,unsigned pfin,const unsigned *idpg,const float3 *posg)const;
 };
 
 #endif

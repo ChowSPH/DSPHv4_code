@@ -33,8 +33,6 @@
 #include <iostream>
 #include <fstream>
 
-//#define DBG_JCellDivCpu 1 //pdte
-
 class JCellDivCpu : protected JObject
 {
 protected:
@@ -179,12 +177,7 @@ public:
   unsigned GetNpfOutMove()const{ return(NpfOutMove); }
   unsigned GetNpfOutRhop()const{ return(NpfOutRhop); }
 
-  //const unsigned* GetCellPart()const{ return(CellPart); }
   const unsigned* GetBeginCell(){ return(BeginCell); }
-
-  //bool CellNoEmpty(unsigned box,byte kind)const;
-  //unsigned CellBegin(unsigned box,byte kind)const;
-  //unsigned CellSize(unsigned box,byte kind)const;
 };
 
 #endif

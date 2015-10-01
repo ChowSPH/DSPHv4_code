@@ -43,7 +43,6 @@
 #include <cstdlib>
 #include <vector>
 
-
 class JPtxasInfoKer : protected JObject
 {
 public:

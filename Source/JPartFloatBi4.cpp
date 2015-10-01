@@ -18,7 +18,6 @@
 /// \file JPartFloatBi4.cpp \brief Implements the class \ref JPartFloatBi4
 
 #include "JPartFloatBi4.h"
-//#include "JBinaryData.h"
 #include "Functions.h"
 #include <fstream>
 #include <cmath>
@@ -201,7 +200,6 @@ void JPartFloatBi4Save::AddPartData(unsigned cf,const tdouble3 &center,const tfl
   PartFomega[cf]=fomega;
 }
 
-
 //==============================================================================
 /// Añade datos de particulas de de nuevo part.
 //==============================================================================
@@ -230,8 +228,6 @@ void JPartFloatBi4Save::SavePartFloat(){
   Part->SaveFileListApp(Dir+GetFileNamePart(),"JPartFloatBi4",true,true);
   Part->RemoveArrays();
 }
-
-
 
 //##############################################################################
 //# JPartFloatBi4Load
@@ -363,8 +359,6 @@ void JPartFloatBi4Load::LoadFile(const std::string &dir){
     JBinaryDataArray *ar=CheckArray(head,"radius",JBinaryDataDef::DatFloat);
     memcpy(HeadRadius,(const float *)ar->GetDataPointer(),sizeof(float)*FtCount);
   }
-  //head->SaveFileXml("probando.xml",true);
-  //Data->SaveFileXml("probando.xml",true);
 }
 
 //==============================================================================

@@ -257,25 +257,6 @@ double AreaTriangle(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3);
 //==============================================================================
 float AreaTriangle(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3);
 
-
-////==============================================================================
-///// Devuelve el angulo en grados que forman dos vectores.
-////==============================================================================
-//double JSpaceDraw::AngleVector(tdouble3 v1,tdouble3 v2){
-//  return(acos(ProductScalar(v1,v2)/(ModuloVector(v1)*ModuloVector(v2)))*TODEG);
-//}
-////==============================================================================
-///// Devuelve el plano formado por 1 vector y un punto.
-////==============================================================================
-//jplane JSpaceDraw::PlaneVect1Pt(tdouble3 v,tdouble3 p){ 
-//  jplane plano;
-//  plano.a=v.x; plano.b=v.y; plano.c=v.z; 
-//  plano.d=-((v.x*p.x)+(v.y*p.y)+(v.z*p.z));
-//  return(plano);
-//}
-
-
-
 //==============================================================================
 /// Returns cotangent of angle in radians.
 //==============================================================================

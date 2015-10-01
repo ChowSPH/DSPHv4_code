@@ -257,8 +257,6 @@ protected:
   float Scell;            //-Tamaño de celda: 2h o h.
   float MovLimit;         //-Distancia maxima que se permite recorrer a una particula en un paso (Scell*0.9).
 
-  //tdouble3 MapMove;       //-Desplaza las particulas durante el calculo.
-
   //-Dominio global de la simulacion.
   tdouble3 Map_PosMin,Map_PosMax,Map_Size; //-Limites de simulacion + borde 2h si hay condiciones periodicas.
   tuint3 Map_Cells;                        //-Numero de celdas maximo segun los limites del caso. 

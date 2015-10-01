@@ -119,7 +119,6 @@ void JTimersStep::AddStep(float timestep,double tsimula,unsigned steps,unsigned 
   CountTot++;
   TimeStepM1=timestep;
   TimeStepNext=TimeStepInit+TimeInterval*CountTot;
-  //for(;TimeStepNext<=TimeStepM1;CountTot++)TimeStepNext=TimeInterval*CountTot;
 }
 
 //==============================================================================

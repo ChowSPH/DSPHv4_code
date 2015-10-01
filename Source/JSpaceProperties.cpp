@@ -131,6 +131,7 @@ std::string JSpacePropValue::ToStr()const{
   return(tx+"]");
 }
 
+
 //##############################################################################
 //# JSpacePropProperty
 //##############################################################################
@@ -281,6 +282,7 @@ std::string JSpacePropProperty::ToStr()const{
   return(tx+"}");
 }
 
+
 //##############################################################################
 //# JSpacePropLinks
 //##############################################################################
@@ -325,7 +327,6 @@ void JSpacePropLinks::AddLink(JSpacePropLink::TpLink type,std::string mks,std::s
   mks=fun::StrWithoutChar(mks,' ');
   props=fun::StrWithoutChar(props,' ');
   if(!mks.empty()&&!props.empty()){
-    //printf("--> AddLink> type:%d  mks:[%s]  props:[%s]\n",int(type),mks.c_str(),props.c_str());
     JSpacePropLink *link=new JSpacePropLink(type,mks,props);
     Links.push_back(link);
   }
@@ -408,7 +409,6 @@ std::string JSpacePropLinks::GetPropsSort(std::string props){
 /// Returns the properties associated to the given MK.
 //==============================================================================
 std::string JSpacePropLinks::GetProps(word mk,word mkboundfirst,word mkfluidfirst)const{
-  //printf("GetProps>> mk=%d mkboundfirst=%d mkfluidfirst=%d\n",mk,mkboundfirst,mkfluidfirst);
   //-Gets properties assigned to MK.
   string props;
   for(unsigned c=0;c<unsigned(Links.size());c++){
@@ -451,27 +451,8 @@ std::string JSpacePropLinks::GetAllProps()const{
   string props;
   for(unsigned c=0;c<unsigned(Links.size());c++)props=props+Links[c]->GetProps()+"+";
   return(GetPropsSort(props));
-  //-Loads array with no repeated properties.
-  //std::vector<string> vprops;
-  //for(unsigned cl=0;cl<Links.size();cl++){
-  //  string props=Links[cl]->GetProps();
-  //  while(!props.empty()){
-  //    string pro=fun::StrSplit("+",props);
-  //    if(!pro.empty()){
-  //      unsigned c=0;
-  //      for(;c<vprops.size() && pro!=vprops[c];c++);
-  //      if(c==vprops.size())vprops.push_back(pro);
-  //    }
-  //  }
-  //}
-  ////-Loads list of no repeated properties.
-  //string props="";
-  //if(vprops.size())for(int c=0;c<vprops.size();c++){
-  //  if(c)props=props+"+";
-  //  props=props+vprops[c];
-  //}
-  //return(props);
 }
+
 
 //##############################################################################
 //# JSpaceProperties
@@ -484,6 +465,7 @@ JSpaceProperties::JSpaceProperties(){
   Links=new JSpacePropLinks();
   Reset();
 }
+
 //==============================================================================
 /// Destructor.
 //==============================================================================
@@ -491,6 +473,7 @@ JSpaceProperties::~JSpaceProperties(){
   Reset();
   delete Links; Links=NULL;
 }
+
 //==============================================================================
 /// Initialisation of variables.
 //==============================================================================
@@ -561,7 +544,6 @@ void JSpaceProperties::LoadXml(JXml *sxml,const std::string &place){
   Reset();
   TiXmlNode* node=sxml->GetNode(place,false);
   if(node)ReadXml(sxml,node->ToElement());
-  //if(!node)RunException("LoadXml",std::string("Cannot find the element \'")+place+"\'.");
 }
 
 //==============================================================================
@@ -583,7 +565,6 @@ void JSpaceProperties::ReadXmlProperty(JXml *sxml,TiXmlElement* eprop){
     string name=at->Name();
     string val=at->Value();
     if(name!="name"&&name[0]!='_'){
-      //printf("ReadXmlProperty> At:[%s]=[%s]\n",at->Name(),at->Value());
       pro->AddValue(name,val);
     }
     at=at->Next();
@@ -593,13 +574,11 @@ void JSpaceProperties::ReadXmlProperty(JXml *sxml,TiXmlElement* eprop){
   while(ele){
     string name=ele->Value();
     if(name[0]!='_'){
-      //printf("ReadXmlProperty> Ele:[%s]\n",name.c_str());
       TiXmlAttribute *at=ele->FirstAttribute();
       while(at){
         string atname=at->Name();
         string atval=at->Value();
         if(atname[0]!='_'){
-          //printf("ReadXmlProperty> At:[%s]=[%s]\n",atname.c_str(),atval.c_str());
           pro->AddSubValue(name,atname,atval);
         }
         at=at->Next();
@@ -607,7 +586,6 @@ void JSpaceProperties::ReadXmlProperty(JXml *sxml,TiXmlElement* eprop){
     }
     ele=ele->NextSiblingElement();
   }
-  //printf("ReadXmlProperty> %s\n",pro->ToStr().c_str());
 }
 
 //==============================================================================
@@ -717,10 +695,8 @@ void JSpaceProperties::FilterMk(word mkboundfirst,word mkfluidfirst,std::string 
   unsigned v=rg.GetNextValue(0);
   while(v!=UINT_MAX){
     word mk=word(v);
-    //printf("FilterMk>> mk=%d\n",mk);
     string props=Links->GetProps(mk,mkboundfirst,mkfluidfirst);
     if(!props.empty()){
-      //printf("FilterMk>> mk_%d:%s\n",mk,props.c_str());
       unsigned c=0;
       for(;c<vprops.size() && props!=vprops[c];c++);
       if(c==vprops.size()){
@@ -735,7 +711,6 @@ void JSpaceProperties::FilterMk(word mkboundfirst,word mkfluidfirst,std::string 
   for(unsigned c=0;c<vmks.size();c++){
     JRangeFilter rg(vmks[c]);
     vmks[c]=rg.ToString();
-    //printf("---> mks:[%s] props:[%s]\n",vmks[c].c_str(),vprops[c].c_str());
   }
   //-Generates list of properties that will be used.
   std::vector<string> vprop;
@@ -750,19 +725,16 @@ void JSpaceProperties::FilterMk(word mkboundfirst,word mkfluidfirst,std::string 
       }
     }
   }
-  //for(int c=0;c<vprop.size();c++)printf("---> vprop[%d]:%s\n",c,vprop[c].c_str());
   //-Removes properties that will not be used.
   for(unsigned p=0;p<Props.size();p++){
     string pro=Props[p]->GetName();
     unsigned c=0;
     for(;c<vprop.size() && pro!=vprop[c];c++);
     if(c==vprop.size()){
-      //printf("---> Elimina %s\n",pro.c_str());
       Props.erase(Props.begin()+p);
       p--;
     }
   }
-  //for(int p=0;p<Props.size();p++)printf("---> Props[%d]:%s\n",p,Props[p]->GetName().c_str());
   //-Remakes links with mkselect.
   Links->Reset();
   for(unsigned c=0;c<vmks.size();c++)Links->AddLink(JSpacePropLink::LINK_Mk,vmks[c],vprops[c]);

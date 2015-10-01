@@ -200,7 +200,6 @@ template <unsigned blockSize> __device__ void KerPosLimitsRedu(float* spx1,float
   }
 }
 
-
 //------------------------------------------------------------------------------
 // Calcula posicion minima y maxima a partir de los resultados de KerPosLimit.
 //------------------------------------------------------------------------------
@@ -237,14 +236,10 @@ void ReduPosLimits(unsigned nblocks,float *aux,tfloat3 &pmin,tfloat3 &pmax,JLog2
   const unsigned smemSize=DIVBSIZE*sizeof(float)*6;
   dim3 sgrid=GetGridSize(n,DIVBSIZE);
   unsigned n_blocks=sgrid.x*sgrid.y;
-  //printf("n:%d  n_blocks:%d]\n",n,n_blocks);
   float *dat=aux;
   float *res=aux+(n_blocks*6);
   while(n>1){
-    //printf("##>ReduMaxF n:%d  n_blocks:%d]\n",n,n_blocks);
-    //printf("##>ReduMaxF>sgrid=(%d,%d,%d)\n",sgrid.x,sgrid.y,sgrid.z);
     KerReduPosLimits<DIVBSIZE><<<sgrid,DIVBSIZE,smemSize>>>(n,dat,res);
-    //CheckErrorCuda("#>ReduMaxF Fallo en KerReduMaxF.");
     n=n_blocks;
     sgrid=GetGridSize(n,DIVBSIZE);  
     n_blocks=sgrid.x*sgrid.y;
@@ -252,7 +247,6 @@ void ReduPosLimits(unsigned nblocks,float *aux,tfloat3 &pmin,tfloat3 &pmax,JLog2
   }
   float resf[6];
   cudaMemcpy(resf,dat,sizeof(float)*6,cudaMemcpyDeviceToHost);
-  //CheckErrorCuda("#>ReduMaxF Fallo en cudaMemcpy.");
   pmin=TFloat3(resf[0],resf[1],resf[2]);
   pmax=TFloat3(resf[3],resf[4],resf[5]);
 }
@@ -366,14 +360,10 @@ void LimitsCellRedu(unsigned cellcode,unsigned nblocks,unsigned *aux,tuint3 &cel
   const unsigned smemSize=DIVBSIZE*sizeof(float)*6;
   dim3 sgrid=GetGridSize(n,DIVBSIZE);
   unsigned n_blocks=sgrid.x*sgrid.y;
-  //printf("n:%d  n_blocks:%d]\n",n,n_blocks);
   unsigned *dat=aux;
   unsigned *res=aux+(n_blocks*2); //value min y max.
   while(n>1){
-    //printf("##>ReduMaxF n:%d  n_blocks:%d]\n",n,n_blocks);
-    //printf("##>ReduMaxF>sgrid=(%d,%d,%d)\n",sgrid.x,sgrid.y,sgrid.z);
     KerLimitsCellReduBase<DIVBSIZE><<<sgrid,DIVBSIZE,smemSize>>>(cellcode,n,dat,res);
-    //CheckErrorCuda("#>ReduMaxF Fallo en KerReduMaxF.");
     n=n_blocks;
     sgrid=GetGridSize(n,DIVBSIZE);  
     n_blocks=sgrid.x*sgrid.y;
@@ -381,7 +371,6 @@ void LimitsCellRedu(unsigned cellcode,unsigned nblocks,unsigned *aux,tuint3 &cel
   }
   unsigned resf[6];
   cudaMemcpy(resf,dat,sizeof(unsigned)*2,cudaMemcpyDeviceToHost);
-  //CheckErrorCuda("#>ReduMaxF Fallo en cudaMemcpy.");
   celmin=TUint3(PC__Cellx(cellcode,resf[0]),PC__Celly(cellcode,resf[0]),PC__Cellz(cellcode,resf[0]));
   celmax=TUint3(PC__Cellx(cellcode,resf[1]),PC__Celly(cellcode,resf[1]),PC__Cellz(cellcode,resf[1]));
 }
@@ -444,17 +433,12 @@ void LimitsCell(unsigned np,unsigned pini,unsigned cellcode,const unsigned *dcel
     celmax=TUint3(0);
     return;
   }
-  //printf("[ReduMaxF ndata:%d  BLOCKSIZE:%d]\n",ndata,BLOCKSIZE);
   const unsigned smemSize=DIVBSIZE*sizeof(unsigned)*6;
   dim3 sgrid=GetGridSize(np,DIVBSIZE);
   unsigned nblocks=sgrid.x*sgrid.y;
   KerLimitsCell<DIVBSIZE><<<sgrid,DIVBSIZE,smemSize>>>(np,pini,cellcode,dcell,code,aux);
   LimitsCellRedu(cellcode,nblocks,aux,celmin,celmax,log);
 }
-
-
-
-
 
 //------------------------------------------------------------------------------
 // Calcula particula inicial y final de cada celda.
@@ -493,7 +477,6 @@ void CalcBeginEndCell(bool full,unsigned np,unsigned npb,unsigned sizebegcell,un
     KerCalcBeginEndCell <<<sgrid,DIVBSIZE,sizeof(unsigned)*(DIVBSIZE+1)>>> (n,pini,cellpart,begcell);
   }
 }
-
 
 //------------------------------------------------------------------------------
 // Reordena datos de particulas segun idsort[]
@@ -551,7 +534,6 @@ __global__ void KerSortDataParticles(unsigned n,unsigned pini,const unsigned *so
   }
 }
 
-
 //==============================================================================
 // Reordena datos de particulas segun sortpart.
 //==============================================================================
@@ -590,10 +572,6 @@ void SortDataParticles(unsigned np,unsigned pini,const unsigned *sortpart,const 
   }
 }
 
-
-
-
-
 //------------------------------------------------------------------------------
 // Calcula valores minimo y maximo a partir de data[].
 //------------------------------------------------------------------------------
@@ -621,14 +599,10 @@ void ReduUintLimits(unsigned nblocks,unsigned *aux,unsigned &vmin,unsigned &vmax
   const unsigned smemSize=DIVBSIZE*sizeof(unsigned)*2;
   dim3 sgrid=GetGridSize(n,DIVBSIZE);
   unsigned n_blocks=sgrid.x*sgrid.y;
-  //printf("n:%d  n_blocks:%d]\n",n,n_blocks);
   unsigned *dat=aux;
   unsigned *res=aux+(n_blocks*2);
   while(n>1){
-    //printf("##>ReduMaxF n:%d  n_blocks:%d]\n",n,n_blocks);
-    //printf("##>ReduMaxF>sgrid=(%d,%d,%d)\n",sgrid.x,sgrid.y,sgrid.z);
     KerReduUintLimits<DIVBSIZE><<<sgrid,DIVBSIZE,smemSize>>>(n,dat,res);
-    //CheckErrorCuda("#>ReduMaxF Fallo en KerReduMaxF.");
     n=n_blocks;
     sgrid=GetGridSize(n,DIVBSIZE);  
     n_blocks=sgrid.x*sgrid.y;
@@ -636,11 +610,9 @@ void ReduUintLimits(unsigned nblocks,unsigned *aux,unsigned &vmin,unsigned &vmax
   }
   unsigned resf[2];
   cudaMemcpy(resf,dat,sizeof(unsigned)*2,cudaMemcpyDeviceToHost);
-  //CheckErrorCuda("#>ReduMaxF Fallo en cudaMemcpy.");
   vmin=resf[0];
   vmax=resf[1];
 }
-
 
 //------------------------------------------------------------------------------
 // Reduccion de valores en memoria shared para un warp de KerReduUintSum.
@@ -689,14 +661,10 @@ unsigned ReduUintSum(unsigned nblocks,unsigned *aux,JLog2 *log){
   const unsigned smemSize=DIVBSIZE*sizeof(unsigned);
   dim3 sgrid=GetGridSize(n,DIVBSIZE);
   unsigned n_blocks=sgrid.x*sgrid.y;
-  //printf("n:%d  n_blocks:%d]\n",n,n_blocks);
   unsigned *dat=aux;
   unsigned *res=aux+(n_blocks);
   while(n>1){
-    //printf("##>ReduMaxF n:%d  n_blocks:%d]\n",n,n_blocks);
-    //printf("##>ReduMaxF>sgrid=(%d,%d,%d)\n",sgrid.x,sgrid.y,sgrid.z);
     KerReduUintSum<DIVBSIZE><<<sgrid,DIVBSIZE,smemSize>>>(n,dat,res);
-    //CheckErrorCuda("#>ReduMaxF Fallo en KerReduMaxF.");
     n=n_blocks;
     sgrid=GetGridSize(n,DIVBSIZE);  
     n_blocks=sgrid.x*sgrid.y;
@@ -704,7 +672,6 @@ unsigned ReduUintSum(unsigned nblocks,unsigned *aux,JLog2 *log){
   }
   unsigned resf;
   cudaMemcpy(&resf,dat,sizeof(unsigned),cudaMemcpyDeviceToHost);
-  //CheckErrorCuda("#>ReduMaxF Fallo en cudaMemcpy.");
   return(resf);
 }
 

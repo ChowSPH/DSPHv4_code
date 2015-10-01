@@ -39,7 +39,6 @@ JCellDivCpu::JCellDivCpu(bool stable,bool floating,byte periactive,TpCellOrder c
 // Destructor.
 //==============================================================================
 JCellDivCpu::~JCellDivCpu(){
-  Log->Printf("---> DivideFull:%u/%u",NdivFull,Ndiv);
   Reset();
 }
 
@@ -208,15 +207,6 @@ void JCellDivCpu::VisuBoundaryOut(unsigned p,unsigned id,tdouble3 pos,word code)
 }
 
 //==============================================================================
-// Devuelve coordenadas de celda a partir de una posicion.
-//==============================================================================
-//tuint3 JCellDivCpu::GetMapCell(const tfloat3 &pos)const{
-//  float dx=pos.x-MapPosMin.x,dy=pos.y-MapPosMin.y,dz=pos.z-MapPosMin.z;
-//  unsigned cx=unsigned(dx*OvScell),cy=unsigned(dy*OvScell),cz=unsigned(dz*OvScell);
-//  return(TUint3(cx,cy,cz));
-//}
-
-//==============================================================================
 // Calcula celda minima y maxima de las particulas validas.
 // En code[] ya estan marcadas las particulas excluidas.
 // En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
@@ -329,7 +319,6 @@ void JCellDivCpu::CalcCellDomainFluid(unsigned n,unsigned pini,unsigned n2,unsig
     cellmin=MinValues(cellmin,cmin);
     cellmax=MaxValues(cellmax,cmax);
   }
-  //char cad[512]; sprintf(cad,"CalcDomainFluid> cell:(%s)-(%s)",fun::Uint3Str(cellmin).c_str(),fun::Uint3Str(cellmax).c_str()); Log->PrintDbg(cad);
 }
 
 //==============================================================================
@@ -425,38 +414,6 @@ tdouble3 JCellDivCpu::GetDomainLimits(bool limitmin,unsigned slicecellmin)const{
   tdouble3 pmax=DomPosMin+TDouble3(scell*celmax.x,scell*celmax.y,scell*celmax.z);
   return(limitmin? pmin: pmax);
 }
-
-////==============================================================================
-//// Indica si la celda esta vacia o no.
-////==============================================================================
-//bool JCellDivCpu::CellNoEmpty(unsigned box,byte kind)const{
-//#ifdef DBG_JCellDivCpu
-//  if(box>=Nct)RunException("CellNoEmpty","Celda no valida.");
-//#endif
-//  if(kind==2)box+=BoxFluid;
-//  return(BeginCell[box]<BeginCell[box+1]);
-//}
-
-////==============================================================================
-//// Devuelve la primera particula de la celda solicitada.
-////==============================================================================
-//unsigned JCellDivCpu::CellBegin(unsigned box,byte kind)const{
-//#ifdef DBG_JCellDivCpu
-//  if(box>Nct)RunException("CellBegin","Celda no valida.");
-//#endif
-//  return(BeginCell[(kind==1? box: box+BoxFluid)]);
-//}
-
-////==============================================================================
-//// Devuelve el numero de particulas de la celda solicitada.
-////==============================================================================
-//unsigned JCellDivCpu::CellSize(unsigned box,byte kind)const{
-//#ifdef DBG_JCellDivCpu
-//  if(box>Nct)RunException("CellSize","Celda no valida.");
-//#endif
-//  if(kind==2)box+=BoxFluid;
-//  return(BeginCell[box+1]-BeginCell[box]);
-//}
 
 
 

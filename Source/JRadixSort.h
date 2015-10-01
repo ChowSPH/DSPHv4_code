@@ -54,9 +54,6 @@ private:
   unsigned *Index;
   unsigned *PrevIndex;
   
-  //static const int KEYSBITS=4;
-  //static const int KEYSRANGE=16;
-  //static const int KEYSMASK=0x0f;
   static const int KEYSBITS=8;
   static const int KEYSRANGE=256;
   static const int KEYSMASK=0xff;
@@ -100,7 +97,6 @@ public:
 
   void MakeIndex(unsigned size,const unsigned *data,unsigned nbits);
   void MakeIndex(unsigned size,const ullong *data,unsigned nbits);
-
 
   unsigned BitsSize(unsigned v)const;
   unsigned BitsSize(ullong v)const;

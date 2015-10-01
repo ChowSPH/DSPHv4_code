@@ -27,18 +27,21 @@ JSpaceEParms::JSpaceEParms(){
   ClassName="JSpaceEParms";
   Reset();
 }
+
 //==============================================================================
 /// Destructor.
 //==============================================================================
 JSpaceEParms::~JSpaceEParms(){
   Reset();
 }
+
 //==============================================================================
 /// Initialisation of variables.
 //==============================================================================
 void JSpaceEParms::Reset(){
   List.clear();
 }
+
 //==============================================================================
 /// Adds element to the list.
 //==============================================================================
@@ -50,6 +53,7 @@ void JSpaceEParms::Add(const std::string &key,const std::string &value,const std
     List.push_back(ite);
   }
 }
+
 //==============================================================================
 /// Modifies the value of a pre-existing value.
 //==============================================================================
@@ -58,6 +62,7 @@ void JSpaceEParms::SetValue(const std::string &key,const std::string &value){
   if(!item)RunException("SetValue","The parameter to modify does not exist");
   item->value=value;
 }
+
 //==============================================================================
 /// Modifies the coment of a pre-existing value.
 //==============================================================================
@@ -111,7 +116,6 @@ int JSpaceEParms::GetValueNumInt(const std::string &key,int num,bool optional,in
 double JSpaceEParms::GetValueNumDouble(const std::string &key,int num,bool optional,double valdef){
   double ret=valdef;
   std::string txval=GetValueNum(key,num);
-  //printf("---- key:[%s](%d)=[%s]\n",key.c_str(),num,txval.c_str());
   if(!txval.empty())ret=atof(txval.c_str());
   else if(!optional)RunException("GetValueNumDouble",std::string("The requested value \'")+key+"\' does not exist.");
   return(ret);
@@ -120,7 +124,6 @@ double JSpaceEParms::GetValueNumDouble(const std::string &key,int num,bool optio
 std::string JSpaceEParms::GetValueNumStr(const std::string &key,int num,bool optional,std::string valdef){
   std::string ret=valdef;
   std::string txval=GetValueNum(key,num);
-  //printf("---- key:[%s](%d)=[%s]\n",key.c_str(),num,txval.c_str());
   if(!txval.empty())ret=txval;
   else if(!optional)RunException("GetValueNumStr",std::string("The requested value \'")+key+"\' does not exist.");
   return(ret);
@@ -172,6 +175,7 @@ void JSpaceEParms::SaveFileXml(const std::string &file,const std::string &path,b
   SaveXml(&jxml,path);
   jxml.SaveFile(file);
 }
+
 //==============================================================================
 /// Loads initial conditions of XML object.
 //==============================================================================
@@ -181,6 +185,7 @@ void JSpaceEParms::LoadXml(JXml *sxml,const std::string &place){
   if(!node)RunException("LoadXml",std::string("Cannot find the element \'")+place+"\'.");
   ReadXml(sxml,node->ToElement());
 }
+
 //==============================================================================
 /// Stores initial conditions of XML object.
 //==============================================================================

@@ -111,8 +111,6 @@ double JLinearValue::GetValue(double timestep){
       tini=tnext;
       tnext=Times[Position+2];
     }
-    //printf("t:%g pos:%u tini:%g tfin:%g\n",timestep,Position,tini,tnext);
-
     //-Calcula valor en el instante indicado.
     if(timestep<=tini)ret=Values[Position];
     else if(timestep>=tnext)ret=Values[Position+1];
@@ -123,7 +121,6 @@ double JLinearValue::GetValue(double timestep){
       ret=(tfactor*(vnext-vini)+vini);
     }
   }
-  //printf("---> [%g] -> value:%g\n",timestep,ret);
   return(ret);
 }
 
@@ -133,12 +130,11 @@ double JLinearValue::GetValue(double timestep){
 void JLinearValue::LoadFile(std::string file){
   const char met[]="LoadFile";
   Reset();
-  //printf("---> LoadFile> [%s]\n",file.c_str());
   ifstream pf;
   pf.open(file.c_str());
   if(pf){
     pf.seekg(0,ios::end);
-    unsigned len=(unsigned)pf.tellg();   //printf("FileSize: %u\n",len);
+    unsigned len=(unsigned)pf.tellg();
     pf.seekg(0,ios::beg);
     SetSize(SIZEINITIAL);
     Count=0;
@@ -149,11 +145,9 @@ void JLinearValue::LoadFile(std::string file){
       if(!pf.fail()){
         if(Count>=Size){
           unsigned newsize=unsigned(double(len)/double(pf.tellg())*1.05*(Count+1))+100;
-          //printf("---> Size: %u -> %u   tellg: %u / %u\n",Size,newsize,unsigned(pf.tellg()),len);
           SetSize(newsize);
         } 
         Times[Count]=time; Values[Count]=value;
-        //printf("[%u]>  t:%f  v:%f\n",Count,time,value);
         Count++;
       }
     }

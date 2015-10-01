@@ -161,11 +161,9 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
   PeriZinc=pd.Get_PeriZinc();
   MapPosMin=pd.Get_MapPosMin();
   MapPosMax=pd.Get_MapPosMax();
-  //printf("-->LoadParticles> MapPos=(%f,%f,%f)-(%f,%f,%f)\n",MapPosMin.x,MapPosMin.y,MapPosMin.z,MapPosMax.x,MapPosMax.y,MapPosMax.z);
   MapSize=(MapPosMin!=MapPosMax);
   CasePosMin=pd.Get_CasePosMin();
   CasePosMax=pd.Get_CasePosMax();
-  //printf("-->LoadParticles> CasePos=(%f,%f,%f)-(%f,%f,%f)\n",CasePosMin.x,CasePosMin.y,CasePosMin.z,CasePosMax.x,CasePosMax.y,CasePosMax.z);
   const bool possimple=pd.Get_PosSimple();
   if(!pd.Get_IdpSimple())RunException(met,"Only Idp (32 bits) is valid at the moment.");
   //-Calcula numero de particulas.

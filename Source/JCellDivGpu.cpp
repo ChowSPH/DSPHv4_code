@@ -37,7 +37,6 @@ JCellDivGpu::JCellDivGpu(bool stable,bool floating,byte periactive,TpCellOrder c
 // Destructor.
 //==============================================================================
 JCellDivGpu::~JCellDivGpu(){
-  Log->Printf("---> DivideFull:%u/%u",NdivFull,Ndiv);
   Reset();
 }
  
@@ -299,7 +298,6 @@ void JCellDivGpu::CheckParticlesOut(unsigned npout,const unsigned *idp,const tdo
 // tamaño y direccion pueden variar.
 //==============================================================================
 float* JCellDivGpu::GetAuxMem(unsigned size){
-  //printf("GetAuxMem> size:%u  SizeAuxMem:%u\n",size,SizeAuxMem);
   if(size>SizeAuxMem)RunException("GetAuxMem","The requested memory is not available.");
   return(AuxMem);
 }
@@ -317,66 +315,5 @@ tdouble3 JCellDivGpu::GetDomainLimits(bool limitmin,unsigned slicecellmin)const{
   tdouble3 pmax=DomPosMin+TDouble3(scell*celmax.x,scell*celmax.y,scell*celmax.z);
   return(limitmin? pmin: pmax);
 }
-
-
-////==============================================================================
-//// Devuelve rango de particulas en el rango de celdas indicadas.
-////==============================================================================
-//uint2 JCellDivGpu::GetRangeParticlesCells(bool fluid,unsigned celini,unsigned celfin)const{
-//  if(fluid){ celini+=BoxFluid; celfin+=BoxFluid; }
-//  unsigned pmin=UINT_MAX,pmax=0;
-//  if(celini<celfin){
-//    bool memorynew=false;
-//    unsigned *auxg=NULL;
-//    unsigned size=cudiv::GetRangeParticlesCellsSizeAux(celini,celfin);
-//    if(size<=SizeAuxMem)auxg=(unsigned*)AuxMem;
-//    else{
-//      memorynew=true;
-//      cudaMalloc((void**)&auxg,sizeof(unsigned)*size);
-//    } 
-//    cudiv::GetRangeParticlesCells(celini,celfin,BeginEndCell,auxg,pmin,pmax,Log);
-//    if(memorynew)cudaFree(auxg);
-//  }
-//  uint2 rg; rg.x=pmin; rg.y=pmax;
-//  return(rg);
-//}
-
-////==============================================================================
-//// Devuelve numero de particulas en el rango de celdas indicadas.
-////==============================================================================
-//unsigned JCellDivGpu::GetParticlesCells(unsigned celini,unsigned celfin){
-//  unsigned count=0;
-//  if(celini<celfin){
-//    bool memorynew=false;
-//    unsigned *auxg=NULL;
-//    unsigned size=cudiv::GetParticlesCellsSizeAux(celini,celfin);
-//    if(size<=SizeAuxMem)auxg=(unsigned*)AuxMem;
-//    else{
-//      memorynew=true;
-//      cudaMalloc((void**)&auxg,sizeof(unsigned)*size);
-//    } 
-//    count=cudiv::GetParticlesCells(celini,celfin,BeginEndCell,auxg,Log);
-//    if(memorynew)cudaFree(auxg);
-//  }
-//  return(count);
-//}
-
-
-//==============================================================================
-// Graba fichero vtk con el rango de particulas indicado.
-//==============================================================================
-/*void JCellDivGpu::DgSaveVktRange(std::string file,unsigned pini,unsigned pfin,const unsigned *idpg,const float3 *posg)const{
-  int mpirank=Log->GetMpiRank();
-  if(mpirank>=0)file=string("p")+fun::IntStr(mpirank)+"_"+file;
-  file=DirOut+file;
-  unsigned np=pfin-pini;
-  tfloat3 *pos=new tfloat3[np];
-  unsigned *idp=new unsigned[np];
-  cudaMemcpy(idp,idpg+pini,sizeof(unsigned)*np,cudaMemcpyDeviceToHost);
-  cudaMemcpy(pos,posg+pini,sizeof(float3)*np,cudaMemcpyDeviceToHost);
-  JFormatFiles2::ParticlesToVtk(file,pfin-pini,pos,NULL,NULL,NULL,NULL,idp,NULL,NULL,NULL,NULL);
-  delete[] pos;
-  delete[] idp;
-}*/
 
 

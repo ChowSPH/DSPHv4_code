@@ -23,7 +23,6 @@
 
 #pragma warning(disable : 4996) //Cancels sprintf() deprecated.
 
-//using namespace std;
 using std::string;
 using std::ofstream;
 using std::endl;

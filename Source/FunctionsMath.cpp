@@ -20,7 +20,6 @@
 #include "FunctionsMath.h"
 #include <cstdio>
 #include <cstdlib>
-//#include <cstring>
 #include <cmath>
 
 namespace fmath{

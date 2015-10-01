@@ -21,6 +21,9 @@
 
 using namespace std;
 
+//##############################################################################
+//# JArraysCpuSize
+//##############################################################################
 //==============================================================================
 // Constructor.
 //==============================================================================
@@ -166,7 +169,7 @@ void JArraysCpuSize::Free(void *pointer){
 
 
 //##############################################################################
-//==============================================================================
+//# JArraysCpu
 //##############################################################################
 //==============================================================================
 // Constructor.
@@ -187,7 +190,6 @@ JArraysCpu::JArraysCpu(){
 // Destructor.
 //==============================================================================
 JArraysCpu::~JArraysCpu(){
-  //printf("____JArraysCpu> 1b:(%u/%u)  4b:(%u/%u)  12b:(%u/%u)  16b:(%u/%u)   (CountUsedMax/CountMax).\n",Arrays1b->GetArrayCountUsedMax(),Arrays1b->GetArrayCountMax(),Arrays4b->GetArrayCountUsedMax(),Arrays4b->GetArrayCountMax(),Arrays12b->GetArrayCountUsedMax(),Arrays12b->GetArrayCountMax(),Arrays16b->GetArrayCountUsedMax(),Arrays16b->GetArrayCountMax());
   delete Arrays1b;
   delete Arrays2b;
   delete Arrays4b;

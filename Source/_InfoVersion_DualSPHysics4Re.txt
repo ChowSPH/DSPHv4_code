@@ -301,12 +301,14 @@
   - Link SaveMapCellsVtk with option SvDomainVtk but limited by number of cells. (v4.0.004 / 01-10-2015)
   - Now CELLDIV_OVERMEMORYCELLS is really used to allocate memory for cells. (v4.0.005 / 01-10-2015)
   - Minor changes. (v4.0.006 / 01-10-2015)
-
+  - JWaveGen: Uses HIDE_2NDORDER to hide 2nd order wave theory because it is under review. (v4.0.007 / 01-10-2015)
+  - JWaveGen: Correction of errors in recording velocity in CSV. (v4.0.007 / 01-10-2015)
+  - Minor changes. (v4.0.007 / 01-10-2015)
   
   
 Remaining issues:
 ==================
-- Remove //Log->Print //print
+- Remove //Log->Print //print if(0)
 - Use of SDAT_info?
 - TDeltaSph, when is DynamicExt used?
 - Is FtPause ok?
@@ -314,7 +316,6 @@ Remaining issues:
 - Test periodic one-axis and two-axis.
 - Examples with DomainLimits
 - MkList, when is it used? LoadCodeParticles
-- Remove references to MapMove.
 
 - Check timers for Shifting.
 - Check timers for Ren correction or remove Ren correction...
@@ -329,3 +330,6 @@ Remaining issues:
 - Remove JSaveCsv.  
 - Remove JDgKerPrint.  
 - Remove DGSAVE.  
+
+x Remove "---> DivideFull:"
+x Remove references to MapMove.

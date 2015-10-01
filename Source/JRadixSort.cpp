@@ -74,18 +74,17 @@ void JRadixSort::Reset(){
 template<class T> unsigned JRadixSort::TBitsSize(T v,unsigned smax)const{
   unsigned nbits=1;
   for(;v>>nbits&&nbits<smax;nbits++);
-/*
-  printf("++++> v>>nbits(%u): %u\n",nbits,(v>>nbits));
-  for(;v>>nbits&&nbits<smax;nbits++){
-    printf("++++> v>>nbits(%u): %u\n",nbits,(v>>nbits));
-    //if(nbits>65)break;
-  }
-  printf("++++> BitSize(%u):%u\n",v,nbits);
-*/
   return(nbits);
 }
+
+//==============================================================================
+/// Devuelve el numero de bits necesarios para codificar el valor indicado.
 //==============================================================================
 unsigned JRadixSort::BitsSize(unsigned v)const{ return(TBitsSize<unsigned>(v,32)); };
+
+//==============================================================================
+/// Devuelve el numero de bits necesarios para codificar el valor indicado.
+//==============================================================================
 unsigned JRadixSort::BitsSize(ullong v)const{ return(TBitsSize<ullong>(v,64)); };
 
 //==============================================================================
@@ -95,7 +94,6 @@ template<class T> unsigned JRadixSort::TCalcNbits(unsigned size,const T *data)co
   const char met[]="CalcNbits";
   const int threads=omp_get_max_threads();
   T mxdata=0;
-
   if(!UseOmp || threads<2){//-Secuencial.
     T vmax=0;
     for(unsigned c=0;c<size;c++)vmax=max(vmax,data[c]);
@@ -106,7 +104,6 @@ template<class T> unsigned JRadixSort::TCalcNbits(unsigned size,const T *data)co
     const int nk=int(size/OMPSIZE)+1;
     if(nk<0)RunException(met,"Number of values is invalid.");
     const int rk=int(size%OMPSIZE);
-    //printf("CalcNbits> Size:%u  nk:%d  rk:%d  sizek:%u\n",size,nk,rk,OMPSIZE);
     //-Calcula maximo de nk bloques con varios hilos.
     T *vmax=new T[threads*OMPSTRIDE];
     memset(vmax,0,sizeof(T)*threads*OMPSTRIDE);
@@ -130,8 +127,15 @@ template<class T> unsigned JRadixSort::TCalcNbits(unsigned size,const T *data)co
   //-Calcula nbits para el valor maximo.
   return(BitsSize(mxdata));
 }
+
+//==============================================================================
+/// Calcula Nbits para los datos indicados.
 //==============================================================================
 unsigned JRadixSort::CalcNbits(unsigned size,const unsigned *data)const{ return(TCalcNbits<unsigned>(size,data)); }
+
+//==============================================================================
+/// Calcula Nbits para los datos indicados.
+//==============================================================================
 unsigned JRadixSort::CalcNbits(unsigned size,const ullong *data)const{ return(TCalcNbits<ullong>(size,data)); }
 
 //==============================================================================
@@ -174,7 +178,6 @@ template<class T> void JRadixSort::LoadBeginKeys(const T* data){
       BeginKeys[ck*KEYSRANGE]=0;
       for(unsigned c=1;c<KEYSRANGE;c++){
         BeginKeys[ck*KEYSRANGE+c]=BeginKeys[ck*KEYSRANGE+c-1]+nkeys[ck*KEYSRANGE+c-1];
-        //printf(">> BeginKeys[%u*%u+%u]=%u\n",ck,KEYSRANGE,c,BeginKeys[ck*KEYSRANGE+c]);
       }
     }
     delete[] nkeys;
@@ -189,7 +192,6 @@ template<class T> void JRadixSort::LoadBeginKeys(const T* data){
     unsigned *nkeys=new unsigned[skeys*threads];
     memset(nkeys,0,sizeof(unsigned)*skeys*threads);
     //-Realiza conteo con varios hilos.
-    //printf(">> nk:%d  rk:%d\n",nk,rk);
     #ifdef _WITHOMP
       #pragma omp parallel for schedule (static)
     #endif
@@ -198,26 +200,21 @@ template<class T> void JRadixSort::LoadBeginKeys(const T* data){
       unsigned *n=nkeys+(skeys*th);
       const unsigned c2ini=OMPSIZE*c;
       const unsigned c2fin=c2ini+(c+1<nk? OMPSIZE: rk);
-      //printf(">> c2ini:%d  c2fin:%d\n",c2ini,c2fin);
       for(unsigned c2=c2ini;c2<c2fin;c2++){
         T v=data[c2];
         for(unsigned ck=0;ck<Nkeys;ck++){ 
           unsigned k=((v>>(ck*KEYSBITS))&KEYSMASK);
           n[ck*KEYSRANGE+k]++;
-          //printf(">> acc n[%u*KEYSRANGE+%u]=%u\n",ck,c,n[ck*KEYSRANGE+k]);
         } 
       }
     }
     //-Reduce conteo de todos los hilos.
-    //for(int t=0;t<Threads;t++)for(unsigned ck=0;ck<Nkeys;ck++)for(unsigned c=0;c<KEYSRANGE;c++)
-    //  printf(">> nkeys[%u*skeys+%u*%u+%u]=%u\n",t,ck,KEYSRANGE,c,nkeys[t*skeys+ck*KEYSRANGE+c]);
     for(int t=1;t<threads;t++)for(unsigned ck=0;ck<Nkeys;ck++)for(unsigned c=0;c<KEYSRANGE;c++)nkeys[ck*KEYSRANGE+c]+=nkeys[t*skeys+ck*KEYSRANGE+c];
     //-Carga valores en BeginKeys.
     for(unsigned ck=0;ck<Nkeys;ck++){
       BeginKeys[ck*KEYSRANGE]=0;
       for(unsigned c=1;c<KEYSRANGE;c++){
         BeginKeys[ck*KEYSRANGE+c]=BeginKeys[ck*KEYSRANGE+c-1]+nkeys[ck*KEYSRANGE+c-1];
-        //printf(">> BeginKeys[%u*%u+%u]=%u\n",ck,KEYSRANGE,c,BeginKeys[ck*KEYSRANGE+c]);
       }
     }
     //-Libera memoria auxiliar.
@@ -238,15 +235,6 @@ template<class T> void JRadixSort::SortStep(unsigned ck,const T* data,T* data2){
     data2[p2[k]]=data[p];
     p2[k]++;
   }
-  if(0){//dbg
-    //printf("CheckSortStep2[%d]>\n",ck);
-    //for(unsigned c=0;c<KEYSRANGE-1;c++){
-    //  printf("  > p2[%d]: %u != %u :BeginKeys[ck*KEYSRANGE+c+1]\n",c,p2[c],BeginKeys[ck*KEYSRANGE+c+1]);
-    //}
-    //printf("  > p2[%d]: %u != %u :Size\n",KEYSRANGE-1,p2[KEYSRANGE-1],Size);
-    for(unsigned c=0;c<KEYSRANGE-1;c++)if(p2[c]!=BeginKeys[ck*KEYSRANGE+c+1])RunException(met,"El numero de puntos ordenados no es correcto");
-    if(p2[KEYSRANGE-1]!=Size)RunException(met,"El numero de puntos ordenados no es correcto");
-  }
 }
 
 //==============================================================================
@@ -264,15 +252,6 @@ template<class T> void JRadixSort::SortStepIndex(unsigned ck,const T* data,T* da
     index2[pk]=index[p];
     p2[k]++;
   }
-  if(0){//dbg
-    //printf("CheckSortStep2[%d]>\n",ck);
-    //for(unsigned c=0;c<KEYSRANGE-1;c++){
-    //  printf("  > p2[%d]: %u != %u :BeginKeys[ck*KEYSRANGE+c+1]\n",c,p2[c],BeginKeys[ck*KEYSRANGE+c+1]);
-    //}
-    //printf("  > p2[%d]: %u != %u :Size\n",KEYSRANGE-1,p2[KEYSRANGE-1],Size);
-    for(unsigned c=0;c<KEYSRANGE-1;c++)if(p2[c]!=BeginKeys[ck*KEYSRANGE+c+1])RunException(met,"El numero de puntos ordenados no es correcto");
-    if(p2[KEYSRANGE-1]!=Size)RunException(met,"El numero de puntos ordenados no es correcto");
-  }
 }
 
 //==============================================================================
@@ -285,7 +264,6 @@ void JRadixSort::IndexCreate(){
   try{
     Index=new unsigned[Size];
     PrevIndex=new unsigned[Size];
-    if(0){ memset(Index,255,sizeof(unsigned)*Size); }//dbg
   }
   catch(const std::bad_alloc){
     RunException(met,"Cannot allocate the requested memory.");
@@ -300,23 +278,15 @@ void JRadixSort::IndexCreate(){
     if(nk<0)RunException(met,"Number of values is invalid.");
     const int rk=int(Size%OMPSIZE);
     //-Realiza proceso con varios hilos.
-    //printf(">> nk:%d  rk:%d\n",nk,rk);
     #ifdef _WITHOMP
       #pragma omp parallel for schedule (static)
     #endif
     for(int c=0;c<nk;c++){
       const unsigned c2ini=OMPSIZE*c;
       const unsigned c2fin=c2ini+(c+1<nk? OMPSIZE: rk);
-      //printf(">> c2ini:%d  c2fin:%d\n",c2ini,c2fin);
       for(unsigned c2=c2ini;c2<c2fin;c2++)PrevIndex[c2]=c2;
     }
   }
-  //if(1){
-  //  bool ok=true;
-  //  for(unsigned p=0;p<Size&&ok;p++)ok=(PrevIndex[p]==p);
-  //  printf("---IndexCreate>\n");
-  //  if(!ok)throw "Error";
-  //}
 }
 
 //==============================================================================
@@ -329,7 +299,6 @@ void JRadixSort::Sort(bool makeindex,unsigned size,unsigned *data,unsigned nbits
   AllocMemory(Size);
   if(makeindex)IndexCreate();
   LoadBeginKeys<unsigned>(PrevData32);
-  //if(1)for(unsigned b=0;b<Nbits;b++)printf("Sort> CountZeros[%d]:%d + %d\n",b,CountZeros[b],Size-CountZeros[b]); //dbg
   for(unsigned ck=0;ck<Nkeys;ck++){
     if(makeindex){
       SortStepIndex(ck,PrevData32,Data32,PrevIndex,Index);
@@ -356,7 +325,6 @@ void JRadixSort::Sort(bool makeindex,unsigned size,ullong *data,unsigned nbits){
   AllocMemory(Size);
   if(makeindex)IndexCreate();
   LoadBeginKeys<ullong>(PrevData64);
-  //if(1)for(unsigned b=0;b<Nbits;b++)printf("Sort> CountZeros[%d]:%d + %d\n",b,CountZeros[b],Size-CountZeros[b]); //dbg
   for(unsigned ck=0;ck<Nkeys;ck++){
     if(makeindex){
       SortStepIndex(ck,PrevData64,Data64,PrevIndex,Index);
@@ -364,12 +332,6 @@ void JRadixSort::Sort(bool makeindex,unsigned size,ullong *data,unsigned nbits){
     }
     else SortStep(ck,PrevData64,Data64);
     swap(PrevData64,Data64);
-    //printf("\n***** SortStep: %d\n",ck);
-    //for(unsigned p=0;p<Size&&p<100;p++){ 
-    //  const unsigned ckmov=ck*KEYSBITS;
-    //  unsigned k=((PrevData64[p]>>ckmov)&KEYSMASK);
-    //  printf("data[%2d]: %12llu  k:%u\n",p,PrevData64[p],k);
-    //}
   }
   if(makeindex){ 
     swap(PrevIndex,Index);
@@ -425,16 +387,13 @@ template<class T> void JRadixSort::TSortData(unsigned size,const T *data,T *resu
     const int nk=int(Size/OMPSIZE)+1;
     if(nk<0)RunException(met,"Number of values is invalid.");
     const int rk=int(Size%OMPSIZE);
-    //printf(">> nk:%d  rk:%d\n",nk,rk);
     #ifdef _WITHOMP
       #pragma omp parallel for schedule (static)
     #endif
     for(int c=0;c<nk;c++){
       const unsigned c2ini=OMPSIZE*c;
       const unsigned c2fin=c2ini+(c+1<nk? OMPSIZE: rk);
-      //printf(">> c2ini:%d  c2fin:%d\n",c2ini,c2fin);
       for(unsigned c2=c2ini;c2<c2fin;c2++)res[c2]=data[Index[c2]]; 
-      //  printf("SortData> c2:%2u Index[c2]:%2u data[Index[c2]]:%g\n",c2,Index[c2],res[c2]);
     }
   }
   //-Coloca resultado y libera memoria.
@@ -443,14 +402,45 @@ template<class T> void JRadixSort::TSortData(unsigned size,const T *data,T *resu
     delete[] res;
   }
 }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
 //==============================================================================
 void JRadixSort::SortData(unsigned size,const byte *data,byte *result){ TSortData<byte>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+//==============================================================================
 void JRadixSort::SortData(unsigned size,const unsigned *data,unsigned *result){ TSortData<unsigned>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+//==============================================================================
 void JRadixSort::SortData(unsigned size,const float *data,float *result){ TSortData<float>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+//==============================================================================
 void JRadixSort::SortData(unsigned size,const double *data,double *result){ TSortData<double>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+//==============================================================================
 void JRadixSort::SortData(unsigned size,const tfloat3 *data,tfloat3 *result){ TSortData<tfloat3>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+//==============================================================================
 void JRadixSort::SortData(unsigned size,const tfloat4 *data,tfloat4 *result){ TSortData<tfloat4>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+//==============================================================================
 void JRadixSort::SortData(unsigned size,const tdouble3 *data,tdouble3 *result){ TSortData<tdouble3>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+//==============================================================================
 void JRadixSort::SortData(unsigned size,const tdouble2 *data,tdouble2 *result){ TSortData<tdouble2>(size,data,result); }
 
 //==============================================================================
@@ -469,106 +459,4 @@ void JRadixSort::DgCheckResult64()const{
   for(;p<Size&&InitData64[p-1]<=InitData64[p];p++);
   if(p!=Size)RunException("DgCheckResult64","El orden no es correcto");
 }
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-//==============================================================================
-/// Calcula Nbits para los datos indicados.
-//==============================================================================
-unsigned JRadixSort::CalcNbits(unsigned size,const unsigned *data){
-  const char met[]="CalcNbits";
-  const unsigned sizek=1024;
-  const int nk=int(size/sizek);
-  if(nk<0)RunException(met,"Numero de elementos no valido.");
-  const int rk=int(size%sizek);
-  //printf("CalcNbits> Size:%u  nk:%d  rk:%d  sizek:%u\n",size,nk,rk,sizek);
-  //-Calcula maximo de nk bloques con varios hilos.
-  unsigned *vmax=new unsigned[Threads*OMPSTRIDE];
-  memset(vmax,0,sizeof(unsigned)*Threads*OMPSTRIDE);
-#ifdef _WITHOMP
-  #pragma omp parallel for schedule (static)
-#endif
-  for(int c=0;c<nk;c++){
-    int th=omp_get_thread_num();
-    unsigned mx=vmax[OMPSTRIDE*th];
-    const unsigned c2fin=sizek*c+sizek;
-    for(unsigned c2=c2fin-sizek;c2<c2fin;c2++)mx=max(mx,data[c2]);
-    vmax[OMPSTRIDE*th]=mx;
-  }
-  //-Calcula reduce maximo de todos los hilos.
-  unsigned mx=0;
-  for(int t=0;t<Threads;t++)mx=max(mx,vmax[OMPSTRIDE*t]);
-  delete[] vmax; vmax=NULL;
-  //-Calcula maximo del resto de datos.
-  const unsigned c2fin=sizek*nk+rk;
-  for(unsigned c2=c2fin-rk;c2<c2fin;c2++)mx=max(mx,data[c2]);
-  //-Calcula nbits para el valor maximo.
-  return(BitsSize(mx));
-}
-//==============================================================================
-/// Calcula Nbits para los datos indicados.
-//==============================================================================
-unsigned JRadixSort::CalcNbits(unsigned size,const ullong *data){
-  const char met[]="CalcNbits";
-  const unsigned sizek=1024;
-  const int nk=int(size/sizek);
-  if(nk<0)RunException(met,"Number of values is invalid.");
-  const int rk=int(size%sizek);
-  //printf("CalcNbits> Size:%u  nk:%d  rk:%d  sizek:%u\n",size,nk,rk,sizek);
-  //-Calcula maximo de nk bloques con varios hilos.
-  ullong *vmax=new ullong[Threads*OMPSTRIDE];
-  memset(vmax,0,sizeof(ullong)*Threads*OMPSTRIDE);
-  ThreadsConfig();
-#ifdef _WITHOMP
-  #pragma omp parallel for schedule (static)
-#endif
-  for(int c=0;c<nk;c++){
-    int th=omp_get_thread_num();
-    ullong mx=vmax[OMPSTRIDE*th];
-    const unsigned c2fin=sizek*c+sizek;
-    for(unsigned c2=c2fin-sizek;c2<c2fin;c2++)mx=max(mx,data[c2]);
-    vmax[OMPSTRIDE*th]=mx;
-  }
-  ThreadsRestore();
-  //-Calcula reduce maximo de todos los hilos.
-  ullong mx=0;
-  for(int t=0;t<Threads;t++)mx=max(mx,vmax[OMPSTRIDE*t]);
-  delete[] vmax; vmax=NULL;
-  //-Calcula maximo del resto de datos.
-  const unsigned c2fin=sizek*nk+rk;
-  for(unsigned c2=c2fin-rk;c2<c2fin;c2++)mx=max(mx,data[c2]);
-  //-Calcula nbits para el valor maximo.
-  return(BitsSize(mx));
-}
-//==============================================================================
-/// Devuelve el numero de bits necesarios para codificar el valor indicado.
-//==============================================================================
-unsigned JRadixSort::BitsSize(unsigned v){
-  unsigned nbits=1;
-  for(;v>>nbits;nbits++);
-  //sprintf(Cad,"++++> BitSize(%u):%u",v,nbits); Log->Print(Cad);
-  return(nbits);
-}
-//==============================================================================
-/// Devuelve el numero de bits necesarios para codificar el valor indicado.
-//==============================================================================
-unsigned JRadixSort::BitsSize(ullong v){
-  unsigned nbits=1;
-  for(;v>>nbits;nbits++);
-  //sprintf(Cad,"++++> BitSize(%u):%u",v,nbits); Log->Print(Cad);
-  return(nbits);
-}
-
-*/
-
 

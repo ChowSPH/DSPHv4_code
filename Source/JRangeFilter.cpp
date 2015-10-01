@@ -23,8 +23,6 @@
 #include <cstring>
 #include <climits>
 
-//using namespace std;
-
 //==============================================================================
 /// Constructor.
 //==============================================================================
@@ -75,7 +73,6 @@ void JRangeFilter::AddValue(unsigned v){
     Ranges[Count<<1]=v;
     Ranges[(Count<<1)+1]=v;
     Count++;
-    //printf("##>AddValue(%d)\n",v);
   }
 }
 
@@ -99,7 +96,6 @@ void JRangeFilter::AddRange(unsigned v,unsigned v2){
       Ranges[Count<<1]=v;
       Ranges[(Count<<1)+1]=v2;
       Count++;
-      //printf("##>AddRange(%d,%d)\n",v,v2);
     }
   }
 }
@@ -160,15 +156,12 @@ void JRangeFilter::Config(std::string filter){
   Reset();
   std::string tx,tx2;
   while(!filter.empty()){
-    //printf("\nfilter:[%s]\n",filter.c_str());
     int pos=int(filter.find(","));
     tx=(pos>0? filter.substr(0,pos): filter);
     filter=(pos>0? filter.substr(pos+1): "");
-    //printf("tx:[%s]\n",tx.c_str());
     pos=int(tx.find("-"));
     tx2=(pos>0? tx.substr(0,pos): "");
     if(pos>0)tx=tx.substr(pos+1);
-    //printf("tx:[%s] tx2:[%s]\n",tx.c_str(),tx2.c_str());
     if(tx2.empty())AddValue(atoi(tx.c_str()));
     else AddRange(atoi(tx2.c_str()),atoi(tx.c_str()));
   }
@@ -185,7 +178,6 @@ void JRangeFilter::Config(std::string filter){
       }
     }
   }
-  //printf("##>Filter:[%s]\n",ToString().c_str());
 }
 
 //==============================================================================

@@ -303,12 +303,8 @@ void JBinaryDataArray::ClearFileData(){
 //==============================================================================
 void JBinaryDataArray::ReadFileData(bool resize){
   const char met[]="ReadFileData";
-  //printf("ReadFileData Parent_name:[%s] p:%p\n",Parent->GetName().c_str(),Parent);
-  //printf("ReadFileData Parent2_name:[%s] p:%p\n",(Parent->GetParent()? Parent->GetParent()->GetName().c_str(): "none"),Parent->GetParent());
-  //printf("ReadFileData root_name:[%s] p:%p\n",Parent->GetItemRoot()->GetName().c_str(),Parent->GetItemRoot());
   ifstream *pf=Parent->GetItemRoot()->GetFileStructure();
   if(!pf||!pf->is_open())RunException(met,"The file with data is not available.");
-  //printf("ReadFileData[%s]> fpos:%llu count:%u size:%u\n",Name.c_str(),FileDataPos,FileDataCount,FileDataSize);
   if(FileDataPos<0)RunException(met,"The access information to data file is not available.");
   pf->seekg(FileDataPos,ios::beg);
   ReadData(FileDataCount,FileDataSize,pf,resize);
@@ -543,7 +539,6 @@ void JBinaryData::ValuesCachePrepare(bool down){
 int JBinaryData::CheckGetValue(const std::string &name,bool optional,JBinaryDataDef::TpData type)const{
   const char met[]="CheckGetValue";
   int idx=GetValueIndex(name);
-  //if(idx<0&&GetArrayIndex(name)>=0)RunException(met,string("The value ")+name+" is an array.");
   if(!optional&&idx<0)RunException(met,string("Value ")+name+" not found.");
   if(idx>=0&&Values[idx].type!=type)RunException(met,string("Type of value ")+name+" invalid.");
   return(idx);
@@ -554,7 +549,6 @@ int JBinaryData::CheckGetValue(const std::string &name,bool optional,JBinaryData
 //==============================================================================
 int JBinaryData::CheckSetValue(const std::string &name,JBinaryDataDef::TpData type){
   const char met[]="CheckSetValue";
-  //ResetData();
   int idx=GetValueIndex(name);
   if(idx<0&&GetArray(name)!=NULL)RunException(met,string("The value ")+name+" is an array.");
   if(idx<0&&GetItem(name)!=NULL)RunException(met,string("The value ")+name+" is an item.");
@@ -1046,7 +1040,7 @@ JBinaryData::StHeadFmtBin JBinaryData::MakeFileHead(const std::string &filecode)
 unsigned JBinaryData::GetFileHead(std::ifstream *pf,JBinaryData::StHeadFmtBin &head)const{
   //-Obtiene size del fichero.
   pf->seekg(0,ios::end);
-  const unsigned fsize=(unsigned)pf->tellg();   //printf("CheckFileHead> FileSize:%u\n",fsize);
+  const unsigned fsize=(unsigned)pf->tellg();
   pf->seekg(0,ios::beg);
   //-Lee cabecera basica.
   if(fsize>=sizeof(StHeadFmtBin))pf->read((char*)&head,sizeof(StHeadFmtBin));
@@ -1102,7 +1096,7 @@ unsigned JBinaryData::CheckFileListHead(const std::string &file,std::fstream *pf
   const char met[]="CheckFileHead";
   //-Obtiene size del fichero.
   pf->seekg(0,ios::end);
-  const unsigned fsize=(unsigned)pf->tellg();   //printf("CheckFileHead> FileSize:%u\n",fsize);
+  const unsigned fsize=(unsigned)pf->tellg();
   pf->seekg(0,ios::beg);
   //-Lee cabecera basica y comprueba validez.
   StHeadFmtBin head;
@@ -1303,10 +1297,8 @@ void JBinaryData::SaveFileData(std::fstream *pf,bool head,const std::string &fil
   //-Graba datos.
   if(memory){//-Graba datos desde memoria.
     const unsigned sbuf=GetSizeDataConst(all);
-    //printf("SaveFile> sbuf:%u\n",sbuf);
     byte *buf=new byte[sbuf];
     unsigned sbuf2=SaveDataConst(sbuf,buf,all);
-    //printf("SaveFile> sbuf2:%u\n",sbuf2);
     pf->write((char*)buf,sbuf);
     delete[] buf;
   }
@@ -1351,7 +1343,6 @@ void JBinaryData::LoadFile(const std::string &file,const std::string &filecode,b
     //-Carga datos.
     if(memory){//-Carga datos desde memoria.
       const unsigned sbuf=fsize-sizeof(StHeadFmtBin);
-      //printf("LoadFile> sbuf:%u\n",sbuf);
       byte *buf=new byte[sbuf];
       pf.read((char*)buf,sbuf);
       LoadData(sbuf,buf);
@@ -1410,7 +1401,6 @@ void JBinaryData::LoadFileListApp(const std::string &file,const std::string &fil
       //-Carga datos.
       if(memory){//-Carga datos desde memoria.
         const unsigned sbuf=fsize-sizeof(StHeadFmtBin);
-        //printf("LoadFile> sbuf:%u\n",sbuf);
         byte *buf=new byte[sbuf];
         pf.read((char*)buf,sbuf);
         unsigned cbuf=0;
@@ -1477,7 +1467,6 @@ std::ifstream* JBinaryData::GetFileStructure()const{
   return(FileStructure);
 }
 
-
 //==============================================================================
 /// Graba contenido en fichero XML.
 //==============================================================================
@@ -1496,9 +1485,6 @@ void JBinaryData::SaveFileXml(std::string file,bool svarrays,const std::string &
   }
   else RunException(met,"File could not be opened.",file);
 }
-
-
-
 
 //==============================================================================
 /// Devuelve item principal.
@@ -1571,9 +1557,6 @@ void JBinaryData::RemoveItems(){
   for(unsigned c=0;c<Items.size();c++)delete Items[c];
   Items.clear();
 }
-
-
-
 
 //==============================================================================
 /// Devuelve el numero de arrays no marcados como ocultos.
@@ -1648,9 +1631,6 @@ void JBinaryData::RemoveArrays(){
   Arrays.clear();
 }
 
-
-
-
 //==============================================================================
 /// Devuelve posicion de la variable solicitada, -1 en caso de no existir.
 //==============================================================================
@@ -1714,8 +1694,6 @@ void JBinaryData::RemoveValues(){
   ValuesCacheReset();
 }
 
-
-
 //==============================================================================
 /// Devuelve el valor solicitado de tipo texto.
 //==============================================================================
@@ -1723,6 +1701,7 @@ std::string JBinaryData::GetvText(const std::string &name,bool optional,std::str
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatText);
   return(pos<0? valdef: Values[pos].vtext);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo bool.
 //==============================================================================
@@ -1730,6 +1709,7 @@ bool JBinaryData::GetvBool(const std::string &name,bool optional,bool valdef)con
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatBool);
   return(pos<0? valdef: Values[pos].vint!=0);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo char.
 //==============================================================================
@@ -1737,6 +1717,7 @@ char JBinaryData::GetvChar(const std::string &name,bool optional,char valdef)con
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatChar);
   return(pos<0? valdef: Values[pos].vchar);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo unsigned char.
 //==============================================================================
@@ -1744,6 +1725,7 @@ unsigned char JBinaryData::GetvUchar(const std::string &name,bool optional,unsig
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUchar);
   return(pos<0? valdef: Values[pos].vuchar);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo short.
 //==============================================================================
@@ -1751,6 +1733,7 @@ short JBinaryData::GetvShort(const std::string &name,bool optional,short valdef)
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatShort);
   return(pos<0? valdef: Values[pos].vshort);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo unsigned short.
 //==============================================================================
@@ -1758,6 +1741,7 @@ unsigned short JBinaryData::GetvUshort(const std::string &name,bool optional,uns
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUshort);
   return(pos<0? valdef: Values[pos].vushort);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo int.
 //==============================================================================
@@ -1765,6 +1749,7 @@ int JBinaryData::GetvInt(const std::string &name,bool optional,int valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatInt);
   return(pos<0? valdef: Values[pos].vint);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo unsigned.
 //==============================================================================
@@ -1772,6 +1757,7 @@ unsigned JBinaryData::GetvUint(const std::string &name,bool optional,unsigned va
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUint);
   return(pos<0? valdef: Values[pos].vuint);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo long long.
 //==============================================================================
@@ -1779,6 +1765,7 @@ llong JBinaryData::GetvLlong(const std::string &name,bool optional,llong valdef)
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatLlong);
   return(pos<0? valdef: Values[pos].vllong);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo unsigned long long.
 //==============================================================================
@@ -1786,6 +1773,7 @@ ullong JBinaryData::GetvUllong(const std::string &name,bool optional,ullong vald
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUllong);
   return(pos<0? valdef: Values[pos].vullong);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo float.
 //==============================================================================
@@ -1793,6 +1781,7 @@ float JBinaryData::GetvFloat(const std::string &name,bool optional,float valdef)
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatFloat);
   return(pos<0? valdef: Values[pos].vfloat);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo double.
 //==============================================================================
@@ -1800,6 +1789,7 @@ double JBinaryData::GetvDouble(const std::string &name,bool optional,double vald
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatDouble);
   return(pos<0? valdef: Values[pos].vdouble);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo tint3.
 //==============================================================================
@@ -1807,6 +1797,7 @@ tint3 JBinaryData::GetvInt3(const std::string &name,bool optional,tint3 valdef)c
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatInt3);
   return(pos<0? valdef: Values[pos].vint3);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo tuint3.
 //==============================================================================
@@ -1814,6 +1805,7 @@ tuint3 JBinaryData::GetvUint3(const std::string &name,bool optional,tuint3 valde
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUint3);
   return(pos<0? valdef: Values[pos].vuint3);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo tfloat3.
 //==============================================================================
@@ -1821,6 +1813,7 @@ tfloat3 JBinaryData::GetvFloat3(const std::string &name,bool optional,tfloat3 va
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatFloat3);
   return(pos<0? valdef: Values[pos].vfloat3);
 }
+
 //==============================================================================
 /// Devuelve el valor solicitado de tipo tdouble3.
 //==============================================================================
@@ -1829,98 +1822,111 @@ tdouble3 JBinaryData::GetvDouble3(const std::string &name,bool optional,tdouble3
   return(pos<0? valdef: Values[pos].vdouble3);
 }
 
-
-
 //==============================================================================
 /// Crea o modifica un valor de tipo texto.
 //==============================================================================
 void JBinaryData::SetvText(const std::string &name,const std::string &v){
   Values[CheckSetValue(name,JBinaryDataDef::DatText)].vtext=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo bool.
 //==============================================================================
 void JBinaryData::SetvBool(const std::string &name,bool v){
   Values[CheckSetValue(name,JBinaryDataDef::DatBool)].vint=(v? 1: 0);
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo char.
 //==============================================================================
 void JBinaryData::SetvChar(const std::string &name,char v){
   Values[CheckSetValue(name,JBinaryDataDef::DatChar)].vchar=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo unsigned char.
 //==============================================================================
 void JBinaryData::SetvUchar(const std::string &name,unsigned char v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUchar)].vuchar=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo short.
 //==============================================================================
 void JBinaryData::SetvShort(const std::string &name,short v){
   Values[CheckSetValue(name,JBinaryDataDef::DatShort)].vshort=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo unsigned short.
 //==============================================================================
 void JBinaryData::SetvUshort(const std::string &name,unsigned short v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUshort)].vushort=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo int.
 //==============================================================================
 void JBinaryData::SetvInt(const std::string &name,int v){
   Values[CheckSetValue(name,JBinaryDataDef::DatInt)].vint=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo unsigned.
 //==============================================================================
 void JBinaryData::SetvUint(const std::string &name,unsigned v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUint)].vuint=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo long long.
 //==============================================================================
 void JBinaryData::SetvLlong(const std::string &name,llong v){
   Values[CheckSetValue(name,JBinaryDataDef::DatLlong)].vllong=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo unsigned long long.
 //==============================================================================
 void JBinaryData::SetvUllong(const std::string &name,ullong v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUllong)].vullong=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo float.
 //==============================================================================
 void JBinaryData::SetvFloat(const std::string &name,float v){
   Values[CheckSetValue(name,JBinaryDataDef::DatFloat)].vfloat=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo double.
 //==============================================================================
 void JBinaryData::SetvDouble(const std::string &name,double v){
   Values[CheckSetValue(name,JBinaryDataDef::DatDouble)].vdouble=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo tint3.
 //==============================================================================
 void JBinaryData::SetvInt3(const std::string &name,tint3 v){
   Values[CheckSetValue(name,JBinaryDataDef::DatInt3)].vint3=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo tuint3.
 //==============================================================================
 void JBinaryData::SetvUint3(const std::string &name,tuint3 v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUint3)].vuint3=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo tfloat3.
 //==============================================================================
 void JBinaryData::SetvFloat3(const std::string &name,tfloat3 v){
   Values[CheckSetValue(name,JBinaryDataDef::DatFloat3)].vfloat3=v;
 }
+
 //==============================================================================
 /// Crea o modifica un valor de tipo tdouble3.
 //==============================================================================

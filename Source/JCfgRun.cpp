@@ -20,10 +20,8 @@
 #include "JCfgRun.h"
 #include "JSpaceEParms.h"
 
-//using namespace std;
 using std::string;
 using std::ifstream;
-//using namespace fun;
 using fun::PrintVar;
 using fun::VarStr;
 using fun::StrTrim;
@@ -55,7 +53,6 @@ void JCfgRun::Reset(){
   DomainParticlesMin=DomainParticlesMax=TDouble3(0);
   DomainParticlesPrcMin=DomainParticlesPrcMax=TDouble3(0);
   DomainFixedMin=DomainFixedMax=TDouble3(0);
-  //MapMove=TDouble3(0);
   TStep=STEP_None; VerletSteps=-1;
   TVisco=VISCO_None; Visco=0; ViscoBoundFactor=-1;
   DeltaSph=-1;
@@ -146,7 +143,6 @@ void JCfgRun::VisuInfo()const{
   printf("     needed registers for each kernel (only for gpu)\n\n");
   printf("  Examples:\n");
   printf("    DualSPHysics case out_case -sv:binx2,csv \n");
-  //printf("    DualSPHysics case -gpu -svdt:1 \n\n");
 }
 
 //==============================================================================
@@ -203,7 +199,6 @@ void JCfgRun::VisuConfig()const{
     PrintVar("  DomainFixedMin",DomainFixedMin,ln);
     PrintVar("  DomainFixedMax",DomainFixedMax,ln);
   }
-  //PrintVar("  Move",MapMove,ln);
   PrintVar("  PtxasFile",PtxasFile,ln);
   PrintVar("  FtPause",FtPause,ln);
 }
@@ -220,7 +215,6 @@ void JCfgRun::LoadArgv(int argc,char** argv){
   for(int c=0;c<argc-1;c++){
     string tex=StrTrim(argv[c+1]);
     int pos=int(tex.find(" "));
-    //printf("tex[%s] pos:%d\n",tex.c_str(),pos);
     if(pos>0){
       while(pos>0){
         if(optn>=MAXOPTS)RunException(met,"It has exceeded the maximum configuration options.");
@@ -232,7 +226,6 @@ void JCfgRun::LoadArgv(int argc,char** argv){
     if(optn>=MAXOPTS)RunException(met,"It has exceeded the maximum configuration options.");
     optlis[optn]=tex; optn++;
   }
-  //for(int c=0;c<optn;c++)printf("[%d]=[%s]\n",c,optlis[c].c_str());
   if(optn)LoadOpts(optlis,optn,0,"");
   delete[] optlis;
   if(!optn)PrintInfo=true;
@@ -241,7 +234,6 @@ void JCfgRun::LoadArgv(int argc,char** argv){
     if(!SvDef){ Sv_Binx=true; Sv_Info=true; }
   }
   else VisuInfo();
-  //if(PtxasFile.empty())PtxasFile=GetDirWithSlash(GetDirParent(argv[0]))+"ptxas_info.out";
   if(PtxasFile.empty())PtxasFile=fun::GetWithoutExtension(argv[0])+"_ptxasinfo";
 }
 
@@ -250,7 +242,6 @@ void JCfgRun::LoadArgv(int argc,char** argv){
 //==============================================================================
 void JCfgRun::LoadFile(string fname,int lv){
   const char met[]="LoadFile";
-  //printf("\nFile:[%s] lv:%d\n",fname.c_str(),lv);
   const int MAXOPTS=50;
   int optn=0;
   string *optlis=new string[MAXOPTS];
@@ -263,7 +254,6 @@ void JCfgRun::LoadFile(string fname,int lv){
         if(optn<MAXOPTS)optlis[optn]=tex;
         optn++;
       }
-      //printf("FF[%s]\n",tex.c_str());
     } 
     if(!pf.eof()&&pf.fail())RunException(met,"Error reading data from the file.",fname);
     pf.close();
@@ -406,7 +396,6 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
       else if(txword=="SV"){
         string txop=StrUpper(txopt);
         while(txop.length()>0){
-          //printf("txop:[%s]\n",txop.c_str());
           pos=int(txop.find(","));
           string op=(pos>=0? txop.substr(0,pos): txop);
           txop=(pos>=0? txop.substr(pos+1): "");
@@ -471,7 +460,6 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
         DomainParticlesPrcMin=DomainParticlesPrcMax=TDouble3(0);
         DomainParticlesPrcMax.z=incz;
       }
-      //else if(txword=="MOVE")LoadDouble3(txopt+":"+txopt2+":"+txopt3,0,MapMove);
       else if(txword=="PTXASFILE"&&c+1<optn){ PtxasFile=optlis[c+1]; c++; }
       else if(txword=="OPT"&&c+1<optn){ LoadFile(optlis[c+1],lv+1); c++; }
       else if(txword=="H"||txword=="HELP"||txword=="?")PrintInfo=true;
@@ -484,7 +472,6 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
 /// Load 1 value tdouble3 using command options.
 //==============================================================================
 void JCfgRun::LoadDouble3(std::string txopt,double def,tdouble3 &v1){
-  //printf("txopt=[%s]\n",txopt.c_str());
   double values[3]={def,def,def};
   string ttx=txopt;
   for(int tc=0;ttx!=""&&tc<3;tc++){
@@ -511,7 +498,6 @@ void JCfgRun::LoadFloat3(std::string txopt,float def,tfloat3 &v1){
 /// Load 2 values tdouble3 using command options.
 //==============================================================================
 void JCfgRun::LoadDouble6(std::string txopt,double def,tdouble3 &v1,tdouble3 &v2){
-  //printf("txopt=[%s]\n",txopt.c_str());
   double values[6]={def,def,def,def,def,def};
   string ttx=txopt;
   for(int tc=0;ttx!=""&&tc<6;tc++){

@@ -54,8 +54,6 @@
 #include <vector>
 #include <fstream>
 
-//class JBinaryData;
-
 //##############################################################################
 //# JPartDataBi4
 //##############################################################################
@@ -201,12 +199,6 @@ class JPartDataBi4 : protected JObject
 
 #endif
 
-/*
-// - La clase JPartDataBi4 solo gestiona las particulas validas. Las particulas excluidas
-//   se gestionan en JPartDataBi4Out.
-// - El objeto Data
-
-*/
 
 
 

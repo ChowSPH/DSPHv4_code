@@ -38,9 +38,7 @@ void Sort(unsigned* keys,unsigned* values,unsigned size,bool stable);
 dim3 GetGridSize(unsigned n,unsigned blocksize);
 void ReduPosLimits(unsigned nblocks,float *aux,tfloat3 &pmin,tfloat3 &pmax,JLog2 *log);
 
-
 inline unsigned LimitsPosSize(unsigned ndata){ ndata=(ndata>DIVBSIZE? ndata: DIVBSIZE); unsigned n=6,s=((ndata/DIVBSIZE)+1); return((s*n + ((s/DIVBSIZE)+1)*n) + DIVBSIZE); }
-
 
 void LimitsCell(unsigned np,unsigned pini,unsigned cellcode,const unsigned *dcell,const word *code,unsigned *aux,tuint3 &celmin,tuint3 &celmax,JLog2 *log);
 void CalcBeginEndCell(bool full,unsigned np,unsigned npb,unsigned sizebegcell,unsigned cellfluid,const unsigned *cellpart,int2 *begcell);

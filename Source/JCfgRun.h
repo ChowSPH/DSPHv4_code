@@ -83,8 +83,6 @@ public:
   tdouble3 DomainParticlesPrcMin,DomainParticlesPrcMax;
   tdouble3 DomainFixedMin,DomainFixedMax;
 
-  //tdouble3 MapMove;
-
   std::string PtxasFile;           ///<File with ptxas information.
 
   JCfgRun();
