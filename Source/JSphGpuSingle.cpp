@@ -391,39 +391,17 @@ void JSphGpuSingle::Interaction_Forces(TpInter tinter){
   const unsigned bsfluid=BlockSizes.forcesfluid;
   const unsigned bsbound=BlockSizes.forcesbound;
 
-  //-Interaccion Fluid-Fluid/Bound & Bound-Fluid
+  //-Interaccion Fluid-Fluid/Bound & Bound-Fluid.
   cusph::Interaction_Forces(Psimple,WithFloating,UseDEM,lamsps,TDeltaSph,CellMode,Visco*ViscoBoundFactor,Visco,bsbound,bsfluid,Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,SpsTaug,SpsGradvelg,ViscDtg,Arg,Aceg,Deltag,TShifting,ShiftPosg,ShiftDetectg,Simulate2D);
   
-  //if(1){  //dbg
-  //  unsigned *idph=new unsigned[Np];
-  //  tfloat4 *pospressh=new tfloat4[Np];
-  //  tfloat4 *velrhoph=new tfloat4[Np];
-  //  float *arh=new float[Np];
-  //  float3 *aceh=new float3[Np];
-  //  //float3 *shifth=new float3[Np];
-  //  cudaMemcpy(idph,Idpg,sizeof(unsigned)*Np,cudaMemcpyDeviceToHost);
-  //  cudaMemcpy(pospressh,PsPospressg,sizeof(float4)*Np,cudaMemcpyDeviceToHost);
-  //  cudaMemcpy(velrhoph,Velrhopg,sizeof(float4)*Np,cudaMemcpyDeviceToHost);
-  //  cudaMemcpy(arh,Arg,sizeof(float)*Np,cudaMemcpyDeviceToHost);
-  //  cudaMemcpy(aceh,Aceg,sizeof(float3)*Np,cudaMemcpyDeviceToHost);
-  //  //cudaMemcpy(shifth,ShiftPosg,sizeof(float3)*Np,cudaMemcpyDeviceToHost);
-  //  unsigned idsel=508;
-  //  for(unsigned p=0;p<Np;p++)if(idph[p]==idsel){
-  //    Log->Printf("%u> particle[%u]> idp:%u  ar:%f  ace:(%f,%f,%f) ",Nstep,p,idph[p],arh[p],aceh[p].x,aceh[p].y,aceh[p].z);
-  //  }
-  //  Log->Print(" ");
-  //  delete[] idph;
-  //  delete[] pospressh;
-  //  delete[] velrhoph;
-  //  delete[] arh;
-  //  delete[] aceh;
-  //}
-
   //-Interaccion DEM Floating-Bound & Floating-Floating //(DEM)
   if(UseDEM)cusph::Interaction_ForcesDem(Psimple,CellMode,BlockSizes.forcesdem,CaseNfloat,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,FtRidpg,DemDatag,float(DemDtForce),Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,ViscDtg,Aceg);
 
   //-Calculo de Tau para Laminar+SPS
   if(lamsps)cusph::ComputeSpsTau(Np,Npb,SpsSmag,SpsBlin,Velrhopg,SpsGradvelg,SpsTaug);
+
+  //-Para simulaciones 2D anula siempre la 2º componente
+  if(Simulate2D)cusph::Resety(Np-Npb,Npb,Aceg);
 
   if(Deltag)cusph::AddDelta(Np-Npb,Deltag+Npb,Arg+Npb);//-Añade correccion de Delta-SPH a Arg[].
   CheckCudaError(met,"Failed while executing kernels of interaction.");

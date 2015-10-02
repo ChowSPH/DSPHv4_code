@@ -821,17 +821,17 @@ void JSphGpu::InitRun(){
 //==============================================================================
 // Prepara variables para interaccion "INTER_Forces" o "INTER_ForcesCorr".
 //==============================================================================
-void JSphGpu::PreInteractionVars_Forces(TpInter tinter,unsigned ini,unsigned np,unsigned npb){
+void JSphGpu::PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb){
   //-Inicializa arrays.
   const unsigned npf=np-npb;
-  cudaMemset(ViscDtg+ini,0,sizeof(float)*np);                                //ViscDtg[]=0
-  cudaMemset(Arg+ini,0,sizeof(float)*np);                                    //Arg[]=0
-  if(Deltag)cudaMemset(Deltag+ini,0,sizeof(float)*np);                       //Deltag[]=0
-  if(ShiftPosg)cudaMemset(ShiftPosg+ini,0,sizeof(tfloat3)*np);               //ShiftPosg[]=0
-  if(ShiftDetectg)cudaMemset(ShiftDetectg+ini,0,sizeof(float)*np);           //ShiftDetectg[]=0
-  cudaMemset(Aceg+ini,0,sizeof(tfloat3)*npb);                                //Aceg[]=(0,0,0) para bound
-  cusph::InitArray(npf,Aceg+ini+npb,Gravity);                                //Aceg[]=Gravity para fluid
-  if(SpsGradvelg)cudaMemset(SpsGradvelg+ini+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelg[]=(0,0,0,0,0,0).
+  cudaMemset(ViscDtg,0,sizeof(float)*np);                                //ViscDtg[]=0
+  cudaMemset(Arg,0,sizeof(float)*np);                                    //Arg[]=0
+  if(Deltag)cudaMemset(Deltag,0,sizeof(float)*np);                       //Deltag[]=0
+  if(ShiftPosg)cudaMemset(ShiftPosg,0,sizeof(tfloat3)*np);               //ShiftPosg[]=0
+  if(ShiftDetectg)cudaMemset(ShiftDetectg,0,sizeof(float)*np);           //ShiftDetectg[]=0
+  cudaMemset(Aceg,0,sizeof(tfloat3)*npb);                                //Aceg[]=(0,0,0) para bound
+  cusph::InitArray(npf,Aceg+npb,Gravity);                                //Aceg[]=Gravity para fluid
+  if(SpsGradvelg)cudaMemset(SpsGradvelg+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelg[]=(0,0,0,0,0,0).
 }
 
 //==============================================================================
@@ -840,9 +840,9 @@ void JSphGpu::PreInteractionVars_Forces(TpInter tinter,unsigned ini,unsigned np,
 void JSphGpu::PreInteraction_Forces(TpInter tinter){
   TmgStart(Timers,TMG_CfPreForces);
   //-Asigna memoria.
+  ViscDtg=ArraysGpu->ReserveFloat();
   Arg=ArraysGpu->ReserveFloat();
   Aceg=ArraysGpu->ReserveFloat3();
-  ViscDtg=ArraysGpu->ReserveFloat();
   if(TDeltaSph==DELTA_DynamicExt)Deltag=ArraysGpu->ReserveFloat();
   if(TShifting!=SHIFT_None){
     ShiftPosg=ArraysGpu->ReserveFloat3();
@@ -856,7 +856,7 @@ void JSphGpu::PreInteraction_Forces(TpInter tinter){
     cusph::PreInteractionSimple(Np,Posxyg,Poszg,Velrhopg,PsPospressg,CteB,Gamma);
   }
   //-Inicializa arrays.
-  PreInteractionVars_Forces(tinter,0,Np,Npb);
+  PreInteractionVars_Forces(tinter,Np,Npb);
 
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
   const unsigned pini=(DtAllParticles? 0: Npb);

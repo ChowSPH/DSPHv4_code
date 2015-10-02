@@ -304,7 +304,11 @@
   - JWaveGen: Uses HIDE_2NDORDER to hide 2nd order wave theory because it is under review. (v4.0.007 / 01-10-2015)
   - JWaveGen: Correction of errors in recording velocity in CSV. (v4.0.007 / 01-10-2015)
   - Minor changes. (v4.0.007 / 01-10-2015)
+  - Use ALMOSTZERO instead of 1e-18f. (v4.0.008 / 02-10-2015)
+  - Use Resety() after calculating Ace. (v4.0.008 / 02-10-2015)
+  - Use of inline function GetKernel() and GetInteractionCells() on CPU to mimic GPU code. (v4.0.008 / 02-10-2015)
   
+
   
 Remaining issues:
 ==================
@@ -318,7 +322,6 @@ Remaining issues:
 - MkList, when is it used? LoadCodeParticles
 
 - Check timers for Shifting.
-- Check timers for Ren correction or remove Ren correction...
 - Remove RunFloating_Old().
 - Add code for external forces by Stephen.
 - Configure project with debug.
@@ -330,6 +333,14 @@ Remaining issues:
 - Remove JSaveCsv.  
 - Remove JDgKerPrint.  
 - Remove DGSAVE.  
+- Remove KPrint, ik.
+- Usar thrust en? diferencia en rendimiento?
+  //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
+  const unsigned pini=(DtAllParticles? 0: Npb);
+  cusph::ComputeVelMod(Np-pini,Velrhopg+pini,ViscDtg);
+  float velmax=cusph::ReduMaxFloat(Np-pini,0,ViscDtg,CellDiv->GetAuxMem(cusph::ReduMaxFloatSize(Np-pini)));
 
+x Check timers for Ren correction or remove Ren correction...
 x Remove "---> DivideFull:"
 x Remove references to MapMove.
+

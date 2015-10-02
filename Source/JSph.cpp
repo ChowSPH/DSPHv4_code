@@ -317,7 +317,7 @@ void JSph::LoadConfig(const JCfgRun *cfg){
     DeltaSph=cfg->DeltaSph;
     TDeltaSph=(DeltaSph? DELTA_Dynamic: DELTA_None);
   }
-  if(TDeltaSph==DELTA_Dynamic && Cpu)TDeltaSph=DELTA_DynamicExt;
+  if(TDeltaSph==DELTA_Dynamic && Cpu)TDeltaSph=DELTA_DynamicExt; //-It is necessary because the interaction is divided in two steps: fluid-fluid/float and fluid-bound.
 
   if(cfg->RenCorrection>=0)RenCorrection=cfg->RenCorrection;
 

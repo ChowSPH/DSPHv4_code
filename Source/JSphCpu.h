@@ -144,30 +144,34 @@ protected:
   void InitFloating();
   void InitRun();
 
-  void PreInteractionVars_Forces(TpInter tinter,unsigned ini,unsigned np,unsigned npb);
+  void PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb);
   void PreInteraction_Forces(TpInter tinter);
   void PosInteraction_Forces();
 
+  inline void GetKernel(float rr2,float drx,float dry,float drz,float &frx,float &fry,float &frz)const;
+  inline float GetKernelWab(float rr2)const;
+  inline void GetInteractionCells(unsigned rcell
+    ,int hdiv,const tint4 &nc,const tint3 &cellzero
+    ,int &cxini,int &cxfin,int &yini,int &yfin,int &zini,int &zfin)const;
 
   template<bool psimple,TpFtMode ftmode> void InteractionRenBound
     (unsigned n,unsigned pinit,tint4 nc,int hdiv,unsigned cellinitial
     ,const unsigned *beginendcell,tint3 cellzero,const unsigned *dcell
     ,const tdouble3 *pos,const tfloat3 *pspos,const tfloat4 *velrhop,const word *code,const unsigned *idp
-    ,const float *press,float *presskf);
+    ,const float *press,float *presskf)const;
 
-  void Interaction_Ren(unsigned np,unsigned npb,unsigned npbok
+  void Interaction_Ren(unsigned npbok
     ,tuint3 ncells,const unsigned *begincell,tuint3 cellmin,const unsigned *dcell
     ,const tdouble3 *pos,const tfloat3 *pspos,const tfloat4 *velrhop,const unsigned *idp,const word *code
-    ,const float *press,float *presskf);
+    ,const float *press,float *presskf)const;
 
   void ComputeRenPress(unsigned npbok,float beta,const float *presskf,tfloat4 *velrhop,float *press)const;
-
 
   template<bool psimple,TpFtMode ftmode> void InteractionForcesBound
     (unsigned n,unsigned pini,tint4 nc,int hdiv,unsigned cellinitial
     ,const unsigned *beginendcell,tint3 cellzero,const unsigned *dcell
     ,const tdouble3 *pos,const tfloat3 *pspos,const tfloat4 *velrhopp,const word *code,const unsigned *id
-    ,float &viscdt,float *ar);
+    ,float &viscdt,float *ar)const;
 
   template<bool psimple,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelta,bool shift> void InteractionForcesFluid
     (unsigned n,unsigned pini,tint4 nc,int hdiv,unsigned cellfluid,float visco
@@ -192,7 +196,7 @@ protected:
     ,const float *press
     ,float &viscdt,float* ar,tfloat3 *ace,float *delta
     ,tsymatrix3f *spstau,tsymatrix3f *spsgradvel
-    ,TpShifting tshifting,tfloat3 *shiftpos,float *shiftdetect);
+    ,TpShifting tshifting,tfloat3 *shiftpos,float *shiftdetect)const;
 
   void Interaction_Forces(unsigned np,unsigned npb,unsigned npbok
     ,tuint3 ncells,const unsigned *begincell,tuint3 cellmin,const unsigned *dcell
@@ -200,7 +204,7 @@ protected:
     ,const float *press
     ,float &viscdt,float* ar,tfloat3 *ace,float *delta
     ,tsymatrix3f *spstau,tsymatrix3f *spsgradvel
-    ,tfloat3 *shiftpos,float *shiftdetect);
+    ,tfloat3 *shiftpos,float *shiftdetect)const;
 
   void InteractionSimple_Forces(unsigned np,unsigned npb,unsigned npbok
     ,tuint3 ncells,const unsigned *begincell,tuint3 cellmin,const unsigned *dcell
@@ -208,7 +212,7 @@ protected:
     ,const float *press
     ,float &viscdt,float* ar,tfloat3 *ace,float *delta
     ,tsymatrix3f *spstau,tsymatrix3f *spsgradvel
-    ,tfloat3 *shiftpos,float *shiftdetect);
+    ,tfloat3 *shiftpos,float *shiftdetect)const;
 
 
   void ComputeSpsTau(unsigned n,unsigned pini,const tfloat4 *velrhop,const tsymatrix3f *gradvel,tsymatrix3f *tau)const;

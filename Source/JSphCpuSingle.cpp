@@ -452,7 +452,7 @@ void JSphCpuSingle::GetInteractionCells(unsigned rcell
 void JSphCpuSingle::RunRenCorrection(){
   //-Calcula presion en contorno a partir de fluido.
   float *presskf=ArraysCpu->ReserveFloat();
-  Interaction_Ren(Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell()
+  Interaction_Ren(NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell()
     ,CellDivSingle->GetCellDomainMin(),Dcellc,Posc,PsPosc,Velrhopc,Idpc,Codec,Pressc,presskf);
   //-Recalcula valores de presion y densidad en contorno segun RenBeta.
   ComputeRenPress(NpbOk,RenCorrection,presskf,Velrhopc,Pressc);
@@ -467,19 +467,17 @@ void JSphCpuSingle::Interaction_Forces(TpInter tinter){
   PreInteraction_Forces(tinter);
   TmcStart(Timers,TMC_CfForces);
   if(RenCorrection)RunRenCorrection();
+
+  //-Interaccion Fluid-Fluid/Bound & Bound-Fluid (forces and DEM).
   float viscdt=0;
   if(Psimple)JSphCpu::InteractionSimple_Forces(Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellc,PsPosc,Velrhopc,Idpc,Codec,Pressc,viscdt,Arc,Acec,Deltac,SpsTauc,SpsGradvelc,ShiftPosc,ShiftDetectc);
   else JSphCpu::Interaction_Forces(Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellc,Posc,Velrhopc,Idpc,Codec,Pressc,viscdt,Arc,Acec,Deltac,SpsTauc,SpsGradvelc,ShiftPosc,ShiftDetectc);
 
-  //if(1){  //dbg
-  //  unsigned idsel=508;
-  //  for(unsigned p=0;p<Np;p++)if(Idpc[p]==idsel){
-  //    Log->Printf("%u> particle[%u]> idp:%u  ar:%f  ace:(%f,%f,%f) ",Nstep,p,Idpc[p],Arc[p],Acec[p].x,Acec[p].y,Acec[p].z);
-  //  }
-  //  Log->Print(" ");
-  //}
+  //-Para simulaciones 2D anula siempre la 2º componente
+  if(Simulate2D)for(unsigned p=Npb;p<Np;p++)Acec[p].y=0;
 
-  if(Deltac){//-Añade correccion de Delta-SPH a Arg[].
+  //-Añade correccion de Delta-SPH a Arg[].
+  if(Deltac){
     const int ini=int(Npb),fin=int(Np),npf=int(Np-Npb);
     #ifdef _WITHOMP
       #pragma omp parallel for schedule (static) if(npf>LIMIT_COMPUTELIGHT_OMP)
@@ -497,33 +495,16 @@ void JSphCpuSingle::Interaction_Forces(TpInter tinter){
 
 //==============================================================================
 // Devuelve valor maximo de (ace.x^2 + ace.y^2 + ace.z^2) a partir de Acec[].
+// The use of OpenMP here is not efficient.
 //==============================================================================
 double JSphCpuSingle::ComputeAceMax(){
   float acemax=0;
   const int ini=int(Npb),fin=int(Np),npf=int(Np-Npb);
   if(!PeriActive){//-Sin condiciones periodicas.
-    //  150k_th12: 0.1s,  150k_th16: 0.1s
-    // 1000k_th12: 0.5s,  1000k_th16: 0.5s
     for(int p=ini;p<fin;p++){
       const float ace=Acec[p].x*Acec[p].x+Acec[p].y*Acec[p].y+Acec[p].z*Acec[p].z;
       acemax=max(acemax,ace);
     }
-    //-Usando OMP con todos los Threads puede ser mucho mas lento...
-    //  150k_th12: 0.02s,  150k_th16: 9.2s
-    // 1000k_th12: 0.1s,  1000k_th16: 3.5s
-    //#pragma omp parallel 
-    //{
-    //  float acemax2=0;
-    //  #pragma omp for schedule (static) nowait
-    //  for(int p=ini;p<fin;p++){
-    //    const float ace=Acec[p].x*Acec[p].x+Acec[p].y*Acec[p].y+Acec[p].z*Acec[p].z;
-    //    acemax2=max(acemax2,ace);
-    //  }
-    //  #pragma omp critical 
-    //  {
-    //    acemax=max(acemax,acemax2);
-    //  }
-    //}
   }
   else{//-Con condiciones periodicas ignora las particulas periodicas.
     for(int p=ini;p<fin;p++)if(CODE_GetSpecialValue(Codec[p])==CODE_NORMAL){

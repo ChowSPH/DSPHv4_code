@@ -207,7 +207,7 @@ protected:
   void InitFloating();
   void InitRun();
 
-  void PreInteractionVars_Forces(TpInter tinter,unsigned ini,unsigned np,unsigned npb);
+  void PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb);
   void PreInteraction_Forces(TpInter tinter);
   void PosInteraction_Forces();
   
