@@ -134,7 +134,7 @@ protected:
   float4 *DemDatag;          ///<Data of the object {mass, (1-poisson^2)/young, kfric, restitu} in GPU [DemObjsSize].
 
   //-Vars. para computo de fuerzas.
-  float4 *PsPospressg; //-Posicion y press para interaccion Pos-Simple. press=cteb*(powf(rhop*OVERRHOPCERO,gamma)-1.0f);
+  float4 *PsPospressg; //-Posicion y press para interaccion Pos-Simple. press=cteb*(powf(rhop/rhopzero,gamma)-1.0f);
 
   float *ViscDtg;
   float3 *Aceg;      //-Acumula fuerzas de interaccion

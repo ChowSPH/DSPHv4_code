@@ -446,7 +446,7 @@ void JSphCpu::PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb)
     #pragma omp parallel for schedule (static) if(n>LIMIT_PREINTERACTION_OMP)
   #endif
   for(int p=0;p<n;p++){
-    const float rhop=Velrhopc[p].w,rhop_r0=rhop*OVERRHOPCERO;
+    const float rhop=Velrhopc[p].w,rhop_r0=rhop/RhopZero;
     Pressc[p]=CteB*(pow(rhop_r0,Gamma)-1.0f);
   }
 }
@@ -1359,7 +1359,7 @@ template<bool shift> void JSphCpu::ComputeVerletVarsFluid(const tfloat4 *velrhop
     }
     else{//-Particulas: Floating
       velrhopnew[p]=velrhop1[p];
-      velrhopnew[p].w=(rhopnew<RHOPCERO? RHOPCERO: rhopnew); //-Evita q las floating absorvan a las fluidas.
+      velrhopnew[p].w=(rhopnew<RhopZero? RhopZero: rhopnew); //-Evita q las floating absorvan a las fluidas.
     }
   }
 }
@@ -1375,7 +1375,7 @@ void JSphCpu::ComputeVelrhopBound(const tfloat4* velrhopold,double armul,tfloat4
   #endif
   for(int p=0;p<npb;p++){
     const float rhopnew=float(double(velrhopold[p].w)+armul*Arc[p]);
-    velrhopnew[p]=TFloat4(0,0,0,(rhopnew<RHOPCERO? RHOPCERO: rhopnew));//-Evita q las boundary absorvan a las fluidas.
+    velrhopnew[p]=TFloat4(0,0,0,(rhopnew<RhopZero? RhopZero: rhopnew));//-Evita q las boundary absorvan a las fluidas.
   }
 }
 
@@ -1429,7 +1429,7 @@ template<bool shift> void JSphCpu::ComputeSymplecticPreT(double dt){
   for(int p=0;p<npb;p++){
     const tfloat4 vr=VelrhopPrec[p];
     const float rhopnew=float(double(vr.w)+dt05*Arc[p]);
-    Velrhopc[p]=TFloat4(vr.x,vr.y,vr.z,(rhopnew<RHOPCERO? RHOPCERO: rhopnew));//-Evita q las boundary absorvan a las fluidas.
+    Velrhopc[p]=TFloat4(vr.x,vr.y,vr.z,(rhopnew<RhopZero? RhopZero: rhopnew));//-Evita q las boundary absorvan a las fluidas.
   }
 
   //-Calcula nuevos datos del fluido.
@@ -1460,7 +1460,7 @@ template<bool shift> void JSphCpu::ComputeSymplecticPreT(double dt){
     }
     else{//-Particulas: Floating
       Velrhopc[p]=VelrhopPrec[p];
-      Velrhopc[p].w=(rhopnew<RHOPCERO? RHOPCERO: rhopnew); //-Evita q las floating absorvan a las fluidas.
+      Velrhopc[p].w=(rhopnew<RhopZero? RhopZero: rhopnew); //-Evita q las floating absorvan a las fluidas.
       //-Copia posicion.
       Posc[p]=PosPrec[p];
     }
@@ -1491,7 +1491,7 @@ template<bool shift> void JSphCpu::ComputeSymplecticCorrT(double dt){
   for(int p=0;p<npb;p++){
     const double epsilon_rdot=(-double(Arc[p])/double(Velrhopc[p].w))*dt;
     const float rhopnew=float(double(VelrhopPrec[p].w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));
-    Velrhopc[p]=TFloat4(0,0,0,(rhopnew<RHOPCERO? RHOPCERO: rhopnew));//-Evita q las boundary absorvan a las fluidas.
+    Velrhopc[p]=TFloat4(0,0,0,(rhopnew<RhopZero? RhopZero: rhopnew));//-Evita q las boundary absorvan a las fluidas.
   }
 
   //-Calcula datos de fluido.
@@ -1523,7 +1523,7 @@ template<bool shift> void JSphCpu::ComputeSymplecticCorrT(double dt){
     }
     else{//-Particulas: Floating
       Velrhopc[p]=VelrhopPrec[p];
-      Velrhopc[p].w=(rhopnew<RHOPCERO? RHOPCERO: rhopnew); //-Evita q las floating absorvan a las fluidas.
+      Velrhopc[p].w=(rhopnew<RhopZero? RhopZero: rhopnew); //-Evita q las floating absorvan a las fluidas.
       //-Copia posicion.
       Posc[p]=PosPrec[p];
     }

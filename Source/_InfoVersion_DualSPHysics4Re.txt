@@ -310,6 +310,7 @@
   - Add timers for Shifting. (v4.0.009 / 02-10-2015)
   - Remove old code for floatings. (v4.0.009 / 02-10-2015)
   - Cleaning code. (v4.0.010 / 02-10-2015)
+  - Remove RHOPCERO and OVERRHOPCERO. (v4.0.011 / 02-10-2015)
 
   
 Remaining issues:

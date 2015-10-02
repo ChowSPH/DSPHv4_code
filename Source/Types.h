@@ -24,14 +24,15 @@
 
 #define HIDE_AWAS      //-Mantiene compatibilidad sin AWAS.
 
+//#define DISABLE_TIMERS           //-Compilado sin timers.
 
 #define CELLDIV_OVERMEMORYNP 0.05f  //-Mermoria que se reserva de mas para la gestion de particulas en JCellDivGpu.
 #define CELLDIV_OVERMEMORYCELLS 1   //-Numero celdas que se incrementa en cada dimension al reservar memoria para celdas en JCellDivGpu.
 #define PERIODIC_OVERMEMORYNP 0.05f //-Mermoria que se reserva de mas para la creacion de particulas periodicas en JSphGpuSingle::RunPeriodic().
 
-//#define DISABLE_TIMERS           //-Compilado sin timers.
-
 #define _WITHOMP //-Activar/desactivar tb en Props config -> C/C++ -> Lenguaje -> OpenMp
+
+//#define _WITHGPU 1 //<-Esta definida en las propiedades del proyecto.
 
 #define MAXTHREADS_OMP 64
 #define STRIDE_OMP 200
@@ -41,15 +42,9 @@
 //#define LIMIT_COMPUTEHEAVY_OMP 20000
 #define LIMIT_PREINTERACTION_OMP 100000
 
-//#define _WITHGPU 1 //<-Esta definida en las propiedades del proyecto.
-
-
 #define BORDER_MAP 0.001
 
 #define ALMOSTZERO 1e-18f
-
-#define RHOPCERO 1000.f
-#define OVERRHOPCERO 0.001f
 
 
 //-Codigos para particulas:

@@ -294,7 +294,7 @@ __global__ void KerPreInteractionSimple(unsigned n,const double2 *posxy,const do
     //y como para PosDouble si se calcula antes y se lee en la interaccion supondria una perdida de 
     //rendimiento del 6% o 15% (gtx480 o k20c) mejor se calcula en simple siempre.
     const float rrhop=velrhop[p].w;
-    float press=cteb*(powf(rrhop*OVERRHOPCERO,gamma)-1.0f);
+    float press=cteb*(powf(rrhop*CTE.ovrhopzero,gamma)-1.0f);
     double2 rpos=posxy[p];
     pospress[p]=make_float4(float(rpos.x),float(rpos.y),float(posz[p]),press);
   }
@@ -1348,7 +1348,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepVerlet
   if(p<n){
     if(p<npb){//-Particulas: Fixed & Moving
       float rrhop=float(double(velrhop2[p].w)+dt2*ar[p]);
-      rrhop=(rrhop<RHOPCERO? RHOPCERO: rrhop); //-Evita q las boundary absorvan a las fluidas.
+      rrhop=(rrhop<CTE.rhopzero? CTE.rhopzero: rrhop); //-Evita q las boundary absorvan a las fluidas.
       velrhopnew[p]=make_float4(0,0,0,rrhop);
     }
     else{ //-Particulas: Floating & Fluid
@@ -1382,7 +1382,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepVerlet
         velrhopnew[p]=rvelrhop2;
       }
       else{//-Particulas: Floating
-        rvel1.w=(rvelrhop2.w<RHOPCERO? RHOPCERO: rvelrhop2.w); //-Evita q las floating absorvan a las fluidas.
+        rvel1.w=(rvelrhop2.w<CTE.rhopzero? CTE.rhopzero: rvelrhop2.w); //-Evita q las floating absorvan a las fluidas.
         velrhopnew[p]=rvel1;
       }
     }
@@ -1425,7 +1425,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepSymplecticPre
     if(p<npb){//-Particulas: Fixed & Moving
       float4 rvelrhop=velrhoppre[p];
       rvelrhop.w=float(double(rvelrhop.w)+dtm*ar[p]);
-      rvelrhop.w=(rvelrhop.w<RHOPCERO? RHOPCERO: rvelrhop.w); //-Evita q las boundary absorvan a las fluidas.
+      rvelrhop.w=(rvelrhop.w<CTE.rhopzero? CTE.rhopzero: rvelrhop.w); //-Evita q las boundary absorvan a las fluidas.
       velrhop[p]=rvelrhop;
     }
     else{ //-Particulas: Floating & Fluid
@@ -1457,7 +1457,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepSymplecticPre
         rvelrhop.z=float(double(rvelrhop.z)+double(race.z)*dtm);
       }
       else{//-Particulas: Floating
-        rvelrhop.w=(rvelrhop.w<RHOPCERO? RHOPCERO: rvelrhop.w); //-Evita q las floating absorvan a las fluidas.
+        rvelrhop.w=(rvelrhop.w<CTE.rhopzero? CTE.rhopzero: rvelrhop.w); //-Evita q las floating absorvan a las fluidas.
       }
       //-Graba nueva velocidad y densidad.
       velrhop[p]=rvelrhop;
@@ -1500,7 +1500,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepSymplecticCor
     if(p<npb){//-Particulas: Fixed & Moving
       double epsilon_rdot=(-double(ar[p])/double(velrhop[p].w))*dt;
       float rrhop=float(double(velrhoppre[p].w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));
-      rrhop=(rrhop<RHOPCERO? RHOPCERO: rrhop); //-Evita q las boundary absorvan a las fluidas.
+      rrhop=(rrhop<CTE.rhopzero? CTE.rhopzero: rrhop); //-Evita q las boundary absorvan a las fluidas.
       velrhop[p]=make_float4(0,0,0,rrhop);
     }
     else{ //-Particulas: Floating & Fluid
@@ -1534,7 +1534,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepSymplecticCor
         movz[p]=dz;
       }
       else{//-Particulas: Floating
-        rvelrhop.w=(rvelrhop.w<RHOPCERO? RHOPCERO: rvelrhop.w); //-Evita q las floating absorvan a las fluidas.
+        rvelrhop.w=(rvelrhop.w<CTE.rhopzero? CTE.rhopzero: rvelrhop.w); //-Evita q las floating absorvan a las fluidas.
       }
       //-Graba nueva velocidad y densidad.
       velrhop[p]=rvelrhop;
