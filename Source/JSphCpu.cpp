@@ -25,8 +25,8 @@
 #include "JWaveGen.h"
 #include "JXml.h"
 #include "JSaveDt.h"
+#include "JSphVarAcc.h"
 
-#include "JFormatFiles2.h"
 #include <climits>
 
 #ifdef _WITHOMP
@@ -427,6 +427,36 @@ void JSphCpu::InitRun(){
 }
 
 //==============================================================================
+/// Adds variable acceleration from input files.
+//==============================================================================
+void JSphCpu::AddVarAcc(){
+  for(unsigned c=0;c<VarAcc->GetCount();c++){
+    unsigned mkfluid;
+    tfloat3 acclin,accang,centre;
+    VarAcc->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre);
+    const bool withaccang=(accang.x!=0||accang.y!=0||accang.z!=0);
+    const word codesel=word(mkfluid);
+    const int npb=int(Npb),np=int(Np);
+    #ifdef _WITHOMP
+      #pragma omp parallel for schedule (static)
+    #endif
+    for(int p=npb;p<np;p++){//-Iterates through the fluid particles.
+      //-Checks if the current particle is part of the particle set by its MK.
+      if(CODE_GetTypeValue(Codec[p])==codesel){
+        tfloat3 acc=acclin;                 //Adds linear acceleration.
+        if(withaccang){                     //Adds angular acceleration.
+          const tdouble3 dc=Posc[p]-ToTDouble3(centre);
+          acc.x+=accang.y*dc.z-accang.z*dc.y;
+          acc.y+=accang.z*dc.x-accang.x*dc.z;
+          acc.z+=accang.x*dc.y-accang.y*dc.x;
+        }
+        Acec[p]=Acec[p]+acc;
+      }
+    }
+  }
+}
+
+//==============================================================================
 // Prepara variables para interaccion "INTER_Forces" o "INTER_ForcesCorr".
 //==============================================================================
 void JSphCpu::PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb){
@@ -439,6 +469,9 @@ void JSphCpu::PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb)
   memset(Acec,0,sizeof(tfloat3)*npb);                                //Acec[]=(0,0,0) para bound
   for(unsigned p=npb;p<np;p++)Acec[p]=Gravity;                       //Acec[]=Gravity para fluid
   if(SpsGradvelc)memset(SpsGradvelc+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelc[]=(0,0,0,0,0,0).
+
+  //-Apply the extra forces to the correct particle sets.
+  if(VarAcc)AddVarAcc();
 
   //-Prepara datos derivados de rhop para interaccion.
   const int n=int(np);

@@ -2357,6 +2357,77 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
 }
 
 
+//##############################################################################
+//# Kernels para external forces (JSphVarAcc)
+//##############################################################################
+//------------------------------------------------------
+/// Adds variable forces to particle sets.
+//------------------------------------------------------
+__global__ void KerAddVarAccAng(unsigned n,unsigned pini,word codesel,float3 acclin,float3 accang,float3 centre
+  ,const word *code,const double2 *posxy,const double *posz,float3 *ace)
+{
+  unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    p+=pini;
+    //Check if the current particle is part of the particle set by its Mk
+    if(CODE_GetTypeValue(code[p])==codesel){
+      float3 acc=ace[p]; //-Gets the current particles acceleration value.
+      //-Adds linear acceleration.
+      acc.x+=acclin.x;
+      acc.y+=acclin.y;
+      acc.z+=acclin.z;
+      //-Adds angular acceleration.
+      const double2 rxy=posxy[p];
+      const double disx=rxy.x-centre.x;
+      const double disy=rxy.y-centre.y;
+      const double disz=posz[p]-centre.z;
+      acc.x+=float(disz*accang.y - disy*accang.z);
+      acc.y+=float(disx*accang.z - disz*accang.x);
+      acc.z+=float(disy*accang.x - disx*accang.y);
+      //-Stores the new acceleration value.
+      ace[p]=acc;
+    }
+  }
+}
+
+//------------------------------------------------------
+// Adds variable forces to particle sets.
+//------------------------------------------------------
+__global__ void KerAddVarAccLin(unsigned n,unsigned pini,word codesel,float3 acclin
+  ,const word *code,float3 *ace)
+{
+  unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    p+=pini;
+    //Check if the current particle is part of the particle set by its Mk
+    if(CODE_GetTypeValue(code[p])==codesel){
+      float3 acc=ace[p]; //-Gets the current particles acceleration value.
+      //-Adds linear acceleration.
+      acc.x+=acclin.x;
+      acc.y+=acclin.y;
+      acc.z+=acclin.z;
+      //-Stores the new acceleration value.
+      ace[p]=acc;
+    }
+  }
+}
+
+//==================================================================================================
+/// Adds variable acceleration forces for particle MK groups that have an input file.
+//==================================================================================================
+void AddVarAcc(unsigned n,unsigned pini,word codesel,tfloat3 acclin,tfloat3 accang,tfloat3 centre
+  ,const word *code,const double2 *posxy,const double *posz,float3 *ace)
+{
+  if(n){
+    dim3 sgrid=GetGridSize(n,SPHBSIZE);
+    const bool withaccang=(accang.x!=0 || accang.y!=0 || accang.z!=0);
+    if(withaccang)KerAddVarAccAng <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(acclin),Float3(accang),Float3(centre),code,posxy,posz,ace);
+    else          KerAddVarAccLin <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(acclin),code,ace);
+  }
+}
+
+
+
 }
 
 

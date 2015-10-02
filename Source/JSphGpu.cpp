@@ -26,10 +26,8 @@
 #include "JSphDtFixed.h"
 #include "JSaveDt.h"
 #include "JWaveGen.h"
+#include "JSphVarAcc.h"
 #include "JXml.h"
-
-#include "JBuffer.h"
-#include "JFormatFiles2.h"
 
 using namespace std;
 
@@ -818,6 +816,19 @@ void JSphGpu::InitRun(){
 }
 
 //==============================================================================
+/// Adds variable acceleration from input files.
+//==============================================================================
+void JSphGpu::AddVarAcc(){
+  for(unsigned c=0;c<VarAcc->GetCount();c++){
+    unsigned mkfluid;
+    tfloat3 acclin,accang,centre;
+    VarAcc->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre);
+    const word codesel=word(mkfluid);
+    cusph::AddVarAcc(Np-Npb,Npb,codesel,acclin,accang,centre,Codeg,Posxyg,Poszg,Aceg);
+  }
+}
+
+//==============================================================================
 // Prepara variables para interaccion "INTER_Forces" o "INTER_ForcesCorr".
 //==============================================================================
 void JSphGpu::PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb){
@@ -831,6 +842,9 @@ void JSphGpu::PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb)
   cudaMemset(Aceg,0,sizeof(tfloat3)*npb);                                //Aceg[]=(0,0,0) para bound
   cusph::InitArray(npf,Aceg+npb,Gravity);                                //Aceg[]=Gravity para fluid
   if(SpsGradvelg)cudaMemset(SpsGradvelg+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelg[]=(0,0,0,0,0,0).
+
+  //-Apply the extra forces to the correct particle sets.
+  if(VarAcc)AddVarAcc();
 }
 
 //==============================================================================

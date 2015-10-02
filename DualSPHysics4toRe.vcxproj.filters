@@ -184,6 +184,9 @@
     <ClInclude Include="Source\JWaveGen.h">
       <Filter>Libs</Filter>
     </ClInclude>
+    <ClInclude Include="Source\JSphVarAcc.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\JCfgRun.cpp">
@@ -304,6 +307,9 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\JSaveDt.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\JSphVarAcc.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

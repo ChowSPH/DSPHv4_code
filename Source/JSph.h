@@ -46,6 +46,7 @@ class JSphDtFixed;
 class JSaveDt;
 class JSphVisco;
 class JWaveGen;
+class JSphVarAcc;
 class JSpaceParts;
 class JPartDataBi4;
 class JPartOutBi4Save;
@@ -246,7 +247,9 @@ protected:
   static const unsigned DemObjsSize=CODE_TYPE_FLUID;
   StDemData DemObjs[DemObjsSize];    ///<Data of floating object.   
 
-  JWaveGen *WaveGen;            //-Objecto para generacion de oleaje.
+  JWaveGen *WaveGen;      //-Objecto para generacion de oleaje.
+
+  JSphVarAcc *VarAcc;     ///<Object for variable acceleration functionality.
 
   TpCellOrder CellOrder;  //-Orden de ejes en ordenacion de particulas en celdas.
 

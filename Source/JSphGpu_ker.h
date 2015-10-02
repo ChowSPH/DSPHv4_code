@@ -160,8 +160,9 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,word *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre);
 
-//# Kernels para JIntelWave
-void ChangeAce(double timestep,unsigned np,unsigned pini,const double2 *posxy,const double *posz,float3 *ace,const double* frecs,const double* kf,const double* fifd,const double* ampfd);
+//# Kernels para external forces (JSphVarAcc)
+void AddVarAcc(unsigned n,unsigned pini,word codesel,tfloat3 acclin,tfloat3 accang,tfloat3 centre
+  ,const word *code,const double2 *posxy,const double *posz,float3 *ace);
 
 }
 
