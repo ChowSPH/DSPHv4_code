@@ -22,8 +22,6 @@
 #include "JSphTimersGpu.h"
 #include <cuda_runtime_api.h>
 
-//#define DG_ReduMaxFloat //-En ReduMaxFloat() y ReduMaxFloat_w() comprueba que el resultado sea correcto.
-
 class JLog2;
 
 #define SPHBSIZE 256
@@ -165,30 +163,7 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
 //# Kernels para JIntelWave
 void ChangeAce(double timestep,unsigned np,unsigned pini,const double2 *posxy,const double *posz,float3 *ace,const double* frecs,const double* kf,const double* fifd,const double* ampfd);
 
-
 }
-/*
-      bool DG=(ik!=NULL && idp[p1]==11419);
-      if(DG)KPrintvtv(ik,"p1:",p1," idp1:",idp[p1]);
-      if(DG)KPrintvtvtv(ik," posp1:",posp1.x," , ",posp1.y," , ",posp1.z);
-      if(DG)KPrintvtvtv(ik," velp1:",velp1.x," , ",velp1.y," , ",velp1.z);
-      if(DG)KPrintvt(ik," rhopp1:",rhopp1);
-      if(DG)KPrintvt(ik," prrhopp1:",posp1.w);
-
-      if(DG)KPrintvtv(ik," ar:",ar[p1],"  arp1:",arp1);
-      if(DG)KPrintvtvtv(ik," ace:",ace[p1].x," , ",ace[p1].y," , ",ace[p1].z);
-      if(DG)KPrintvtvtv(ik," acep1:",acep1.x," , ",acep1.y," , ",acep1.z);
-
-
-  dim3 sgridf=GetGridSize(npf,bsize);
-  JDgKerPrint info;
-  byte* ik=(nstep<270 || nstep>270? NULL: info.GetInfoPointer(sgridf,bsize));
-  KerInteractionForces<grunmode,gmode,tdelta> <<<sgridf,bsize,0>>> (ik,viscob,gravityz,factorvalue,nspoints,spoints,planes,planesnor,domncx,domncxy,tricellbegin,tricell,npf,dcell,posxy,posz,velrhop,idp,viscdt,ar,ace,delta);
-  if(ik)printf("\n**InteractionForces>> step:%u\n",nstep);
-  if(ik)info.PrintValuesFull(true); //info.PrintValuesInfo();
-*/
-
-
 
 
 #endif

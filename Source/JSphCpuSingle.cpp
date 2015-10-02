@@ -25,9 +25,6 @@
 #include "JSphVisco.h"
 #include "JWaveGen.h"
 
-#include "JFormatFiles2.h"
-#include "JSaveCsv.h"
-
 #include <climits>
 
 using namespace std;
@@ -38,7 +35,6 @@ JSphCpuSingle::JSphCpuSingle():JSphCpu(false){
   ClassName="JSphCpuSingle";
   CellDivSingle=NULL;
   PartsLoaded=NULL;
-  PfCsv=NULL;
 }
 
 //==============================================================================
@@ -185,7 +181,6 @@ void JSphCpuSingle::ResizeParticlesSize(unsigned newsize,float oversize,bool upd
   TmcStop(Timers,TMC_SuResizeNp);
   if(updatedivide)RunCellDivide(true);
 }
-
 
 //==============================================================================
 // Crea lista de nuevas particulas periodicas a duplicar.
@@ -862,67 +857,5 @@ void JSphCpuSingle::FinishRun(bool stop){
   }
   Log->Print(" ");
   if(SvRes)SaveRes(tsim,ttot,hinfo,dinfo);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-//==============================================================================
-//==============================================================================
-void JSphCpuSingle::SaveCsv(string fname,tfloat3 ace){
-  const char* met="SaveCsv";
-  if(fname==""&&PfCsv)PfCsv->close();
-  else{
-    if(!PfCsv){
-      PfCsv=new ofstream();
-      PfCsv->open(string(DirOut+fname).c_str());
-      if(!(*PfCsv))RunException(met,"File could not be opened.",fname);
-      (*PfCsv) << "AceX;AceY;AceZ" << endl;
-    }
-    (*PfCsv) << fun::PrintStr("%f;%f;%f",ace.x,ace.y,ace.z) << endl;
-    if(PfCsv->fail())RunException(met,"Failed writing to file.",fname);
-  }
-}
-
-//==============================================================================
-// Graba fichero vtk con los datos de las particulas.
-//==============================================================================
-void JSphCpuSingle::DgSaveVtkParticles(std::string file){/*pdtecell
-  printf("DgSaveVtkParticles> NpbOk:%u\n",NpbOk);
-  int mpirank=Log->GetMpiRank();
-  if(mpirank>=0)file=string("p")+fun::IntStr(mpirank)+"_"+file;
-  file=DirOut+file;
-  //-Reserva memoria basica.
-  const unsigned n=Np;
-  unsigned *idp=Idp;
-  tfloat3 *pos=Pos;
-  tfloat3 *vel=Vel;
-  float *rhop=Rhop;
-  byte *check=CheckOut;
-  //-Genera campos derivados.
-  unsigned *num=new unsigned[n];
-  for(unsigned p=0;p<n;p++)num[p]=p;
-  //-Genera buffer con los datos del vtk.
-  JBuffer buf(1024*1024,1024*512);
-  buf.InStr("POINTSDATA"); 
-  buf.InUint(n); buf.InFloat3Vec(n,pos);
-  buf.InStr("Id:unsigned_int");      buf.InUintVec(n,idp);
-  buf.InStr("Vel:float:3");          buf.InFloat3Vec(n,vel);
-  buf.InStr("Rhop:float");           buf.InFloatVec(n,rhop);
-  buf.InStr("Check:unsigned_char");  buf.InByteVec(n,check);
-  buf.InStr("Num:unsigned_int");     buf.InUintVec(n,num);
-  buf.InStr("END"); 
-  //-Libera memoria 
-  delete[] num;
-  //-Genera fichero vtk.
-  JBufferToVtk::PointsToVtk(file,&buf);*/
 }
 

@@ -72,11 +72,6 @@ public:
   ~JSphCpuSingle();
   void Run(std::string appname,JCfgRun *cfg,JLog2 *log);
 
-//------Debug-----
-public:
-  std::ofstream* PfCsv;
-  void SaveCsv(std::string fname,tfloat3 ace);
-  void DgSaveVtkParticles(std::string file);
 };
 
 #endif

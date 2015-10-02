@@ -281,7 +281,7 @@ void JCellDivGpu::CheckParticlesOut(unsigned npout,const unsigned *idp,const tdo
     word type=CODE_GetType(code[p]);
     if(nerr<10&&type==CODE_TYPE_FIXED||type==CODE_TYPE_MOVING||type==CODE_TYPE_FLOATING){ //-Hay alguna particula de contorno excluida.
       nerr++;
-      VisuBoundaryOut(p,idp[p],pos[p],code[p]);
+      if(nerr<100)VisuBoundaryOut(p,idp[p],pos[p],code[p]);
     }
     word out=CODE_GetSpecialValue(code[p]);
     if(out==CODE_OUTRHOP)NpfOutRhop++;

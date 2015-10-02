@@ -1545,7 +1545,6 @@ double JSphCpu::DtVariable(bool final){
   const double dt2=double(H)/(max(Cs0,VelMax*10.)+double(H)*ViscDtMax);
   //-dt new value of time step.
   double dt=double(CFLnumber)*min(dt1,dt2);
-  //Log->Printf("%u>DTT  dt1:%.20f dt2:%.20f dt:%.20f",Nstep,dt1,dt2,dt); 
   if(DtFixed)dt=DtFixed->GetDt(float(TimeStep),float(dt));
   if(dt<double(DtMin)){ dt=double(DtMin); DtModif++; }
   if(SaveDt && final)SaveDt->AddValues(TimeStep,dt,dt1*CFLnumber,dt2*CFLnumber,AceMax,ViscDtMax,VelMax);

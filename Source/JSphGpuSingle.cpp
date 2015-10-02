@@ -27,8 +27,6 @@
 #include "JSphGpu_ker.h"
 #include "JPtxasInfo.h"
 
-#include "JFormatFiles2.h"
-
 using namespace std;
 //==============================================================================
 // Constructor.
@@ -427,48 +425,6 @@ double JSphGpuSingle::ComputeAceMax(float *auxmem){
 }
 
 //==============================================================================
-// Genera fichero VTK con datos de particulas (debug)
-//==============================================================================
-void JSphGpuSingle::DgSaveVtk(std::string fname,unsigned num,bool svace){
-  const unsigned np=Np;
-  //-Reserva memoria.
-  tfloat3 *pos=new tfloat3[np];
-  tfloat3 *ace=NULL;
-  float *ar=NULL;
-  float *viscdt=NULL;
-  tfloat3 *velcor=NULL;
-  if(svace){
-    ace=new tfloat3[np];
-    ar=new float[np];
-    viscdt=new float[np];
-  }
-  //-Recupera datos de particulas.
-  ParticlesDataDown(np,0,true,true,false);
-  for(unsigned p=0;p<np;p++)pos[p]=ToTFloat3(AuxPos[p]);
-  if(ace)cudaMemcpy(ace,Aceg,sizeof(tfloat3)*np,cudaMemcpyDeviceToHost);
-  if(ar)cudaMemcpy(ar,Arg,sizeof(float)*np,cudaMemcpyDeviceToHost);
-  if(viscdt)cudaMemcpy(viscdt,ViscDtg,sizeof(float)*np,cudaMemcpyDeviceToHost);
-  //-Define campos de VTK.
-  JFormatFiles2::StScalarData fields[10];
-  unsigned nfields=0;
-  if(Idp){     fields[nfields]=JFormatFiles2::DefineField("Id"  ,JFormatFiles2::UInt32  ,1,Idp);     nfields++; }
-  if(Code){    fields[nfields]=JFormatFiles2::DefineField("Code",JFormatFiles2::UShort16,1,Code);    nfields++; }
-  if(AuxVel){  fields[nfields]=JFormatFiles2::DefineField("Vel" ,JFormatFiles2::Float32 ,3,AuxVel);  nfields++; }
-  if(AuxRhop){ fields[nfields]=JFormatFiles2::DefineField("Rhop",JFormatFiles2::Float32 ,1,AuxRhop); nfields++; }
-  if(ace){     fields[nfields]=JFormatFiles2::DefineField("Ace" ,JFormatFiles2::Float32 ,3,ace);     nfields++; }
-  if(ar){      fields[nfields]=JFormatFiles2::DefineField("Ar"  ,JFormatFiles2::Float32 ,1,ar);      nfields++; }
-  if(viscdt){  fields[nfields]=JFormatFiles2::DefineField("Visc",JFormatFiles2::Float32 ,1,viscdt);  nfields++; }
-  //-Genera fichero.
-  JFormatFiles2::SaveVtk(DirOut+fun::FileNameSec(fname+".vtk",num),np,pos,nfields,fields);
-  JFormatFiles2::SaveCsv(DirOut+fun::FileNameSec(fname+".csv",num),np,pos,nfields,fields);
-  //-Libera memoria.
-  delete[] pos;    pos=NULL;
-  delete[] ace;    ace=NULL;
-  delete[] ar;     ar=NULL;
-  delete[] viscdt; viscdt=NULL;
-}
-
-//==============================================================================
 // Realiza interaccion y actualizacion de particulas segun las fuerzas 
 // calculadas en la interaccion usando Verlet.
 //==============================================================================
@@ -674,115 +630,4 @@ void JSphGpuSingle::FinishRun(bool stop){
 
 
 
-
-//==============================================================================
-// Graba fichero vtk con datos de las particulas.
-//==============================================================================
-void DgSaveVtkParticlesGpuX(std::string filename,int numfile,unsigned pini,unsigned pfin,unsigned cellcode
-  ,const double2 *posxyg,const double *poszg,const unsigned *idpg,const unsigned *dcelg
-  ,const word *codeg,const float4 *velrhopg,const float4 *velrhopm1g,const float3 *aceg){
-  //-Reserva memoria basica.
-  const unsigned n=pfin-pini;
-  //-Carga posicion.
-  tfloat3 *pos=new tfloat3[n];
-  {
-    tdouble2 *pxy=new tdouble2[n];
-    double *pz=new double[n];
-    cudaMemcpy(pxy,posxyg+pini,sizeof(double2)*n,cudaMemcpyDeviceToHost);
-    cudaMemcpy(pz,poszg+pini,sizeof(double)*n,cudaMemcpyDeviceToHost);
-    for(unsigned p=0;p<n;p++)pos[p]=TFloat3(float(pxy[p].x),float(pxy[p].y),float(pz[p]));
-    delete[] pxy;
-    delete[] pz;
-  }
-  //-Carga idp.
-  unsigned *idp=NULL;
-  if(idpg){
-    idp=new unsigned[n];
-    cudaMemcpy(idp,idpg+pini,sizeof(unsigned)*n,cudaMemcpyDeviceToHost);
-  }
-  //-Carga dcel.
-  tuint3 *dcel=NULL;
-  if(dcelg){
-    dcel=new tuint3[n];
-    unsigned *aux=new unsigned[n];
-    cudaMemcpy(aux,dcelg+pini,sizeof(unsigned)*n,cudaMemcpyDeviceToHost);
-    for(unsigned p=0;p<n;p++)dcel[p]=TUint3(unsigned(PC__Cellx(cellcode,aux[p])),unsigned(PC__Celly(cellcode,aux[p])),unsigned(PC__Cellz(cellcode,aux[p])));
-    delete[] aux;
-  }
-  //-Carga vel y rhop.
-  tfloat3 *vel=NULL;
-  float *rhop=NULL;
-  if(velrhopg){
-    vel=new tfloat3[n];
-    rhop=new float[n];
-    tfloat4 *aux=new tfloat4[n];
-    cudaMemcpy(aux,velrhopg+pini,sizeof(float4)*n,cudaMemcpyDeviceToHost);
-    for(unsigned p=0;p<n;p++){ vel[p]=TFloat3(aux[p].x,aux[p].y,aux[p].z); rhop[p]=aux[p].w; }
-    delete[] aux;
-  }
-  //-Carga velm1 y rhopm1.
-  tfloat3 *velm1=NULL;
-  float *rhopm1=NULL;
-  if(velrhopm1g){
-    velm1=new tfloat3[n];
-    rhopm1=new float[n];
-    tfloat4 *aux=new tfloat4[n];
-    cudaMemcpy(aux,velrhopm1g+pini,sizeof(float4)*n,cudaMemcpyDeviceToHost);
-    for(unsigned p=0;p<n;p++){ velm1[p]=TFloat3(aux[p].x,aux[p].y,aux[p].z); rhopm1[p]=aux[p].w; }
-    delete[] aux;
-  }
-  //-Carga ace.
-  tfloat3 *ace=NULL;
-  if(aceg){
-    ace=new tfloat3[n];
-    cudaMemcpy(ace,aceg+pini,sizeof(float3)*n,cudaMemcpyDeviceToHost);
-  }
-  //-Carga type.
-  byte *type=NULL;
-  if(codeg){
-    type=new byte[n];
-    word *aux=new word[n];
-    cudaMemcpy(aux,codeg+pini,sizeof(word)*n,cudaMemcpyDeviceToHost);
-    for(unsigned p=0;p<n;p++){ 
-      const word cod=aux[p];
-      byte tp=99;
-      if(CODE_GetType(cod)==CODE_TYPE_FIXED)tp=0;
-      else if(CODE_GetType(cod)==CODE_TYPE_MOVING)tp=1;
-      else if(CODE_GetType(cod)==CODE_TYPE_FLOATING)tp=2;
-      else if(CODE_GetType(cod)==CODE_TYPE_FLUID)tp=3;
-      if(CODE_GetSpecialValue(cod)==CODE_NORMAL)tp+=0;
-      else if(CODE_GetSpecialValue(cod)==CODE_PERIODIC)tp+=10;
-      else if(CODE_GetSpecialValue(cod)==CODE_OUTIGNORE)tp+=20;
-      else tp+=30;
-      type[p]=tp;
-    }
-    delete[] aux;
-  }
-
-  //-Define campos
-  JFormatFiles2::StScalarData fields[10];
-  unsigned nfields=0;
-  if(idp){    fields[nfields]=JFormatFiles2::DefineField("Id"    ,JFormatFiles2::UInt32  ,1,idp);    nfields++; }
-  if(dcel){   fields[nfields]=JFormatFiles2::DefineField("Dcel"  ,JFormatFiles2::UInt32  ,3,dcel);   nfields++; }
-  if(vel){    fields[nfields]=JFormatFiles2::DefineField("Vel"   ,JFormatFiles2::Float32 ,3,vel);    nfields++; }
-  if(rhop){   fields[nfields]=JFormatFiles2::DefineField("Rhop"  ,JFormatFiles2::Float32 ,1,rhop);   nfields++; }
-  if(velm1){  fields[nfields]=JFormatFiles2::DefineField("Velm1" ,JFormatFiles2::Float32 ,3,velm1);  nfields++; }
-  if(rhopm1){ fields[nfields]=JFormatFiles2::DefineField("Rhopm1",JFormatFiles2::Float32 ,1,rhopm1); nfields++; }
-  if(ace){    fields[nfields]=JFormatFiles2::DefineField("Ace"   ,JFormatFiles2::Float32 ,3,ace);    nfields++; }
-  if(type){   fields[nfields]=JFormatFiles2::DefineField("Typex" ,JFormatFiles2::UChar8  ,1,type);   nfields++; }
-
-  //-Genera fichero.
-  JFormatFiles2::SaveVtk(fun::FileNameSec(filename,numfile),n,pos,nfields,fields);
-
-  //-Libera memoria 
-  delete[] pos;
-  delete[] idp;
-  delete[] dcel;
-  delete[] vel;
-  delete[] rhop;
-  delete[] velm1;
-  delete[] rhopm1;
-  delete[] ace;
-  delete[] type;
-}
 

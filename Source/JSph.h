@@ -180,7 +180,6 @@ protected:
 
   //-Salida de resultados.
   byte SvData;        //-Combinacion de valores TpSaveDat.
-  //bool SvDt;          //-Graba fichero con DT de parts.
   bool SvRes;         //-Graba fichero con resumen de ejecucion.
   bool SvTimers;      //-Obtiene tiempo para cada proceso.
   bool SvDomainVtk;   //-Graba fichero vtk con el dominio de las particulas en cada Part.
@@ -300,16 +299,11 @@ protected:
   JTimersStep* TimersStep;
 
 
-
-
-  
-
   void AllocMemoryFloating(unsigned ftcount);
   llong GetAllocMemoryCpu()const;
 
   void LoadConfig(const JCfgRun *cfg);
   void LoadCaseConfig();
-
 
   void ResetMkInfo();
   void LoadMkInfo(const JSpaceParts *parts);
@@ -321,9 +315,7 @@ protected:
   void ResizeMapLimits();
 
   void ConfigConstants(bool simulate2d);
-
   void VisuConfig()const;
-
   void LoadDcellParticles(unsigned n,const word *code,const tdouble3 *pos,unsigned *dcell)const;
 
   void ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* velrhop);
@@ -364,12 +356,9 @@ protected:
   void SaveRes(float tsim,float ttot,const std::string &headplus="",const std::string &detplus="");
   void ShowResume(bool stop,float tsim,float ttot,bool all,std::string infoplus);
 
-  //TpParticle GetTpParticleCode(word code)const{ const word type=CODE_GetType(code); return(type==CODE_TYPE_FLUID? PART_Fluid: (type==CODE_TYPE_FIXED? PART_BoundFx: (type==CODE_TYPE_MOVING? PART_BoundMv: PART_BoundFt))); }
   unsigned GetOutPosCount()const{ return(OutPosCount); }
   unsigned GetOutRhopCount()const{ return(OutRhopCount); }
   unsigned GetOutMoveCount()const{ return(OutMoveCount); }
-  //unsigned GetOutInitialCount()const{ return(OutInitialCount); }
-  //void SetOutInitialCount(unsigned nout){ OutInitialCount=nout; }
 
 public:
   JSph(bool cpu,bool withmpi);
@@ -382,14 +371,6 @@ public:
   static std::string GetShiftingName(TpShifting tshift);
 
   static std::string TimerToText(const std::string &name,float value);
-
-  //------Debug-----
-public:
-  void DgSaveVtkParticlesCpu(std::string filename,int numfile,unsigned pini,unsigned pfin,const tdouble3 *pos,const word *code,const unsigned *idp,const tfloat4 *velrhop)const;
-
-  void DgSaveVtkParticlesCpu(std::string filename,int numfile,unsigned pini,unsigned pfin,const tfloat3 *pos,const byte *check=NULL,const unsigned *idp=NULL,const tfloat3 *vel=NULL,const float *rhop=NULL);
-  void DgSaveCsvParticlesCpu(std::string filename,int numfile,unsigned pini,unsigned pfin,std::string head,const tfloat3 *pos,const unsigned *idp=NULL,const tfloat3 *vel=NULL,const float *rhop=NULL,const float *ar=NULL,const tfloat3 *ace=NULL,const tfloat3 *vcorr=NULL);
-
 };
 
 /*

@@ -37,7 +37,6 @@
 #include "JPartOutBi4Save.h"
 #include "JPartFloatBi4.h"
 #include "JPartsOut.h"
-#include "JSaveCsv.h"
 #include <climits>
 
 //using namespace std;
@@ -203,7 +202,6 @@ std::string JSph::CalcRunCode()const{
 /// Returns the code version in text format.
 //==============================================================================
 std::string JSph::GetVersionStr(){
-  //sprintf(cad,"%5.2f.%d",float(VersionMajor)/100,VersionMinor);
   return(fun::PrintStr("%1.2f",float(VersionMajor)/100));
 }
 
@@ -621,7 +619,6 @@ unsigned JSph::GetMkBlockByMk(word mk)const{
   return(c);
 }
 
-
 //==============================================================================
 /// Returns the code of a particle according to the given parameters.
 //==============================================================================
@@ -999,7 +996,6 @@ void JSph::SelecDomain(tuint3 celini,tuint3 celfin){
   Log->Print(fun::VarStr("DomCellCode",fun::UintStr(PC__GetSx(DomCellCode))+"_"+fun::UintStr(PC__GetSy(DomCellCode))+"_"+fun::UintStr(PC__GetSz(DomCellCode))));
 }
 
-
 //==============================================================================
 // Selecciona un codigo adecuado para la codificion de celda.
 //==============================================================================
@@ -1020,8 +1016,6 @@ unsigned JSph::CalcCellCode(tuint3 ncells){
     ccode=PC__GetCode(sx,sy,sz);
   }
   return(ccode);
-  //sprintf(Cad,"%u_%u_%u",sx,sy,sz);
-  //Log->Print(fun::VarStr("PoscellCode",Cad));
 }
 
 //==============================================================================
@@ -1112,7 +1106,6 @@ void JSph::PrintHeadPart(){
   Log->Print("=========  ============  ============  =======  =========  ===================");
   fflush(stdout);
 }
-
 
 //==============================================================================
 // Establece configuracion para grabacion de particulas.
@@ -1411,8 +1404,6 @@ void JSph::ShowResume(bool stop,float tsim,float ttot,bool all,std::string infop
   if(MaxMemoryGpu)Log->Printf("GPU Memory.......................: %lld (%.2f MB)",MaxMemoryGpu,double(MaxMemoryGpu)/(1024*1024));
 }
 
-
-
 //==============================================================================
 // Devuelve el nombre del algoritmo en texto.
 //==============================================================================
@@ -1451,7 +1442,6 @@ std::string JSph::GetViscoName(TpVisco tvisco){
 std::string JSph::GetDeltaSphName(TpDeltaSph tdelta){
   string tx;
   if(tdelta==DELTA_None)tx="None";
-  //else if(tdelta==DELTA_Basic)tx="Basic";
   else if(tdelta==DELTA_Dynamic)tx="Dynamic";
   else if(tdelta==DELTA_DynamicExt)tx="DynamicExt";
   else tx="???";
@@ -1480,128 +1470,7 @@ std::string JSph::TimerToText(const std::string &name,float value){
   return(ret+": "+fun::FloatStr(value/1000)+" sec.");
 }
 
-//==============================================================================
-// Graba fichero vtk con datos de las particulas.
-//==============================================================================
-void JSph::DgSaveVtkParticlesCpu(std::string filename,int numfile,unsigned pini,unsigned pfin,const tdouble3 *pos,const word *code,const unsigned *idp,const tfloat4 *velrhop)const{
-  int mpirank=Log->GetMpiRank();
-  if(mpirank>=0)filename=string("p")+fun::IntStr(mpirank)+"_"+filename;
-  if(numfile>=0)filename=fun::FileNameSec(filename,numfile);
-  filename=DirOut+filename;
-  //-Reserva memoria basica.
-  const unsigned np=pfin-pini;
-  tfloat3 *xpos=new tfloat3[np];
-  tfloat3 *xvel=new tfloat3[np];
-  float *xrhop=new float[np];
-  byte *xtype=new byte[np];
-  byte *xkind=new byte[np];
-  for(unsigned p=0;p<np;p++){
-    xpos[p]=ToTFloat3(pos[p+pini]);
-    tfloat4 vr=velrhop[p+pini];
-    xvel[p]=TFloat3(vr.x,vr.y,vr.z);
-    xrhop[p]=vr.w;
-    word t=CODE_GetType(code[p+pini]);
-    xtype[p]=(t==CODE_TYPE_FIXED? 0: (t==CODE_TYPE_MOVING? 1: (t==CODE_TYPE_FLOATING? 2: 3)));
-    word k=CODE_GetSpecialValue(code[p+pini]);
-    xkind[p]=(k==CODE_NORMAL? 0: (k==CODE_PERIODIC? 1: (k==CODE_OUTIGNORE? 2: 3)));
-  }
-  //-Genera fichero VTK.
-  JFormatFiles2::StScalarData fields[5];
-  unsigned nfields=0;
-  if(idp){  fields[nfields]=JFormatFiles2::DefineField("Id",JFormatFiles2::UInt32,1,idp+pini);  nfields++; }
-  if(xtype){ fields[nfields]=JFormatFiles2::DefineField("Type",JFormatFiles2::UChar8,1,xtype);  nfields++; }
-  if(xkind){ fields[nfields]=JFormatFiles2::DefineField("Kind",JFormatFiles2::UChar8,1,xkind);  nfields++; }
-  if(xvel){ fields[nfields]=JFormatFiles2::DefineField("Vel",JFormatFiles2::Float32,3,xvel);    nfields++; }
-  if(xrhop){ fields[nfields]=JFormatFiles2::DefineField("Rhop",JFormatFiles2::Float32,1,xrhop); nfields++; }
-  //string fname=DirOut+fun::FileNameSec("DgParts.vtk",numfile);
-  JFormatFiles2::SaveVtk(filename,np,xpos,nfields,fields);
-  //-Libera memoria.
-  delete[] xpos;
-  delete[] xtype;
-  delete[] xkind;
-  delete[] xvel;
-  delete[] xrhop;
-}
 
 
-//==============================================================================
-// Graba fichero vtk con datos de las particulas.
-//==============================================================================
-void JSph::DgSaveVtkParticlesCpu(std::string filename,int numfile,unsigned pini,unsigned pfin,const tfloat3 *pos,const byte *check,const unsigned *idp,const tfloat3 *vel,const float *rhop){
-  int mpirank=Log->GetMpiRank();
-  if(mpirank>=0)filename=string("p")+fun::IntStr(mpirank)+"_"+filename;
-  if(numfile>=0)filename=fun::FileNameSec(filename,numfile);
-  filename=DirOut+filename;
-  //-Reserva memoria basica.
-  const unsigned n=pfin-pini;
-  unsigned *num=new unsigned[n];
-  for(unsigned p=0;p<n;p++)num[p]=p;
-  //-Genera buffer con los datos del vtk.
-  JBuffer buf(1024*1024,1024*512);
-  buf.InStr("POINTSDATA"); 
-  buf.InUint(n); buf.InFloat3Vec(n,pos+pini);
-  if(idp){   buf.InStr("Id:unsigned_int");      buf.InUintVec(n,idp+pini);   }
-  if(vel){   buf.InStr("Vel:float:3");          buf.InFloat3Vec(n,vel+pini); }
-  if(rhop){  buf.InStr("Rhop:float");           buf.InFloatVec(n,rhop+pini); }
-  if(check){ buf.InStr("Check:unsigned_char");  buf.InByteVec(n,check+pini); }
-  buf.InStr("Num:unsigned_int");     buf.InUintVec(n,num);
-  buf.InStr("END"); 
-  //-Libera memoria 
-  delete[] num;
-  //-Genera fichero vtk.
-  JBufferToVtk::PointsToVtk(filename,&buf);
-}
-
-//==============================================================================
-// Graba fichero csv con datos de las particulas.
-//==============================================================================
-void JSph::DgSaveCsvParticlesCpu(std::string filename,int numfile,unsigned pini,unsigned pfin,std::string head,const tfloat3 *pos,const unsigned *idp,const tfloat3 *vel,const float *rhop,const float *ar,const tfloat3 *ace,const tfloat3 *vcorr){
-  const char met[]="DgSaveCsvParticlesCpu";
-  int mpirank=Log->GetMpiRank();
-  if(mpirank>=0)filename=string("p")+fun::IntStr(mpirank)+"_"+filename;
-  if(numfile>=0)filename=fun::FileNameSec(filename,numfile);
-  filename=DirOut+filename;
-  //-Genera fichero CSV.
-  ofstream pf;
-  pf.open(filename.c_str());
-  if(pf){
-    if(!head.empty())pf << head << endl;
-    pf << "Num";
-    if(idp)pf << ";Idp";
-    if(pos)pf << ";PosX;PosY;PosZ";
-    if(vel)pf << ";VelX;VelY;VelZ";
-    if(rhop)pf << ";Rhop";
-    if(ar)pf << ";Ar";
-    if(ace)pf << ";AceX;AceY;AceZ";
-    if(vcorr)pf << ";VcorrX;VcorrY;VcorrZ";
-    pf << endl;
-    const char fmt1[]="%f"; //="%24.16f";
-    const char fmt3[]="%f;%f;%f"; //="%24.16f;%24.16f;%24.16f";
-    for(unsigned p=pini;p<pfin;p++){
-      pf << fun::UintStr(p-pini);
-      if(idp)pf << ";" << fun::UintStr(idp[p]);
-      if(pos)pf << ";" << fun::Float3Str(pos[p],fmt3);
-      if(vel)pf << ";" << fun::Float3Str(vel[p],fmt3);
-      if(rhop)pf << ";" << fun::FloatStr(rhop[p],fmt1);
-      if(ar)pf << ";" << fun::FloatStr(ar[p],fmt1);
-      if(ace)pf << ";" << fun::Float3Str(ace[p],fmt3);
-      if(vcorr)pf << ";" << fun::Float3Str(vcorr[p],fmt3);
-      pf << endl;
-    }
-    if(pf.fail())RunException(met,"Failed writing to file.",filename);
-    pf.close();
-  }
-  else RunException(met,"File could not be opened.",filename);
-}
-
-
-
-/*
-template <TypeRun trun> JSphx<trun>::JSphx(){
-  if(trun==TU_Cpu)printf("\nHola soy JSphx(CPU)...\n");
-  else printf("\nHola soy JSphx.\n");
-}
-JSphx<TU_Cpu> TablaInt;
-*/
 
 

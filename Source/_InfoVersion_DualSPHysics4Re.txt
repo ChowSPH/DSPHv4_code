@@ -309,15 +309,13 @@
   - Use of inline function GetKernel() and GetInteractionCells() on CPU to mimic GPU code. (v4.0.008 / 02-10-2015)
   - Add timers for Shifting. (v4.0.009 / 02-10-2015)
   - Remove old code for floatings. (v4.0.009 / 02-10-2015)
+  - Cleaning code. (v4.0.010 / 02-10-2015)
 
   
 Remaining issues:
 ==================
-- Remove //Log->Print //print if(0)
 - Use of SDAT_info?
-- Is FtPause ok?
 - Example with DtFixed.
-- Test periodic one-axis and two-axis.
 - Examples with DomainLimits
 - Add code for external forces by Stephen.
 - Configure project with debug.
@@ -325,11 +323,9 @@ Remaining issues:
 - Replace ptxasinfo by CUDA functions.
 - Test performance using psimple and pdouble. Remove code for psimple?
 - Use radixsort algorithm (with OpenMP) in celldivide on CPU.
-- Remove JTimersStep.  
-- Remove JSaveCsv.  
-- Remove JDgKerPrint.  
-- Remove DGSAVE.  
-- Remove KPrint, ik.
+- Remove JTimersStep before creating release.  
+- Remove JSaveCsv before creating release.  
+- Remove JDgKerPrint before creating release.  
 - Usar thrust en? diferencia en rendimiento?
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
   const unsigned pini=(DtAllParticles? 0: Npb);
@@ -338,6 +334,12 @@ Remaining issues:
 - Usar thrust en? diferencia en rendimiento?
   if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
 
+x Remove KPrint, ik.
+x Remove DGSAVE.  
+x Test periodic one-axis.
+x Is FtPause ok? yes
+x Remove //Log->Print //print if(0)
+x Update GenCase with new parameters (Shifting and RigidAlgorithm).
 x MkList, when is it used? LoadCodeParticles
 x Check timers for Shifting.
 x Remove RunFloating_Old().

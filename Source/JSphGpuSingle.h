@@ -50,8 +50,6 @@ protected:
 
   double ComputeStep(){ return(TStep==STEP_Verlet? ComputeStep_Ver(): ComputeStep_Sym()); }
 
-  void DgSaveVtk(std::string fname,unsigned num,bool svace);
-
   double ComputeStep_Ver();
   double ComputeStep_Sym();
 

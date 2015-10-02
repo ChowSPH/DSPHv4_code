@@ -233,7 +233,7 @@ void JCellDivCpu::LimitsCellBound(unsigned n,unsigned pini,const unsigned* dcell
       if(cmax.z<cz)cmax.z=cz;
     }
     else if(rcodsp>CODE_OUTIGNORE){
-      if(nerr<10)VisuBoundaryOut(p,idpc[p],OrderDecodeValue(CellOrder,posc[p]),rcode);
+      if(nerr<100)VisuBoundaryOut(p,idpc[p],OrderDecodeValue(CellOrder,posc[p]),rcode);
       nerr++;
     }
   }
@@ -289,7 +289,7 @@ void JCellDivCpu::LimitsCellFluid(unsigned n,unsigned pini,const unsigned* dcell
     }
     else if(rcodsp>CODE_OUTIGNORE){
       if(Floating && CODE_GetType(rcode)==CODE_TYPE_FLOATING){
-        if(nerr<10)VisuBoundaryOut(p,idpc[p],OrderDecodeValue(CellOrder,posc[p]),codec[p]);
+        if(nerr<100)VisuBoundaryOut(p,idpc[p],OrderDecodeValue(CellOrder,posc[p]),codec[p]);
         nerr++;
       }
       if(rcodsp==CODE_OUTRHOP)noutrhop++;

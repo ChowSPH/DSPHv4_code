@@ -19,18 +19,13 @@
 #include <float.h>
 #include "JLog2.h"
 #include <math_constants.h>
-#include "JDgKerPrint.h"
-#include "JDgKerPrint_ker.h"
-//#include <conio.h>
+//#include "JDgKerPrint.h"
+//#include "JDgKerPrint_ker.h"
 
 #pragma warning(disable : 4267) //Cancels "warning C4267: conversion from 'size_t' to 'int', possible loss of data"
 #pragma warning(disable : 4244) //Cancels "warning C4244: conversion from 'unsigned __int64' to 'unsigned int', possible loss of data"
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
-
-
-//#define DG_COMPILE_FAST  //-Activa la compilacion solo de ciertos kernels para acelerar este proceso.
-
 
 __constant__ StCteInteraction CTE;
 
@@ -82,7 +77,6 @@ template <unsigned blockSize> __global__ void KerReduMaxFloat(unsigned n,unsigne
   extern __shared__ float sdat[];
   unsigned tid=threadIdx.x;
   unsigned c=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x;
-  //unsigned c=blockIdx.x*blockDim.x + threadIdx.x;
   sdat[tid]=(c<n? dat[c+ini]: -FLT_MAX);
   __syncthreads();
   if(blockSize>=512){ if(tid<256)sdat[tid]=max(sdat[tid],sdat[tid+256]);  __syncthreads(); }
@@ -97,48 +91,25 @@ template <unsigned blockSize> __global__ void KerReduMaxFloat(unsigned n,unsigne
 // de resu[] debe ser >= a (N/SPHBSIZE+1)+(N/(SPHBSIZE*SPHBSIZE)+SPHBSIZE)
 //==============================================================================
 float ReduMaxFloat(unsigned ndata,unsigned inidata,float* data,float* resu){
-  //printf("[ReduMaxF ndata:%d  SPHBSIZE:%d]\n",ndata,SPHBSIZE);
   unsigned n=ndata,ini=inidata;
   unsigned smemSize=SPHBSIZE*sizeof(float);
   dim3 sgrid=GetGridSize(n,SPHBSIZE);
   unsigned n_blocks=sgrid.x*sgrid.y;
-  //printf("n:%d  n_blocks:%d]\n",n,n_blocks);
   float *dat=data;
   float *resu1=resu,*resu2=resu+n_blocks;
   float *res=resu1;
   while(n>1){
-    //printf("##>ReduMaxF n:%d  n_blocks:%d  ini:%d\n",n,n_blocks,ini);
-    //printf("##>ReduMaxF>sgrid=(%d,%d,%d)\n",sgrid.x,sgrid.y,sgrid.z);
     KerReduMaxFloat<SPHBSIZE><<<sgrid,SPHBSIZE,smemSize>>>(n,ini,dat,res);
-    //KerReduMaxF<SPHBSIZE><<<n_blocks,SPHBSIZE,smemSize>>>(n,dat,res);
-    //CheckErrorCuda("#>ReduMaxF Fallo en KerReduMaxF.");
     n=n_blocks; ini=0;
     sgrid=GetGridSize(n,SPHBSIZE);  
     n_blocks=sgrid.x*sgrid.y;
     if(n>1){
-      //n_blocks=(n+SPHBSIZE-1)/SPHBSIZE;
       dat=res; res=(dat==resu1? resu2: resu1); 
     }
   }
   float resf;
   if(ndata>1)cudaMemcpy(&resf,res,sizeof(float),cudaMemcpyDeviceToHost);
   else cudaMemcpy(&resf,data,sizeof(float),cudaMemcpyDeviceToHost);
-  //CheckErrorCuda("#>ReduMaxF Fallo en cudaMemcpy.");
-#ifdef DG_ReduMaxFloat
-  if(1){//-Combrobacion de reduccion <DEBUG>
-    float *vdat=new float[ndata];
-    cudaMemcpy(vdat,data+inidata,sizeof(float)*ndata,cudaMemcpyDeviceToHost);
-    float maxi=vdat[0];
-    //for(unsigned c=0;c<ndata;c++){ printf("ReduMaxF>vdat[%u]=%f\n",c,vdat[c]); }      
-    for(unsigned c=1;c<ndata;c++)if(maxi<vdat[c])maxi=vdat[c];
-    if(resf!=maxi){
-      printf("ReduMaxF>ERRORRRRR... Maximo:; %f; %f\n",resf,maxi);
-      printf("ReduMaxF>sgrid=(%d,%d,%d)\n",sgrid.x,sgrid.y,sgrid.z);
-      exit(0);
-    }
-    delete[] vdat;
-  }
-#endif
   return(resf);
 }
 
@@ -151,7 +122,6 @@ template <unsigned blockSize> __global__ void KerReduMaxFloat_w(unsigned n,unsig
   extern __shared__ float sdat[];
   unsigned tid=threadIdx.x;
   unsigned c=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x;
-  //unsigned c=blockIdx.x*blockDim.x + threadIdx.x;
   sdat[tid]=(c<n? dat[c+ini].w: -FLT_MAX);
   __syncthreads();
   if(blockSize>=512){ if(tid<256)sdat[tid]=max(sdat[tid],sdat[tid+256]);  __syncthreads(); }
@@ -166,26 +136,20 @@ template <unsigned blockSize> __global__ void KerReduMaxFloat_w(unsigned n,unsig
 // vector auxiliar. El tamaño de resu[] debe ser >= a (N/SPHBSIZE+1)+(N/(SPHBSIZE*SPHBSIZE)+SPHBSIZE)
 //==============================================================================
 float ReduMaxFloat_w(unsigned ndata,unsigned inidata,float4* data,float* resu){
-  //printf("[ReduMaxF ndata:%d  SPHBSIZE:%d]\n",ndata,SPHBSIZE);
   unsigned n=ndata,ini=inidata;
   unsigned smemSize=SPHBSIZE*sizeof(float);
   dim3 sgrid=GetGridSize(n,SPHBSIZE);
   unsigned n_blocks=sgrid.x*sgrid.y;
-  //printf("n:%d  n_blocks:%d]\n",n,n_blocks);
   float *dat=NULL;
   float *resu1=resu,*resu2=resu+n_blocks;
   float *res=resu1;
   while(n>1){
-    //printf("##>ReduMaxF n:%d  n_blocks:%d  ini:%d\n",n,n_blocks,ini);
-    //printf("##>ReduMaxF>sgrid=(%d,%d,%d)\n",sgrid.x,sgrid.y,sgrid.z);
     if(!dat)KerReduMaxFloat_w<SPHBSIZE><<<sgrid,SPHBSIZE,smemSize>>>(n,ini,data,res);
     else KerReduMaxFloat<SPHBSIZE><<<sgrid,SPHBSIZE,smemSize>>>(n,ini,dat,res);
-    //CheckErrorCuda("#>ReduMaxF Fallo en KerReduMaxF.");
     n=n_blocks; ini=0;
     sgrid=GetGridSize(n,SPHBSIZE);  
     n_blocks=sgrid.x*sgrid.y;
     if(n>1){
-      //n_blocks=(n+SPHBSIZE-1)/SPHBSIZE;
       dat=res; res=(dat==resu1? resu2: resu1); 
     }
   }
@@ -196,23 +160,6 @@ float ReduMaxFloat_w(unsigned ndata,unsigned inidata,float4* data,float* resu){
     cudaMemcpy(&resf4,data,sizeof(float4),cudaMemcpyDeviceToHost);
     resf=resf4.w;
   }
-  //CheckErrorCuda("#>ReduMaxF Fallo en cudaMemcpy.");
-#ifdef DG_ReduMaxFloat
-  printf("[ReduMaxF_w ndata:%d  SPHBSIZE:%d]\n",ndata,SPHBSIZE);
-  if(1){//-Combrobacion de reduccion <DEBUG>
-    float4 *vdat=new float4[ndata];
-    cudaMemcpy(vdat,data+inidata,sizeof(float4)*ndata,cudaMemcpyDeviceToHost);
-    float maxi=vdat[0].w;
-    //for(unsigned c=0;c<ndata;c++){ printf("ReduMaxF>vdat[%u]=%f\n",c,vdat[c]); }      
-    for(unsigned c=1;c<ndata;c++)if(maxi<vdat[c].w)maxi=vdat[c].w;
-    if(resf!=maxi){
-      printf("ReduMaxF>ERRORRRRR... Maximo:; %f; %f\n",resf,maxi);
-      printf("ReduMaxF>sgrid=(%d,%d,%d)\n",sgrid.x,sgrid.y,sgrid.z);
-      exit(0);
-    }
-    delete[] vdat;
-  }
-#endif
   return(resf);
 }
 
@@ -935,12 +882,8 @@ template<bool psimple,TpFtMode ftmode> void Interaction_Forces_t1(bool lamsps,Tp
   ,TpShifting tshifting,float3 *shiftpos,float *shiftdetect
   ,bool simulate2d)
 {
-#ifndef DG_COMPILE_FAST
   if(lamsps)Interaction_Forces_t2<psimple,ftmode,true>  (tdelta,cellmode,viscob,viscof,bsbound,bsfluid,np,npb,npbok,ncells,begincell,cellmin,dcell,posxy,posz,pospress,velrhop,code,idp,ftomassp,tau,gradvel,viscdt,ar,ace,delta,tshifting,shiftpos,shiftdetect,simulate2d);
   else      Interaction_Forces_t2<psimple,ftmode,false> (tdelta,cellmode,viscob,viscof,bsbound,bsfluid,np,npb,npbok,ncells,begincell,cellmin,dcell,posxy,posz,pospress,velrhop,code,idp,ftomassp,tau,gradvel,viscdt,ar,ace,delta,tshifting,shiftpos,shiftdetect,simulate2d);
-#else
-  if(!lamsps)Interaction_Forces_t2<psimple,ftmode,false> (tdelta,cellmode,viscob,viscof,bsbound,bsfluid,np,npb,npbok,ncells,begincell,cellmin,dcell,posxy,posz,pospress,velrhop,code,idp,ftomassp,tau,gradvel,viscdt,ar,ace,delta,tshifting,shiftpos,shiftdetect,simulate2d);
-#endif
 }
 //==============================================================================
 void Interaction_Forces(bool psimple,bool floating,bool usedem,bool lamsps
@@ -955,7 +898,6 @@ void Interaction_Forces(bool psimple,bool floating,bool usedem,bool lamsps
   ,TpShifting tshifting,float3 *shiftpos,float *shiftdetect
   ,bool simulate2d)
 {
-#ifndef DG_COMPILE_FAST
   if(psimple){      const bool psimple=true;
     if(!floating)   Interaction_Forces_t1<psimple,FTMODE_None> (lamsps,tdelta,cellmode,viscob,viscof,bsbound,bsfluid,np,npb,npbok,ncells,begincell,cellmin,dcell,posxy,posz,pospress,velrhop,code,idp,ftomassp,tau,gradvel,viscdt,ar,ace,delta,tshifting,shiftpos,shiftdetect,simulate2d);
     else if(!usedem)Interaction_Forces_t1<psimple,FTMODE_Sph>  (lamsps,tdelta,cellmode,viscob,viscof,bsbound,bsfluid,np,npb,npbok,ncells,begincell,cellmin,dcell,posxy,posz,pospress,velrhop,code,idp,ftomassp,tau,gradvel,viscdt,ar,ace,delta,tshifting,shiftpos,shiftdetect,simulate2d);
@@ -965,9 +907,6 @@ void Interaction_Forces(bool psimple,bool floating,bool usedem,bool lamsps
     else if(!usedem)Interaction_Forces_t1<psimple,FTMODE_Sph>  (lamsps,tdelta,cellmode,viscob,viscof,bsbound,bsfluid,np,npb,npbok,ncells,begincell,cellmin,dcell,posxy,posz,pospress,velrhop,code,idp,ftomassp,tau,gradvel,viscdt,ar,ace,delta,tshifting,shiftpos,shiftdetect,simulate2d);
     else            Interaction_Forces_t1<psimple,FTMODE_Dem>  (lamsps,tdelta,cellmode,viscob,viscof,bsbound,bsfluid,np,npb,npbok,ncells,begincell,cellmin,dcell,posxy,posz,pospress,velrhop,code,idp,ftomassp,tau,gradvel,viscdt,ar,ace,delta,tshifting,shiftpos,shiftdetect,simulate2d);
   }
-#else
-  if(psimple && !floating)Interaction_Forces_t1<true,FTMODE_None> (lamsps,tdelta,cellmode,viscob,viscof,bsbound,bsfluid,np,npb,npbok,ncells,begincell,cellmin,dcell,posxy,posz,pospress,velrhop,code,idp,ftomassp,tau,gradvel,viscdt,ar,ace,delta,tshifting,shiftpos,shiftdetect,simulate2d);
-#endif
 }
 
 //##############################################################################
@@ -1119,7 +1058,6 @@ template<bool psimple> __device__ void KerInteractionForcesDemBox
   ,double3 posdp1,float3 posp1,float3 velp1,word tavp1,float masstotp1,float taup1,float kfricp1,float restitup1
   ,float3 &acep1,float &demdtp1)
 {
-  //if(ik&&idp[p1]==147){ KPrinttt(ik,"rg:",pini,"-",pfin); }
   for(int p2=pini;p2<pfin;p2++){
     const word codep2=code[p2];
     if(CODE_GetType(codep2)!=CODE_TYPE_FLUID && tavp1!=CODE_GetTypeAndValue(codep2)){
@@ -1263,10 +1201,8 @@ void Interaction_ForcesDem(bool psimple,TpCellMode cellmode,unsigned bsize
   ,const double2 *posxy,const double *posz,const float4 *pospress,const float4 *velrhop
   ,const word *code,const unsigned *idp,float *viscdt,float3 *ace)
 {
-#ifndef DG_COMPILE_FAST
   if(psimple)Interaction_ForcesDemT<true>  (cellmode,bsize,nfloat,ncells,begincell,cellmin,dcell,ftridp,demdata,dtforce,posxy,posz,pospress,velrhop,code,idp,viscdt,ace);
   else       Interaction_ForcesDemT<false> (cellmode,bsize,nfloat,ncells,begincell,cellmin,dcell,ftridp,demdata,dtforce,posxy,posz,pospress,velrhop,code,idp,viscdt,ace);
-#endif
 }
 
 
@@ -1345,7 +1281,6 @@ void AddDelta(unsigned n,const float *delta,float *ar){
     KerAddDelta <<<sgrid,SPHBSIZE>>> (n,delta,ar);
   }
 }
-
 
 
 //##############################################################################
@@ -2126,13 +2061,9 @@ template<bool periactive> __global__ void KerFtUpdate(bool predictor,bool simula
   const unsigned tid=threadIdx.x;                      //-Numero de thread.
   const unsigned cf=blockIdx.y*gridDim.x + blockIdx.x; //-Numero de floating.
   //-Obtiene datos de floating.
-  //bool DG=(ik!=NULL && tid==0);
-  //if(DG)KPrintvtv(ik,"cf:",cf," tid:",tid);
-
   float4 rfdata=ftodata[cf];
   const unsigned fpini=(unsigned)__float_as_int(rfdata.x);
   const unsigned fnp=(unsigned)__float_as_int(rfdata.y);
-  //if(DG)KPrintvtv(ik,"fpini:",fpini," fnp:",fnp);
   const float fradius=rfdata.z;
   const float fmass=rfdata.w;
   //-Calculo de face.
