@@ -152,13 +152,6 @@ void FtUpdate(bool periactive,bool predictor,bool simulate2d,unsigned ftcount
   ,const float3 *ftoforces,double3 *ftocenter,float3 *ftovel,float3 *ftoomega
   ,double2 *posxy,double *posz,unsigned *dcell,float4 *velrhop,word *code);
 
-//# Kernels para Floating bodies (codigo viejo)
-//void FtCalcDist(unsigned n,unsigned pini,tdouble3 center,const unsigned *ftridp,const double2 *posxy,const double *posz,float3 *ftdist);
-void FtCalcOmega(bool periactive,unsigned n,unsigned pini,tfloat3 gravity,float masspart
-  ,tdouble3 center,float radius,const unsigned *ftridp
-  ,const double2 *posxy,const double *posz,const float3 *ace,float3 *result);
-void FtUpdate(bool periactive,bool predictor,unsigned n,unsigned pini,double dt,tdouble3 center,float fradius,tfloat3 fvel,tfloat3 fomega,const unsigned *ftridp,double2 *posxy,double *posz,unsigned *dcell,float4 *velrhop,word *code);
-
 //# Kernels para Periodic conditions
 void PeriodicIgnore(unsigned n,word *code);
 unsigned PeriodicMakeList(unsigned n,unsigned pini,bool stable,unsigned nmax,tdouble3 mapposmin,tdouble3 mapposmax,tdouble3 perinc,const double2 *posxy,const double *posz,const word *code,unsigned *listp);

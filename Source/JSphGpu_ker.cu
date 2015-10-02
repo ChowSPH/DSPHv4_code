@@ -1791,7 +1791,6 @@ template<bool periactive,bool floating> __global__ void KerComputeStepPos2(unsig
       else{
         posxy[p]=posxypre[p];
         posz[p]=poszpre[p];
-        //dcell[p]=0xFFFFFFFF;  //-Para que de error sino se actualiza en RunFloating(). (No es compatible con FtPause).
       }
     }
   }
@@ -2093,7 +2092,7 @@ template<bool periactive> __global__ void KerFtCalcForces( //fdata={pini,np,radi
       omega.z=(fomegavel.x*invinert3.x+fomegavel.y*invinert3.y+fomegavel.z*invinert3.z);
       fomegavel=omega;
     }
-    //-Guarda resultados.
+    //-Guarda resultados en ftoforces[].
     ftoforces[cf*2]=face;
     ftoforces[cf*2+1]=fomegavel;
   }
@@ -2208,157 +2207,8 @@ void FtUpdate(bool periactive,bool predictor,bool simulate2d,unsigned ftcount
   if(ftcount){
     const unsigned bsize=128;
     dim3 sgrid=GetGridSize(ftcount*bsize,bsize);
-    //JDgKerPrint info;
-    //byte* ik=info.GetInfoPointer(sgrid,bsize);
     if(periactive)KerFtUpdate<true>  <<<sgrid,bsize>>> (predictor,simulate2d,dt,Float3(gravity),ftodata,ftridp,ftoforces,ftocenter,ftovel,ftoomega,posxy,posz,dcell,velrhop,code);
     else          KerFtUpdate<false> <<<sgrid,bsize>>> (predictor,simulate2d,dt,Float3(gravity),ftodata,ftridp,ftoforces,ftocenter,ftovel,ftoomega,posxy,posz,dcell,velrhop,code);
-    //if(ik)info.PrintValuesFull(true); //info.PrintValuesInfo();
-  }
-}
-
-
-
-//##############################################################################
-//# Kernels for Floating bodies. (codigo viejo)
-//##############################################################################
-//------------------------------------------------------------------------------
-/// Computes FtDist[] for the particles of a floating body.
-//------------------------------------------------------------------------------
-__global__ void KerFtCalcDist(unsigned n,unsigned pini,double cenx,double ceny,double cenz,const unsigned *ftridp,const double2 *posxy,const double *posz,float3 *ftdist)
-{
-  unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; 
-  if(p<n){
-    p+=pini;
-    const unsigned rp=ftridp[p];
-    if(rp!=UINT_MAX){
-      double2 rposxy=posxy[rp];
-      const float dx=float(rposxy.x-cenx);
-      const float dy=float(rposxy.y-ceny);
-      const float dz=float(posz[rp]-cenz);
-
-      ftdist[p]=make_float3(dx,dy,dz); 
-    }
-  }
-}
-
-//==============================================================================
-/// Computes FtDist[] for the particles of a floating body.
-//==============================================================================
-void FtCalcDist(unsigned n,unsigned pini,tdouble3 center,const unsigned *ftridp,const double2 *posxy,const double *posz,float3 *ftdist){
-  dim3 sgrid=GetGridSize(n,SPHBSIZE);
-  KerFtCalcDist <<<sgrid,SPHBSIZE>>> (n,pini,center.x,center.y,center.z,ftridp,posxy,posz,ftdist);
-}
-
-//------------------------------------------------------------------------------
-/// Computes values for a floating body.
-//------------------------------------------------------------------------------
-template<bool periactive> __global__ void KerFtCalcOmega(unsigned n,unsigned pini,float3 gravity,float masspart
-  ,double cenx,double ceny,double cenz,float radius
-  ,const unsigned *ftridp,const double2 *posxy,const double *posz,const float3 *ace,float3 *result)
-{
-  unsigned tid=threadIdx.x;
-  if(!tid){
-    float rfacex=0,rfacey=0,rfacez=0;
-    float rfomegavelx=0,rfomegavely=0,rfomegavelz=0;
-    float rinert11=0,rinert12=0,rinert13=0;
-    float rinert21=0,rinert22=0,rinert23=0;
-    float rinert31=0,rinert32=0,rinert33=0;
-    const unsigned pfin=pini+n;
-    for(unsigned p=pini;p<pfin;p++){
-      const unsigned rp=ftridp[p];
-      if(rp!=UINT_MAX){
-        float3 race=ace[rp];
-        race.x-=gravity.x; race.y-=gravity.y; race.z-=gravity.z;
-        rfacex+=race.x; rfacey+=race.y; rfacez+=race.z;
-        double2 rposxy=posxy[rp];
-        float dx,dy,dz;
-        KerFtPeriodicDist<periactive>(rposxy.x,rposxy.y,posz[rp],cenx,ceny,cenz,radius,dx,dy,dz);
-        rfomegavelx+=(race.z*dy - race.y*dz);
-        rfomegavely+=(race.x*dz - race.z*dx);
-        rfomegavelz+=(race.y*dx - race.x*dy);
-        //inertia tensor
-        rinert11+= (dy*dy+dz*dz)*masspart;
-        rinert12+=-(dx*dy)*masspart;
-        rinert13+=-(dx*dz)*masspart;
-        rinert21+=-(dx*dy)*masspart;
-        rinert22+= (dx*dx+dz*dz)*masspart;
-        rinert23+=-(dy*dz)*masspart;
-        rinert31+=-(dx*dz)*masspart;
-        rinert32+=-(dy*dz)*masspart;
-        rinert33+= (dx*dx+dy*dy)*masspart;
-      }
-    }
-    //-Guarda resultados.
-    result[0]=make_float3(rfacex,rfacey,rfacez);
-    result[1]=make_float3(rfomegavelx,rfomegavely,rfomegavelz);
-    result[2]=make_float3(rinert11,rinert12,rinert13);
-    result[3]=make_float3(rinert21,rinert22,rinert23);
-    result[4]=make_float3(rinert31,rinert32,rinert33);
-  }
-}
-
-//==============================================================================
-/// Computes values for a floating body.
-//==============================================================================
-void FtCalcOmega(bool periactive,unsigned n,unsigned pini,tfloat3 gravity,float masspart
-  ,tdouble3 center,float radius,const unsigned *ftridp
-  ,const double2 *posxy,const double *posz,const float3 *ace,float3 *result)
-{
-  if(n){
-    if(periactive)KerFtCalcOmega<true>  <<<1,32>>> (n,pini,Float3(gravity),masspart,center.x,center.y,center.z,radius,ftridp,posxy,posz,ace,result);
-    else          KerFtCalcOmega<false> <<<1,32>>> (n,pini,Float3(gravity),masspart,center.x,center.y,center.z,radius,ftridp,posxy,posz,ace,result);
-  }
-}
-
-//------------------------------------------------------------------------------
-/// Updates particles of a floating body.
-//------------------------------------------------------------------------------
-template<bool periactive,bool predictor> __global__ void KerFtUpdate(unsigned n,unsigned pini,double dt
-  ,double cenx,double ceny,double cenz,float radius,float3 fvel,float3 fomega
-  ,const unsigned *ftridp,double2 *posxy,double *posz,unsigned *dcell,float4 *velrhop,word *code)
-{
-  unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; 
-  if(p<n){
-    p+=pini;
-    const unsigned rp=ftridp[p];
-    if(rp!=UINT_MAX){
-      double2 rposxy=posxy[rp];
-      double rposz=posz[rp];
-      float4 rvel=velrhop[rp];
-      //-Calcula y graba desplazamiento de posicion.
-      const double dx=dt*double(rvel.x);
-      const double dy=dt*double(rvel.y);
-      const double dz=dt*double(rvel.z);
-      KerUpdatePos<periactive>(rposxy,rposz,dx,dy,dz,false,rp,posxy,posz,dcell,code);
-      //-Calcula velocidad.
-      float disx,disy,disz;
-      //KerFtPeriodicDist<periactive>(posxy[rp].x,posxy[rp].y,posz[rp],cenx,ceny,cenz,radius,disx,disy,disz);
-      KerFtPeriodicDist<periactive>(rposxy.x+dx,rposxy.y+dy,rposz+dz,cenx,ceny,cenz,radius,disx,disy,disz);
-      //float3 rdist=make_float3(float(rposxy.x+dx-cenx),float(rposxy.y+dy-ceny),float(rposz+dz-cenz));
-      rvel.x=fvel.x+(fomega.y*disz-fomega.z*disy);
-      rvel.y=fvel.y+(fomega.z*disx-fomega.x*disz);
-      rvel.z=fvel.z+(fomega.x*disy-fomega.y*disx);
-      velrhop[rp]=rvel;
-    }
-  }
-}
-
-//==============================================================================
-/// Updates particles of a floating body.
-//==============================================================================
-void FtUpdate(bool periactivex,bool predictor,unsigned n,unsigned pini,double dt
-  ,tdouble3 center,float radius,tfloat3 fvel,tfloat3 fomega
-  ,const unsigned *ftridp,double2 *posxy,double *posz,unsigned *dcell,float4 *velrhop,word *code)
-{
-  if(n){
-    dim3 sgrid=GetGridSize(n,SPHBSIZE);
-    if(periactivex){ const bool periactive=true;
-      if(predictor)KerFtUpdate<periactive,true>  <<<sgrid,SPHBSIZE>>> (n,pini,dt,center.x,center.y,center.z,radius,Float3(fvel),Float3(fomega),ftridp,posxy,posz,dcell,velrhop,code);
-      else         KerFtUpdate<periactive,false> <<<sgrid,SPHBSIZE>>> (n,pini,dt,center.x,center.y,center.z,radius,Float3(fvel),Float3(fomega),ftridp,posxy,posz,dcell,velrhop,code);
-    }else{ const bool periactive=false;
-      if(predictor)KerFtUpdate<periactive,true>  <<<sgrid,SPHBSIZE>>> (n,pini,dt,center.x,center.y,center.z,radius,Float3(fvel),Float3(fomega),ftridp,posxy,posz,dcell,velrhop,code);
-      else         KerFtUpdate<periactive,false> <<<sgrid,SPHBSIZE>>> (n,pini,dt,center.x,center.y,center.z,radius,Float3(fvel),Float3(fomega),ftridp,posxy,posz,dcell,velrhop,code);
-    }
   }
 }
 

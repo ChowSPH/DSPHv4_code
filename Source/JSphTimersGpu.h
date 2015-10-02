@@ -47,15 +47,16 @@ typedef enum{
   ,TMG_NlOutCheck=6
   ,TMG_CfPreForces=7
   ,TMG_CfForces=8
-  ,TMG_SuComputeStep=9
-  ,TMG_SuFloating=10
-  ,TMG_SuMotion=11
-  ,TMG_SuPeriodic=12
-  ,TMG_SuResizeNp=13
-  ,TMG_SuDownData=14
-  ,TMG_SuSavePart=15
+  ,TMG_SuShifting=9
+  ,TMG_SuComputeStep=10
+  ,TMG_SuFloating=11
+  ,TMG_SuMotion=12
+  ,TMG_SuPeriodic=13
+  ,TMG_SuResizeNp=14
+  ,TMG_SuDownData=15
+  ,TMG_SuSavePart=16
 }CsTypeTimerGPU;
-#define TMG_COUNT 16
+#define TMG_COUNT 17
 
 typedef StSphTimerGpu TimersGpu[TMG_COUNT];
 
@@ -73,6 +74,7 @@ inline const char* TmgGetName(CsTypeTimerGPU ct){
     case TMG_NlOutCheck:        return("NL-OutCheck");
     case TMG_CfPreForces:       return("CF-PreForces");
     case TMG_CfForces:          return("CF-Forces");
+    case TMG_SuShifting:        return("SU-Shifting");
     case TMG_SuComputeStep:     return("SU-ComputeStep");
     case TMG_SuFloating:        return("SU-Floating");
     case TMG_SuMotion:          return("SU-Motion");

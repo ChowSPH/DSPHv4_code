@@ -990,8 +990,10 @@ double JSphGpu::DtVariable(bool final){
 // Calcula Shifting final para posicion de particulas.
 //==============================================================================
 void JSphGpu::RunShifting(double dt){
+  TmgStart(Timers,TMG_SuShifting);
   const double coeftfs=(Simulate2D? 2.0: 3.0)-ShiftTFS;
   cusph::RunShifting(Np,Npb,dt,ShiftCoef,ShiftTFS,coeftfs,Velrhopg,ShiftDetectg,ShiftPosg);
+  TmgStop(Timers,TMG_SuShifting);
 }
 
 //==============================================================================
@@ -1004,7 +1006,6 @@ void JSphGpu::RunMotion(double stepdt){
   unsigned nmove=0;
   if(Motion->ProcesTime(TimeStep+MotionTimeMod,stepdt)){
     nmove=Motion->GetMovCount();
-    //{ char cad[256]; sprintf(cad,"----RunMotion[%u]>  nmove:%u",Nstep,nmove); Log->Print(cad); }
     if(nmove){
       cusph::CalcRidp(PeriActive!=0,Npb,0,CaseNfixed,CaseNfixed+CaseNmoving,Codeg,Idpg,RidpMoveg);
       //-Movimiento de particulas boundary
@@ -1022,7 +1023,6 @@ void JSphGpu::RunMotion(double stepdt){
         else{//-Movimiento con matriz
           const unsigned pini=MotionObjBegin[ref]-CaseNfixed,np=MotionObjBegin[ref+1]-MotionObjBegin[ref];
           mvmatrix=OrderCode(mvmatrix);
-          //sprintf(Cad,"--->pini:%u np:%u",pini,np); Log->Print(Cad);
           cusph::MoveMatBound(PeriActive,Simulate2D,np,pini,mvmatrix,stepdt,RidpMoveg,Posxyg,Poszg,Dcellg,Velrhopg,Codeg);
         } 
       }

@@ -602,7 +602,6 @@ void JSphCpuSingle::FtCalcForces(StFtoForces *ftoforces)const{
     //-Calcula sumatorios: face, fomegavel y inert.
     for(unsigned fp=fpini;fp<fpfin;fp++){
       int p=FtRidp[fp];
-      //Log->PrintfDbg("-->RunFloating>   FtRidp[%u]:%u ",fp,p);
       //-Ace is initialised with the value of the gravity for all particles.
       float acex=Acec[p].x-Gravity.x,acey=Acec[p].y-Gravity.y,acez=Acec[p].z-Gravity.z;
       face.x+=acex; face.y+=acey; face.z+=acez;
@@ -654,11 +653,8 @@ void JSphCpuSingle::FtCalcForces(StFtoForces *ftoforces)const{
 //==============================================================================
 void JSphCpuSingle::RunFloating(double dt,bool predictor){
   const char met[]="RunFloating";
-  //RunFloating_Old(dt,predictor);
   if(TimeStep>=FtPause){//-Se usa >= pq si FtPause es cero en symplectic-predictor no entraria.
     TmcStart(Timers,TMC_SuFloating);
-    //-Gets positions of floating particles.
-    //CalcRidp(PeriActive!=0,Np-Npb,Npb,CaseNpb,CaseNpb+CaseNfloat,Codec,Idpc,FtRidp); Se hace en RunCellDivide
     //-Calcula fuerzas sobre floatings.
     FtCalcForces(FtoForces);
 
@@ -724,116 +720,6 @@ void JSphCpuSingle::RunFloating(double dt,bool predictor){
         FtObjs[cf].center=(PeriActive? UpdatePeriodicPos(fcenter): fcenter);
         FtObjs[cf].fvel=fvel;
         FtObjs[cf].fomega=fomega;
-      }
-    }
-    TmcStop(Timers,TMC_SuFloating);
-  }
-}
-
-//==============================================================================
-// Procesa floating objects (codigo viejo).
-//==============================================================================
-void JSphCpuSingle::RunFloating_Old(double dt2,bool predictor){
-  if(TimeStep>=FtPause){//-Se usa >= pq si FtPause es cero en symplectic-predictor no entraria.
-    TmcStart(Timers,TMC_SuFloating);
-    //-Gets positions of floating particles.
-    //CalcRidp(PeriActive!=0,Np-Npb,Npb,CaseNpb,CaseNpb+CaseNfloat,Codec,Idpc,FtRidp); Se hace en RunCellDivide
-    for(unsigned cf=0;cf<FtCount;cf++){
-      StFloatingData *fobj=FtObjs+cf;
-      const float fradius=fobj->radius;
-      tdouble3 fcenter=fobj->center;
-      //-Computes traslational and rotational velocities.
-      tmatrix3f inert=TMatrix3f(0,0,0,0,0,0,0,0,0);
-      tfloat3 face=TFloat3(0);
-      tfloat3 fomegavel=TFloat3(0);
-      const unsigned fpini=fobj->begin-CaseNpb;
-      const unsigned fpfin=fpini+fobj->count;
-      //Log->PrintfDbg("-->RunFloating> Floating:%u  id:%u - %u ",cf,fpini,fpfin);
-      //-Calcula sumatorios: face, fomegavel y inert.
-      for(unsigned fp=fpini;fp<fpfin;fp++){
-        int p=FtRidp[fp];
-        //Log->PrintfDbg("-->RunFloating>   FtRidp[%u]:%u ",fp,p);
-        //-Ace is initialised with the value of the gravity for all particles.
-        float acex=Acec[p].x-Gravity.x,acey=Acec[p].y-Gravity.y,acez=Acec[p].z-Gravity.z;
-        face.x+=acex; face.y+=acey; face.z+=acez;
-        tfloat3 dist=(PeriActive? FtPeriodicDist(Posc[p],fcenter,fradius): ToTFloat3(Posc[p]-fcenter)); 
-        fomegavel.x+= acez*dist.y - acey*dist.z;
-        fomegavel.y+= acex*dist.z - acez*dist.x;
-        fomegavel.z+= acey*dist.x - acex*dist.y;
-        //inertia tensor
-        inert.a11+=(float)  (dist.y*dist.y+dist.z*dist.z)*fobj->massp;
-        inert.a12+=(float) -(dist.x*dist.y)*fobj->massp;
-        inert.a13+=(float) -(dist.x*dist.z)*fobj->massp;
-        inert.a21+=(float) -(dist.x*dist.y)*fobj->massp;
-        inert.a22+=(float)  (dist.x*dist.x+dist.z*dist.z)*fobj->massp;
-        inert.a23+=(float) -(dist.y*dist.z)*fobj->massp;
-        inert.a31+=(float) -(dist.x*dist.z)*fobj->massp;
-        inert.a32+=(float) -(dist.y*dist.z)*fobj->massp;
-        inert.a33+=(float)  (dist.x*dist.x+dist.y*dist.y)*fobj->massp;
-      }
-      //Log->Printf("%u__FT>> face:%s fomegavel:%s",Nstep,fun::Float3Str(face,"%f,%f,%.10f").c_str(),fun::Float3Str(fomegavel,"%f,%f,%.10f").c_str());
-
-      face.x=(face.x+fobj->mass*Gravity.x)/fobj->mass;
-      face.y=(face.y+fobj->mass*Gravity.y)/fobj->mass;
-      face.z=(face.z+fobj->mass*Gravity.z)/fobj->mass;
-      //Log->Printf("%u__FT_1>> face:%s ",Nstep,fun::Float3Str(face,"%f,%f,%.10f").c_str());
-
-      //-Recomputes values of floating.
-      tfloat3 fvel=fobj->fvel;
-      //Log->Printf("%u__FT_1>> center:%s ",Nstep,fun::Double3Str(center,"%f,%f,%.10f").c_str());
-      //Log->Printf("%u__FT_1>> fvel:%s ",Nstep,fun::Float3Str(fvel,"%f,%f,%.10f").c_str());
-
-      //calculates the inverse of the intertia matrix to compute the I^-1 * L= W
-      tmatrix3f invinert=TMatrix3f(0,0,0,0,0,0,0,0,0);
-      float detiner=(inert.a11*inert.a22*inert.a33+inert.a12*inert.a23*inert.a31+inert.a21*inert.a32*inert.a13-(inert.a31*inert.a22*inert.a13+inert.a21*inert.a12*inert.a33+inert.a23*inert.a32*inert.a11));
-      if(detiner){
-        invinert.a11=(inert.a22*inert.a33-inert.a23*inert.a32)/detiner;
-        invinert.a12=-(inert.a12*inert.a33-inert.a13*inert.a32)/detiner;
-        invinert.a13=(inert.a12*inert.a23-inert.a13*inert.a22)/detiner;
-        invinert.a21=-(inert.a21*inert.a33-inert.a23*inert.a31)/detiner;
-        invinert.a22=(inert.a11*inert.a33-inert.a13*inert.a31)/detiner;
-        invinert.a23=-(inert.a11*inert.a23-inert.a13*inert.a21)/detiner;
-        invinert.a31=(inert.a21*inert.a32-inert.a22*inert.a31)/detiner;
-        invinert.a32=-(inert.a11*inert.a32-inert.a12*inert.a31)/detiner;
-        invinert.a33=(inert.a11*inert.a22-inert.a12*inert.a21)/detiner;
-      }
-      tfloat3 omega=TFloat3(0);
-      //correct omega formulation
-      omega.x=fomegavel.x*invinert.a11+fomegavel.y*invinert.a12+fomegavel.z*invinert.a13;
-      omega.y=fomegavel.x*invinert.a21+fomegavel.y*invinert.a22+fomegavel.z*invinert.a23;
-      omega.z=fomegavel.x*invinert.a31+fomegavel.y*invinert.a32+fomegavel.z*invinert.a33;
-      //Log->Printf("%u__FT_1>> omega:%s ",Nstep,fun::Float3Str(omega,"%f,%f,%.10f").c_str());
-      tfloat3 fomega;
-      fomega.x=float(dt2*omega.x+fobj->fomega.x);
-      fomega.y=float(dt2*omega.y+fobj->fomega.y);
-      fomega.z=float(dt2*omega.z+fobj->fomega.z);
-      //Log->Printf("%u__FT_1>> fomega:%s ",Nstep,fun::Float3Str(fomega,"%f,%f,%.10f").c_str());
-      if(Simulate2D){ face.y=0; fomega.x=0; fomega.z=0; fvel.y=0; }
-      fcenter.x+=dt2*fvel.x;
-      fcenter.y+=dt2*fvel.y;
-      fcenter.z+=dt2*fvel.z;
-      //Log->Printf("%u__FT_2>> center:%s ",Nstep,fun::Double3Str(center,"%f,%f,%.20f").c_str());
-      fvel.x=float(dt2*face.x+fvel.x);
-      fvel.y=float(dt2*face.y+fvel.y);
-      fvel.z=float(dt2*face.z+fvel.z);
-      //Log->Printf("%u__FT_2>> fvel:%s ",Nstep,fun::Float3Str(fvel,"%f,%f,%.20f").c_str());
-
-      //-Updates floating particles.
-      for(unsigned fp=fpini;fp<fpfin;fp++){
-        const int p=FtRidp[fp];
-        tfloat4 *velrhop=Velrhopc+p;
-        UpdatePos(Posc[p],dt2*velrhop->x,dt2*velrhop->y,dt2*velrhop->z,false,p,Posc,Dcellc,Codec);
-        tfloat3 dist=(PeriActive? FtPeriodicDist(Posc[p],fcenter,fobj->radius): ToTFloat3(Posc[p]-fcenter)); 
-        velrhop->x=fvel.x+(fomega.y*dist.z-fomega.z*dist.y);
-        velrhop->y=fvel.y+(fomega.z*dist.x-fomega.x*dist.z);
-        velrhop->z=fvel.z+(fomega.x*dist.y-fomega.y*dist.x);
-      }
-
-      //-Stores data.
-      if(!predictor){
-        fobj->center=(PeriActive? UpdatePeriodicPos(fcenter): fcenter);
-        fobj->fvel=fvel;
-        fobj->fomega=fomega;
       }
     }
     TmcStop(Timers,TMC_SuFloating);

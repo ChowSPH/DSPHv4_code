@@ -473,7 +473,6 @@ void JSphGpuSingle::DgSaveVtk(std::string fname,unsigned num,bool svace){
 // calculadas en la interaccion usando Verlet.
 //==============================================================================
 double JSphGpuSingle::ComputeStep_Ver(){
-  //DgSaveVtk("_A_PreInter",Nstep,false);
   Interaction_Forces(INTER_Forces);     //-Interaccion
   const double dt=DtVariable(true);     //-Calcula nuevo dt
   DemDtForce=dt;                        //(DEM)
@@ -519,102 +518,12 @@ double JSphGpuSingle::ComputeStep_Sym(){
 //==============================================================================
 void JSphGpuSingle::RunFloating(double dt,bool predictor){
   const char met[]="RunFloating";
-  //RunFloating_Old(dt,predictor);
   if(TimeStep>=FtPause){//-Se usa >= pq si FtPause es cero en symplectic-predictor no entraria.
     TmgStart(Timers,TMG_SuFloating);
-    //-Gets positions of floating particles.
-    //cusph::CalcRidp(PeriActive!=0,Np-Npb,Npb,CaseNpb,CaseNpb+CaseNfloat,Codeg,Idpg,FtRidpg); Se hace en RunCellDivide
     //-Calcula fuerzas sobre floatings.
     cusph::FtCalcForces(PeriActive!=0,FtCount,Gravity,FtoDatag,FtoMasspg,FtoCenterg,FtRidpg,Posxyg,Poszg,Aceg,FtoForcesg);
     //-Aplica movimiento sobre floatings.
     cusph::FtUpdate(PeriActive!=0,predictor,Simulate2D,FtCount,dt,Gravity,FtoDatag,FtRidpg,FtoForcesg,FtoCenterg,FtoVelg,FtoOmegag,Posxyg,Poszg,Dcellg,Velrhopg,Codeg);
-    TmgStop(Timers,TMG_SuFloating);
-  }
-}
-
-//==============================================================================
-// Procesa floating objects (codigo viejo).
-// Atencion:Para usar esta version de RunFloating se debe comentar la recuperacion
-// de datos de floatings en Save().
-//==============================================================================
-void JSphGpuSingle::RunFloating_Old(double dt2,bool predictor){
-  if(TimeStep>=FtPause){//-Se usa >= pq si FtPause es cero en symplectic-predictor no entraria.
-    TmgStart(Timers,TMG_SuFloating);
-    //cusph::CalcRidp(PeriActive!=0,Np-Npb,Npb,CaseNpb,CaseNpb+CaseNfloat,Codeg,Idpg,FtRidpg); Se hace en RunCellDivide
-    for(unsigned cf=0;cf<FtCount;cf++){
-      StFloatingData *fobj=FtObjs+cf;
-      const float fradius=fobj->radius;
-      tdouble3 fcenter=fobj->center;
-      //-Computes traslational and rotational velocities.
-      tfloat3 face,fomegavel;
-      tmatrix3f inert=TMatrix3f(0,0,0,0,0,0,0,0,0);
-      {
-        float3 *resultg=(float3 *)CellDivSingle->GetAuxMem(15);
-        cusph::FtCalcOmega(PeriActive!=0,fobj->count,fobj->begin-CaseNpb,Gravity,fobj->massp,fcenter,fobj->radius,FtRidpg,Posxyg,Poszg,Aceg,resultg);
-        tfloat3 result[5];
-        cudaMemcpy(result,resultg,sizeof(float3)*5,cudaMemcpyDeviceToHost);
-        face=result[0];
-        fomegavel=result[1];
-        inert=TMatrix3f(result[2].x,result[2].y,result[2].z,result[3].x,result[3].y,result[3].z,result[4].x,result[4].y,result[4].z);
-      }
-      //Log->Printf("%u__FT>> face:%s fomegavel:%s",Nstep,fun::Float3Str(face,"%f,%f,%f").c_str(),fun::Float3Str(fomegavel,"%f,%f,%f").c_str());
-
-      face.x=(face.x+fobj->mass*Gravity.x)/fobj->mass;
-      face.y=(face.y+fobj->mass*Gravity.y)/fobj->mass;
-      face.z=(face.z+fobj->mass*Gravity.z)/fobj->mass;
-      //Log->Printf("%u__FT_1>> face:%s ",Nstep,fun::Float3Str(face,"%f,%f,%f").c_str());
-
-      //-Recomputes values of floating.
-      tfloat3 fvel=fobj->fvel;
-      //Log->Printf("%u__FT_1>> center:%s ",Nstep,fun::Double3Str(center,"%f,%f,%.10f").c_str());
-      //Log->Printf("%u__FT_1>> fvel:%s ",Nstep,fun::Float3Str(fvel,"%f,%f,%.10f").c_str());
-
-      //calculates the inverse of the intertia matrix to compute the I^-1 * L= W
-      tmatrix3f invinert=TMatrix3f(0,0,0,0,0,0,0,0,0);
-      float detiner=(inert.a11*inert.a22*inert.a33+inert.a12*inert.a23*inert.a31+inert.a21*inert.a32*inert.a13-(inert.a31*inert.a22*inert.a13+inert.a21*inert.a12*inert.a33+inert.a23*inert.a32*inert.a11));
-      if(detiner){
-        invinert.a11=(inert.a22*inert.a33-inert.a23*inert.a32)/detiner;
-        invinert.a12=-(inert.a12*inert.a33-inert.a13*inert.a32)/detiner;
-        invinert.a13=(inert.a12*inert.a23-inert.a13*inert.a22)/detiner;
-        invinert.a21=-(inert.a21*inert.a33-inert.a23*inert.a31)/detiner;
-        invinert.a22=(inert.a11*inert.a33-inert.a13*inert.a31)/detiner;
-        invinert.a23=-(inert.a11*inert.a23-inert.a13*inert.a21)/detiner;
-        invinert.a31=(inert.a21*inert.a32-inert.a22*inert.a31)/detiner;
-        invinert.a32=-(inert.a11*inert.a32-inert.a12*inert.a31)/detiner;
-        invinert.a33=(inert.a11*inert.a22-inert.a12*inert.a21)/detiner;
-      }
-
-      tfloat3 omega=TFloat3(0);
-      //correct omega formulation
-      omega.x=fomegavel.x*invinert.a11+fomegavel.y*invinert.a12+fomegavel.z*invinert.a13;
-      omega.y=fomegavel.x*invinert.a21+fomegavel.y*invinert.a22+fomegavel.z*invinert.a23;
-      omega.z=fomegavel.x*invinert.a31+fomegavel.y*invinert.a32+fomegavel.z*invinert.a33;
-      //Log->Printf("%u__FT_1>> detiner:%f omega:%s",Nstep,detiner,fun::Float3Str(omega,"%f,%f,%f").c_str());
-      tfloat3 fomega;
-      fomega.x=float(dt2*omega.x+fobj->fomega.x);
-      fomega.y=float(dt2*omega.y+fobj->fomega.y);
-      fomega.z=float(dt2*omega.z+fobj->fomega.z);
-      //Log->Printf("%u__FT_1>> fomega:%s ",Nstep,fun::Float3Str(fomega,"%f,%f,%f").c_str());
-      if(Simulate2D){ face.y=0; fomega.x=0; fomega.z=0; fvel.y=0; }
-      fcenter.x+=dt2*fvel.x;
-      fcenter.y+=dt2*fvel.y;
-      fcenter.z+=dt2*fvel.z;
-      //Log->Printf("%u__FT_2>> center:%s ",Nstep,fun::Double3Str(center,"%f,%f,%f").c_str());
-      fvel.x=float(dt2*face.x+fvel.x);
-      fvel.y=float(dt2*face.y+fvel.y);
-      fvel.z=float(dt2*face.z+fvel.z);
-      //Log->Printf("%u__FT_2>> fvel:%s ",Nstep,fun::Float3Str(fvel,"%f,%f,%f").c_str());
-
-      //-Updates floating particles.
-      cusph::FtUpdate(PeriActive!=0,predictor,fobj->count,fobj->begin-CaseNpb,dt2,fcenter,fradius,fvel,fomega,FtRidpg,Posxyg,Poszg,Dcellg,Velrhopg,Codeg);
-
-      //-Stores data.
-      if(!predictor){
-        fobj->center=(PeriActive? UpdatePeriodicPos(fcenter): fcenter);
-        fobj->fvel=fvel;
-        fobj->fomega=fomega;
-      }
-    }
     TmgStop(Timers,TMG_SuFloating);
   }
 }

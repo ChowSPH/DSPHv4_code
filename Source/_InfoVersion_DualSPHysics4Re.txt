@@ -307,22 +307,18 @@
   - Use ALMOSTZERO instead of 1e-18f. (v4.0.008 / 02-10-2015)
   - Use Resety() after calculating Ace. (v4.0.008 / 02-10-2015)
   - Use of inline function GetKernel() and GetInteractionCells() on CPU to mimic GPU code. (v4.0.008 / 02-10-2015)
-  
+  - Add timers for Shifting. (v4.0.009 / 02-10-2015)
+  - Remove old code for floatings. (v4.0.009 / 02-10-2015)
 
   
 Remaining issues:
 ==================
 - Remove //Log->Print //print if(0)
 - Use of SDAT_info?
-- TDeltaSph, when is DynamicExt used?
 - Is FtPause ok?
 - Example with DtFixed.
 - Test periodic one-axis and two-axis.
 - Examples with DomainLimits
-- MkList, when is it used? LoadCodeParticles
-
-- Check timers for Shifting.
-- Remove RunFloating_Old().
 - Add code for external forces by Stephen.
 - Configure project with debug.
 - Check restart with floatings and DEM.
@@ -339,7 +335,13 @@ Remaining issues:
   const unsigned pini=(DtAllParticles? 0: Npb);
   cusph::ComputeVelMod(Np-pini,Velrhopg+pini,ViscDtg);
   float velmax=cusph::ReduMaxFloat(Np-pini,0,ViscDtg,CellDiv->GetAuxMem(cusph::ReduMaxFloatSize(Np-pini)));
+- Usar thrust en? diferencia en rendimiento?
+  if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
 
+x MkList, when is it used? LoadCodeParticles
+x Check timers for Shifting.
+x Remove RunFloating_Old().
+x TDeltaSph, when is DynamicExt used?
 x Check timers for Ren correction or remove Ren correction...
 x Remove "---> DivideFull:"
 x Remove references to MapMove.

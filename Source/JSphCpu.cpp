@@ -1345,7 +1345,6 @@ template<bool shift> void JSphCpu::ComputeVerletVarsFluid(const tfloat4 *velrhop
       double dy=double(velrhop1[p].y)*dt + double(Acec[p].y)*dt205;
       double dz=double(velrhop1[p].z)*dt + double(Acec[p].z)*dt205;
       if(shift){
-        //if(Idpc[p]==5759)Log->Printf("%u_SHIFT_COMPUTE> p[%u] px:%f pz:%f",Nstep,p,ShiftPosc[p].x,ShiftPosc[p].z); 
         dx+=double(ShiftPosc[p].x);
         dy+=double(ShiftPosc[p].y);
         dz+=double(ShiftPosc[p].z);
@@ -1464,7 +1463,6 @@ template<bool shift> void JSphCpu::ComputeSymplecticPreT(double dt){
       Velrhopc[p].w=(rhopnew<RHOPCERO? RHOPCERO: rhopnew); //-Evita q las floating absorvan a las fluidas.
       //-Copia posicion.
       Posc[p]=PosPrec[p];
-      //Dcellc[p]=0xFFFFFFFF;  //-Para que de error sino se actualiza en RunFloating(). (No es compatible con FtPause).
     }
   }
 
@@ -1528,7 +1526,6 @@ template<bool shift> void JSphCpu::ComputeSymplecticCorrT(double dt){
       Velrhopc[p].w=(rhopnew<RHOPCERO? RHOPCERO: rhopnew); //-Evita q las floating absorvan a las fluidas.
       //-Copia posicion.
       Posc[p]=PosPrec[p];
-      //Dcellc[p]=0xFFFFFFFF;  //-Para que de error sino se actualiza en RunFloating(). (No es compatible con FtPause).
     }
   }
 
@@ -1559,6 +1556,7 @@ double JSphCpu::DtVariable(bool final){
 // Calcula Shifting final para posicion de particulas.
 //==============================================================================
 void JSphCpu::RunShifting(double dt){
+  TmcStart(Timers,TMC_SuShifting);
   const double coeftfs=(Simulate2D? 2.0: 3.0)-ShiftTFS;
   const int pini=int(Npb),pfin=int(Np),npf=int(Np-Npb);
   #ifdef _WITHOMP
@@ -1576,7 +1574,7 @@ void JSphCpu::RunShifting(double dt){
     if(ShiftPosc[p].x==FLT_MAX)umagn=0; //-Anula shifting por proximidad del contorno.
     ShiftPosc[p]=ToTFloat3(ToTDouble3(ShiftPosc[p])*umagn);
   }
-  //if(PartNstep+1==Nstep)SaveVtkGradDiv(Part-1);
+  TmcStop(Timers,TMC_SuShifting);
 }
 
 //==============================================================================
@@ -1615,11 +1613,8 @@ void JSphCpu::MoveLinBound(unsigned np,unsigned ini,const tdouble3 &mvpos,const 
 {
   const unsigned fin=ini+np;
   for(unsigned id=ini;id<fin;id++){
-    const unsigned pid=RidpMove[id];  //printf("id:%d -> pid:%d\n",id,pid);
-    //Log->Printf("id:%d -> pid:%d",id,pid);
+    const unsigned pid=RidpMove[id];
     if(pid!=UINT_MAX){
-      //Log->Printf("  mvpos:(%f,%f,%f)",mvpos.x,mvpos.y,mvpos.z);
-      //Log->Printf("  mvvel:(%f,%f,%f)",mvvel.x,mvvel.y,mvvel.z);
       UpdatePos(pos[pid],mvpos.x,mvpos.y,mvpos.z,false,pid,pos,dcell,code);
       velrhop[pid].x=mvvel.x;  velrhop[pid].y=mvvel.y;  velrhop[pid].z=mvvel.z;
     }
@@ -1656,7 +1651,6 @@ void JSphCpu::RunMotion(double stepdt){
   unsigned nmove=0;
   if(Motion->ProcesTime(TimeStep+MotionTimeMod,stepdt)){
     nmove=Motion->GetMovCount();
-    //{ char cad[256]; sprintf(cad,"----RunMotion[%u]>  nmove:%u",Nstep,nmove); Log->Print(cad); }
     if(nmove){
       CalcRidp(PeriActive!=0,Npb,0,CaseNfixed,CaseNfixed+CaseNmoving,Codec,Idpc,RidpMove);
       //-Movimiento de particulas boundary
@@ -1694,7 +1688,6 @@ void JSphCpu::RunMotion(double stepdt){
         mvsimple=OrderCode(mvsimple);
         if(Simulate2D)mvsimple.y=0;
         const tfloat3 mvvel=ToTFloat3(mvsimple/TDouble3(stepdt));
-        //Log->Printf("------> mvsimple:(%f,%f,%f) stepdt:%f",mvsimple.x,mvsimple.y,mvsimple.z,stepdt);
         MoveLinBound(nparts,idbegin-CaseNfixed,mvsimple,mvvel,RidpMove,Posc,Dcellc,Velrhopc,Codec);
       }
       else{

@@ -63,7 +63,6 @@ protected:
   inline tfloat3 FtPeriodicDist(const tdouble3 &pos,const tdouble3 &center,float radius)const;
   void FtCalcForces(StFtoForces *ftoforces)const;
   void RunFloating(double dt,bool predictor);
-  void RunFloating_Old(double dt,bool predictor); //pdte
   
   void SaveData();
   void FinishRun(bool stop);

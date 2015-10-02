@@ -45,14 +45,15 @@ typedef enum{
   ,TMC_NlOutCheck=4
   ,TMC_CfPreForces=5
   ,TMC_CfForces=6
-  ,TMC_SuComputeStep=7
-  ,TMC_SuFloating=8
-  ,TMC_SuMotion=9
-  ,TMC_SuPeriodic=10
-  ,TMC_SuResizeNp=11
-  ,TMC_SuSavePart=12
+  ,TMC_SuShifting=7
+  ,TMC_SuComputeStep=8
+  ,TMC_SuFloating=9
+  ,TMC_SuMotion=10
+  ,TMC_SuPeriodic=11
+  ,TMC_SuResizeNp=12
+  ,TMC_SuSavePart=13
 }CsTypeTimerCPU;
-#define TMC_COUNT 13
+#define TMC_COUNT 14
 
 typedef StSphTimerCpu TimersCpu[TMC_COUNT];
 
@@ -68,6 +69,7 @@ inline const char* TmcGetName(CsTypeTimerCPU ct){
     case TMC_NlOutCheck:        return("NL-OutCheck");
     case TMC_CfPreForces:       return("CF-PreForces");
     case TMC_CfForces:          return("CF-Forces");
+    case TMC_SuShifting:        return("SU-Shifting");
     case TMC_SuComputeStep:     return("SU-ComputeStep");
     case TMC_SuFloating:        return("SU-Floating");
     case TMC_SuMotion:          return("SU-Motion");

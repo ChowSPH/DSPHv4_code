@@ -56,7 +56,6 @@ protected:
   double ComputeStep_Sym();
 
   void RunFloating(double dt,bool predictor);
-  void RunFloating_Old(double dt2,bool predictor);
 
   void SaveData();
   void FinishRun(bool stop);
