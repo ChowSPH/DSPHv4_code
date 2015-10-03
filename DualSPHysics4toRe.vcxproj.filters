@@ -58,9 +58,6 @@
     <ClInclude Include="Source\tinyxml.h">
       <Filter>Libs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JBuffer.h">
-      <Filter>Libs</Filter>
-    </ClInclude>
     <ClInclude Include="Source\JCellDivCpu.h">
       <Filter>Source</Filter>
     </ClInclude>
@@ -114,9 +111,6 @@
     </ClInclude>
     <ClInclude Include="Source\JSpaceParts.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\JBufferToVtk.h">
-      <Filter>Libs</Filter>
     </ClInclude>
     <ClInclude Include="Source\JLog2.h">
       <Filter>Common</Filter>

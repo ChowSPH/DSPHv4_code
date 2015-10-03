@@ -352,7 +352,7 @@ IF EXIST cg_variables.h move cg_variables.h $(Configuration)\
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>cudart.lib;JWaveGen_$(PlatformName).lib;JBuffer_$(PlatformName).lib;JFormatFiles2_$(PlatformName).lib;JSphMotion_$(PlatformName).lib;JXml_$(PlatformName).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cudart.lib;JWaveGen_$(PlatformName).lib;JFormatFiles2_$(PlatformName).lib;JSphMotion_$(PlatformName).lib;JXml_$(PlatformName).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(TargetPath)</OutputFile>
       <AdditionalLibraryDirectories>$(CUDA_PATH_V5_5)/lib/$(PlatformName);Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -550,7 +550,7 @@ IF EXIST cg_variables.h move cg_variables.h $(Configuration)\
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
-      <AdditionalDependencies>JWaveGen_$(PlatformName).lib;JBuffer_$(PlatformName).lib;JFormatFiles2_$(PlatformName).lib;JSphMotion_$(PlatformName).lib;JXml_$(PlatformName).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>JWaveGen_$(PlatformName).lib;JFormatFiles2_$(PlatformName).lib;JSphMotion_$(PlatformName).lib;JXml_$(PlatformName).lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>IF EXIST cg_variables.h move cg_variables.h $(Configuration)\</Command>
@@ -678,8 +678,6 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClInclude Include="Source\FunctionsMath.h" />
     <ClInclude Include="Source\JArraysCpu.h" />
     <ClInclude Include="Source\JBinaryData.h" />
-    <ClInclude Include="Source\JBuffer.h" />
-    <ClInclude Include="Source\JBufferToVtk.h" />
     <ClInclude Include="Source\JCellDivCpu.h" />
     <ClInclude Include="Source\JCellDivCpuSingle.h" />
     <ClInclude Include="Source\JCellDivGpu.h">

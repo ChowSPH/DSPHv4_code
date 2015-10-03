@@ -30,12 +30,9 @@ Doxy/*
 !/Doxy/Doxyfile_DSPH
 !/Doxy/logoDSPH.png
 
-## Incluye librerias precompiladas externas.
-##!/Libs/*.lib
-##/Libs/JMoorings_x64.lib
-
 ## Excluye librerias y codigo temporal.
 Libs/
+LibsLinux/
 /Source/*.a
 /Source/JSaveCsv.*
 /Source/JDgKerPrint*.*

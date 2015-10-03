@@ -1,4 +1,4 @@
-#DualSPHysics v4 (16-09-2015)
+#DualSPHysics v4 Re (03-10-2015)
 
 #=============== Cluster selection ===============
 CLUSTER=EPH
@@ -16,13 +16,16 @@ CLUSTER=EPH
 #CCMOREFLAGS= -D_CODE_FASTBALANCING
 
 #=============== Files to compile ===============
-OBJ_BASIC=main.o Functions.o FunctionsMath.o JArraysCpu.o JBinaryData.o JCellDivCpu.o JCfgRun.o JDamping.o JException.o JGauge.o JGboundary.o JGboundaryCpu.o JLinearValue.o JLog2.o JMoorings.o JObject.o JOpenBarrier.o JPartDataBi4.o JPartFloatBi4.o JPartOutBi4Save.o JPartsOut.o JRadixSort.o JRotationFile.o JSaveCsv.o JSaveDt.o JSpaceCtes.o JSpaceEParms.o JSpaceParts.o JSpaceProperties.o JSph.o JSphCpu.o JSphDtFixed.o JSphInlet.o JSphVisco.o JRangeFilter.o JTimersStep.o randomc.o
+OBJ_BASIC=main.o Functions.o FunctionsMath.o JArraysCpu.o JBinaryData.o JCellDivCpu.o JCfgRun.o JException.o
+OBJ_BASIC:=$(OBJ_BASIC) JLinearValue.o JLog2.o JObject.o JPartDataBi4.o JPartFloatBi4.o JPartOutBi4Save.o JPartsOut.o 
+OBJ_BASIC:=$(OBJ_BASIC) JRadixSort.o JRangeFilter.o JSaveDt.o JSpaceCtes.o JSpaceEParms.o JSpaceParts.o 
+OBJ_BASIC:=$(OBJ_BASIC) JSpaceProperties.o JSph.o JSphCpu.o JSphDtFixed.o JSphVarAcc.o JSphVisco.o randomc.o
+OBJ_BASIC:=$(OBJ_BASIC) JTimersStep.o
 OBJ_CPU_SINGLE=JCellDivCpuSingle.o JSphCpuSingle.o JPartsLoad4.o
-OBJ_GPU=JArraysGpu.o JCellDivGpu.o JGboundaryGpu.o JObjectGpu.o JPtxasInfo.o JSphGpu.o
+OBJ_GPU=JArraysGpu.o JCellDivGpu.o JObjectGpu.o JPtxasInfo.o JSphGpu.o
 OBJ_GPU_SINGLE=JCellDivGpuSingle.o JSphGpuSingle.o
-OBJ_CUDA=JCellDivGpu_ker.o JSphGpu_ker.o JGauge_ker.o
+OBJ_CUDA=JCellDivGpu_ker.o JSphGpu_ker.o
 OBJ_CUDA_SINGLE=JCellDivGpuSingle_ker.o
-OBJ_IGNORE=JDgKerPrint.o
 OBJECTS=$(OBJ_BASIC) $(OBJ_CPU_SINGLE) $(OBJ_GPU) $(OBJ_CUDA) $(OBJ_GPU_SINGLE) $(OBJ_CUDA_SINGLE)
 
 #=============== To select GPU architecture ===============
@@ -32,7 +35,7 @@ OBJECTS=$(OBJ_BASIC) $(OBJ_CPU_SINGLE) $(OBJ_GPU) $(OBJ_CUDA) $(OBJ_GPU_SINGLE) 
 GENCODE:=$(GENCODE) -gencode=arch=compute_20,code=\"sm_20,compute_20\"
 
 #=============== DualSPHysics libs to include ===============
-JLIBS=-L./ -ljxml_64 -ljformatfiles2_64 -ljsphmotion_64 -ljbuffer_64 -ljshapevtk_64 -ljmoorings_64 -ljwavegengpu_64
+JLIBS=-L./ -ljxml_64 -ljformatfiles2_64 -ljsphmotion_64 -ljwavegen_64
 
 #=============== To compile CPU code ===============
 CC=g++
@@ -83,12 +86,6 @@ JCellDivGpu_ker.o: JCellDivGpu_ker.cu
 
 JCellDivGpuSingle_ker.o: JCellDivGpuSingle_ker.cu
 	$(NCC) $(NCCFLAGS) JCellDivGpuSingle_ker.cu
-
-JGauge_ker.o: JGauge_ker.cu
-	$(NCC) $(NCCFLAGS) JGauge_ker.cu
-
-JCellDivGpuMpi_ker.o: JCellDivGpuMpi_ker.cu
-	$(NCC) $(NCCFLAGS) JCellDivGpuMpi_ker.cu
 
 clean:
 	rm -rf *.o dualsphysics4gpu dualsphysics4gpu_ptxasinfo

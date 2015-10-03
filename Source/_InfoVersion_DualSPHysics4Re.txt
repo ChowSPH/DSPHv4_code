@@ -315,6 +315,8 @@
   - Add new external forces code with centripetal and coriolis acceleartion. (v4.0.013 / 03-10-2015)
   - Use of double precision for external forces. (v4.0.013 / 03-10-2015)
   - Remove JSaveCsv and JDgKerPrint. (v4.0.013 / 03-10-2015)
+  - Update Makefile and Makefile_cpu for Linux. (v4.0.014 / 03-10-2015)
+  - Remove JBuffer. (v4.0.014 / 03-10-2015)
   
   
 Remaining issues:
