@@ -161,8 +161,9 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre);
 
 //# Kernels para external forces (JSphVarAcc)
-void AddVarAcc(unsigned n,unsigned pini,word codesel,tfloat3 acclin,tfloat3 accang,tfloat3 centre
-  ,const word *code,const double2 *posxy,const double *posz,float3 *ace);
+void AddVarAcc(unsigned n,unsigned pini,word codesel
+  ,tdouble3 acclin,tdouble3 accang,tdouble3 centre,tdouble3 velang,tdouble3 vellin,bool setgravity
+  ,tfloat3 gravity,const word *code,const double2 *posxy,const double *posz,const float4 *velrhop,float3 *ace);
 
 }
 

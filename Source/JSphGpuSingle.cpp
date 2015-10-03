@@ -418,9 +418,10 @@ void JSphGpuSingle::Interaction_Forces(TpInter tinter){
 //==============================================================================
 double JSphGpuSingle::ComputeAceMax(float *auxmem){
   float acemax=0;
-  if(!PeriActive)cusph::ComputeAceMod(Np-Npb,Aceg+Npb,auxmem);//-Sin condiciones periodicas.
-  else cusph::ComputeAceMod(Np-Npb,Codeg+Npb,Aceg+Npb,auxmem);//-Con condiciones periodicas ignora las particulas periodicas.
-  if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
+  const unsigned npf=Np-Npb;
+  if(!PeriActive)cusph::ComputeAceMod(npf,Aceg+Npb,auxmem);//-Sin condiciones periodicas.
+  else cusph::ComputeAceMod(npf,Codeg+Npb,Aceg+Npb,auxmem);//-Con condiciones periodicas ignora las particulas periodicas.
+  if(npf)acemax=cusph::ReduMaxFloat(npf,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(npf)));
   return(sqrt(double(acemax)));
 }
 

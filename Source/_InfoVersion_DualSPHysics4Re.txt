@@ -311,23 +311,24 @@
   - Remove old code for floatings. (v4.0.009 / 02-10-2015)
   - Cleaning code. (v4.0.010 / 02-10-2015)
   - Remove RHOPCERO and OVERRHOPCERO. (v4.0.011 / 02-10-2015)
-  - Add external forces code from v3. (v4.0.012 / 02-10-2015)
-
+  - Add external forces code from DualSPHysics v3. (v4.0.012 / 02-10-2015)
+  - Add new external forces code with centripetal and coriolis acceleartion. (v4.0.013 / 03-10-2015)
+  - Use of double precision for external forces. (v4.0.013 / 03-10-2015)
+  - Remove JSaveCsv and JDgKerPrint. (v4.0.013 / 03-10-2015)
+  
   
 Remaining issues:
 ==================
-- Add code for external forces by Stephen.
 - Use of SDAT_info?
 - Example with DtFixed.
 - Examples with DomainLimits
 - Configure project with debug.
 - Check restart with floatings and DEM.
+- Test performance with other CUDA versions.
 - Replace ptxasinfo by CUDA functions.
 - Test performance using psimple and pdouble. Remove code for psimple?
 - Use radixsort algorithm (with OpenMP) in celldivide on CPU.
 - Remove JTimersStep before creating release.  
-- Remove JSaveCsv before creating release.  
-- Remove JDgKerPrint before creating release.  
 - Usar thrust en? diferencia en rendimiento?
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
   const unsigned pini=(DtAllParticles? 0: Npb);
@@ -336,6 +337,8 @@ Remaining issues:
 - Usar thrust en? diferencia en rendimiento?
   if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
 
+x Remove JSaveCsv before creating release.  
+x Remove JDgKerPrint before creating release.  
 x Remove KPrint, ik.
 x Remove DGSAVE.  
 x Test periodic one-axis.

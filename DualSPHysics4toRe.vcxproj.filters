@@ -28,9 +28,6 @@
     <ClInclude Include="Source\JSphGpu_ker.h">
       <Filter>Cuda</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JDgKerPrint_ker.h">
-      <Filter>Cuda</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Functions.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -71,9 +68,6 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\JCfgRun.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\JDgKerPrint.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\JPartsOut.h">
@@ -169,9 +163,6 @@
     <ClInclude Include="Source\FunctionsMath.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JSaveCsv.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Source\randomc.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -211,9 +202,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\JCellDivGpu.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\JDgKerPrint.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\JSpaceCtes.cpp">
@@ -295,9 +283,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\FunctionsMath.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\JSaveCsv.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\randomc.cpp">

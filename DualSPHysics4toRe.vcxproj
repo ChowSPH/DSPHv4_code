@@ -698,17 +698,6 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Source\JDgKerPrint.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Source\JDgKerPrint_ker.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Source\JFormatFiles2.h" />
     <ClInclude Include="Source\JArraysGpu.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
@@ -726,10 +715,6 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClInclude Include="Source\JSaveDt.h" />
     <ClInclude Include="Source\JRadixSort.h" />
     <ClInclude Include="Source\JRangeFilter.h" />
-    <ClInclude Include="Source\JSaveCsv.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Source\JSpaceProperties.h" />
     <ClInclude Include="Source\JSphDtFixed.h" />
     <ClInclude Include="Source\JSphGpuSingle.h">
@@ -809,11 +794,6 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Source\JDgKerPrint.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Source\JArraysGpu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
@@ -830,10 +810,6 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClCompile Include="Source\JSaveDt.cpp" />
     <ClCompile Include="Source\JRadixSort.cpp" />
     <ClCompile Include="Source\JRangeFilter.cpp" />
-    <ClCompile Include="Source\JSaveCsv.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Source\JSpaceProperties.cpp" />
     <ClCompile Include="Source\JSphDtFixed.cpp" />
     <ClCompile Include="Source\JSphGpuSingle.cpp">

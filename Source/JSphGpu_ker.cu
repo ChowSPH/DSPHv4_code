@@ -2363,29 +2363,58 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
 //------------------------------------------------------
 /// Adds variable forces to particle sets.
 //------------------------------------------------------
-__global__ void KerAddVarAccAng(unsigned n,unsigned pini,word codesel,float3 acclin,float3 accang,float3 centre
-  ,const word *code,const double2 *posxy,const double *posz,float3 *ace)
+__global__ void KerAddVarAccAng(unsigned n,unsigned pini,word codesel,float3 gravity
+  ,bool setgravity,double3 acclin,double3 accang,double3 centre,double3 velang,double3 vellin
+  ,const word *code,const double2 *posxy,const double *posz,const float4 *velrhop,float3 *ace)
 {
   unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x;
   if(p<n){
     p+=pini;
     //Check if the current particle is part of the particle set by its Mk
     if(CODE_GetTypeValue(code[p])==codesel){
-      float3 acc=ace[p]; //-Gets the current particles acceleration value.
+      const float3 accf=ace[p]; //-Gets the current particles acceleration value.
+      double accx=accf.x,accy=accf.y,accz=accf.z;
       //-Adds linear acceleration.
-      acc.x+=acclin.x;
-      acc.y+=acclin.y;
-      acc.z+=acclin.z;
+      accx+=acclin.x;  accy+=acclin.y;  accz+=acclin.z;
+      //-Subtract global gravity from the acceleration if it is set in the input file
+      if(!setgravity){
+        accx-=gravity.x;  accy-=gravity.y;  accz-=gravity.z; 
+      }
+
       //-Adds angular acceleration.
       const double2 rxy=posxy[p];
-      const double disx=rxy.x-centre.x;
-      const double disy=rxy.y-centre.y;
-      const double disz=posz[p]-centre.z;
-      acc.x+=float(disz*accang.y - disy*accang.z);
-      acc.y+=float(disx*accang.z - disz*accang.x);
-      acc.z+=float(disy*accang.x - disx*accang.y);
+      const double dcx=rxy.x-centre.x;
+      const double dcy=rxy.y-centre.y;
+      const double dcz=posz[p]-centre.z;
+      //-Get the current particle's velocity
+      const float4 rvel=velrhop[p];
+      const double velx=rvel.x-vellin.x;
+      const double vely=rvel.y-vellin.y;
+      const double velz=rvel.z-vellin.z;
+
+       //-Calculate angular acceleration ((Dw/Dt) x (r_i - r)) + (w x (w x (r_i - r))) + (2w x (v_i - v))
+      //(Dw/Dt) x (r_i - r) (term1)
+      accx+=(accang.y*dcz)-(accang.z*dcy);
+      accy+=(accang.z*dcx)-(accang.x*dcz);
+      accz+=(accang.x*dcy)-(accang.y*dcx);
+
+	  //Centripetal acceleration (term2)
+	  //First find w x (r_i - r))
+	  const double innerx=(velang.y*dcz)-(velang.z*dcy);
+	  const double innery=(velang.z*dcx)-(velang.x*dcz);
+	  const double innerz=(velang.x*dcy)-(velang.y*dcx);
+      //Find w x inner
+      accx+=(velang.y*innerz)-(velang.z*innery);
+      accy+=(velang.z*innerx)-(velang.x*innerz);
+      accz+=(velang.x*innery)-(velang.y*innerx);
+
+      //Coriolis acceleration 2w x (v_i - v) (term3)
+      accx+=((2.0*velang.y)*velz)-((2.0*velang.z)*vely);
+      accy+=((2.0*velang.z)*velx)-((2.0*velang.x)*velz);
+      accz+=((2.0*velang.x)*vely)-((2.0*velang.y)*velx);
+
       //-Stores the new acceleration value.
-      ace[p]=acc;
+      ace[p]=make_float3(float(accx),float(accy),float(accz));
     }
   }
 }
@@ -2393,21 +2422,24 @@ __global__ void KerAddVarAccAng(unsigned n,unsigned pini,word codesel,float3 acc
 //------------------------------------------------------
 // Adds variable forces to particle sets.
 //------------------------------------------------------
-__global__ void KerAddVarAccLin(unsigned n,unsigned pini,word codesel,float3 acclin
-  ,const word *code,float3 *ace)
+__global__ void KerAddVarAccLin(unsigned n,unsigned pini,word codesel,float3 gravity
+  ,bool setgravity,double3 acclin,const word *code,float3 *ace)
 {
   unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x;
   if(p<n){
     p+=pini;
     //Check if the current particle is part of the particle set by its Mk
     if(CODE_GetTypeValue(code[p])==codesel){
-      float3 acc=ace[p]; //-Gets the current particles acceleration value.
+      const float3 accf=ace[p]; //-Gets the current particles acceleration value.
+      double accx=accf.x,accy=accf.y,accz=accf.z;
       //-Adds linear acceleration.
-      acc.x+=acclin.x;
-      acc.y+=acclin.y;
-      acc.z+=acclin.z;
+      accx+=acclin.x;  accy+=acclin.y;  accz+=acclin.z;
+      //-Subtract global gravity from the acceleration if it is set in the input file
+      if(!setgravity){
+        accx-=gravity.x;  accy-=gravity.y;  accz-=gravity.z; 
+      }
       //-Stores the new acceleration value.
-      ace[p]=acc;
+      ace[p]=make_float3(float(accx),float(accy),float(accz));
     }
   }
 }
@@ -2415,14 +2447,15 @@ __global__ void KerAddVarAccLin(unsigned n,unsigned pini,word codesel,float3 acc
 //==================================================================================================
 /// Adds variable acceleration forces for particle MK groups that have an input file.
 //==================================================================================================
-void AddVarAcc(unsigned n,unsigned pini,word codesel,tfloat3 acclin,tfloat3 accang,tfloat3 centre
-  ,const word *code,const double2 *posxy,const double *posz,float3 *ace)
+void AddVarAcc(unsigned n,unsigned pini,word codesel
+  ,tdouble3 acclin,tdouble3 accang,tdouble3 centre,tdouble3 velang,tdouble3 vellin,bool setgravity
+  ,tfloat3 gravity,const word *code,const double2 *posxy,const double *posz,const float4 *velrhop,float3 *ace)
 {
   if(n){
     dim3 sgrid=GetGridSize(n,SPHBSIZE);
     const bool withaccang=(accang.x!=0 || accang.y!=0 || accang.z!=0);
-    if(withaccang)KerAddVarAccAng <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(acclin),Float3(accang),Float3(centre),code,posxy,posz,ace);
-    else          KerAddVarAccLin <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(acclin),code,ace);
+    if(withaccang)KerAddVarAccAng <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(gravity),setgravity,Double3(acclin),Double3(accang),Double3(centre),Double3(velang),Double3(vellin),code,posxy,posz,velrhop,ace);
+    else          KerAddVarAccLin <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(gravity),setgravity,Double3(acclin),code,ace);
   }
 }
 

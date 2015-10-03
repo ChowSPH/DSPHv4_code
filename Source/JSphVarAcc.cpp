@@ -26,17 +26,10 @@ You should have received a copy of the GNU General Public License, along with Du
 #include <fstream>
 #include <float.h>
 
-//using namespace std;
 using std::string;
 using std::ios;
 using std::ifstream;
 using std::stringstream;
-
-
-//BORRARRRRRRRRRR esto...
-#define MK_RANGE 256         ///<Maximum amount of MK label of the particles.
-
-
 
 //==============================================================================
 /// Constructor.
@@ -46,6 +39,8 @@ JSphVarAccFile::JSphVarAccFile(){
   AccTime=NULL;
   AccLin=NULL;
   AccAng=NULL;
+  VelLin=NULL; //SL: New linear velocity variable
+  VelAng=NULL; //SL: New angular velocity variable
   Reset();
 }
 
@@ -60,13 +55,15 @@ JSphVarAccFile::~JSphVarAccFile(){
 /// Initialisation of variables.
 //==============================================================================
 void JSphVarAccFile::Reset(){
-  MkValue=0;
+  MkFluid=0;
   AccCoG=TFloat3(0);
   AccSize=AccCount=0;
   delete[] AccTime;  AccTime=NULL;
   delete[] AccLin;   AccLin=NULL;
   delete[] AccAng;   AccAng=NULL;
-  CurrAccLin=CurrAccAng=TFloat3(0);
+  delete[] VelLin;   VelLin=NULL; //SL: New linear velocity variable
+  delete[] VelAng;   VelAng=NULL; //SL: New angular velocity variable
+  CurrAccLin=CurrAccAng=TDouble3(0);
   AccIndex=0;
 }
 
@@ -79,6 +76,8 @@ void JSphVarAccFile::Resize(unsigned size){
   AccTime=fun::ResizeAlloc(AccTime,AccCount,size);
   AccLin=fun::ResizeAlloc(AccLin,AccCount,size);
   AccAng=fun::ResizeAlloc(AccAng,AccCount,size);
+  VelLin=fun::ResizeAlloc(VelLin,AccCount,size); //SL: New linear velocity variable
+  VelAng=fun::ResizeAlloc(VelAng,AccCount,size); //SL: New angular velocity variable
   AccSize=size;
 }
 
@@ -90,13 +89,15 @@ long long JSphVarAccFile::GetAllocMemory()const{
   if(AccTime)s+=sizeof(float)*AccSize;
   if(AccLin)s+=sizeof(tfloat3)*AccSize;
   if(AccAng)s+=sizeof(tfloat3)*AccSize;
+  if(VelLin)s+=sizeof(tfloat3)*AccSize; //SL: New linear velocity variable
+  if(VelAng)s+=sizeof(tfloat3)*AccSize; //SL: New angular velocity variable
   return(s);
 }
 
 //==============================================================================
 /// Reads data from an external file to enable time-dependent acceleration of specific particles.
 //==============================================================================
-void JSphVarAccFile::LoadFile(std::string file,float tmax){
+void JSphVarAccFile::LoadFile(std::string file,double tmax){
   const char met[]="LoadFile";
   Reset();
   float timeMax=-1.0f;
@@ -109,10 +110,10 @@ void JSphVarAccFile::LoadFile(std::string file,float tmax){
     pf.seekg(0,ios::beg);
     Resize(SIZEINITIAL);
     AccCount=0;                        //Zero the count for this input file number.
-
     std::string s,item;
     bool mkHeaderRead=false;           //Flag to determine whether the header values (mk/CoG) have been read in.
     bool cogHeaderRead=false;          //Flag to determine whether the centre of gravity values have been read in.
+    bool flagHeaderRead=false; 		   //SL: New flag to determine whether header that contains whether gravity is enabled has been read in.
     int lineCount=1;                   //Line counter.
     while(getline(pf, s)){             //Get the line from the file.
       if(s.find('#')==string::npos){   //Read any line that does not contain a hash and is therefore a comment.
@@ -121,8 +122,8 @@ void JSphVarAccFile::LoadFile(std::string file,float tmax){
           std::istringstream linestream(s); //Get the current line as an istringstream.
           getline(linestream, item);        //Grab the value.
           std::stringstream tmpItem(item);  //Convert current value to a stringstream.
-          tmpItem >> MkValue;               //Push the value to the correct MkValues array location.
-          if(MkValue<=MK_RANGE) //Quick sanity check that the value read was zero or greater.
+          tmpItem >> MkFluid;               //Push the value to the correct MkValues array location.
+          if(MkFluid<=MKFLUIDMAX) //Quick sanity check that the value read was zero or greater.
             mkHeaderRead=true;         //it was so set the flag.
           else               //Value entered wasn't sensible.
             RunException(met,"The MK value in variable acceleration file was out of possible range.",file);
@@ -150,6 +151,22 @@ void JSphVarAccFile::LoadFile(std::string file,float tmax){
           else               //One or more values were not read in.
             RunException(met,"At least one value for the centre of gravity was missing in variable acceleration file.",file);
         }
+        else if(!flagHeaderRead){ //SL: New header reading
+		  //Iterate through all the items in the stream, checking for space separated values.
+		  std::istringstream linestream(s); //Get the current line as an istringstream.
+		  getline(linestream, item);        //Grab the value.
+		  std::stringstream tmpItem(item);  //Convert current value to a stringstream.
+		  if(tmpItem.str().compare("true")==0||tmpItem.str().compare("True")==0||tmpItem.str().compare("TRUE")==0){ //True entered, using global gravity
+			GravityEnabled=true;
+			flagHeaderRead=true;
+		  }
+		  else if(tmpItem.str().compare("false")==0||tmpItem.str().compare("False")==0||tmpItem.str().compare("FALSE")==0){ //False entered, not using global gravity
+			GravityEnabled=false;
+			flagHeaderRead=true;
+		  }
+		  else //Something incorrect entered, inform and quit
+			RunException(met,"The flag to set global gravity was invalid.",file);
+		}
         else{                //We've read the Mk value and CoG values in so anything left must be data.
           //Temporary variables to hold time and linear/angular acceleration values.
           float time=-FLT_MIN;
@@ -186,8 +203,26 @@ void JSphVarAccFile::LoadFile(std::string file,float tmax){
             if(time>timeMax)timeMax=time;
             //Save the loaded gravity vector.
             AccLin[AccCount]=LinAcc;
+            //SL: Calculate angular velocity vector based on acceleration and time data loaded
+			tfloat3 CurrVelLin=TFloat3(0.0f); //SL: New linear velocity variable
+			if(AccCount!=0){ //SL: Angular velocity is always zero at time zero
+			  CurrVelLin.x=VelLin[AccCount-1].x+(AccLin[AccCount].x*(AccTime[AccCount]-AccTime[AccCount-1]));
+			  CurrVelLin.y=VelLin[AccCount-1].y+(AccLin[AccCount].y*(AccTime[AccCount]-AccTime[AccCount-1]));
+			  CurrVelLin.z=VelLin[AccCount-1].z+(AccLin[AccCount].z*(AccTime[AccCount]-AccTime[AccCount-1]));
+			}
+			//SL: Save the calculated angular velocity vector
+			VelLin[AccCount]=CurrVelLin;
             //Save the loaded angular velocity vector (may be zero).
             AccAng[AccCount]=AngAcc;
+            //SL: Calculate angular velocity vector based on acceleration and time data loaded
+			tfloat3 CurrVelAng=TFloat3(0.0f); //SL: New angular velocity variable
+			if(AccCount!=0){ //SL: Angular velocity is always zero at time zero
+			  CurrVelAng.x=VelAng[AccCount-1].x+(AccAng[AccCount].x*(AccTime[AccCount]-AccTime[AccCount-1]));
+			  CurrVelAng.y=VelAng[AccCount-1].y+(AccAng[AccCount].y*(AccTime[AccCount]-AccTime[AccCount-1]));
+			  CurrVelAng.z=VelAng[AccCount-1].z+(AccAng[AccCount].z*(AccTime[AccCount]-AccTime[AccCount-1]));
+			}
+			//SL: Save the calculated angular velocity vector
+			VelAng[AccCount]=CurrVelAng;
             AccCount++;      //Increment the global line counter.
           }
           else{ //There was a problem
@@ -205,18 +240,18 @@ void JSphVarAccFile::LoadFile(std::string file,float tmax){
   //Check that at least 2 values were given or interpolation will be impossible.
   if(AccCount<2)RunException(met,"Cannot be less than two positions in variable acceleration file.",file);
   //Check that the final value for time is not smaller than the final simulation time.
-  if(timeMax<tmax){
+  if(double(timeMax)<tmax){
     stringstream tmpErrorFile;
     tmpErrorFile << "Final time [" << timeMax << "] is less than total simulation time in variable acceleration file.";
     RunException(met,tmpErrorFile.str(),file);
   } 
 }
 
-//==============================================================================
-/// Returns interpolation variable acceleration values.
-//==============================================================================
-void JSphVarAccFile::GetAccValues(float timestep,unsigned &mkvalue,tfloat3 &acclin,tfloat3 &accang,tfloat3 &centre){
-  float currtime=AccTime[AccIndex];
+//=================================================================================================================
+/// Returns interpolation variable acceleration values. SL: Added angular and linear velocity and set gravity flag
+//=================================================================================================================
+void JSphVarAccFile::GetAccValues(double timestep,unsigned &mkfluid,tdouble3 &acclin,tdouble3 &accang,tdouble3 &centre,tdouble3 &velang,tdouble3 &vellin,bool &setgravity){
+  double currtime=AccTime[AccIndex];
   //Find the next nearest time value compared to the current simulation time (current value used if still appropriate).
   while((AccIndex<(AccCount-1))&&(timestep>=currtime)){
     AccIndex++;                   //Increment the index.
@@ -224,32 +259,49 @@ void JSphVarAccFile::GetAccValues(float timestep,unsigned &mkvalue,tfloat3 &accl
   }
   //Not yet reached the final time value, so interpolate new values.
   if(AccIndex>0 && AccIndex<AccCount){
-    const float prevtime=AccTime[AccIndex-1];    //Get the previous value for time.
+    const double prevtime=AccTime[AccIndex-1];    //Get the previous value for time.
     //Calculate a scaling factor for time.
-    const float tfactor=(timestep-prevtime)/(currtime-prevtime);
-    //Interpolate and store new value for linear accelerations.
-    tfloat3 currlinangacc=AccLin[AccIndex];
-    tfloat3 prevlinangacc=AccLin[AccIndex-1];
-    CurrAccLin.x=prevlinangacc.x+(tfactor*(currlinangacc.x-prevlinangacc.x));
-    CurrAccLin.y=prevlinangacc.y+(tfactor*(currlinangacc.y-prevlinangacc.y));
-    CurrAccLin.z=prevlinangacc.z+(tfactor*(currlinangacc.z-prevlinangacc.z));
-    //Interpolate and store new value for angular accelerations.
-    currlinangacc=AccAng[AccIndex];
-    prevlinangacc=AccAng[AccIndex-1];
-    CurrAccAng.x=prevlinangacc.x+(tfactor*(currlinangacc.x-prevlinangacc.x));
-    CurrAccAng.y=prevlinangacc.y+(tfactor*(currlinangacc.y-prevlinangacc.y));
-    CurrAccAng.z=prevlinangacc.z+(tfactor*(currlinangacc.z-prevlinangacc.z));
+    const double tfactor=(timestep-prevtime)/(currtime-prevtime);
+    //Interpolate and store new value for linear accelerations. (SL: changed variable names to make sense for angular velocity use)
+    tdouble3 currval=ToTDouble3(AccLin[AccIndex]);
+	tdouble3 prevval=ToTDouble3(AccLin[AccIndex-1]);
+	CurrAccLin.x=prevval.x+(tfactor*(currval.x-prevval.x));
+	CurrAccLin.y=prevval.y+(tfactor*(currval.y-prevval.y));
+	CurrAccLin.z=prevval.z+(tfactor*(currval.z-prevval.z));
+	//Interpolate and store new value for angular accelerations.
+	currval=ToTDouble3(AccAng[AccIndex]);
+	prevval=ToTDouble3(AccAng[AccIndex-1]);
+	CurrAccAng.x=prevval.x+(tfactor*(currval.x-prevval.x));
+	CurrAccAng.y=prevval.y+(tfactor*(currval.y-prevval.y));
+	CurrAccAng.z=prevval.z+(tfactor*(currval.z-prevval.z));
+	//SL: Interpolate and store new value for linear velocity.
+	currval=ToTDouble3(VelLin[AccIndex]);
+	prevval=ToTDouble3(VelLin[AccIndex-1]);
+	CurrVelLin.x=prevval.x+(tfactor*(currval.x-prevval.x));
+	CurrVelLin.y=prevval.y+(tfactor*(currval.y-prevval.y));
+	CurrVelLin.z=prevval.z+(tfactor*(currval.z-prevval.z));
+	//SL: Interpolate and store new value for angular velocity.
+	currval=ToTDouble3(VelAng[AccIndex]);
+	prevval=ToTDouble3(VelAng[AccIndex-1]);
+	CurrVelAng.x=prevval.x+(tfactor*(currval.x-prevval.x));
+	CurrVelAng.y=prevval.y+(tfactor*(currval.y-prevval.y));
+	CurrVelAng.z=prevval.z+(tfactor*(currval.z-prevval.z));
   }
   else{ //Reached the final time value, truncate to that value.
     const unsigned index=(AccIndex>0? AccIndex-1: 0);
-    CurrAccLin=AccLin[index];     //Get the last position for linear acceleration.
-    CurrAccAng=AccAng[index];     //Get the last position for angular acceleration.
+    CurrAccLin=ToTDouble3(AccLin[index]);     //Get the last position for linear acceleration.
+    CurrAccAng=ToTDouble3(AccAng[index]);     //Get the last position for angular acceleration.
+    CurrVelLin=ToTDouble3(VelLin[index]); 	  //SL: Get the last position for angular velocity.
+    CurrVelAng=ToTDouble3(VelAng[index]); 	  //SL: Get the last position for angular velocity.
   }
   //Return values.
-  mkvalue=MkValue;
+  mkfluid=MkFluid;
   acclin=CurrAccLin;
   accang=CurrAccAng;
-  centre=AccCoG;
+  centre=ToTDouble3(AccCoG);
+  vellin=CurrVelLin; //SL: Added linear velocity
+  velang=CurrVelAng; //SL: Added angular velocity
+  setgravity=GravityEnabled; //SL: Added set gravity flag
 }
 
 //##############################################################################
@@ -283,7 +335,7 @@ void JSphVarAcc::Reset(){
 //==============================================================================
 /// Method to load data from input files for variable acceleration.
 //==============================================================================
-void JSphVarAcc::Config(std::string basefile,unsigned files,float tmax){
+void JSphVarAcc::Config(std::string basefile,unsigned files,double tmax){
   Reset();
   BaseFile=basefile;
   for(unsigned cf=0;cf<files;cf++){
@@ -302,10 +354,10 @@ void JSphVarAcc::Config(std::string basefile,unsigned files,float tmax){
   }
 }
 
-//==============================================================================
-/// Returns interpolation variable acceleration values.
-//==============================================================================
-void JSphVarAcc::GetAccValues(unsigned cfile,float timestep,unsigned &mkvalue,tfloat3 &acclin,tfloat3 &accang,tfloat3 &centre){
-  if(cfile>=GetCount())RunException("GetAccValues","The number of imput file for variable acceleration is invalid.");
-  Files[cfile]->GetAccValues(timestep,mkvalue,acclin,accang,centre);
+//=====================================================================================================================================================
+/// Returns interpolation variable acceleration values. SL: Corrected spelling mistake in exception and added angular velocity and global gravity flag
+//=====================================================================================================================================================
+void JSphVarAcc::GetAccValues(unsigned cfile,double timestep,unsigned &mkfluid,tdouble3 &acclin,tdouble3 &accang,tdouble3 &centre,tdouble3 &velang,tdouble3 &vellin,bool &setgravity){
+  if(cfile>=GetCount())RunException("GetAccValues","The number of input file for variable acceleration is invalid.");
+  Files[cfile]->GetAccValues(timestep,mkfluid,acclin,accang,centre,velang,vellin,setgravity);
 }

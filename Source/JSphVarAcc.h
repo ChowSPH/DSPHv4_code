@@ -21,8 +21,6 @@ You should have received a copy of the GNU General Public License, along with Du
 #ifndef _JSphVarAcc_
 #define _JSphVarAcc_
 
-#pragma warning(disable : 4996) //Cancels sprintf() deprecated.
-
 #include "JObject.h"
 #include "Types.h"
 #include "JTimer.h"
@@ -33,7 +31,6 @@ You should have received a copy of the GNU General Public License, along with Du
 #include <fstream>
 #include <cstdlib>
 
-
 //##############################################################################
 //# JSphVarAccFile
 //##############################################################################
@@ -42,10 +39,13 @@ You should have received a copy of the GNU General Public License, along with Du
 class JSphVarAccFile : protected JObject
 {
 protected:
-  static const unsigned SIZEMAX=100000;
+  static const unsigned MKFLUIDMAX=240; ///<Maximum amount of MK label of the particles.
+
+  //static const unsigned SIZEMAX=100000;
+  static const unsigned SIZEMAX=104857600; //SL: -Increased maximum file size to 100mb, input files can easily exceed original buffer size
   static const unsigned SIZEINITIAL=100;
 
-  unsigned MkValue;          ///<The MK values stored in the acceleration input file.
+  unsigned MkFluid;          ///<The MK values stored in the acceleration input file.
   tfloat3 AccCoG;            ///<The centre of gravity that will be used for angular acceleration calculations.
 
   unsigned AccSize;          ///<Number of acceleration values that were allocated.
@@ -53,11 +53,17 @@ protected:
   float *AccTime;            ///<Variable acceleration time evolution as detailed in the input file.
   tfloat3 *AccLin;           ///<Linear acceleration variable to store values as they are read from the input files.
   tfloat3 *AccAng;           ///<Angular acceleration variable to store values as they are read from the input files.
+  tfloat3 *VelAng;           ///<Angular velocity variable to store values as the angular acceleration values are read from the input files. SL
+  tfloat3 *VelLin;           ///<Linear velocity variable to store values as the linear acceleration values are read from the input files. SL
 
   unsigned AccIndex;         ///<Current index for variable acceleration interpolation.
 
-  tfloat3 CurrAccLin;        ///<The current interpolated values for linear acceleration.
-  tfloat3 CurrAccAng;        ///<The current interpolated values for angular acceleration.
+  tdouble3 CurrAccLin;        ///<The current interpolated values for linear acceleration.
+  tdouble3 CurrAccAng;        ///<The current interpolated values for angular acceleration.
+  tdouble3 CurrVelLin;        ///<The current interpolated values for linear velocity. SL
+  tdouble3 CurrVelAng;        ///<The current interpolated values for angular velocity. SL
+
+  bool GravityEnabled;		 ///<Determines whether global gravity is enabled or disabled for this particle set SL
 
   void Resize(unsigned size);
 
@@ -66,8 +72,8 @@ public:
   ~JSphVarAccFile();
   void Reset();
   long long GetAllocMemory()const;
-  void LoadFile(std::string file,float tmax);
-  void GetAccValues(float timestep,unsigned &mkvalue,tfloat3 &acclin,tfloat3 &accang,tfloat3 &centre);
+  void LoadFile(std::string file,double tmax);
+  void GetAccValues(double timestep,unsigned &mkfluid,tdouble3 &acclin,tdouble3 &accang,tdouble3 &centre,tdouble3 &velang,tdouble3 &vellin,bool &setgravity); //SL: Added linear and angular velocity and set gravity flag
 };
 
 //##############################################################################
@@ -88,8 +94,8 @@ public:
   void Reset();
   long long GetAllocMemory()const{ return(MemSize); }
 
-  void Config(std::string basefile,unsigned files,float tmax);
-  void GetAccValues(unsigned cfile,float timestep,unsigned &mkvalue,tfloat3 &acclin,tfloat3 &accang,tfloat3 &centre);
+  void Config(std::string basefile,unsigned files,double tmax);
+  void GetAccValues(unsigned cfile,double timestep,unsigned &mkfluid,tdouble3 &acclin,tdouble3 &accang,tdouble3 &centre,tdouble3 &velang,tdouble3 &vellin,bool &setgravity); //SL: Added linear and angular velocity and set gravity flag
 
   std::string GetBaseFile()const{ return(BaseFile); };
   unsigned GetCount()const{ return(unsigned(Files.size())); };

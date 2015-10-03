@@ -821,10 +821,11 @@ void JSphGpu::InitRun(){
 void JSphGpu::AddVarAcc(){
   for(unsigned c=0;c<VarAcc->GetCount();c++){
     unsigned mkfluid;
-    tfloat3 acclin,accang,centre;
-    VarAcc->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre);
+    tdouble3 acclin,accang,centre,angvel,linvel;
+    bool setgravity;
+    VarAcc->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre,angvel,linvel,setgravity);
     const word codesel=word(mkfluid);
-    cusph::AddVarAcc(Np-Npb,Npb,codesel,acclin,accang,centre,Codeg,Posxyg,Poszg,Aceg);
+    cusph::AddVarAcc(Np-Npb,Npb,codesel,acclin,accang,centre,angvel,linvel,setgravity,Gravity,Codeg,Posxyg,Poszg,Velrhopg,Aceg);
   }
 }
 

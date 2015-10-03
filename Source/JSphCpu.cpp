@@ -432,8 +432,9 @@ void JSphCpu::InitRun(){
 void JSphCpu::AddVarAcc(){
   for(unsigned c=0;c<VarAcc->GetCount();c++){
     unsigned mkfluid;
-    tfloat3 acclin,accang,centre;
-    VarAcc->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre);
+    tdouble3 acclin,accang,centre,velang,vellin;
+    bool setgravity;
+    VarAcc->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre,velang,vellin,setgravity);
     const bool withaccang=(accang.x!=0||accang.y!=0||accang.z!=0);
     const word codesel=word(mkfluid);
     const int npb=int(Npb),np=int(Np);
@@ -443,14 +444,36 @@ void JSphCpu::AddVarAcc(){
     for(int p=npb;p<np;p++){//-Iterates through the fluid particles.
       //-Checks if the current particle is part of the particle set by its MK.
       if(CODE_GetTypeValue(Codec[p])==codesel){
-        tfloat3 acc=acclin;                 //Adds linear acceleration.
-        if(withaccang){                     //Adds angular acceleration.
-          const tdouble3 dc=Posc[p]-ToTDouble3(centre);
-          acc.x+=accang.y*dc.z-accang.z*dc.y;
-          acc.y+=accang.z*dc.x-accang.x*dc.z;
-          acc.z+=accang.x*dc.y-accang.y*dc.x;
+        tdouble3 acc=ToTDouble3(Acec[p]);
+        acc=acc+acclin;                             //-Adds linear acceleration.
+        if(!setgravity)acc=acc-ToTDouble3(Gravity); //-Subtract global gravity from the acceleration if it is set in the input file
+        if(withaccang){                             //-Adds angular acceleration.
+          const tdouble3 dc=Posc[p]-centre;
+          const tdouble3 vel=TDouble3(Velrhopc[p].x-vellin.x,Velrhopc[p].y-vellin.y,Velrhopc[p].z-vellin.z);//-Get the current particle's velocity
+
+          //-Calculate angular acceleration ((Dw/Dt) x (r_i - r)) + (w x (w x (r_i - r))) + (2w x (v_i - v))
+          //(Dw/Dt) x (r_i - r) (term1)
+		  acc.x+=(accang.y*dc.z)-(accang.z*dc.y);
+		  acc.y+=(accang.z*dc.x)-(accang.x*dc.z);
+		  acc.z+=(accang.x*dc.y)-(accang.y*dc.x);
+
+		  //Centripetal acceleration (term2)
+		  //First find w x (r_i - r))
+		  const double innerx=(velang.y*dc.z)-(velang.z*dc.y);
+		  const double innery=(velang.z*dc.x)-(velang.x*dc.z);
+		  const double innerz=(velang.x*dc.y)-(velang.y*dc.x);
+		  //Find w x inner
+		  acc.x+=(velang.y*innerz)-(velang.z*innery);
+		  acc.y+=(velang.z*innerx)-(velang.x*innerz);
+		  acc.z+=(velang.x*innery)-(velang.y*innerx);
+
+		  //Coriolis acceleration 2w x (v_i - v) (term3)
+		  acc.x+=((2.0*velang.y)*vel.z)-((2.0*velang.z)*vel.y);
+		  acc.y+=((2.0*velang.z)*vel.x)-((2.0*velang.x)*vel.z);
+		  acc.z+=((2.0*velang.x)*vel.y)-((2.0*velang.y)*vel.x);
         }
-        Acec[p]=Acec[p]+acc;
+        //-Stores the new acceleration value.
+        Acec[p]=ToTFloat3(acc);
       }
     }
   }
