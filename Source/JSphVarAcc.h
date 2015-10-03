@@ -63,7 +63,7 @@ protected:
   tdouble3 CurrVelLin;        ///<The current interpolated values for linear velocity. SL
   tdouble3 CurrVelAng;        ///<The current interpolated values for angular velocity. SL
 
-  bool GravityEnabled;		 ///<Determines whether global gravity is enabled or disabled for this particle set SL
+  bool GravityEnabled;       ///<Determines whether global gravity is enabled or disabled for this particle set SL
 
   void Resize(unsigned size);
 

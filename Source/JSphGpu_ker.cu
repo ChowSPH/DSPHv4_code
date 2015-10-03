@@ -2398,11 +2398,11 @@ __global__ void KerAddVarAccAng(unsigned n,unsigned pini,word codesel,float3 gra
       accy+=(accang.z*dcx)-(accang.x*dcz);
       accz+=(accang.x*dcy)-(accang.y*dcx);
 
-	  //Centripetal acceleration (term2)
-	  //First find w x (r_i - r))
-	  const double innerx=(velang.y*dcz)-(velang.z*dcy);
-	  const double innery=(velang.z*dcx)-(velang.x*dcz);
-	  const double innerz=(velang.x*dcy)-(velang.y*dcx);
+      //Centripetal acceleration (term2)
+      //First find w x (r_i - r))
+      const double innerx=(velang.y*dcz)-(velang.z*dcy);
+      const double innery=(velang.z*dcx)-(velang.x*dcz);
+      const double innerz=(velang.x*dcy)-(velang.y*dcx);
       //Find w x inner
       accx+=(velang.y*innerz)-(velang.z*innery);
       accy+=(velang.z*innerx)-(velang.x*innerz);

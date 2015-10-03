@@ -453,24 +453,24 @@ void JSphCpu::AddVarAcc(){
 
           //-Calculate angular acceleration ((Dw/Dt) x (r_i - r)) + (w x (w x (r_i - r))) + (2w x (v_i - v))
           //(Dw/Dt) x (r_i - r) (term1)
-		  acc.x+=(accang.y*dc.z)-(accang.z*dc.y);
-		  acc.y+=(accang.z*dc.x)-(accang.x*dc.z);
-		  acc.z+=(accang.x*dc.y)-(accang.y*dc.x);
+          acc.x+=(accang.y*dc.z)-(accang.z*dc.y);
+          acc.y+=(accang.z*dc.x)-(accang.x*dc.z);
+          acc.z+=(accang.x*dc.y)-(accang.y*dc.x);
 
-		  //Centripetal acceleration (term2)
-		  //First find w x (r_i - r))
-		  const double innerx=(velang.y*dc.z)-(velang.z*dc.y);
-		  const double innery=(velang.z*dc.x)-(velang.x*dc.z);
-		  const double innerz=(velang.x*dc.y)-(velang.y*dc.x);
-		  //Find w x inner
-		  acc.x+=(velang.y*innerz)-(velang.z*innery);
-		  acc.y+=(velang.z*innerx)-(velang.x*innerz);
-		  acc.z+=(velang.x*innery)-(velang.y*innerx);
+          //Centripetal acceleration (term2)
+          //First find w x (r_i - r))
+          const double innerx=(velang.y*dc.z)-(velang.z*dc.y);
+          const double innery=(velang.z*dc.x)-(velang.x*dc.z);
+          const double innerz=(velang.x*dc.y)-(velang.y*dc.x);
+          //Find w x inner
+          acc.x+=(velang.y*innerz)-(velang.z*innery);
+          acc.y+=(velang.z*innerx)-(velang.x*innerz);
+          acc.z+=(velang.x*innery)-(velang.y*innerx);
 
-		  //Coriolis acceleration 2w x (v_i - v) (term3)
-		  acc.x+=((2.0*velang.y)*vel.z)-((2.0*velang.z)*vel.y);
-		  acc.y+=((2.0*velang.z)*vel.x)-((2.0*velang.x)*vel.z);
-		  acc.z+=((2.0*velang.x)*vel.y)-((2.0*velang.y)*vel.x);
+          //Coriolis acceleration 2w x (v_i - v) (term3)
+          acc.x+=((2.0*velang.y)*vel.z)-((2.0*velang.z)*vel.y);
+          acc.y+=((2.0*velang.z)*vel.x)-((2.0*velang.x)*vel.z);
+          acc.z+=((2.0*velang.x)*vel.y)-((2.0*velang.y)*vel.x);
         }
         //-Stores the new acceleration value.
         Acec[p]=ToTFloat3(acc);

@@ -1,5 +1,5 @@
 /*
-<DUALSPHYSICS>  Copyright (C) 2015 by Dr Jose M. Dominguez, Dr Alejandro Crespo, Prof. M. Gomez Gesteira, Dr Anxo Barreiro, Orlando G. Feal, Dr Ricardo Canelas
+<DUALSPHYSICS>  Copyright (C) 2015 by Dr Jose M. Dominguez, Dr Alejandro Crespo, Prof. M. Gomez Gesteira, Dr Anxo Barreiro, Orlando G. Feal, Dr Ricardo Canelas, Dr Corrado Altomare
                                       Dr Benedict Rogers, Dr Georgios Fourtakas, Dr Athanasios Mokos, Dr Stephen Longshaw, Dr Renato Vacondio
 
 EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
@@ -57,7 +57,7 @@ using namespace std;
 std::string getlicense_gpl(const std::string &name){
   std::string tx="";
   tx=tx+"\n\n<"+fun::StrUpper(name)+"> Copyright (C) 2015 by Dr Jose M. Dominguez, Dr Alejandro Crespo,";
-  tx=tx+"\nProf. M. Gomez Gesteira, Dr Anxo Barreiro, Dr Ricardo Canelas";
+  tx=tx+"\nProf. M. Gomez Gesteira, Dr Anxo Barreiro, Dr Ricardo Canelas, Dr C. Altomare";
   tx=tx+"\nDr Benedict Rogers, Dr Georgios Fourtakas, Dr Athanasios Mokos,";
   tx=tx+"\nDr Stephen Longshaw, Dr Renato Vacondio\n";
   tx=tx+"\nEPHYSLAB Environmental Physics Laboratory, Universidade de Vigo";
@@ -84,7 +84,7 @@ int main(int argc, char** argv){
   std::string license=getlicense_gpl(progname);
   printf("%s",license.c_str());
   char appname[256],appnamesub[256];
-  sprintf(appname,"%s Re v4.0.014 (03-10-2015)%s",progname.c_str(),proginfo.c_str());
+  sprintf(appname,"%s Re v4.0.015 (03-10-2015)%s",progname.c_str(),proginfo.c_str());
   for(unsigned c=0;c<=strlen(appname);c++)appnamesub[c]='='; appnamesub[strlen(appname)+1]='\0';
   printf("\n%s\n%s\n",appname,appnamesub);
 

@@ -317,10 +317,13 @@
   - Remove JSaveCsv and JDgKerPrint. (v4.0.013 / 03-10-2015)
   - Update Makefile and Makefile_cpu for Linux. (v4.0.014 / 03-10-2015)
   - Remove JBuffer. (v4.0.014 / 03-10-2015)
+  - Replace tabs with spaces. (v4.0.015 / 03-10-2015)
+  - Include Corrado Altomare. (v4.0.015 / 03-10-2015)
   
   
 Remaining issues:
 ==================
+- Option for rotation from data file.
 - Use of SDAT_info?
 - Example with DtFixed.
 - Examples with DomainLimits
