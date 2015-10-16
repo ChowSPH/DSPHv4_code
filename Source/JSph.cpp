@@ -544,6 +544,7 @@ void JSph::LoadCaseConfig(){
   else UseDEM=false;
 
   //-Carga datos DEM de objetos. (DEM)
+  //-Loads DEM data for the objects. (DEM)
   if(UseDEM){
     memset(DemObjs,0,sizeof(StDemData)*DemObjsSize);
     for(unsigned c=0;c<parts.CountBlocks();c++){
@@ -614,7 +615,7 @@ void JSph::LoadMkInfo(const JSpaceParts *parts){
 }
 
 //==============================================================================
-/// Retunrs the block in MkList according to a given Id.
+/// Returns the block in MkList according to a given Id.
 //==============================================================================
 unsigned JSph::GetMkBlockById(unsigned id)const{
   unsigned c=0;
@@ -623,7 +624,7 @@ unsigned JSph::GetMkBlockById(unsigned id)const{
 }
 
 //==============================================================================
-/// Retunrs the block in MkList according to a given MK.
+/// Returns the block in MkList according to a given MK.
 //==============================================================================
 unsigned JSph::GetMkBlockByMk(word mk)const{
   unsigned c=0;
@@ -651,8 +652,12 @@ word JSph::CodeSetType(word code,TpParticle type,unsigned value)const{
 }
 
 //==============================================================================
-// Carga el codigo de grupo de las particulas y marca las nout ultimas
-// particulas como excluidas.
+/// ES:
+/// Carga el codigo de grupo de las particulas y marca las nout ultimas
+/// particulas como excluidas.
+/// - EN:
+/// Loads the code of a particle group and flags the last "nout" 
+/// particles as excluded. 
 //==============================================================================
 void JSph::LoadCodeParticles(unsigned np,const unsigned *idp,word *code)const{
   const char met[]="LoadCodeParticles"; 
@@ -818,8 +823,12 @@ void JSph::VisuConfig()const{
 }
 
 //==============================================================================
-// Calcula celda de las particulas y comprueba que no existan mas particulas
-// excluidas de las previstas.
+/// ES:
+/// Calcula celda de las particulas y comprueba que no existan mas particulas
+/// excluidas de las previstas.
+/// - EN:
+/// Computes cell particles and checks if there are more particles
+/// excluded than expected.
 //==============================================================================
 void JSph::LoadDcellParticles(unsigned n,const word *code,const tdouble3 *pos,unsigned *dcell)const{
   const char met[]="LoadDcellParticles";
@@ -835,7 +844,7 @@ void JSph::LoadDcellParticles(unsigned n,const word *code,const tdouble3 *pos,un
         dcell[p]=PC__Cell(DomCellCode,cx,cy,cz);
       }
       else{ //-Particle out
-        RunException(met,"Found new particles out."); //-No puede haber nuevas particulas excluidas.
+        RunException(met,"Found new particles out."); //-No puede haber nuevas particulas excluidas. //-There cannot be new particles excluded.
         dcell[p]=PC__CodeOut;
       }
     }

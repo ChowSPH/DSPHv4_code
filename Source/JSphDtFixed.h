@@ -19,12 +19,19 @@
 #define _JSphDtFixed_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Gestiona el uso de un dt fijo (en milisegundos) a partir de los valores 
 //#   para determinados instantes en segundos, interpolando los valores 
 //#   intermedios. (10/11/2012)
 //# - Los datos float pasaron a double. (28/11/2013) 
+//# - EN:
+//# Changes:
+//# =========
+//# - Manage the use of a fixed dt (in milliseconds) from the values
+//# for certain moments in seconds, by interpolating intermediate values (10/11/2012)
+//# - The float data became double. (11.28.2013)
 //#############################################################################
 
 #include "JObject.h"

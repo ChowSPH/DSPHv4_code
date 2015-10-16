@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Nuevo metodo ReadElementStr() para leer un atributo string de un elemento
@@ -30,6 +31,21 @@
 //#   ReadElementInt, ReadElementFloat y ReadElementDouble. (20/12/2013)
 //# - Nuevo metodo ReadElementBool() y correccion en ReadElementInt(). (02/01/2014)
 //# - Nuevo metodo CheckElementNames() para comprobar elementos validos. (21/05/2014)
+//# - EN:
+//# Changes:
+//# ========
+//# - New function ReadElementStr() to read a string attribute of an element
+//#   directly. (14/10/2010)
+//# - In functions with data int3, float3 and double3 added the option to
+//#   indicate the name of the attribute (the default is x, y, z). (02/05/2011)
+//# - New function ReadElementInt3(). (26/10/2011)
+//# - Comment on English translation. (10/02/2012)
+//# - New function addElement(). (12.13.2013)
+//# - New function ExistsElement(). (12.20.2013)
+//# - Using defaults in ReadElementStr, ReadElementUnsigned,
+//#   ReadElementInt, ReadElementFloat and ReadElementDouble. (12.20.2013)
+//# - New function ReadElementBool() and correction in ReadElementInt(). (01.02.2014)
+//# - New function CheckElementNames() to check valid elements. (05.21.2014)
 //#############################################################################
 
 /// \file JXml.h \brief Declares the class \ref JXml.
@@ -661,7 +677,7 @@ public:
 
   //==============================================================================
   /// Stores the xml document in a file, including in the main node 
-  /// atributtes with the name of the application that generates it and when.
+  /// attributes with the name of the application that generates it and when.
   /// \param fname Filename.
   /// \param app Name of the application that generates it
   /// \param date Stores date and time of creation.

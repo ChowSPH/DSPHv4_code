@@ -31,7 +31,8 @@
 namespace cudiv{
 
 //------------------------------------------------------------------------------
-// Reduccion de valores en memoria shared para un warp de KerPosLimitsRedu.
+/// Reduccion de valores en memoria shared para un warp de KerPosLimitsRedu.
+/// Reduction of shared memory values for a warp of KerPosLimitsRedu.
 //------------------------------------------------------------------------------
 template <unsigned blockSize> __device__ void KerUintLimitsWarpRedu(volatile unsigned* sp1,volatile unsigned* sp2,const unsigned &tid){
   if(blockSize>=64){
@@ -67,7 +68,8 @@ template <unsigned blockSize> __device__ void KerUintLimitsWarpRedu(volatile uns
 }
 
 //------------------------------------------------------------------------------
-// Reduccion de valores en memoria shared para KerPosLimits.
+/// Reduccion de valores en memoria shared para KerPosLimits.
+/// Reduction of shared memory values for KerPosLimits
 //------------------------------------------------------------------------------
 template <unsigned blockSize> __device__ void KerUintLimitsRedu(unsigned* sp1,unsigned* sp2,const unsigned &tid,unsigned* results){
   __syncthreads();
@@ -102,7 +104,8 @@ template <unsigned blockSize> __device__ void KerUintLimitsRedu(unsigned* sp1,un
 }
 
 //==============================================================================
-// Ordena valores usando RadixSort de thrust.
+/// Ordena valores usando RadixSort de thrust.
+/// Reorders the values using RadixSort thrust
 //==============================================================================
 void Sort(unsigned* keys,unsigned* values,unsigned size,bool stable){
   if(size){
@@ -114,7 +117,8 @@ void Sort(unsigned* keys,unsigned* values,unsigned size,bool stable){
 }
 
 //==============================================================================
-// Devuelve tamaño de gridsize segun parametros.
+/// Devuelve tamaño de gridsize segun parametros.
+/// Returns the dimensions of gridsize according to parameters
 //==============================================================================
 dim3 GetGridSize(unsigned n,unsigned blocksize){
   dim3 sgrid;//=dim3(1,2,3);
@@ -126,7 +130,8 @@ dim3 GetGridSize(unsigned n,unsigned blocksize){
 }
 
 //------------------------------------------------------------------------------
-// Reduccion de valores en memoria shared para un warp de KerPosLimitsRedu.
+/// Reduccion de valores en memoria shared para un warp de KerPosLimitsRedu.
+/// Reduction of values in shared memory for a warp of KerPosLimitsRedu.
 //------------------------------------------------------------------------------
 template <unsigned blockSize> __device__ void KerPosLimitsWarpRedu(volatile float* spx1,volatile float* spy1,volatile float* spz1,volatile float* spx2,volatile float* spy2,volatile float* spz2,const unsigned &tid){
   if(blockSize>=64){
@@ -162,7 +167,8 @@ template <unsigned blockSize> __device__ void KerPosLimitsWarpRedu(volatile floa
 }
 
 //------------------------------------------------------------------------------
-// Reduccion de valores en memoria shared para KerPosLimits.
+/// Reduccion de valores en memoria shared para KerPosLimits.
+/// Reduction of shared memory values for KerPosLimits.
 //------------------------------------------------------------------------------
 template <unsigned blockSize> __device__ void KerPosLimitsRedu(float* spx1,float* spy1,float* spz1,float* spx2,float* spy2,float* spz2,const unsigned &tid,float* results){
   __syncthreads();
@@ -201,7 +207,8 @@ template <unsigned blockSize> __device__ void KerPosLimitsRedu(float* spx1,float
 }
 
 //------------------------------------------------------------------------------
-// Calcula posicion minima y maxima a partir de los resultados de KerPosLimit.
+/// Calcula posicion minima y maxima a partir de los resultados de KerPosLimit.
+/// Computes minimum and maximum position starting from the results of KerPosLimit.
 //------------------------------------------------------------------------------
 template <unsigned int blockSize> __global__ void KerReduPosLimits(unsigned n,float* data,float *results)
 {
@@ -212,8 +219,9 @@ template <unsigned int blockSize> __global__ void KerReduPosLimits(unsigned n,fl
   float *spy2=spx2+blockDim.x;
   float *spz2=spy2+blockDim.x;
   const unsigned tid=threadIdx.x;
-  const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de valor
+  const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de valor //-Value number
   //-Carga valores en memoria shared.
+  //-Loads values in shared memory.
   unsigned p2=p;
   spx1[tid]=(p<n? data[p2]: FLT_MAX);  p2+=n;
   spy1[tid]=(p<n? data[p2]: FLT_MAX);  p2+=n;
@@ -223,13 +231,19 @@ template <unsigned int blockSize> __global__ void KerReduPosLimits(unsigned n,fl
   spz2[tid]=(p<n? data[p2]: -FLT_MAX);
   __syncthreads();
   //-Reduce valores de memoria shared.
+  //-Reduction of values in shared memory.
   KerPosLimitsRedu<blockSize>(spx1,spy1,spz1,spx2,spy2,spz2,tid,results);
 }
 
 //==============================================================================
-// Reduce los limites de posicion a partir de results[].
-// En results[] cada bloque graba xmin,ymin,zmin,xmax,ymax,zmax agrupando por
-// bloque.
+/// ES:
+/// Reduce los limites de posicion a partir de results[].
+/// En results[] cada bloque graba xmin,ymin,zmin,xmax,ymax,zmax agrupando por
+/// bloque.
+/// - EN:
+/// Reduction of position limits starting from results[].
+/// In results[] each block stores xmin,ymin,zmin,xmax,ymax,zmax
+/// grouped per block
 //==============================================================================
 void ReduPosLimits(unsigned nblocks,float *aux,tfloat3 &pmin,tfloat3 &pmax,JLog2 *log){
   unsigned n=nblocks;
@@ -252,7 +266,8 @@ void ReduPosLimits(unsigned nblocks,float *aux,tfloat3 &pmin,tfloat3 &pmax,JLog2
 }
 
 //------------------------------------------------------------------------------
-// Reduccion de valores en memoria shared para un warp de KerLimitsCellRedu.
+/// Reduccion de valores en memoria shared para un warp de KerLimitsCellRedu.
+/// Reduction of shared memory values for a warp of KerLimitsCellRedu.
 //------------------------------------------------------------------------------
 template <unsigned blockSize> __device__ void KerLimitsCellWarpRedu(volatile unsigned* spx1,volatile unsigned* spy1,volatile unsigned* spz1,volatile unsigned* spx2,volatile unsigned* spy2,volatile unsigned* spz2,const unsigned &tid){
   if(blockSize>=64){
@@ -288,7 +303,8 @@ template <unsigned blockSize> __device__ void KerLimitsCellWarpRedu(volatile uns
 }
 
 //------------------------------------------------------------------------------
-// Reduccion de valores en memoria shared para KerLimitsCell.
+/// Reduccion de valores en memoria shared para KerLimitsCell.
+/// Reduction of shared memory values for KerLimitsCell.
 //------------------------------------------------------------------------------
 template <unsigned blockSize> __device__ void KerLimitsCellRedu(unsigned cellcode,unsigned* spx1,unsigned* spy1,unsigned* spz1,unsigned* spx2,unsigned* spy2,unsigned* spz2,const unsigned &tid,unsigned* results){
   __syncthreads();
@@ -323,7 +339,8 @@ template <unsigned blockSize> __device__ void KerLimitsCellRedu(unsigned cellcod
 }
 
 //------------------------------------------------------------------------------
-// Calcula posicion minima y maxima a partir de los resultados de KerPosLimit.
+/// Calcula posicion minima y maxima a partir de los resultados de KerPosLimit.
+/// Computes minimum and maximum postion startibg from the results of KerPosLimit.
 //------------------------------------------------------------------------------
 template <unsigned int blockSize> __global__ void KerLimitsCellReduBase(unsigned cellcode,unsigned n,unsigned* data,unsigned *results)
 {
@@ -334,8 +351,9 @@ template <unsigned int blockSize> __global__ void KerLimitsCellReduBase(unsigned
   unsigned *scy2=scx2+blockDim.x;
   unsigned *scz2=scy2+blockDim.x;
   const unsigned tid=threadIdx.x;
-  const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de valor
+  const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de valor //-Value number
   //-Carga valores en memoria shared.
+  //-Loads values in shared memory.
   unsigned p2=p;
   const unsigned celmin=(p<n? data[p2]: UINT_MAX);  p2+=n;
   const unsigned celmax=(p<n? data[p2]: 0);
@@ -347,13 +365,19 @@ template <unsigned int blockSize> __global__ void KerLimitsCellReduBase(unsigned
   scz2[tid]=PC__Cellz(cellcode,celmax);
   __syncthreads();
   //-Reduce valores de memoria shared.
+  //-Reduction of shared memory values.
   KerLimitsCellRedu<blockSize>(cellcode,scx1,scy1,scz1,scx2,scy2,scz2,tid,results);
 }
 
 //==============================================================================
-// Reduce los limites de celdas a partir de results[].
-// En results[] cada bloque graba cxmin,cymin,czmin,cxmax,cymax,czmax codificando
-// los valores como celdas en 2 unsigned y agrupando por bloque.
+/// ES:
+/// Reduce los limites de celdas a partir de results[].
+/// En results[] cada bloque graba cxmin,cymin,czmin,cxmax,cymax,czmax codificando
+/// los valores como celdas en 2 unsigned y agrupando por bloque.
+/// - EN:
+/// Reduction of cell limits starting from results[].
+/// In results[] each block stores cxmin,cymin,czmin,cxmax,cymax,czmax encodes
+/// the values as cells in 2 unsigned and groups them per block.
 //==============================================================================
 void LimitsCellRedu(unsigned cellcode,unsigned nblocks,unsigned *aux,tuint3 &celmin,tuint3 &celmax,JLog2 *log){
   unsigned n=nblocks;
@@ -361,7 +385,7 @@ void LimitsCellRedu(unsigned cellcode,unsigned nblocks,unsigned *aux,tuint3 &cel
   dim3 sgrid=GetGridSize(n,DIVBSIZE);
   unsigned n_blocks=sgrid.x*sgrid.y;
   unsigned *dat=aux;
-  unsigned *res=aux+(n_blocks*2); //value min y max.
+  unsigned *res=aux+(n_blocks*2); //value min y max. //minimum and maximum value
   while(n>1){
     KerLimitsCellReduBase<DIVBSIZE><<<sgrid,DIVBSIZE,smemSize>>>(cellcode,n,dat,res);
     n=n_blocks;
@@ -376,14 +400,24 @@ void LimitsCellRedu(unsigned cellcode,unsigned nblocks,unsigned *aux,tuint3 &cel
 }
 
 //------------------------------------------------------------------------------
-// Calcula celda minima y maxima de las particulas validas.
-// Ignora las particulas con check[p]!=0 
-// Las particulas fuera del dominio ya estan marcadas con check[p]=CHECK_OUTPOS
-// Si rhop!=NULL y la particula esta fuera del rango permitido (rhopmin,rhopmax)
-// se marca check[p]=CHECK_OUTRHOP
-// En results[] cada bloque graba cxmin,cymin,czmin,cxmax,cymax,czmax codificando
-// los valores como celdas en 2 unsigned y agrupando por bloque.
-// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
+/// ES:
+/// Calcula celda minima y maxima de las particulas validas.
+/// Ignora las particulas con check[p]!=0 
+/// Las particulas fuera del dominio ya estan marcadas con check[p]=CHECK_OUTPOS
+/// Si rhop!=NULL y la particula esta fuera del rango permitido (rhopmin,rhopmax)
+/// se marca check[p]=CHECK_OUTRHOP
+/// En results[] cada bloque graba cxmin,cymin,czmin,cxmax,cymax,czmax codificando
+/// los valores como celdas en 2 unsigned y agrupando por bloque.
+/// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
+/// - EN:
+/// Computes minimu and maximum cells for valid particles.
+/// Ignores the particles with check[p]!=0.
+/// The particles outside of the domain are marked with check[p]=CHECK_OUTPOS.
+/// If rhop!=NULL and the particle is outside the allowed range (rhopmin,rhopmax),
+/// it is marked with check[p]=CHECK_OUTRHOP.
+/// In results[], each block stores cxmin,cymin,czmin,cxmax,cymax,czmax encodes
+/// the values as cells in 2 unsigned and groups them per block.
+/// In case of having no valid particles the minimum value igreater than the maximum.
 //------------------------------------------------------------------------------
 template <unsigned int blockSize> __global__ void KerLimitsCell(unsigned n,unsigned pini,unsigned cellcode,const unsigned *dcell,const word *code,unsigned *results)
 {
@@ -394,15 +428,16 @@ template <unsigned int blockSize> __global__ void KerLimitsCell(unsigned n,unsig
   unsigned *scy2=scx2+blockDim.x;
   unsigned *scz2=scy2+blockDim.x;
   const unsigned tid=threadIdx.x;
-  const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula
-  //-Carga valores en memoria shared.
+  const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula //-Particle number
+  //-Carga valores en memoria shared. 
+  //-Loads shared memory values.
   if(p<n){
     const unsigned pp=p+pini;
     unsigned rcell=dcell[pp];
     const unsigned cx=PC__Cellx(cellcode,rcell);
     const unsigned cy=PC__Celly(cellcode,rcell);
     const unsigned cz=PC__Cellz(cellcode,rcell);
-    if(CODE_GetSpecialValue(code[pp])<CODE_OUTIGNORE){ //-Particula no excluida.
+    if(CODE_GetSpecialValue(code[pp])<CODE_OUTIGNORE){ //-Particula no excluida. //-Excluded particles
       scx1[tid]=cx; scy1[tid]=cy; scz1[tid]=cz;
       scx2[tid]=cx; scy2[tid]=cy; scz2[tid]=cz;
     }
@@ -417,15 +452,23 @@ template <unsigned int blockSize> __global__ void KerLimitsCell(unsigned n,unsig
   }
   __syncthreads();
   //-Reduce valores de memoria shared.
+  //-Reduction of shared memory values.
   KerLimitsCellRedu<blockSize>(cellcode,scx1,scy1,scz1,scx2,scy2,scz2,tid,results);
 }
 
 //==============================================================================
-// Calcula celda minima y maxima de las particulas validas.
-// Ignora las particulas excluidas con code[p].out!=CODE_OUT_OK 
-// En results[] cada bloque graba cxmin,cymin,czmin,cxmax,cymax,czmax codificando
-// los valores como celdas en 2 unsigned y agrupando por bloque.
-// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
+/// ES:
+/// Calcula celda minima y maxima de las particulas validas.
+/// Ignora las particulas excluidas con code[p].out!=CODE_OUT_OK 
+/// En results[] cada bloque graba cxmin,cymin,czmin,cxmax,cymax,czmax codificando
+/// los valores como celdas en 2 unsigned y agrupando por bloque.
+/// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
+/// - EN:
+/// Computes minimun and maximum cell for valid particles.
+/// Ignores excluded particles with code[p].out!=CODE_OUT_OK
+/// In results[], each block stores cxmin,cymin,czmin,cxmax,cymax,czmax encodes
+/// the values as cells in 2 unsigned and groups them per block.
+/// In case of having no valid particles the minimum value igreater than the maximum.
 //==============================================================================
 void LimitsCell(unsigned np,unsigned pini,unsigned cellcode,const unsigned *dcell,const word *code,unsigned *aux,tuint3 &celmin,tuint3 &celmax,JLog2 *log){
   if(!np){//-Si no hay particulas cancela proceso.
@@ -441,12 +484,13 @@ void LimitsCell(unsigned np,unsigned pini,unsigned cellcode,const unsigned *dcel
 }
 
 //------------------------------------------------------------------------------
-// Calcula particula inicial y final de cada celda.
+/// Calcula particula inicial y final de cada celda.
+/// Compute first and last particle for each cell.
 //------------------------------------------------------------------------------
 __global__ void KerCalcBeginEndCell(unsigned n,unsigned pini,const unsigned *cellpart,int2 *begcell)
 {
   extern __shared__ unsigned scell[];    // [blockDim.x+1}
-  const unsigned pt=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula
+  const unsigned pt=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula //-Particle number
   const unsigned p=pt+pini;
   unsigned cel;
   if(pt<n){
@@ -465,7 +509,8 @@ __global__ void KerCalcBeginEndCell(unsigned n,unsigned pini,const unsigned *cel
 }
 
 //==============================================================================
-// Calcula particula inicial y final de cada celda.
+/// Calcula particula inicial y final de cada celda.
+/// Compute first and last particle for each cell.
 //==============================================================================
 void CalcBeginEndCell(bool full,unsigned np,unsigned npb,unsigned sizebegcell,unsigned cellfluid,const unsigned *cellpart,int2 *begcell){
   if(full)cudaMemset(begcell,0,sizeof(int2)*sizebegcell);
@@ -479,7 +524,8 @@ void CalcBeginEndCell(bool full,unsigned np,unsigned npb,unsigned sizebegcell,un
 }
 
 //------------------------------------------------------------------------------
-// Reordena datos de particulas segun idsort[]
+/// Reordena datos de particulas segun idsort[]
+/// Reorders particle data according to idsort[]
 //------------------------------------------------------------------------------
 __global__ void KerSortDataParticles(unsigned n,unsigned pini,const unsigned *sortpart,const unsigned *idp,const word *code,const unsigned *dcell,const double2 *posxy,const double *posz,const float4 *velrhop,unsigned *idp2,word *code2,unsigned *dcell2,double2 *posxy2,double *posz2,float4 *velrhop2)
 {
@@ -535,7 +581,8 @@ __global__ void KerSortDataParticles(unsigned n,unsigned pini,const unsigned *so
 }
 
 //==============================================================================
-// Reordena datos de particulas segun sortpart.
+/// Reordena datos de particulas segun sortpart.
+/// Reorders particle data according to sortpart.
 //==============================================================================
 void SortDataParticles(unsigned np,unsigned pini,const unsigned *sortpart,const unsigned *idp,const word *code,const unsigned *dcell,const double2 *posxy,const double *posz,const float4 *velrhop,unsigned *idp2,word *code2,unsigned *dcell2,double2 *posxy2,double *posz2,float4 *velrhop2){
   if(np){
@@ -573,7 +620,8 @@ void SortDataParticles(unsigned np,unsigned pini,const unsigned *sortpart,const 
 }
 
 //------------------------------------------------------------------------------
-// Calcula valores minimo y maximo a partir de data[].
+/// Calcula valores minimo y maximo a partir de data[].
+/// Compute minimum and maximum values starting from data[].
 //------------------------------------------------------------------------------
 template <unsigned int blockSize> __global__ void KerReduUintLimits(unsigned n,unsigned* data,unsigned *results)
 {
@@ -582,17 +630,23 @@ template <unsigned int blockSize> __global__ void KerReduUintLimits(unsigned n,u
   const unsigned tid=threadIdx.x;
   const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de valor
   //-Carga valores en memoria shared.
+  //-Loads variables to shared memory.
   unsigned p2=p;
   sp1[tid]=(p<n? data[p2]: UINT_MAX);  p2+=n;
   sp2[tid]=(p<n? data[p2]: 0);
   __syncthreads();
   //-Reduce valores de memoria shared.
+  //-Reduction of shared memory values.
   KerUintLimitsRedu<blockSize>(sp1,sp2,tid,results);
 }
 
 //==============================================================================
-// Reduce los limites de valores unsigned a partir de results[].
-// En results[] cada bloque graba vmin,vmax agrupando por bloque.
+/// ES:
+/// Reduce los limites de valores unsigned a partir de results[].
+/// En results[] cada bloque graba vmin,vmax agrupando por bloque.
+/// EN:
+/// Reduce the limits of unsigned values from results[].
+/// In results[] each block stores vmin,vamx gropued per block.
 //==============================================================================
 void ReduUintLimits(unsigned nblocks,unsigned *aux,unsigned &vmin,unsigned &vmax,JLog2 *log){
   unsigned n=nblocks;
@@ -615,7 +669,8 @@ void ReduUintLimits(unsigned nblocks,unsigned *aux,unsigned &vmin,unsigned &vmax
 }
 
 //------------------------------------------------------------------------------
-// Reduccion de valores en memoria shared para un warp de KerReduUintSum.
+/// Reduccion de valores en memoria shared para un warp de KerReduUintSum.
+/// Reduction of shared memory values for a warp of KerReduUintSum.
 //------------------------------------------------------------------------------
 template <unsigned blockSize> __device__ void KerUintSumWarpRedu(volatile unsigned* sp1,const unsigned &tid){
   if(blockSize>=64)sp1[tid]+=sp1[tid+32];
@@ -627,7 +682,8 @@ template <unsigned blockSize> __device__ void KerUintSumWarpRedu(volatile unsign
 }
 
 //------------------------------------------------------------------------------
-// Reduccion de valores en memoria shared para KerReduUintSum.
+/// Reduccion de valores en memoria shared para KerReduUintSum.
+/// Reduction of shared memory values for KerReduUintSum.
 //------------------------------------------------------------------------------
 template <unsigned blockSize> __device__ void KerUintSumRedu(unsigned* sp1,const unsigned &tid,unsigned* results){
   __syncthreads();
@@ -639,22 +695,26 @@ template <unsigned blockSize> __device__ void KerUintSumRedu(unsigned* sp1,const
 }
 
 //------------------------------------------------------------------------------
-// Devuelve la suma de los valores contenidos en data[].
+/// Devuelve la suma de los valores contenidos en data[].
+/// Returns the sum of the values contained in data[].
 //------------------------------------------------------------------------------
 template <unsigned int blockSize> __global__ void KerReduUintSum(unsigned n,unsigned* data,unsigned *results)
 {
   extern __shared__ unsigned sp1[];
   const unsigned tid=threadIdx.x;
-  const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de valor
+  const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de valor //-Value number
   //-Carga valores en memoria shared.
+  //-Loads values in shared memory.
   sp1[tid]=(p<n? data[p]: 0);
   __syncthreads();
   //-Reduce valores de memoria shared.
+  //-Reduce shared memory values.
   KerUintSumRedu<blockSize>(sp1,tid,results);
 }
 
 //==============================================================================
-// Devuelve la suma de los valores contenidos en aux[].
+/// Devuelve la suma de los valores contenidos en aux[].
+/// Returns the sum of the values contained in aux[].
 //==============================================================================
 unsigned ReduUintSum(unsigned nblocks,unsigned *aux,JLog2 *log){
   unsigned n=nblocks;

@@ -1,4 +1,4 @@
-/*
+﻿/*
  <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Nuevas funciones para gestion de nombres de ficheros: GetFile(), 
@@ -47,6 +48,38 @@
 //# - Nuevas funcion StrRepeat(). (03/10/2014)
 //# - Nuevas funciones GetFirstValueXXX(). (15/12/2014)
 //# - Remplaza long long por llong. (01-10-2015)
+//# - EN:
+//# Changes:
+//# ========
+//# - New management functions for file names: GetFile()
+//#   GetFileName Split(). (10/08/2010)
+//# - New functions to move numeric values ​​to text: UintStr()
+//#   IntStr(). (17/12/2010)
+//# - New function for file routes: GetWithoutExtension(). (22/12/2010)
+//# - Functions for converting data between BigEndian and LittleEndian. (09/03/2011)
+//# - Groups functions in namespace fun. (09/03/2011)
+//# - New functions FileExists() and DirExists(). (10/03/2011)
+//# - Correction in getExtension() and GetWithoutExtension() now seeks
+//#   extension starting from the last file or directory. (08/05/2011) !!!ASKJOSE!!!
+//# - New function varstr() for data vectors. (02/11/2011)
+//# - Function StrSplit() to extract text parts. (27/01/2012)
+//# - Comment English translation. (10/02/2012)
+//# - Error fixed in ReverseByteOrder(). (21/03/2012)
+//# - New function ResizeAlloc to resize the memory amount
+//# - allocated retaining the data. (22/03/2012)
+//# - New functions GetDateTimeFormat() and GetTextRandomCode(). (29/09/2012)
+//# - New function LongStr(). (05.04.2013)
+//# - Improved StrSplit function(). (06.06.2013)
+//# - New functions StrSplitCount() and StrSplitValue(). (06.06.2013)
+//# - Some new features for double types. (14.11.2013)
+//# - New function StrWithoutChar(). (12.13.2013)
+//# - New function for tfloat4 and tdouble2 ResizeAlloc. (21.12.2013)
+//# - New function PrintStr using arguments such as printf(). (03.10.2014)
+//# - New methods in VarStr for unsigned and word arrays. (18.03.2014)
+//# - New function StrTrimRepeated(). (05.08.2014)
+//# - New function StrRepeat(). (03.10.2014)
+//# - New function GetFirstValueXXX(). (12.15.2014)
+//# - Replace long long by llong. (01-10-2015)
 //#############################################################################
 
 /// \file Functions.h \brief Declares basic/general functions for the entire application.

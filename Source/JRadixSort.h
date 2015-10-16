@@ -20,6 +20,7 @@
 #define _JRadixSort_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Implementacion de RadixSort con OpenMP. (29-08-2012)
@@ -32,6 +33,19 @@
 //#   se indica si se quiere usoar OMP o una version secuencial. (30-12-2013)
 //# - Nuevo metodo MakeIndex(). (30-12-2013)
 //# - Remplaza unsigned long long por ullong. (01-10-2015)
+//# - EN:
+//# Changes:
+//# =========
+//# - Implementation of Radix Sort with OpenMP. (29-08-2012)
+//# - New implementations of SortData() for other types. (01-10-2012)
+//# - New implementation of SortData() for double. (25-11-2013)
+//# - New implementation of SortData() for tdouble3. (02-12-2013)
+//# - The pragma omp directives #ifdef are moved within the blocks
+//#   to avoid problems with the use of OpenMP and _WITHOMP if they are undefined. (26-12-2013)
+//# - Corrected error when the correct number of threads is not indicated. Now
+//#   indicates whether you want to use OMP or a sequential version. (30-12-2013)
+//# - New method MakeIndex(). (30-12-2013)
+//# - Replace unsigned long long by ullong. (01-10-2015)
 //#############################################################################
 
 #include "JObject.h"
@@ -39,6 +53,8 @@
 
 /// \brief Almacena todos los datos relativos a los puntos no vacios del espacio 
 /// de dibujo definido, para convertir estos puntos en partículas.
+/// \brief Stores all the data concerning points without empty space !!!ASKJOSE!!!
+/// for the drawing pattern, to convert these points into particles.
 class JRadixSort : protected JObject
 {
 private:

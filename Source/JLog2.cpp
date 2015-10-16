@@ -58,7 +58,7 @@ void JLog2::Reset(){
 }
 
 //==============================================================================
-/// Initialisation of file of logs.
+/// Initialisation of log file.
 //==============================================================================
 void JLog2::Init(std::string fname,bool mpirun,int mpirank,int mpilaunch){
   Reset();
@@ -77,7 +77,7 @@ void JLog2::Init(std::string fname,bool mpirun,int mpirank,int mpilaunch){
 }
 
 //==============================================================================
-/// Returns out directory.
+/// Returns output directory.
 //==============================================================================
 std::string JLog2::GetDirOut()const{
   return(fun::GetDirWithSlash(fun::GetDirParent(FileName)));

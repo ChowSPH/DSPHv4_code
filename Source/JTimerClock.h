@@ -19,10 +19,16 @@
 #define _JTimerClock_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Implementacion de una clase para medir intervalos de tiempo con la
 //#   precision (~ milisegundos) que proporciona clock(). (10/01/2011)
+//# - EN:
+//# Changes:
+//# =========
+//# - Implementing a class to measure time intervals with the
+//# precision (~ milliseconds) that clock() provides. (10/01/2011)
 //#############################################################################
 
 #include <ctime>
@@ -42,6 +48,7 @@ public:
   void Start(){ Stopped=false; CounterIni=clock(); }
   void Stop(){ CounterEnd=clock(); Stopped=true; }
   //-Devuelve tiempo en milisegundos.
+  //-Returns time in milliseconds.
   float GetElapsedTimeF(){ return((float(Stopped? CounterEnd-CounterIni: 0)*float(1000))/float(CLOCKS_PER_SEC)); }
   double GetElapsedTimeD(){ return((double(Stopped? CounterEnd-CounterIni: 0)*double(1000))/double(CLOCKS_PER_SEC)); }
 };

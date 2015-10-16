@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Nuevos metodos LoadFileXml() y SaveFileXml() para cargar o generar un
@@ -25,6 +26,16 @@
 //# - Traduccion de comentarios al ingles. (10/02/2012)
 //# - Nuevo metodo GetValueNumStr() para leer atributos string. (10/11/2012)
 //# - Nuevo metodo GetValueDouble3() para leer atributos tdouble3. (01-10-2015)
+//# - EN:
+//# Changes:
+//# =========
+//# - New methods LoadFileXml() and SaveFileXml() to load or generate a
+//#   xml file directly. (28/11/2010)
+//# - New methods GetValueNumInt() and GetValueNumDouble() allow reading a
+//#   value among several within the Value attribute. (04/12/2011)
+//# - Comment English translation. (10/02/2012)
+//# - New method GetValueNumStr() to read attributes string. (10/11/2012)
+//# - New method GetValueDouble3() to read tdouble3 attributes. (01-10-2015)
 //#############################################################################
 
 /// \file JSpaceEParms.h \brief Declares the class \ref JSpaceEParms.

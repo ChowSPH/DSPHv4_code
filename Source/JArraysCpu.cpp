@@ -25,7 +25,7 @@ using namespace std;
 //# JArraysCpuSize
 //##############################################################################
 //==============================================================================
-// Constructor.
+/// Constructor.
 //==============================================================================
 JArraysCpuSize::JArraysCpuSize(unsigned elementsize):ElementSize(elementsize){
   ClassName="JArraysCpuSize";
@@ -36,14 +36,14 @@ JArraysCpuSize::JArraysCpuSize(unsigned elementsize):ElementSize(elementsize){
 }
 
 //==============================================================================
-// Destructor.
+/// Destructor.
 //==============================================================================
 JArraysCpuSize::~JArraysCpuSize(){
   Reset();
 }
  
 //==============================================================================
-// Initialization of variables.
+/// Initialization of variables.
 //==============================================================================
 void JArraysCpuSize::Reset(){
   FreeMemory();
@@ -51,7 +51,8 @@ void JArraysCpuSize::Reset(){
 }
 
 //==============================================================================
-// Libera memoria reservada.
+/// Libera memoria reservada.
+/// Frees allocated memory.
 //==============================================================================
 void JArraysCpuSize::FreeMemory(){
   for(unsigned c=0;c<Count;c++)if(Pointers[c]){ FreePointer(Pointers[c]); Pointers[c]=NULL; }
@@ -59,7 +60,8 @@ void JArraysCpuSize::FreeMemory(){
 }
 
 //==============================================================================
-// Reserva memoria y devuelve puntero con memoria asignada.
+/// Reserva memoria y devuelve puntero con memoria asignada.
+/// Allocates memory and returns pointers with allocated memory.
 //==============================================================================
 void* JArraysCpuSize::AllocPointer(unsigned size)const{
   void* pointer=NULL;
@@ -83,7 +85,8 @@ void* JArraysCpuSize::AllocPointer(unsigned size)const{
 }
 
 //==============================================================================
-// Libera la memoria asignada del puntero.
+/// Libera la memoria asignada del puntero.
+/// Frees memory allocated to pointers.
 //==============================================================================
 void JArraysCpuSize::FreePointer(void* pointer)const{
   switch(ElementSize){
@@ -100,19 +103,24 @@ void JArraysCpuSize::FreePointer(void* pointer)const{
 }
 
 //==============================================================================
-// Cambia el numero de arrays almacenados. Asignando nuevos arrays o liberando
-// los de los actuales sin uso. 
-// Si count es inferior al numero de los que estan en uso lanza una excepcion.
+/// ES:
+/// Cambia el numero de arrays almacenados. Asignando nuevos arrays o liberando
+/// los de los actuales sin uso. 
+/// Si count es inferior al numero de los que estan en uso lanza una excepcion.
+/// - EN:
+/// Changes the number of arrays stored. Assigns or releases new arrays if
+/// the current are unused.
+/// If the count is less than the number of those in use raises an exception.
 //==============================================================================
 void JArraysCpuSize::SetArrayCount(unsigned count){
   const char met[]="SetArrayCount";
   if(count>MAXPOINTERS)RunException(met,"El numero de arrays solicitados supera el maximo.");
   if(count<CountUsed)RunException(met,"No se pude liberar arrays en uso.");
   if(ArraySize){
-    if(Count<count){//-Genera nuevos arrays. 
+    if(Count<count){//-Genera nuevos arrays. //-Generates new arrays.
       for(unsigned c=Count;c<count;c++)Pointers[c]=AllocPointer(ArraySize);
     }
-    if(Count>count){//-Libera arrays. 
+    if(Count>count){//-Libera arrays. //-Frees arrays.
       for(unsigned c=count;c<Count;c++){ FreePointer(Pointers[c]); Pointers[c]=NULL; }
     }
   }
@@ -121,8 +129,12 @@ void JArraysCpuSize::SetArrayCount(unsigned count){
 }
 
 //==============================================================================
-// Cambia el numero de elementos de los arrays.
-// Si hay algun array en uso lanza una excepcion.
+/// ES:
+/// Cambia el numero de elementos de los arrays.
+/// Si hay algun array en uso lanza una excepcion.
+/// - EN:
+/// Changes the number of elements in the arrays.
+/// If there is any array in use raises an exception.
 //==============================================================================
 void JArraysCpuSize::SetArraySize(unsigned size){
   if(CountUsed)RunException("SetArraySize","No se puede cambiar la dimension de los arrays porque hay alguno en uso.");
@@ -135,7 +147,8 @@ void JArraysCpuSize::SetArraySize(unsigned size){
 }
 
 //==============================================================================
-// Solicita la reserva de un array.
+/// Solicita la reserva de un array.
+/// Requests allocating an array.
 //==============================================================================
 void* JArraysCpuSize::Reserve(){
   if(CountUsed==Count||!ArraySize)RunException("Reserve",fun::PrintStr("No hay arrays disponibles de %u bytes.",ElementSize));
@@ -145,7 +158,8 @@ void* JArraysCpuSize::Reserve(){
 }
 
 //==============================================================================
-// Devuelve la posicion del puntero indicado. Si no existe devuelve MAXPOINTERS.
+/// Devuelve la posicion del puntero indicado. Si no existe devuelve MAXPOINTERS.
+/// Returns the position of indicated pointer. If it doesn't exist returns MAXPOINTERS.
 //==============================================================================
 unsigned JArraysCpuSize::FindPointerUsed(void *pointer)const{
   unsigned pos=0;
@@ -154,7 +168,8 @@ unsigned JArraysCpuSize::FindPointerUsed(void *pointer)const{
 }
 
 //==============================================================================
-// Libera la reserva de un array.
+/// Libera la reserva de un array.
+/// Frees an allocated array.
 //==============================================================================
 void JArraysCpuSize::Free(void *pointer){
   if(pointer){
@@ -172,7 +187,7 @@ void JArraysCpuSize::Free(void *pointer){
 //# JArraysCpu
 //##############################################################################
 //==============================================================================
-// Constructor.
+/// Constructor.
 //==============================================================================
 JArraysCpu::JArraysCpu(){
   ClassName="JArraysCpu";
@@ -187,7 +202,7 @@ JArraysCpu::JArraysCpu(){
 }
 
 //==============================================================================
-// Destructor.
+/// Destructor.
 //==============================================================================
 JArraysCpu::~JArraysCpu(){
   delete Arrays1b;
@@ -201,7 +216,7 @@ JArraysCpu::~JArraysCpu(){
 }
  
 //==============================================================================
-// Initialization of variables.
+/// Initialization of variables.
 //==============================================================================
 void JArraysCpu::Reset(){
   Arrays1b->Reset(); 
@@ -215,7 +230,8 @@ void JArraysCpu::Reset(){
 }
  
 //==============================================================================
-// Devuelve la cantidad de memoria reservada.
+/// Devuelve la cantidad de memoria reservada.
+/// Returns amount of allocated memory.
 //==============================================================================
 llong JArraysCpu::GetAllocMemoryCpu()const{ 
   llong m=Arrays1b->GetAllocMemoryCpu();
@@ -230,8 +246,12 @@ llong JArraysCpu::GetAllocMemoryCpu()const{
 }
 
 //==============================================================================
-// Cambia el numero de elementos de los arrays.
-// Si hay algun array en uso lanza una excepcion.
+/// ES:
+/// Cambia el numero de elementos de los arrays.
+/// Si hay algun array en uso lanza una excepcion.
+/// - EN:
+/// Changes the number of elements in the arrays.
+/// If there is any array in use raises an exception.
 //==============================================================================
 void JArraysCpu::SetArraySize(unsigned size){ 
   //-Frees memory.

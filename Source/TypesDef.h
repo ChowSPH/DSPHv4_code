@@ -22,8 +22,8 @@
 
 #define PI 3.14159265358979323846      ///<Value of cte PI. 
 #define TWOPI 6.28318530717958647692   ///<Value of cte PI*2. 
-#define TORAD 0.017453292519943295769  ///<Contant for conversion to radians. rad=degrees*TORAD (TORAD=PI/180)
-#define TODEG 57.29577951308232087684  ///<Contant for conversion to degrees. degrees=rad*TODEG (TODEG=180/PI)
+#define TORAD 0.017453292519943295769  ///<Constant for conversion to radians. rad=degrees*TORAD (TORAD=PI/180)
+#define TODEG 57.29577951308232087684  ///<Constant for conversion to degrees. degrees=rad*TODEG (TODEG=180/PI)
 
 typedef unsigned char byte;
 typedef unsigned short word;

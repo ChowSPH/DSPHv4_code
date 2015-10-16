@@ -79,6 +79,7 @@ void JPartsOut::AllocMemory(unsigned size,bool reset){
 llong JPartsOut::GetAllocMemory()const{  
   llong s=0;
   //Reservada en AllocMemory()
+  //Allocated in AllocMemory()
   if(Idp)s+=sizeof(unsigned)*Size;
   if(Pos)s+=sizeof(tdouble3)*Size;
   if(Vel)s+=sizeof(tfloat3)*Size;

@@ -19,10 +19,16 @@
 #define _JArraysCpu_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Codigo creado a partir de JArraysGpu para usar con memoria CPU. (10/03/2014)
 //# - Remplaza long long por llong. (01-10-2015)
+//# - EN:
+//# Changes:
+//# =========
+//# - Created code from JArraysGpu for use with CPU memory. (03.10.2014)
+//# - Replace long long by llong. (01-10-2015)
 //#############################################################################
 
 #include "JObject.h"

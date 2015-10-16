@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Soporte para MPI. (28/10/2011)
@@ -23,6 +24,14 @@
 //# - Traduccion de comentarios al ingles. (10/02/2012)
 //# - Nuevo metodo Printf() y PrintfDbg() usando argumentos variables. (10/03/2014)
 //# - Nuevo metodo GetDirOut() para obtener el directiorio de salida.. (07/05/2014)
+//# - EN:
+//# Changes:
+//# =========
+//# - Support for MPI. (28/10/2011)
+//# - New method PrintDbg() which by default makes fflush(stdout). (11/01/2012)
+//# - Comment on English translation. (10/02/2012)
+//# - New method Printf() and PrintfDbg() using variable arguments. (03.10.2014)
+//# - New method GetDirOut() to get the output directory.. (07.05.2014)
 //#############################################################################
 
 /// \file JLog2.h \brief Declares the class \ref JLog2.

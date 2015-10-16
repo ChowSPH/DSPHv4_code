@@ -117,6 +117,7 @@ void JSphDtFixed::LoadFile(std::string file){
 double JSphDtFixed::GetDt(double timestep,double dtvar){
   double ret=0;
   //-Busca intervalo del instante indicado.
+  //-Searches indicated interval of time.
   double tini=Times[Position];
   double tnext=(Position+1<Count? Times[Position+1]: tini);
   for(;tnext<timestep&&Position+2<Count;Position++){
@@ -124,6 +125,7 @@ double JSphDtFixed::GetDt(double timestep,double dtvar){
     tnext=Times[Position+2];
   }
   //-Calcula dt en el instante indicado.
+  //-Computes dt for the indicated instant.
   if(timestep<=tini)ret=Values[Position]/1000;
   else if(timestep>=tnext)ret=Values[Position+1]/1000;
   else{

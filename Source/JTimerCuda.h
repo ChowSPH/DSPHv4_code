@@ -16,11 +16,18 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Implementacion de una clase para medir con precision pequeños intervalos
 //#   de tiempo mediante la GPU usando cudaEvent de CUDA. (10/01/2011)
 //# - Traduccion de comentarios al ingles. (10/02/2012)
+//# - EN:
+//# Changes:
+//# =========
+//# - Implementing a class to accurately measure small intervals
+//#   of time in the GPU by using CUDA cudaEvent. (10/01/2011)
+// # - Comment English translation. (10/02/2012)
 //#############################################################################
 
 /// \file JTimerCuda.h \brief Declares the class \ref JTimerCuda.

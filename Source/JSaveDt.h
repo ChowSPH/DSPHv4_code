@@ -16,11 +16,18 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Clase para generar fichero CSV con info del dt. (08/01/2015)
 //# - Permite grabar mas valores (csoundmax,acemax...). (14/01/2015)
 //# - Se elimina el valor csound. (22/01/2015)
+//# - EN:
+//# Changes:
+//# =========
+//# - Class to generate CSV file with info for dt. (01.08.2015)
+//# - Allows you to record more values (csoundmax, acemax ...). (14.01.2015)
+//# - The csound value is deleted. (22.01.2015)
 //#############################################################################
 
 /// \file JSaveDt.h \brief Declares the class \ref JSaveDt.

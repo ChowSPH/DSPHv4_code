@@ -229,7 +229,7 @@ void JCfgRun::LoadArgv(int argc,char** argv){
   if(optn)LoadOpts(optlis,optn,0,"");
   delete[] optlis;
   if(!optn)PrintInfo=true;
-  if(!PrintInfo){ //-Configuracion por defecto
+  if(!PrintInfo){ //-Configuracion por defecto //-default configuration
     if(!Cpu&&!Gpu)Cpu=true;
     if(!SvDef){ Sv_Binx=true; Sv_Info=true; }
   }

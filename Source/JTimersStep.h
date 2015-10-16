@@ -19,12 +19,20 @@
 #define _JTimersStep_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Implementacion de clase para almacenar los timers cada cierto tiempo y 
 //#   generar csv con estos valores. (10/11/2012)
 //# - Permite indicar un instante inicial distinto de cero para cuando se 
 //#   continuan simulaciones. (06/09/2013)
+//# - EN:
+//# Changes:
+//# =========
+//# - Class implementation to store timers every so often and 
+//# generates csv with these values. (10/11/2012)
+//# - Let's you specify a different initial time than zero when you
+//# continue the simulation. (06.09.2013)
 //#############################################################################
 
 #include "JObject.h"
@@ -92,6 +100,7 @@ protected:
   JTimersStepValue Timers[TIMERSMAX];
 
   //-Vars para almacenar informacion.
+  //-Variables for stored information.
   static const unsigned BUFFERSIZE=1000;
   float *Values;
   StStepInfo StepInfo[BUFFERSIZE];

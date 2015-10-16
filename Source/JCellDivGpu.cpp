@@ -23,7 +23,7 @@
 using namespace std;
 
 //==============================================================================
-// Constructor.
+/// Constructor.
 //==============================================================================
 JCellDivGpu::JCellDivGpu(bool stable,bool floating,byte periactive,TpCellOrder cellorder,TpCellMode cellmode,float scell,tdouble3 mapposmin,tdouble3 mapposmax,tuint3 mapcells,unsigned casenbound,unsigned casenfixed,unsigned casenpb,JLog2 *log,std::string dirout,bool allocfullnct,float overmemorynp,word overmemorycells):Stable(stable),Floating(floating),PeriActive(periactive),CellOrder(cellorder),CellMode(cellmode),Hdiv(cellmode==CELLMODE_2H? 1: (cellmode==CELLMODE_H? 2: 0)),Scell(scell),OvScell(1.f/scell),Map_PosMin(mapposmin),Map_PosMax(mapposmax),Map_PosDif(mapposmax-mapposmin),Map_Cells(mapcells),CaseNbound(casenbound),CaseNfixed(casenfixed),CaseNpb(casenpb),Log(log),DirOut(dirout),AllocFullNct(allocfullnct),OverMemoryNp(overmemorynp),OverMemoryCells(overmemorycells)
 {
@@ -34,14 +34,14 @@ JCellDivGpu::JCellDivGpu(bool stable,bool floating,byte periactive,TpCellOrder c
 }
 
 //==============================================================================
-// Destructor.
+/// Destructor.
 //==============================================================================
 JCellDivGpu::~JCellDivGpu(){
   Reset();
 }
  
 //==============================================================================
-// Initialization of variables.
+/// Initialization of variables.
 //==============================================================================
 void JCellDivGpu::Reset(){
   SizeNp=SizeAuxMem=SizeNct=0;
@@ -63,7 +63,8 @@ void JCellDivGpu::Reset(){
 }
 
 //==============================================================================
-// Libera memoria reservada para celdas.
+/// Libera memoria reservada para celdas.
+/// Releases the memory allocated for cells
 //==============================================================================
 void JCellDivGpu::FreeMemoryNct(){
   cudaFree(BeginEndCell); BeginEndCell=NULL;
@@ -72,7 +73,8 @@ void JCellDivGpu::FreeMemoryNct(){
 }
 
 //==============================================================================
-// Libera memoria basica reservada para particulas y celdas.
+/// Libera memoria basica reservada para particulas y celdas.
+/// Releases the basic memory allocated for particles and cells.
 //==============================================================================
 void JCellDivGpu::FreeMemoryAll(){
   FreeMemoryNct();
@@ -84,15 +86,18 @@ void JCellDivGpu::FreeMemoryAll(){
 }
 
 //==============================================================================
-// Asigna memoria basica segun numero de particulas. 
+/// Asigna memoria basica segun numero de particulas.
+/// Assigns basic memory according to the particle number.
 //==============================================================================
 void JCellDivGpu::AllocMemoryNp(ullong np){
   const char met[]="AllocMemoryNp";
   FreeMemoryAll();
   SizeNp=unsigned(np);
   //-Comprueba numero de particulas.
+  //-Checks particle number
   if(np!=SizeNp)RunException(met,string("Failed GPU memory allocation for ")+fun::UlongStr(np)+" particles.");
   //-Reserva memoria para particulas.
+  //-Allocates memory for the particles
   MemAllocGpuNp=0;
   size_t m=sizeof(unsigned)*SizeNp;
   cudaMalloc((void**)&CellPart,m); MemAllocGpuNp+=m;
@@ -101,39 +106,51 @@ void JCellDivGpu::AllocMemoryNp(ullong np){
   m=sizeof(float)*SizeAuxMem;
   cudaMalloc((void**)&AuxMem,m);   MemAllocGpuNp+=m;
   //-Comprueba reserva de memoria.
+  //-Checks allocated memory.
   cudaError_t cuerr=cudaGetLastError();
   if(cuerr!=cudaSuccess){
     RunExceptionCuda(met,fun::PrintStr("Failed CPU memory allocation of %.1f MB for %u particles.",double(MemAllocGpuNp)/(1024*1024),SizeNp),cuerr);
   }
   //-Muestra la memoria solicitada.
+  //-Displays the requested memory.
   Log->Printf("**CellDiv: Requested gpu memory for %u particles: %.1f MB.",SizeNp,double(MemAllocGpuNp)/(1024*1024));
 }
 
 //==============================================================================
-// Asigna memoria segun numero de celdas. 
+/// Asigna memoria segun numero de celdas.
+/// Assigns memory according to the cell number.
 //==============================================================================
 void JCellDivGpu::AllocMemoryNct(ullong nct){
   const char met[]="AllocMemoryNct";
   FreeMemoryNct();
   SizeNct=unsigned(nct);
   //-Comprueba numero de celdas.
+  //-Checks cell number.
   if(nct!=SizeNct)RunException(met,string("Failed GPU memory allocation for ")+fun::UlongStr(nct)+" cells.");
   //-Reserva memoria para celdas.
+  //-Allocates memory for cells.
   MemAllocGpuNct=0;
   size_t m=sizeof(int2)*SizeBeginEndCell(SizeNct);
   cudaMalloc((void**)&BeginEndCell,m); MemAllocGpuNct+=m;
   //-Comprueba reserva de memoria.
+  //-Checks allocated memory
   cudaError_t cuerr=cudaGetLastError();
   if(cuerr!=cudaSuccess){
     RunExceptionCuda(met,fun::PrintStr("Failed GPU memory allocation of %.1f MB for %u cells.",double(MemAllocGpuNct)/(1024*1024),SizeNct),cuerr);
   }
   //-Muestra la memoria solicitada.
+  //-Displays requested memory
   Log->Printf("**CellDiv: Requested gpu memory for %u cells (CellMode=%s): %.1f MB.",SizeNct,GetNameCellMode(CellMode),double(MemAllocGpuNct)/(1024*1024));
 }
 
 //==============================================================================
-// Comprueba la reserva de memoria para el numero indicado de particulas. 
-// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
+/// ES:
+/// Comprueba la reserva de memoria para el numero indicado de particulas. 
+/// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
+///
+/// EN:
+/// Checks allocated memory for the indicated number of particles.
+/// If the memory cannot be allocated, return an error message. !!!ASKJOSE!!! 
 //==============================================================================
 void JCellDivGpu::CheckMemoryNp(unsigned npmin){
   if(SizeNp<npmin)AllocMemoryNp(ullong(npmin)+ullong(OverMemoryNp*npmin));
@@ -141,8 +158,13 @@ void JCellDivGpu::CheckMemoryNp(unsigned npmin){
 }
 
 //==============================================================================
-// Comprueba la reserva de memoria para el numero indicado de celdas. 
-// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
+/// ES:
+/// Comprueba la reserva de memoria para el numero indicado de celdas. 
+/// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
+///
+/// EN:
+/// Checks allocated memory for the indicated number of cells.
+/// If the memory cannot be allocated, returns error message !!!ASKJOSE!!!
 //==============================================================================
 void JCellDivGpu::CheckMemoryNct(unsigned nctmin){
   if(SizeNct<nctmin){
@@ -159,7 +181,8 @@ void JCellDivGpu::CheckMemoryNct(unsigned nctmin){
 }
 
 //==============================================================================
-// Define el dominio de simulacion a usar.
+/// Define el dominio de simulacion a usar.
+/// Defines the domain to be used by the simulation.
 //==============================================================================
 void JCellDivGpu::DefineDomain(unsigned cellcode,tuint3 domcelini,tuint3 domcelfin,tdouble3 domposmin,tdouble3 domposmax){
   DomCellCode=cellcode;
@@ -171,7 +194,8 @@ void JCellDivGpu::DefineDomain(unsigned cellcode,tuint3 domcelini,tuint3 domcelf
 }
 
 //==============================================================================
-// Visualiza la informacion de una particula de contorno excluida.
+/// Visualiza la informacion de una particula de contorno excluida.
+/// Displays information for an excluded boundary particle.
 //==============================================================================
 void JCellDivGpu::VisuBoundaryOut(unsigned p,unsigned id,tdouble3 pos,word code)const{
   string info="particle boundary out> type:";
@@ -188,8 +212,13 @@ void JCellDivGpu::VisuBoundaryOut(unsigned p,unsigned id,tdouble3 pos,word code)
 }
 
 //==============================================================================
-// Calcula posiciones minimas y maximas del rango de particulas Bound indicado.
-// En code[] ya estan marcadas las particulas excluidas.
+/// ES:
+/// Calcula posiciones minimas y maximas del rango de particulas Bound indicado.
+/// En code[] ya estan marcadas las particulas excluidas.
+///
+/// EN:
+/// Computes the maximum and minimum postion for the indicated range of boundary particles
+/// The excluded particles are already marked in code[]
 //==============================================================================
 void JCellDivGpu::CalcCellDomainBound(unsigned n,unsigned pini,unsigned n2,unsigned pini2,const unsigned* dcellg,const word* codeg,tuint3 &cellmin,tuint3 &cellmax){
   tuint3 cmin,cmax;
@@ -206,8 +235,13 @@ void JCellDivGpu::CalcCellDomainBound(unsigned n,unsigned pini,unsigned n2,unsig
 }
 
 //==============================================================================
-// Calcula posiciones minimas y maximas del rango de particulas Fluid indicado.
-// Ignora particulas excluidas que ya estan marcadas en code[].
+/// ES:
+/// Calcula posiciones minimas y maximas del rango de particulas Fluid indicado.
+/// Ignora particulas excluidas que ya estan marcadas en code[].
+///
+/// EN:
+/// Computes the maximum and minimum postion for the indicated range of fluid particles
+/// Ignores the excluded particles already marked in code[]
 //==============================================================================
 void JCellDivGpu::CalcCellDomainFluid(unsigned n,unsigned pini,unsigned n2,unsigned pini2,const unsigned* dcellg,const word* codeg,tuint3 &cellmin,tuint3 &cellmax){
   tuint3 cmin,cmax;
@@ -224,7 +258,8 @@ void JCellDivGpu::CalcCellDomainFluid(unsigned n,unsigned pini,unsigned n2,unsig
 }
 
 //==============================================================================
-// Devuelve principo y final de la celda indicada.
+/// Devuelve principo y final de la celda indicada.
+/// Returns first and last particle of the indicated cell
 //==============================================================================
 void JCellDivGpu::CellBeginEnd(unsigned cell,unsigned ndata,unsigned* data)const{
   cudaMemcpy(data,BeginEndCell+cell,sizeof(int)*ndata,cudaMemcpyDeviceToHost);
@@ -232,6 +267,7 @@ void JCellDivGpu::CellBeginEnd(unsigned cell,unsigned ndata,unsigned* data)const
 
 //==============================================================================
 // Devuelve principo y final de la celda indicada.
+/// Returns first and last particle of the indicated cell
 //==============================================================================
 int2 JCellDivGpu::CellBeginEnd(unsigned cell)const{
   int2 v;
@@ -240,7 +276,8 @@ int2 JCellDivGpu::CellBeginEnd(unsigned cell)const{
 }
 
 //==============================================================================
-// Ordena arrays basicos segun SortPart. 
+/// Ordena arrays basicos segun SortPart. 
+/// Reorders basic arrays according to SortPart
 //==============================================================================
 void JCellDivGpu::SortBasicArrays(const unsigned *idp,const word *code,const unsigned *dcell,const double2 *posxy,const double *posz,const float4 *velrhop,unsigned *idp2,word *code2,unsigned *dcell2,double2 *posxy2,double *posz2,float4 *velrhop2){
   const unsigned pini=(DivideFull? 0: NpbFinal);
@@ -248,7 +285,8 @@ void JCellDivGpu::SortBasicArrays(const unsigned *idp,const word *code,const uns
 }
 
 //==============================================================================
-// Ordena arrays de datos segun SortPart. 
+/// Ordena arrays de datos segun SortPart. 
+/// Reorders data arrays according to SortPart.
 //==============================================================================
 void JCellDivGpu::SortDataArrays(const float4 *a,float4 *a2){
   const unsigned pini=(DivideFull? 0: NpbFinal);
@@ -271,9 +309,15 @@ void JCellDivGpu::SortDataArrays(const tsymatrix3f *a,tsymatrix3f *a2){
 }
 
 //==============================================================================
-// Finaliza proceso de Divide: Revisando que todas las excluidas sean fluidas
-// y calculando el numero de excluidas por pos, rhop o mov.
-// Las componentes de los datos ya estan en el orden original.
+/// ES:
+/// Finaliza proceso de Divide: Revisando que todas las excluidas sean fluidas
+/// y calculando el numero de excluidas por pos, rhop o mov.
+/// Las componentes de los datos ya estan en el orden original.
+///
+/// EN:
+/// Finalises Divide process: Checks that all excluded particles are fluid
+/// and computes the number of excluded by pos, rhop or mov.
+/// The data components are already in the original order.
 //==============================================================================
 void JCellDivGpu::CheckParticlesOut(unsigned npout,const unsigned *idp,const tdouble3 *pos,const float *rhop,const word *code){
   unsigned nerr=0;
@@ -291,11 +335,18 @@ void JCellDivGpu::CheckParticlesOut(unsigned npout,const unsigned *idp,const tdo
 }
 
 //==============================================================================
-// Devuelve un puntero con la memoria auxiliar reservada en GPU, que solo se usa
-// como almacenamiento intermedio durante ciertos procesos. Asi es posible
-// aprovechar esta memoria para otros usos.
-// Esta memoria se redimensiona segun el numero de particulas por lo que su
-// tamaño y direccion pueden variar.
+/// ES:
+/// Devuelve un puntero con la memoria auxiliar reservada en GPU, que solo se usa
+/// como almacenamiento intermedio durante ciertos procesos. Asi es posible
+/// aprovechar esta memoria para otros usos.
+/// Esta memoria se redimensiona segun el numero de particulas por lo que su
+/// tamaño y direccion pueden variar.
+///
+/// EN:
+/// Returns a pointer with the auxiliary memory allocated in the GPU, only
+/// used as intermediate in some tasks, in order to use it in other tasks.
+/// This memoery is resized according to the particle number thus its
+/// size and direction can vary.
 //==============================================================================
 float* JCellDivGpu::GetAuxMem(unsigned size){
   if(size>SizeAuxMem)RunException("GetAuxMem","The requested memory is not available.");
@@ -303,7 +354,8 @@ float* JCellDivGpu::GetAuxMem(unsigned size){
 }
 
 //==============================================================================
-// Devuelve limites actuales del dominio.
+/// Devuelve limites actuales del dominio.
+/// Returns the actual limits of the domain.
 //==============================================================================
 tdouble3 JCellDivGpu::GetDomainLimits(bool limitmin,unsigned slicecellmin)const{
   tuint3 celmin=GetCellDomainMin(),celmax=GetCellDomainMax();

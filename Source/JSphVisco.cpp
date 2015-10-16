@@ -26,7 +26,7 @@
 using namespace std;
 
 //==============================================================================
-// Constructor.
+/// Constructor.
 //==============================================================================
 JSphVisco::JSphVisco(){
   ClassName="JSphVisco";
@@ -36,14 +36,14 @@ JSphVisco::JSphVisco(){
 }
 
 //==============================================================================
-// Destructor.
+/// Destructor.
 //==============================================================================
 JSphVisco::~JSphVisco(){
   Reset();
 }
 
 //==============================================================================
-// Initialization of variables.
+/// Initialization of variables.
 //==============================================================================
 void JSphVisco::Reset(){
   delete[] Times;  Times=NULL;
@@ -53,7 +53,8 @@ void JSphVisco::Reset(){
 }
 
 //==============================================================================
-// Redimensiona espacio para valores.
+/// Redimensiona espacio para valores.
+/// Resizes allocated space for values.
 //==============================================================================
 void JSphVisco::Resize(unsigned size){
   if(size>SIZEMAX)size=SIZEMAX;
@@ -64,7 +65,8 @@ void JSphVisco::Resize(unsigned size){
 }
 
 //==============================================================================
-// Devuelve la memoria reservada.
+/// Devuelve la memoria reservada.
+/// Returns the allocated memory.
 //==============================================================================
 unsigned JSphVisco::GetAllocMemory()const{
   unsigned s=0;
@@ -74,7 +76,8 @@ unsigned JSphVisco::GetAllocMemory()const{
 }
 
 //==============================================================================
-// Carga valores de dt (EN MILISEGUNDOS) para diferentes instantes (en segundos).
+/// Carga valores de dt (EN MILISEGUNDOS) para diferentes instantes (en segundos).
+/// Loads dt values (in milliseconds) for different instances (in secods).
 //==============================================================================
 void JSphVisco::LoadFile(std::string file){
   const char met[]="LoadFile";
@@ -110,11 +113,13 @@ void JSphVisco::LoadFile(std::string file){
 }
 
 //==============================================================================
-// Devuelve el valor de viscosidad para el instante indicado.
+/// Devuelve el valor de viscosidad para el instante indicado.
+/// Returns the viscosity value for the indicated instant.
 //==============================================================================
 float JSphVisco::GetVisco(float timestep){
   float ret=0;
   //-Busca intervalo del instante indicado.
+  //-Searches indicated interval of time.
   float tini=Times[Position];
   float tnext=(Position+1<Count? Times[Position+1]: tini);
   for(;tnext<timestep&&Position+2<Count;Position++){
@@ -122,6 +127,7 @@ float JSphVisco::GetVisco(float timestep){
     tnext=Times[Position+2];
   }
   //-Calcula dt en el instante indicado.
+  //-Computes dt for the indicated instant.
   if(timestep<=tini)ret=Values[Position];
   else if(timestep>=tnext)ret=Values[Position+1];
   else{

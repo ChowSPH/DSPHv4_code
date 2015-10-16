@@ -25,7 +25,7 @@
 using namespace std;
 
 //==============================================================================
-// Constructor.
+/// Constructor.
 //==============================================================================
 JTimersStep::JTimersStep(const std::string &dirout,float tinterval,int mpirank,int mpicount):TimeInterval(tinterval),MpiRank(mpirank),MpiCount(mpicount){
   ClassName="JTimersStep";
@@ -36,7 +36,7 @@ JTimersStep::JTimersStep(const std::string &dirout,float tinterval,int mpirank,i
 }
 
 //==============================================================================
-// Destructor.
+/// Destructor.
 //==============================================================================
 JTimersStep::~JTimersStep(){
   if(Pf){
@@ -47,7 +47,7 @@ JTimersStep::~JTimersStep(){
 }
 
 //==============================================================================
-// Initialization of variables.
+/// Initialization of variables.
 //==============================================================================
 void JTimersStep::Reset(){
   ClearData();
@@ -56,7 +56,8 @@ void JTimersStep::Reset(){
 }
 
 //==============================================================================
-// Devuelve la memoria reservada.
+/// Devuelve la memoria reservada.
+/// Returns the allocated memory
 //==============================================================================
 unsigned JTimersStep::GetAllocMemory()const{
   unsigned s=0;
@@ -67,7 +68,8 @@ unsigned JTimersStep::GetAllocMemory()const{
 }
 
 //==============================================================================
-// Elimina informacion de tiempos.
+/// Elimina informacion de tiempos.
+/// Clears time information.
 //==============================================================================
 void JTimersStep::ClearData(){
   delete[] Values; Values=NULL;
@@ -79,7 +81,8 @@ void JTimersStep::ClearData(){
 }
 
 //==============================================================================
-// Añade nuevo timer.
+/// Añade nuevo timer.
+/// Adds new timer.
 //==============================================================================
 void JTimersStep::AddTimer(std::string name,const double* ptrtime){
   ClearData();
@@ -89,7 +92,8 @@ void JTimersStep::AddTimer(std::string name,const double* ptrtime){
 }
 
 //==============================================================================
-// Cambia .
+/// Cambia.
+/// Changes. !!!ASKJOSE!!!
 //==============================================================================
 void JTimersStep::SetInitialTime(float timestep){
   TimeStepInit=timestep;
@@ -98,7 +102,8 @@ void JTimersStep::SetInitialTime(float timestep){
 }
 
 //==============================================================================
-// Anota informacion de paso.
+/// Anota informacion de paso.
+/// Records step information.
 //==============================================================================
 void JTimersStep::AddStep(float timestep,double tsimula,unsigned steps,unsigned np,unsigned npb,unsigned npbok,unsigned nct){
   if(!Values)Values=new float[TimersCount*BUFFERSIZE];
@@ -122,7 +127,8 @@ void JTimersStep::AddStep(float timestep,double tsimula,unsigned steps,unsigned 
 }
 
 //==============================================================================
-// Graba datos almacenados.
+/// Graba datos almacenados.
+/// Records stored data.
 //==============================================================================
 void JTimersStep::SaveData(){
   const char* met="SaveData";

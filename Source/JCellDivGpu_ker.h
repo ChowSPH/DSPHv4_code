@@ -27,7 +27,7 @@ class JLog2;
 
 namespace cudiv{
 
-typedef enum{ ORDER_XYZ=1,ORDER_YZX=2,ORDER_XZY=3 }TpCellOrder;  //-Orden de ejes en ordenacion de particulas en celdas.
+typedef enum{ ORDER_XYZ=1,ORDER_YZX=2,ORDER_XZY=3 }TpCellOrder;  //-Orden de ejes en ordenacion de particulas en celdas. //-Axes (X,Y,Z) order for the reordering of particles in cells
 
 inline float3 Float3(const tfloat3& v){ float3 p={v.x,v.y,v.z}; return(p); }
 inline float3 Float3(float x,float y,float z){ float3 p={x,y,z}; return(p); }

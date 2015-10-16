@@ -19,6 +19,7 @@
 #define _JArraysGpu_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Se añadio el tipo WORD de 2 bytes. (22/04/2013)
@@ -27,6 +28,15 @@
 //# - En SetArraySize() se libera toda la memoria antes de volver a reservar 
 //#   mas memoria. (23/12/2013)
 //# - Remplaza long long por llong. (01-10-2015)
+//# - EN:
+//# Changes:
+//# =========
+//# - The type WORD 2 bytes is added. (22.04.2013)
+//# - Double types 8 and 32 bytes added. (23.04.2013)
+//# - Double type 24 bytes added. (05.07.2013)
+//# - In SetArraySize () frees all memory before again allocating
+//# - more memory. (23.12.2013)
+//# - Replace long long by llong. (01-10-2015)
 //#############################################################################
 
 #include "JObjectGpu.h"

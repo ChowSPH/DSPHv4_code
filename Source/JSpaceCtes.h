@@ -21,9 +21,10 @@
 #define _JSpaceCtes_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
-//# - Se paso a usar double en lugar de flaot. (25-11-2013)
+//# - Se paso a usar double en lugar de float. (25-11-2013)
 //# - El valor de Eps pasa a ser opcional para mantener compatibilidad. (08-01-2015)
 //# - Se cambio Coefficient por CoefH pero manteniendo compatibilidad. (08-01-2015)
 //# - Se añadio SpeedSound para asignar valor de forma explicita. (08-01-2015)
@@ -31,6 +32,17 @@
 //# - Se ampliaron los limites de CFLnumber de (0.1-0.5) a (0.001-1). (08-01-2015)
 //# - <speedsystem> y <speedsound> pasan a ser opcionales. (20-01-2015)
 //# - <eps> solo se pasa a <constants> cuando este definido en <constantsdef>. (20-01-2015)
+//# - EN:
+//# Changes:
+//# =========
+//# - Uses double instead of float. (25-11-2013)
+//# - The value of Eps becomes optional to maintain compatibility. (08-01-2015)
+//# - Coefficient CoefH was changed while maintaining compatibility. (08-01-2015)
+//# - Speedsound is added to assign value explicitly. (08-01-2015)
+//# - Added XML comments. (08-01-2015)
+//# - CFLnumber limits of (0.1-0.5) to (0001-1) were expanded. (08-01-2015)
+//# - <speedsystem> and <speedsound> become optional. (20-01-2015)
+//# - <eps> passes only <constants> when is set to <constantsdef>. (20-01-2015)
 //#############################################################################
 
 #include <string>

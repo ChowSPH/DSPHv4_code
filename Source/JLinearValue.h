@@ -19,11 +19,18 @@
 #define _JLinearValue_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Clase obtener valores interpolados linealmente de una lista. (05/01/2014)
 //# - Nuevo metodo LoadFile() para cargar valores de un fichero. (20/01/2014)
 //# - Se eliminaron includes innecesarios. (01/05/2014)
+//# EN:
+//# Changes:
+//# =========
+//# - Class obtains linearly interpolated values from a list. (05.01.2014)
+//# - New method LoadFile() to load values of a file. (20.01.2014)
+//# - Removed unnecessary inclusions. (05.01.2014)
 //#############################################################################
 
 #include "JObject.h"

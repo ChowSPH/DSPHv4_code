@@ -19,12 +19,20 @@
 #define _JPartsOut_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Almacena temporalmente las particulas excluidas hasta que se graben en
 //#   el siguiente part. (08/11/2011)
 //# - Las funcion GetAllocMemory() devuelve long long. (05/04/2013)
 //# - Pos pasa a ser tdouble3 en lugar de tfloat3. (24/11/2013)
+//# - EN:
+//# Changes:
+//# =========
+//# - Stores temporarily excluded particles until they are recorded in
+//# the next part. (08/11/2011)
+//# - The GetAllocMemory() function returns long long. (05.04.2013)
+//# - Pos becomes tdouble3 instead of tfloat3. (11.24.2013)
 //#############################################################################
 
 #include "TypesDef.h"

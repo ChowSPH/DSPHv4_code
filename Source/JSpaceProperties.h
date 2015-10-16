@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Descripcion:
 //# =============
 //# Clase base para gestionar la definicion y asignacion de propiedades segun.
@@ -29,6 +30,20 @@
 //# - Creacion. (12/12/2013)
 //# - Se utiliza JRangeFilter para unsigned en lugar de int. (27/12/2013)
 //# - Pequeños cambios para evitar warnings al usar 32 bits. (13/01/2014)
+//# - EN:
+//# Description:
+//# ============
+//# Basic class for managing the definition and allocation of properties according to
+//# mk of the particles. Some of its features are:
+//# - Groups a set of values under a name.
+//# - You can set one or more relationships with one or more mk
+//#   properties.
+//#
+//# Changes:
+//# =========
+// # - Creation. (12.12.2013)
+// # - Uses JRangeFilter with unsigned instead of int. (12.27.2013)
+// # - Little changes to avoid warnings when using 32 bits. (13.01.2014)
 //#############################################################################
 
 /// \file JSpaceProperties.h \brief Declares the classes \ref JSpaceProperties.

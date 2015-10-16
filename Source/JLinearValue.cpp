@@ -26,7 +26,7 @@
 using namespace std;
 
 //==============================================================================
-// Constructor.
+/// Constructor.
 //==============================================================================
 JLinearValue::JLinearValue(){
   ClassName="JLinearValue";
@@ -36,14 +36,14 @@ JLinearValue::JLinearValue(){
 }
 
 //==============================================================================
-// Destructor.
+/// Destructor.
 //==============================================================================
 JLinearValue::~JLinearValue(){
   Reset();
 }
 
 //==============================================================================
-// Initialization of variables.
+/// Initialization of variables.
 //==============================================================================
 void JLinearValue::Reset(){
   SetSize(0);
@@ -51,7 +51,8 @@ void JLinearValue::Reset(){
 }
 
 //==============================================================================
-// Devuelve la memoria reservada.
+/// Devuelve la memoria reservada.
+/// Returns the allocated memory.
 //==============================================================================
 unsigned JLinearValue::GetAllocMemory()const{
   unsigned s=0;
@@ -61,7 +62,8 @@ unsigned JLinearValue::GetAllocMemory()const{
 }
 
 //==============================================================================
-// Ajusta al tamaño indicado manteniendo el contenido.
+/// Ajusta al tamaño indicado manteniendo el contenido.
+/// Sets the indicated size for maintaining the content. !!!ASKJOSE!!!
 //==============================================================================
 void JLinearValue::SetSize(unsigned size){
   if(size>=SIZEMAX)RunException("SetSize","It has reached the maximum size allowed.");
@@ -79,7 +81,8 @@ void JLinearValue::SetSize(unsigned size){
 }
 
 //==============================================================================
-// Añade valores al final de la lista.
+/// Añade valores al final de la lista.
+/// Adds values at the end of the list.
 //==============================================================================
 void JLinearValue::AddTimeValue(double time,double value){
   if(Count==Size)SetSize(Size+SIZEINITIAL);
@@ -89,11 +92,18 @@ void JLinearValue::AddTimeValue(double time,double value){
 }
 
 //==============================================================================
-// Devuelve valor el valor interpolado para el instante indicado.
-// Si no hay valores siempre devuelve 0.
-// Si solo hay un valor siempre devuelve ese valor.
-// Si el t indicado es menor que el minimo devuelve el primer valor.
-// Si el t indicado es mayor que el maximo devuelve el ultimo valor.
+/// ES:
+/// Devuelve valor el valor interpolado para el instante indicado.
+/// Si no hay valores siempre devuelve 0.
+/// Si solo hay un valor siempre devuelve ese valor.
+/// Si el t indicado es menor que el minimo devuelve el primer valor.
+/// Si el t indicado es mayor que el maximo devuelve el ultimo valor.
+/// - EN:
+/// Returns the interpolated value value for the time indicated.
+/// If no values always returns 0.
+/// If only one value always returns that value.
+/// If the indicated t is less than the minimum returns the first value.
+/// If the indicated t is greater than the maximum returns the last value.
 //==============================================================================
 double JLinearValue::GetValue(double timestep){
   double ret=0;
@@ -101,17 +111,20 @@ double JLinearValue::GetValue(double timestep){
   else if(Count>1){
     double tini=Times[Position];
     //-Si t de position es mayor que el timestep solicitado reinicia position. 
+	//-If the t of the position is greater than the requested time step, restart position.
     if(tini>timestep && Position>0){
       Position=0;
       tini=Times[Position];
     }
     //-Busca intervalo del instante indicado.
+	//=Finds indicated interval of time.
     double tnext=(Position+1<Count? Times[Position+1]: tini);
     for(;tnext<timestep&&Position+2<Count;Position++){
       tini=tnext;
       tnext=Times[Position+2];
     }
     //-Calcula valor en el instante indicado.
+	//-computes value in the indicated instant.
     if(timestep<=tini)ret=Values[Position];
     else if(timestep>=tnext)ret=Values[Position+1];
     else{
@@ -125,7 +138,8 @@ double JLinearValue::GetValue(double timestep){
 }
 
 //==============================================================================
-// Carga valores para diferentes instantes.
+/// Carga valores para diferentes instantes.
+/// Loads values for different times.
 //==============================================================================
 void JLinearValue::LoadFile(std::string file){
   const char met[]="LoadFile";

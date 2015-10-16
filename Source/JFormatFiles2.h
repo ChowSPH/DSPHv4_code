@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Clase creada para sustituir a JFormatFiles. (15/12/2010)
@@ -58,6 +59,48 @@
 //#   con valores de minimo, maximo y media. (16-01-2014)
 //# - Error corregido en funcion DefineStatsField(). (18-02-2015)
 //# - Funciones SaveCsv() y SaveCsv() para POS en doble precision. (24-03-2015)
+//# - EN:
+//# Changes:
+//# ========
+//# - Class created to replace JFormatFiles. (15/12/2010)
+//# - New features to generate files with point data in 
+//#   CSV and ASCII format: SaveCsvPointsVar(), SaveCsvPointsVar3(), SaveAscPointsVar(),
+//#   SaveAscPointsVar3() (22/12/2010)
+//# - New variable ACE in VTK, CSV and ASCII formats. (16/06/2011)
+//# - New variable Vorticity in VTK, CSV and ASCII formats. (13/07/2011)
+//# - ACE variable is separated into positive and negative parts in CSV and
+//#   ASCII formats(ParticlesToCsv2() and ParticlesToAscii()). (28/09/2011)
+//# - In the VTK of the points, each point is stored as a cell. This allows
+//#   using some operations such as Threshold in Paraview. Nevertheless,
+//#   the size increases in 3 bytes per particle (around 11%). (03/12/2011)
+//# - New function SaveVtkCells() to generate VTK files with a cell mesh 
+//#   according to specified settings. (13/12/2011)
+//# - New function PointsToVtk() to generate VTK files from data points
+//#   encoded in a JBuffer. (30/12/2011)
+//# - New function CellsToVtk() to generate VTK files with cells without data
+//#   using data encoded in a JBuffer. (09/01/2012)
+//# - New function SaveVtkDomain() to generate VTK files for a
+//#   number of domains. (09/01/2012)
+//# - In PointsToVtk() if the number of points is zero, one is created to avoid
+//#   generating an error VTK file. (18/01/2012)
+//# - Comment on English translation. (10/02/2012)
+//# - New Features (SaveVtk, SaveCsv) to create more general VTK files (17/05/2012)
+//# - New function SaveVtkBasic shows an example of SaveVtk use. (06/06/2012)
+//# - Function SaveVtkBox()  to generate VTK files for a series of
+//#   boxes. (06/06/2012)
+//# - The PointsToVtk () and CellsToVtk () are removed from this class and
+//#   sent to class JBufferToVtk. (06/06/2012)
+//# - Error fixed in SaveVtkBasic() when null arrays were used. (06/10/2012)
+//# - A potential precisionproblem in calculating the vertices
+//#   of a box was eliminated. (15-05-2013)
+//# - Adds a header file using SaveCsv(..., head). (20-11-2013)
+//# - New functions SaveCsvPointsVar(), SaveCsvPointsVar3(), SaveAscPointsVar()
+//#   and SaveAscPointsVar3() to store the position as tdouble3. (30-12-2013)
+//# - New function SaveAscii() using StScalarData* fields. (16-01-2014)
+//# - New methods XXXStats() that calculate and store 
+//#   minimum, maximum and average values for CSV files. (16-01-2014)
+//# - Corrected error in DefineStatsField(). (18-02-2015)
+//# - Functions SaveCsv() and SaveCsv() to store POS in double precision. (24-03-2015)
 //#############################################################################
 
 /// \file JFormatFiles2.h \brief Declares the class \ref JFormatFiles2.
@@ -80,7 +123,7 @@ public:
 
   typedef enum{ UChar8,Char8,UShort16,Short16,UInt32,Int32,Float32,Double64,TpDataNull }TpData;
 
-  /// Strucutre with the information of an array of particle data to be stored in CSV or VTK format.
+  /// Structure with the information of an array of particle data to be stored in CSV or VTK format.
   typedef struct {
     std::string name;
     TpData type;

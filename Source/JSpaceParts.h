@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Se guarda el MkBoundFirst y el MkFluidFirst para poder establecer una
@@ -36,6 +37,27 @@
 //# - Permite cambiar el numero de particulas de cada bloque. (13/08/2014)
 //# - JSpacePartsGetMk devuelve el ultimo mk de fluido para las particulas 
 //#   creadas con splitting. (12/05/2015)
+//# - EN:
+//# Changes:
+//# =========
+//# - Saves the MkBoundFirst and MkFluidFirst to establish a
+//#   relation with the mk of the created polygons. (27/11/2010)
+//# - New methods LoadFileXml() and SaveFileXml() to load or generate a
+//#   xml file directly. (27/11/2010)
+//# - Saves the absolute Mk for each block of particles to facilitate
+//#   their use in postprocesing tools. (21/01/2011)
+//# - Two new variables to the floating bodies are added: Velini and 
+//#   Omegaini. (25/01/2011)
+//# - Renaming of JParticles to JSpaceParts. (09/02/2012)
+//# - Comment English translation. (10/02/2012)
+//# - The MK type becomes word. (23/11/2013)
+//# - The float variables become double. (23/11/2013)
+//# - Class JSpacePartsGetMk to calculate Mk from Id (23/11/2013).
+//# - Manages properties to block particles. (12.14.2013)
+//# - Introduction of defaults in GetSubValue methods(). (07.24.2014)
+//# - Change the number of particles of each block. (13.08.2014)
+//# - JSpacePartsGetMk returns the last mk fluid particles
+//#   created with splitting. (05.12.2015)
 //#############################################################################
 
 /// \file JSpaceParts.h \brief Declares the class \ref JSpaceParts.
@@ -65,11 +87,11 @@ class JSpacePartBlock : public JObject
 {
 private:
   const JSpaceProperties* Properties;   ///<Pointer to properties object.
-  std::string Props;               ///<Assigned properties.
-  word Mk;                         ///<Absolute label.
-  word MkType;                     ///<Label of block fluid or bound.
-  unsigned Begin;                  ///<Id of the first particle of the block.
-  unsigned Count;                  ///<Number of particles.
+  std::string Props;					///<Assigned properties.
+  word Mk;								///<Absolute label.
+  word MkType;							///<Label of block fluid or bound.
+  unsigned Begin;						///<Id of the first particle of the block.
+  unsigned Count;						///<Number of particles.
 
 public:
   const TpParticles Type;    ///<Type of particle.

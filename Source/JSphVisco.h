@@ -19,11 +19,17 @@
 #define _JSphVisco_
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Gestiona el uso de un valor de viscosidad variable a partir de los valores 
 //#   para determinados instantes en segundos, interpolando los valores 
 //#   intermedios. (12/04/2013)
+//# - EN:
+//# Changes:
+//# =========
+//# - Manages the use of a variable viscosity value from values
+// # in certain moments in seconds, by interpolating intermediate values. (12/04/2013)
 //#############################################################################
 
 #include "JObject.h"

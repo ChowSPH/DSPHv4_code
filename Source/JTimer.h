@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Implementacion de una clase para medir con precision (~ microsegundos)
@@ -23,6 +24,14 @@
 //#   y en Linux usando gettimeofday(). (10/01/2011)
 //# - Traduccion de comentarios al ingles. (10/02/2012)
 //# - Se añadio el flag Started para controlar si estaba inicializado. (22/05/2012)
+//# - EN:
+//# Changes:
+//# =========
+//# - Implementing a class to measure accurately (~ microseconds)
+//#   small time intervals in Windows using QueryPerformanceCounter()
+//#   and Linux using gettimeofday(). (10/01/2011)
+//# - Comment English translation. (10/02/2012)
+//# - Added the flag Started to control if it was initialized. (22/05/2012)
 //#############################################################################
 
 

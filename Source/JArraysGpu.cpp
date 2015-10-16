@@ -25,7 +25,7 @@ using namespace std;
 //# JArraysGpuSize
 //##############################################################################
 //==============================================================================
-// Constructor.
+/// Constructor.
 //==============================================================================
 JArraysGpuSize::JArraysGpuSize(unsigned elementsize):ElementSize(elementsize){
   ClassName="JArraysGpuSize";
@@ -36,14 +36,14 @@ JArraysGpuSize::JArraysGpuSize(unsigned elementsize):ElementSize(elementsize){
 }
 
 //==============================================================================
-// Destructor.
+/// Destructor.
 //==============================================================================
 JArraysGpuSize::~JArraysGpuSize(){
   Reset();
 }
  
 //==============================================================================
-// Initialization of variables.
+/// Initialization of variables.
 //==============================================================================
 void JArraysGpuSize::Reset(){
   FreeMemory();
@@ -51,7 +51,8 @@ void JArraysGpuSize::Reset(){
 }
 
 //==============================================================================
-// Libera memoria reservada.
+/// Libera memoria reservada.
+/// Frees allocated memory.
 //==============================================================================
 void JArraysGpuSize::FreeMemory(){
   for(unsigned c=0;c<Count;c++)if(Pointers[c]){ cudaFree(Pointers[c]); Pointers[c]=NULL; }
@@ -59,20 +60,25 @@ void JArraysGpuSize::FreeMemory(){
 }
 
 //==============================================================================
-// Cambia el numero de arrays almacenados. Asignando nuevos arrays o liberando
-// los de los actuales sin uso. 
-// Si count es inferior al numero de los que estan en uso lanza una excepcion.
+/// ES:
+/// Cambia el numero de arrays almacenados. Asignando nuevos arrays o liberando
+/// los de los actuales sin uso. 
+/// Si count es inferior al numero de los que estan en uso lanza una excepcion.
+/// - EN:
+/// Changes the number of arrays stored. Assigns or releases new arrays if
+/// the current are unused.
+/// If the count is less than the number of those in use raises an exception.
 //==============================================================================
 void JArraysGpuSize::SetArrayCount(unsigned count){
   const char met[]="SetArrayCount";
   if(count>MAXPOINTERS)RunException(met,"El numero de arrays solicitados supera el maximo.");
   if(count<CountUsed)RunException(met,"No se pude liberar arrays en uso.");
   if(ArraySize){
-    if(Count<count){//-Genera nuevos arrays. 
+    if(Count<count){//-Genera nuevos arrays. //-Generates new arrays
       for(unsigned c=Count;c<count;c++)cudaMalloc((void**)(Pointers+c),ElementSize*ArraySize);
       CheckCudaError(met,"Failed GPU memory allocation.");
     }
-    if(Count>count){//-Libera arrays. 
+    if(Count>count){//-Libera arrays. //-Frees arrays
       for(unsigned c=count;c<Count;c++){ cudaFree(Pointers[c]); Pointers[c]=NULL; }
     }
   }
@@ -81,8 +87,12 @@ void JArraysGpuSize::SetArrayCount(unsigned count){
 }
 
 //==============================================================================
-// Cambia el numero de elementos de los arrays.
-// Si hay algun array en uso lanza una excepcion.
+/// ES:
+/// Cambia el numero de elementos de los arrays.
+/// Si hay algun array en uso lanza una excepcion.
+/// - EN:
+/// Changes the number of elements in the arrays.
+/// If there is any array in use raises an exception.
 //==============================================================================
 void JArraysGpuSize::SetArraySize(unsigned size){
   if(CountUsed)RunException("SetArraySize","No se puede cambiar la dimension de los arrays porque hay alguno en uso.");
@@ -95,7 +105,8 @@ void JArraysGpuSize::SetArraySize(unsigned size){
 }
 
 //==============================================================================
-// Solicita la reserva de un array.
+/// Solicita la reserva de un array.
+/// Requests allocating an array.
 //==============================================================================
 void* JArraysGpuSize::Reserve(){
   if(CountUsed==Count||!ArraySize)RunException("Reserve",fun::PrintStr("No hay arrays disponibles de %u bytes.",ElementSize));
@@ -105,7 +116,8 @@ void* JArraysGpuSize::Reserve(){
 }
 
 //==============================================================================
-// Devuelve la posicion del puntero indicado. Si no existe devuelve MAXPOINTERS.
+/// Devuelve la posicion del puntero indicado. Si no existe devuelve MAXPOINTERS.
+/// Returns the position of indicated pointer. If it doesn't exist returns MAXPOINTERS.
 //==============================================================================
 unsigned JArraysGpuSize::FindPointerUsed(void *pointer)const{
   unsigned pos=0;
@@ -114,7 +126,8 @@ unsigned JArraysGpuSize::FindPointerUsed(void *pointer)const{
 }
 
 //==============================================================================
-// Libera la reserva de un array.
+/// Libera la reserva de un array.
+/// Frees an allocated array.
 //==============================================================================
 void JArraysGpuSize::Free(void *pointer){
   if(pointer){
@@ -132,7 +145,7 @@ void JArraysGpuSize::Free(void *pointer){
 //# JArraysGpu
 //##############################################################################
 //==============================================================================
-// Constructor.
+/// Constructor.
 //==============================================================================
 JArraysGpu::JArraysGpu(){
   ClassName="JArraysGpu";
@@ -147,7 +160,7 @@ JArraysGpu::JArraysGpu(){
 }
 
 //==============================================================================
-// Destructor.
+/// Destructor.
 //==============================================================================
 JArraysGpu::~JArraysGpu(){
   delete Arrays1b;
@@ -161,7 +174,7 @@ JArraysGpu::~JArraysGpu(){
 }
  
 //==============================================================================
-// Initialization of variables.
+/// Initialization of variables.
 //==============================================================================
 void JArraysGpu::Reset(){
   Arrays1b->Reset(); 
@@ -175,7 +188,8 @@ void JArraysGpu::Reset(){
 }
  
 //==============================================================================
-// Devuelve la cantidad de memoria reservada.
+/// Devuelve la cantidad de memoria reservada.
+/// Returns amount of allocated memory.
 //==============================================================================
 llong JArraysGpu::GetAllocMemoryGpu()const{ 
   llong m=Arrays1b->GetAllocMemoryGpu();
@@ -190,8 +204,12 @@ llong JArraysGpu::GetAllocMemoryGpu()const{
 }
 
 //==============================================================================
-// Cambia el numero de elementos de los arrays.
-// Si hay algun array en uso lanza una excepcion.
+/// ES:
+/// Cambia el numero de elementos de los arrays.
+/// Si hay algun array en uso lanza una excepcion.
+/// - EN:
+/// Changes the number of elements in the arrays.
+/// If there is any array in use raises an exception.
 //==============================================================================
 void JArraysGpu::SetArraySize(unsigned size){ 
   //-Frees memory.

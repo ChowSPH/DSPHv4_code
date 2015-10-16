@@ -19,7 +19,7 @@
 #define _JCellDivGpu_
 
 //#############################################################################
-//# Cambios:
+//# Cambios: !!!ASKJOSE!!!
 //# =========
 //#############################################################################
 
@@ -40,8 +40,8 @@ protected:
   const bool Floating;
   const byte PeriActive;
   const TpCellOrder CellOrder;
-  const TpCellMode CellMode;    //-Modo de division en celdas.
-  const unsigned Hdiv;          //-Valor por el que se divide a DosH
+  const TpCellMode CellMode;    ///<ES: Modo de division en celdas. EN: Division mode in cells.
+  const unsigned Hdiv;          ///<ES: Valor por el que se divide a DosH EN: Value with ehich to divide 2h
   const float Scell,OvScell;
   const tdouble3 Map_PosMin,Map_PosMax,Map_PosDif;
   const tuint3 Map_Cells;
@@ -49,17 +49,19 @@ protected:
   JLog2 *Log;
   std::string DirOut;
 
-  bool AllocFullNct; //-Reserva memoria para el numero maximo de celdas del dominio (DomCells).
-  float OverMemoryNp;//-Porcentaje que se añade a la reserva de memoria de Np. (def=0).
-  word OverMemoryCells;//-Numero celdas que se incrementa en cada dimension reservar memoria. (def=0).
+  bool AllocFullNct;	///<ES: Reserva memoria para el numero maximo de celdas del dominio (DomCells). EN: Allocates memory for the maximum number of cells in the doamin (DomCells).
+  float OverMemoryNp;	///<ES: Porcentaje que se añade a la reserva de memoria de Np. (def=0). EN: Percentage to be added to the allocated memory for Np (def=0).
+  word OverMemoryCells; ///<ES: Numero celdas que se incrementa en cada dimension reservar memoria. (def=0). EN: Number of cells that increase the allocated memoery in each dimension
 
   //-Vars del dominio definido.
-  unsigned DomCellCode;   //-Clave para la codificacion de la celda de posicion.
+  //-Variables to define the domain.
+  unsigned DomCellCode;  ///<ES: Clave para la codificacion de la celda de posicion. EN: Key for the codification of the cell position
   tuint3 DomCelIni,DomCelFin;
   tdouble3 DomPosMin,DomPosMax;
   tuint3 DomCells;
 
   //-Memoria reservada en funcion de particulas en GPU.
+  //-Variables with allocated memory as afunction of the number of particles in GPU
   unsigned SizeNp;
   unsigned *CellPart;
   unsigned *SortPart;
@@ -67,43 +69,46 @@ protected:
   float *AuxMem;
 
   //-Memoria reservada en funcion de celdas en GPU.
+  //-Variables with allocated memory as a function of the number of cells in GPU 
   unsigned SizeNct;
-  int2 *BeginEndCell;  //-Contiene el principio y final de cada celda. 
+  int2 *BeginEndCell;  ///<ES: Contiene el principio y final de cada celda.  EN: Contains the first and final particle of each cell
   // BeginEndCell=[BoundOk(nct),BoundIgnore(1),Fluid(nct),BoundOut(1),FluidOut(1),BoundOutIgnore(1),FluidOutIgnore(1)]
 
-  ullong MemAllocGpuNp;  //-Mermoria reservada en Gpu para particulas.
-  ullong MemAllocGpuNct; //-Mermoria reservada en Gpu para celdas.
+  ullong MemAllocGpuNp;  ///<ES: Mermoria reservada en Gpu para particulas. EN: Allocated GPU memory for particles
+  ullong MemAllocGpuNct; ///<ES: Mermoria reservada en Gpu para celdas. EN: Allocated GPU memory for cells
 
   unsigned Ndiv,NdivFull;
 
   //-Numero de particulas por tipo al iniciar el divide.
+  //-Particle number by type at the beginning of the division
   unsigned Npb1;
   unsigned Npf1;
   unsigned Npb2;
   unsigned Npf2;
 
-  unsigned Nptot;  //-Numero total de particulas incluidas las que se excluyeron al terminar el divide.
+  unsigned Nptot;  ///<ES: Numero total de particulas incluidas las que se excluyeron al terminar el divide. EN: Number of particles including those excluded at the end of the division
   unsigned NpbOut,NpfOut,NpbOutIgnore,NpfOutIgnore;
   
   unsigned NpFinal,NpbFinal;
   unsigned NpfOutRhop,NpfOutMove,NpbIgnore;
 
-  tuint3 CellDomainMin,CellDomainMax; //-Limites del dominio en celdas dentro de DomCells.
+  tuint3 CellDomainMin,CellDomainMax; ///<ES: Limites del dominio en celdas dentro de DomCells. EN: Domain limits in cells within DomCells !!!ASKJOSE!!!
   unsigned Ncx,Ncy,Ncz,Nsheet,Nct;
-  ullong Nctt; //-Numero total de celdas incluyendo las especiales Nctt=SizeBeginEndCell()
+  ullong Nctt; ///<ES: Numero total de celdas incluyendo las especiales Nctt=SizeBeginEndCell() EN: Number of cells including the special Nctt=SizeBeginEndCell() 
   unsigned BoxIgnore,BoxFluid,BoxBoundOut,BoxFluidOut,BoxBoundOutIgnore,BoxFluidOutIgnore;
 
-  bool BoundLimitOk;  //-Indica que los limites del contorno ya estan calculados en BoundLimitCellMin y BoundLimitCellMax.
+  bool BoundLimitOk;  ///<ES: Indica que los limites del contorno ya estan calculados en BoundLimitCellMin y BoundLimitCellMax. EN: Indicates boundary limits are already computed in BoundLimitCellMin and BoundLimitCellMax
   tuint3 BoundLimitCellMin,BoundLimitCellMax;
 
-  bool BoundDivideOk;   //-Indica que los limites del contorno utilizados en el divide previo fueron BoundDivideCellMin y BoundDivideCellMax.
+  bool BoundDivideOk;   ///<ES: Indica que los limites del contorno utilizados en el divide previo fueron BoundDivideCellMin y BoundDivideCellMax. EN: Indicates the boundary limits used in the previous division were computed in BoundDivideCellMin y BoundDivideCellMax
   tuint3 BoundDivideCellMin,BoundDivideCellMax;
 
-  bool DivideFull;  //-Indica que el divide se aplico a fluido y contorno (no solo al fluido).
+  bool DivideFull;  ///<ES: Indica que el divide se aplico a fluido y contorno (no solo al fluido). EN: Indicates that the division applies to fluid and boundary (not only fluid)
 
   void Reset();
 
   //-Gestion de reserva dinamica de memoria.
+  //-Management of allocated dynamic memory.
   void FreeMemoryNct();
   void FreeMemoryAll();
   void AllocMemoryNp(ullong np);

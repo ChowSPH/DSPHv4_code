@@ -107,6 +107,7 @@ void JSaveDt::VisuConfig(std::string txhead,std::string txfoot){
 
 //==============================================================================
 /// Graba valores de buffer en fichero.
+/// Stores file buffer values.
 //==============================================================================
 void JSaveDt::SaveFileValues(){
   const char met[]="SaveFileValues";
@@ -150,6 +151,7 @@ void JSaveDt::SaveFileValues(){
 
 //==============================================================================
 /// Graba valores de buffer.
+/// Stores buffer values.
 //==============================================================================
 void JSaveDt::SaveFileValuesEnd(){
   if(LastDtf.num)AddLastValues();
@@ -158,6 +160,7 @@ void JSaveDt::SaveFileValuesEnd(){
 
 //==============================================================================
 /// Graba valores de buffer en fichero.
+/// Stores file buffer values.
 //==============================================================================
 void JSaveDt::SaveFileAllDts(){
   const char met[]="SaveFileAllDts";
@@ -181,7 +184,8 @@ void JSaveDt::SaveFileAllDts(){
 }
 
 //==============================================================================
-/// Guarda info del dt inicado. Si coincide timestep lo sobre
+/// Guarda info del dt inicado. Si coincide timestep lo sobre.
+/// Saves indicated info for dt. If it matches with timestep. !!!ASKJOSE!!!
 //==============================================================================
 void JSaveDt::AddValueData(double timestep,double dt,StValue &value){
   if(!value.num){
@@ -198,7 +202,8 @@ void JSaveDt::AddValueData(double timestep,double dt,StValue &value){
 }
 
 //==============================================================================
-/// Guarda info en buffer
+/// Guarda info en buffer.
+/// Saves buffer info.
 //==============================================================================
 void JSaveDt::AddLastValues(){
   if(Count>=GetSizeValues())SaveFileValues();
@@ -217,6 +222,7 @@ void JSaveDt::AddLastValues(){
 
 //==============================================================================
 /// Guarda info del dt inicado. Si coincide timestep lo sobre
+/// Saves indicated info for dt. If it matches with timestep. !!!ASKJOSE!!!
 //==============================================================================
 void JSaveDt::AddValues(double timestep,double dtfinal,double dt1,double dt2,double acemax,double viscdtmax,double velmax){
   if(TimeStart<=timestep && timestep<=TimeFinish){
@@ -235,6 +241,7 @@ void JSaveDt::AddValues(double timestep,double dtfinal,double dt1,double dt2,dou
       AddValueData(timestep,velmax,LastVelMax);
     }
     //-Gestion de AllDt.
+	//-Management of AllDt.
     if(AllDt){
       if(CountAllDts>=SizeAllDts)SaveFileAllDts();
       AllDts[CountAllDts]=TDouble2(timestep,dtfinal);

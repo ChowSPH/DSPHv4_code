@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Ahora tambien gestiona el SM_12, ademas de SM_10 y SM_20. (05/05/2011)
@@ -26,7 +27,19 @@
 //# - Ahora graba tambien Stack frame (memoria local). (19/08/2014)
 //# - Solo graba los SM que tengan datos. (19/08/2014)
 //# - Nuevo metodo GetKernelIdx(). (20/08/2014)
-//# - Se añadio el SM_35. (01/09/2014)
+//# - Se anadio el SM_35. (01/09/2014)
+//# - EN:
+//# Changes:
+//# =========
+// # - Now also manages the SM_12, plus SM_10 and SM_20. (05/05/2011)
+// # - Allows the use of namespace. (08/01/2012)
+// # - Supports Cuda 4.0. (06/02/2012)
+// # - Comment on English translation. (10/02/2012)
+// # - Changed the SM_12 for SM_13. (28/04/2013)
+// # - Now also records Stack frame (local memory). (19.08.2014)
+// # - Only records SMs that have data. (19.08.2014)
+// # - New method GetKernelIdx (). (20.08.2014)
+// # - The SM_35 is added. (09.01.2014)
 //#############################################################################
 
 /// \file JPtxasInfo.h \brief Declares the class \ref JPtxasInfo.

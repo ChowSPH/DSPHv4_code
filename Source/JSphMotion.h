@@ -16,10 +16,16 @@
 */
 
 //#############################################################################
+//# ES:
 //# Cambios:
 //# =========
 //# - Para los ficheros de datos usa ruta absoluta si el nombre contiene alguna
 //#   barra de directorio. (11/09/2013)
+//# - EN:
+//# Changes:
+//# ========
+//# - For data files uses the absolute path if the name contains any
+//#   address bar. (11/09/2013)
 //#############################################################################
 
 /// \file JSphMotion.h \brief Declares the class \ref JSphMotion.
