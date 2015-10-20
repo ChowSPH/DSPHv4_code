@@ -18,6 +18,7 @@
 /// \file JPartDataBi4.cpp \brief Implements the class \ref JPartDataBi4
 
 #include "JPartDataBi4.h"
+//#include "JBinaryData.h"
 #include "Functions.h"
 
 #include <fstream>
@@ -62,6 +63,7 @@ void JPartDataBi4::Reset(){
 
 //==============================================================================
 /// Elimina informacion de Data.
+/// Deletes information from data.
 //==============================================================================
 void JPartDataBi4::ResetData(){
   delete Data; 
@@ -72,22 +74,25 @@ void JPartDataBi4::ResetData(){
 
 //==============================================================================
 /// Elimina informacion de PARTs.
+/// Deletes information from PARTs.
 //==============================================================================
 void JPartDataBi4::ResetPart(){
   Part->Clear();
 }
 
 //==============================================================================
-// Devuelve la memoria reservada.
+/// Devuelve la memoria reservada.
+/// Returns allocated memory
 //==============================================================================
-llong JPartDataBi4::GetAllocMemory()const{  
-  llong s=0;
+long long JPartDataBi4::GetAllocMemory()const{  
+  long long s=0;
   s+=Data->GetAllocMemory();
   return(s);
 }
 
 //==============================================================================
-// Devuelve nombre de fichero PART segun los parametros indicados.
+/// Devuelve nombre de fichero PART segun los parametros indicados.
+/// Returns the filename PART according to the specified parameters.
 //==============================================================================
 std::string JPartDataBi4::GetFileNamePart(unsigned cpart,unsigned piece,unsigned npiece){
   string fname="Part";
@@ -101,7 +106,8 @@ std::string JPartDataBi4::GetFileNamePart(unsigned cpart,unsigned piece,unsigned
 }
 
 //==============================================================================
-// Devuelve nombre de fichero de caso segun los parametros indicados.
+/// Devuelve nombre de fichero de caso segun los parametros indicados.
+/// Returns filename's case according to the specified parameters.
 //==============================================================================
 std::string JPartDataBi4::GetFileNameCase(const std::string &casename,unsigned piece,unsigned npiece){
   string fname=casename;
@@ -114,7 +120,8 @@ std::string JPartDataBi4::GetFileNameCase(const std::string &casename,unsigned p
 }
 
 //==============================================================================
-// Devuelve nombre de fichero info de caso segun los parametros indicados.
+/// Devuelve nombre de fichero info de caso segun los parametros indicados.
+/// Returns filename's case info according to the specified parameters.
 //==============================================================================
 std::string JPartDataBi4::GetFileNameInfo(unsigned piece,unsigned npiece){
   string fname="PartInfo";
@@ -127,8 +134,11 @@ std::string JPartDataBi4::GetFileNameInfo(unsigned piece,unsigned npiece){
 }
 
 //==============================================================================
-// Devuelve nombre de fichero encontrado segun configuracion e indica si esta o 
-// no dividido en varias piezas (0:No se encontro, 1:Una pieza, 2:Varias piezas).
+/// Devuelve nombre de fichero encontrado segun configuracion e indica si esta o 
+/// no dividido en varias piezas (0:No se encontro, 1:Una pieza, 2:Varias piezas).
+/// Returns file name found depending on configuration and indicates 
+/// whether or not it is divided into several parts
+/// (0:not found, 1:a piece, 2:Several parts).
 //==============================================================================
 std::string JPartDataBi4::GetFileData(std::string casename,std::string dirname,unsigned cpart,byte &npiece){
   byte npie=0;
@@ -158,8 +168,12 @@ std::string JPartDataBi4::GetFileData(std::string casename,std::string dirname,u
   return(file);
 }
 
+
+
+
 //==============================================================================
 /// Configuracion de variables basicas.
+/// Configuration of basic variables.
 //==============================================================================
 void JPartDataBi4::ConfigBasic(unsigned piece,unsigned npiece,std::string runcode,std::string appname,bool data2d,const std::string &dir){
   ResetData();
@@ -178,6 +192,7 @@ void JPartDataBi4::ConfigBasic(unsigned piece,unsigned npiece,std::string runcod
 
 //==============================================================================
 /// Configuracion de numero de particulas y dominio del caso.
+/// Setting number of particles and domain of the case.
 //==============================================================================
 void JPartDataBi4::ConfigParticles(ullong casenp,ullong casenfixed,ullong casenmoving,ullong casenfloat,ullong casenfluid,tdouble3 caseposmin,tdouble3 caseposmax,bool npdynamic,bool reuseids){
   if(casenp!=casenfixed+casenmoving+casenfloat+casenfluid)RunException("ConfigParticles","Error in the number of particles.");
@@ -194,6 +209,7 @@ void JPartDataBi4::ConfigParticles(ullong casenp,ullong casenfixed,ullong casenm
 
 //==============================================================================
 /// Configuracion de constantes.
+/// Configuration of constants.
 //==============================================================================
 void JPartDataBi4::ConfigCtes(double dp,double h,double b,double rhop0,double gamma,double massbound,double massfluid){
   Data->SetvDouble("Dp",dp);
@@ -207,6 +223,7 @@ void JPartDataBi4::ConfigCtes(double dp,double h,double b,double rhop0,double ga
 
 //==============================================================================
 /// Configuracion de variables de simulacion: map limits.
+/// Configuration of variables of simulation: map limits.
 //==============================================================================
 void JPartDataBi4::ConfigSimMap(tdouble3 mapposmin,tdouble3 mapposmax){
   Data->SetvDouble3("MapPosMin",mapposmin);
@@ -215,6 +232,7 @@ void JPartDataBi4::ConfigSimMap(tdouble3 mapposmin,tdouble3 mapposmax){
 
 //==============================================================================
 /// Configuracion de variables de simulacion: map limits.
+/// Configuration of variables of simulation: map limits.
 //==============================================================================
 void JPartDataBi4::ConfigSimPeri(TpPeri periactive,tdouble3 perixinc,tdouble3 periyinc,tdouble3 perizinc){
   Data->SetvInt("PeriActive",int(periactive));
@@ -225,6 +243,7 @@ void JPartDataBi4::ConfigSimPeri(TpPeri periactive,tdouble3 perixinc,tdouble3 pe
 
 //==============================================================================
 /// Configuracion de variables de simulacion: axis division.
+/// Configuration of variables of simulation: axis division.
 //==============================================================================
 void JPartDataBi4::ConfigSimDiv(TpAxisDiv axisdiv){
   Data->SetvInt("AxisDiv",int(axisdiv));
@@ -232,6 +251,7 @@ void JPartDataBi4::ConfigSimDiv(TpAxisDiv axisdiv){
 
 //==============================================================================
 /// Configuracion uso de Splitting.
+/// Configuration used for Splitting.
 //==============================================================================
 void JPartDataBi4::ConfigSplitting(bool splitting){
   Data->SetvBool("Splitting",splitting);
@@ -239,6 +259,7 @@ void JPartDataBi4::ConfigSplitting(bool splitting){
 
 //==============================================================================
 /// Devuelve nombre de part segun su numero.
+/// Returns name of part according to their number.
 //==============================================================================
 std::string JPartDataBi4::GetNamePart(unsigned cpart){
   char cad[64];
@@ -248,6 +269,7 @@ std::string JPartDataBi4::GetNamePart(unsigned cpart){
 
 //==============================================================================
 /// Añade informacion de nuevo part.
+// Add information to new part.
 //==============================================================================
 JBinaryData* JPartDataBi4::AddPartInfo(unsigned cpart,double timestep,unsigned npok,unsigned nout,unsigned step,double runtime,tdouble3 domainmin,tdouble3 domainmax,ullong nptotal,ullong idmax){
   Part->Clear();
@@ -266,16 +288,18 @@ JBinaryData* JPartDataBi4::AddPartInfo(unsigned cpart,double timestep,unsigned n
   return(Part);
 }
 
+
 //==============================================================================
 /// Añade datos de particulas de de nuevo part.
+/// Adds data of particles to new part.
 //==============================================================================
 void JPartDataBi4::AddPartData(unsigned npok,const unsigned *idp,const ullong *idpd,const tfloat3 *pos,const tdouble3 *posd,const tfloat3 *vel,const float *rhop){
   const char met[]="AddPartData";
   if(!idp&&!idpd)RunException(met,"The id of particles is invalid.");
   if(!pos&&!posd)RunException(met,"The position of particles is invalid.");
-  //-Comprueba valor de npok.
+  //-Comprueba valor de npok. Checks value of npok.
   if(Part->GetvUint("Npok")!=npok)RunException(met,"Part information is invalid.");
-  //-Crea array con particulas validas.
+  //-Crea array con particulas validas. Creates valid particles array.
   if(idpd)Part->CreateArray("Idpd",JBinaryDataDef::DatUllong,npok,idpd,true);
   else    Part->CreateArray("Idp" ,JBinaryDataDef::DatUint,npok,idp,true);
   if(posd)Part->CreateArray("Posd",JBinaryDataDef::DatDouble3,npok,posd,true);
@@ -286,32 +310,36 @@ void JPartDataBi4::AddPartData(unsigned npok,const unsigned *idp,const ullong *i
 
 //==============================================================================
 /// Añade datos Splitting de particulas de de nuevo part.
+/// Add data Splitting of particles to new part.
 //==============================================================================
 void JPartDataBi4::AddPartDataSplitting(unsigned npok,const float *splitmass,const float *splithvar){
   const char met[]="AddPartDataSplitting";
   if(!splitmass || !splithvar)RunException(met,"The pointer data is invalid.");
-  //-Comprueba valor de npok.
+  //-Comprueba valor de npok. Checks value of npok.
   if(Part->GetvUint("Npok")!=npok)RunException(met,"Part information is invalid.");
   if(!Data->GetvBool("Splitting"))RunException(met,"Splitting is not configured.");
-  //-Crea array con particulas validas.
+  //-Crea array con particulas validas. Creates valid particles array.
   Part->CreateArray("SplitMass",JBinaryDataDef::DatFloat,npok,splitmass,true);
   Part->CreateArray("SplitHvar",JBinaryDataDef::DatFloat,npok,splithvar,true);
 }
 
 //==============================================================================
 /// Graba le fichero BI4 indicado.
+/// Writes indicated BI4 file.
 //==============================================================================
 void JPartDataBi4::SaveFileData(std::string fname){
   const char met[]="SaveFileData";
-  //-Comprueba que Part tenga algun array de datos.
+  //-Comprueba que Part tenga algun array de datos. Check that Part has array with data.
   if(!Part->GetArraysCount())RunException(met,"There is not array of particles data.");
-  //-Graba fichero.
+  //-Graba fichero. Record file.
   Data->SaveFile(Dir+fname,false,true);
   Part->RemoveArrays();
+  //Data->SaveFileXml(Dir+fun::GetWithoutExtension(fname)+"__.xml");
 }
 
 //==============================================================================
 /// Graba fichero BI4 con el nombre da caso indicado.
+/// Writes file BI4 with the case name indicated.
 //==============================================================================
 void JPartDataBi4::SaveFileCase(std::string casename){
   SaveFileData(GetFileNameCase(casename,Piece,Npiece));
@@ -319,6 +347,7 @@ void JPartDataBi4::SaveFileCase(std::string casename){
 
 //==============================================================================
 /// Graba fichero PART con datos de particulas.
+/// Writes file PART with data of particles.
 //==============================================================================
 void JPartDataBi4::SaveFilePart(){
   SaveFileData(GetFileNamePart(Cpart,Piece,Npiece));
@@ -326,6 +355,7 @@ void JPartDataBi4::SaveFilePart(){
 
 //==============================================================================
 /// Graba info de PART.
+/// Writes info PART.
 //==============================================================================
 void JPartDataBi4::SaveFileInfo(){
   Data->SetHideItems(true,false);
@@ -336,6 +366,7 @@ void JPartDataBi4::SaveFileInfo(){
 
 //==============================================================================
 /// Devuelve el numero de piezas del fichero indicado.
+/// Returns the number of parts from the indicated file.
 //==============================================================================
 unsigned JPartDataBi4::GetPiecesFile(std::string file)const{
   unsigned npieces=0;
@@ -349,6 +380,7 @@ unsigned JPartDataBi4::GetPiecesFile(std::string file)const{
 
 //==============================================================================
 /// Devuelve el numero de piezas del caso indicado.
+/// Returns the number of parts of the case indicated.
 //==============================================================================
 unsigned JPartDataBi4::GetPiecesFileCase(std::string dir,std::string casename)const{
   unsigned npieces=0;
@@ -359,6 +391,7 @@ unsigned JPartDataBi4::GetPiecesFileCase(std::string dir,std::string casename)co
 
 //==============================================================================
 /// Devuelve el numero de piezas del caso indicado.
+/// Returns the number of parts of the case indicated.
 //==============================================================================
 unsigned JPartDataBi4::GetPiecesFilePart(std::string dir,unsigned cpart)const{
   unsigned npieces=0;
@@ -369,6 +402,7 @@ unsigned JPartDataBi4::GetPiecesFilePart(std::string dir,unsigned cpart)const{
 
 //==============================================================================
 /// Graba fichero BI4 con el nombre da caso indicado.
+/// Writes file BI4 with the case name indicated.
 //==============================================================================
 void JPartDataBi4::LoadFileData(std::string file,unsigned cpart,unsigned piece,unsigned npiece){
   const char met[]="LoadFileData";
@@ -383,6 +417,7 @@ void JPartDataBi4::LoadFileData(std::string file,unsigned cpart,unsigned piece,u
 
 //==============================================================================
 /// Carga fichero BI4 con el nombre da caso indicado.
+/// Load file BI4 with the case name indicated.
 //==============================================================================
 void JPartDataBi4::LoadFileCase(std::string dir,std::string casename,unsigned piece,unsigned npiece){
   LoadFileData(fun::GetDirWithSlash(dir)+GetFileNameCase(casename,piece,npiece),0,piece,npiece);
@@ -390,6 +425,7 @@ void JPartDataBi4::LoadFileCase(std::string dir,std::string casename,unsigned pi
 
 //==============================================================================
 /// Carga fichero PART con datos de particulas.
+/// Load file PART with data of particles.
 //==============================================================================
 void JPartDataBi4::LoadFilePart(std::string dir,unsigned cpart,unsigned piece,unsigned npiece){
   LoadFileData(fun::GetDirWithSlash(dir)+GetFileNamePart(cpart,piece,npiece),cpart,piece,npiece);
@@ -397,6 +433,7 @@ void JPartDataBi4::LoadFilePart(std::string dir,unsigned cpart,unsigned piece,un
 
 //==============================================================================
 /// Devuelve el puntero a Part con los datos del PART.
+/// Returns a pointer to Part with the data of the PART.
 //==============================================================================
 JBinaryData* JPartDataBi4::GetData()const{
   if(!Data)RunException("GetData","The data object is not available.");
@@ -405,6 +442,7 @@ JBinaryData* JPartDataBi4::GetData()const{
 
 //==============================================================================
 /// Devuelve el puntero a Part con los datos del PART.
+/// Returns a pointer to Part with the data of the PART.
 //==============================================================================
 JBinaryData* JPartDataBi4::GetPart()const{
   if(!Part)RunException("GetPart","PART data is not available.");
@@ -413,6 +451,7 @@ JBinaryData* JPartDataBi4::GetPart()const{
 
 //==============================================================================
 /// Devuelve el puntero a Part con los datos del PART.
+/// Returns a pointer to Part with the data of the PART.
 //==============================================================================
 JBinaryDataArray* JPartDataBi4::GetArray(std::string name)const{
   JBinaryDataArray* ar=GetPart()->GetArray(name);
@@ -422,6 +461,7 @@ JBinaryDataArray* JPartDataBi4::GetArray(std::string name)const{
 
 //==============================================================================
 /// Devuelve true si existe el array indicado.
+/// Returns true if the indicated array exists.
 //==============================================================================
 bool JPartDataBi4::ArrayExists(std::string name)const{
   return(GetPart()->GetArray(name)!=NULL);

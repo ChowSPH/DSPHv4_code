@@ -38,6 +38,7 @@ const std::string JBinaryData::CodeArrayDef="\nARRAY";
 //##############################################################################
 //==============================================================================
 /// Devuelve tipo de datos en texto.
+/// Returns data type text.
 //==============================================================================
 std::string JBinaryDataDef::TypeToStr(TpData type){
   string tx="";
@@ -64,6 +65,7 @@ std::string JBinaryDataDef::TypeToStr(TpData type){
 
 //==============================================================================
 /// Devuelve tamaño del tipo de datos.
+/// Returns size of the data type.
 //==============================================================================
 size_t JBinaryDataDef::SizeOfType(TpData type){
   size_t ret=0;
@@ -114,6 +116,7 @@ JBinaryDataArray::~JBinaryDataArray(){
 
 //==============================================================================
 /// Devuelve la cantidad de memoria reservada.
+/// Returns the amount of memory reserved.
 //==============================================================================
 llong JBinaryDataArray::GetAllocMemory()const{
   return(Pointer&&!ExternalPointer? Size*JBinaryDataDef::SizeOfType(Type): 0);
@@ -121,6 +124,7 @@ llong JBinaryDataArray::GetAllocMemory()const{
 
 //==============================================================================
 /// Cambia nombre de array comprobando que no existe otro array o value con el mismo nombre.
+/// Exception to ensure that there is no duplictaes arrays or values.
 //==============================================================================
 void JBinaryDataArray::SetName(const std::string &name){
   const char met[]="SetName";
@@ -132,6 +136,7 @@ void JBinaryDataArray::SetName(const std::string &name){
 
 //==============================================================================
 /// Libera memoria asignada al puntero indicado.
+/// Frees memory allocated to the specified pointer.
 //==============================================================================
 void JBinaryDataArray::FreePointer(void* ptr)const{
   if(ptr)switch(Type){
@@ -157,6 +162,7 @@ void JBinaryDataArray::FreePointer(void* ptr)const{
 
 //==============================================================================
 /// Devuelve puntero con la memoria asiganda.
+/// Returns pointer to the allocated memory.
 //==============================================================================
 void* JBinaryDataArray::AllocPointer(unsigned size)const{
   const char met[]="AllocPointer";
@@ -193,11 +199,14 @@ void* JBinaryDataArray::AllocPointer(unsigned size)const{
 //==============================================================================
 /// Comprueba memoria disponible y redimensiona array si hace falta.
 /// Si es ExternalPointer no permite redimensionar la memoria asignada.
+/// Check available memory array and resize if necessary.
+/// If ExternalPointer will not allow to resize the allocated memory.
 //==============================================================================
 void JBinaryDataArray::CheckMemory(unsigned count,bool resize){
   const char met[]="CheckMemory";
   if(count){
     //-Reserva memoria si fuese necesario.
+	//-Allocates memory if necessary.
     if(!Pointer){
       if(!resize)RunException(met,"Memory no allocated.");
       AllocMemory(count);
@@ -212,6 +221,7 @@ void JBinaryDataArray::CheckMemory(unsigned count,bool resize){
 
 //==============================================================================
 /// Extrae datos del ptr indicado.
+/// Extract data from ptr indicated.
 //==============================================================================
 void JBinaryDataArray::OutData(unsigned &count,unsigned size,const byte *ptr,byte *dat,unsigned sdat)const{
   const unsigned count2=count+sdat;
@@ -222,6 +232,7 @@ void JBinaryDataArray::OutData(unsigned &count,unsigned size,const byte *ptr,byt
 
 //==============================================================================
 /// Extrae string de ptr.
+/// Extract string ptr.
 //==============================================================================
 std::string JBinaryDataArray::OutStr(unsigned &count,unsigned size,const byte *ptr)const{
   unsigned len=OutUint(count,size,ptr);
@@ -237,6 +248,7 @@ std::string JBinaryDataArray::OutStr(unsigned &count,unsigned size,const byte *p
 
 //==============================================================================
 /// Libera memoria asignada.
+/// Frees allocated memory.
 //==============================================================================
 void JBinaryDataArray::FreeMemory(){
   if(Pointer&&!ExternalPointer)FreePointer(Pointer);
@@ -248,13 +260,14 @@ void JBinaryDataArray::FreeMemory(){
 
 //==============================================================================
 /// Asigna memoria para los elementos indicados.
+/// Allocate memory for the elements indicated.
 //==============================================================================
 void JBinaryDataArray::AllocMemory(unsigned size,bool savedata){
   if(Count&&savedata&&size){
     if(ExternalPointer)RunException("AllocMemory","External pointer can not be resized.");
     const unsigned count2=min(Count,size);
     void *ptr=AllocPointer(size);
-    if(Type==JBinaryDataDef::DatText){//-Array de string.
+    if(Type==JBinaryDataDef::DatText){//-String array.
       string *strings1=(string*)Pointer;
       string *strings2=(string*)ptr;
       for(unsigned c=0;c<count2;c++)strings2[c]=strings1[c];
@@ -274,6 +287,7 @@ void JBinaryDataArray::AllocMemory(unsigned size,bool savedata){
 
 //==============================================================================
 /// Asigna memoria para los elementos indicados.
+/// Allocate memory for the elements indicated.
 //==============================================================================
 void JBinaryDataArray::ConfigExternalMemory(unsigned size,void* pointer){
   FreeMemory();
@@ -285,6 +299,7 @@ void JBinaryDataArray::ConfigExternalMemory(unsigned size,void* pointer){
 
 //==============================================================================
 /// Configura acceso a datos en fichero.
+/// Set file data access.
 //==============================================================================
 void JBinaryDataArray::ConfigFileData(llong filepos,unsigned datacount,unsigned datasize){
   FreeMemory();
@@ -293,6 +308,7 @@ void JBinaryDataArray::ConfigFileData(llong filepos,unsigned datacount,unsigned 
 
 //==============================================================================
 /// Borra datos de acceso a datos en fichero.
+/// Delete data file data access.
 //==============================================================================
 void JBinaryDataArray::ClearFileData(){
   FileDataPos=-1; FileDataCount=FileDataSize=0;
@@ -300,6 +316,7 @@ void JBinaryDataArray::ClearFileData(){
 
 //==============================================================================
 /// Carga contenido de fichero abierto con OpenFileStructure().
+/// Load open file content with OpenFileStructure (). 
 //==============================================================================
 void JBinaryDataArray::ReadFileData(bool resize){
   const char met[]="ReadFileData";
@@ -313,13 +330,15 @@ void JBinaryDataArray::ReadFileData(bool resize){
 //==============================================================================
 /// Añade elementos al array de un fichero.
 /// Si es ExternalPointer no permite redimensionar la memoria asignada.
+/// Add elements to the array of a file. 
+/// If ExternalPointer will not allow to resize the allocated memory.
 //==============================================================================
 void JBinaryDataArray::ReadData(unsigned count,unsigned size,std::ifstream *pf,bool resize){
   if(count){
     //-Reserva memoria si fuese necesario.
     CheckMemory(count,resize);
     //-Carga datos de fichero.
-    if(GetType()==JBinaryDataDef::DatText){//-Array de strings.
+    if(GetType()==JBinaryDataDef::DatText){//-String Array.
       byte *buf=new byte[size];
       pf->read((char*)buf,size);
       unsigned cbuf=0;
@@ -339,12 +358,16 @@ void JBinaryDataArray::ReadData(unsigned count,unsigned size,std::ifstream *pf,b
 //==============================================================================
 /// Añade elementos al array.
 /// Si es ExternalPointer no permite redimensionar la memoria asignada.
+/// Add elements to the array.
+/// If ExternalPointer will not allow to resize the allocated memory.
 //==============================================================================
 void JBinaryDataArray::AddData(unsigned count,const void* data,bool resize){
   if(count){
     //-Reserva memoria si fuese necesario.
+	//-Allocates memory if necessary.
     CheckMemory(count,resize);
     //-Añade datos al puntero.
+	//-Add data to the pointer.
     if(Type==JBinaryDataDef::DatText){
       string *strings=(string*)Pointer;
       string *strings2=(string*)data;
@@ -362,6 +385,7 @@ void JBinaryDataArray::AddData(unsigned count,const void* data,bool resize){
 
 //==============================================================================
 /// Guarda datos como contenido del array.
+/// Save data as contents of the array.
 //==============================================================================
 void JBinaryDataArray::SetData(unsigned count,const void* data,bool externalpointer){
   FreeMemory();
@@ -377,14 +401,18 @@ void JBinaryDataArray::SetData(unsigned count,const void* data,bool externalpoin
 //==============================================================================
 /// Añade un string al array.
 /// Si es ExternalPointer no permite redimensionar la memoria asignada.
+/// Add a string to array.
+/// If ExternalPointer will not allow to resize the allocated memory.
 //==============================================================================
 void JBinaryDataArray::AddText(const std::string &str,bool resize){
   if(Type!=JBinaryDataDef::DatText)RunException("AddText","Type of array is not Text.");
   unsigned count=1;
   if(count){
     //-Reserva memoria si fuese necesario.
+	//-Allocates memory if necessary.
     CheckMemory(count,resize);
     //-Añade string al array.
+	//-Add string to array.
     string *strings=(string*)Pointer;
     strings[Count]=str;
     Count+=count;
@@ -394,6 +422,8 @@ void JBinaryDataArray::AddText(const std::string &str,bool resize){
 //==============================================================================
 /// Añade array de strings al array.
 /// Si es ExternalPointer no permite redimensionar la memoria asignada.
+/// Add array of strings to array.
+/// If ExternalPointer will not allow to resize the allocated memory.
 //==============================================================================
 void JBinaryDataArray::AddTexts(unsigned count,const std::string *strs,bool resize){
   if(Type!=JBinaryDataDef::DatText)RunException("AddTexts","Type of array is not Text.");
@@ -402,6 +432,7 @@ void JBinaryDataArray::AddTexts(unsigned count,const std::string *strs,bool resi
 
 //==============================================================================
 /// Devuelve puntero de datos comprobando que tenga datos.
+/// Returns pointer and check is pointer is populated with data.
 //==============================================================================
 const void* JBinaryDataArray::GetDataPointer()const{
   if(!DataInPointer())RunException("GetDataPointer","There are not available data in pointer.");
@@ -411,6 +442,8 @@ const void* JBinaryDataArray::GetDataPointer()const{
 //==============================================================================
 /// Copia datos de Pointer o FileData al puntero indicado y devuelve el numero
 /// de elementos.
+/// Copies data of the pointer or FileData indicated pointer and returns
+/// the number of elements.
 //==============================================================================
 unsigned JBinaryDataArray::GetDataCopy(unsigned size,void* pointer)const{
   const char met[]="GetDataCopy";
@@ -456,6 +489,7 @@ JBinaryData::JBinaryData(std::string name):Name(name){
 
 //==============================================================================
 /// Constructor de copias.
+/// Copu of constructor
 //==============================================================================
 JBinaryData::JBinaryData(const JBinaryData &src){
   ClassName="JBinaryData";
@@ -475,6 +509,7 @@ JBinaryData::~JBinaryData(){
 
 //==============================================================================
 /// Sobrecarga del operador de asignacion.
+/// Overload assignment operator.
 //==============================================================================
 JBinaryData& JBinaryData::operator=(const JBinaryData &src){
   if(this!=&src){
@@ -489,6 +524,7 @@ JBinaryData& JBinaryData::operator=(const JBinaryData &src){
 
 //==============================================================================
 /// Elimina todo el contenido (values, arrays e items).
+/// Deletes all contents (values, arrays and items).
 //==============================================================================
 void JBinaryData::Clear(){
   RemoveValues();
@@ -500,6 +536,7 @@ void JBinaryData::Clear(){
 
 //==============================================================================
 /// Devuelve la cantidad de memoria reservada por el objeto y subobjetos.
+/// Returns the amount of memory allocated by the object and sub-objects.
 //==============================================================================
 llong JBinaryData::GetAllocMemory()const{
   llong s=0; 
@@ -511,6 +548,7 @@ llong JBinaryData::GetAllocMemory()const{
 
 //==============================================================================
 /// Elimina cache de values.
+/// Removes cache values.
 //==============================================================================
 void JBinaryData::ValuesCacheReset(){
   delete[] ValuesData; ValuesData=NULL;
@@ -520,6 +558,7 @@ void JBinaryData::ValuesCacheReset(){
 
 //==============================================================================
 /// Prepara cache de values.
+/// Prepare cache values.
 //==============================================================================
 void JBinaryData::ValuesCachePrepare(bool down){
   if(ValuesModif){
@@ -535,6 +574,7 @@ void JBinaryData::ValuesCachePrepare(bool down){
 
 //==============================================================================
 /// Comprueba existencia y tipo de valor. Devuelve posicion de valor (-1 no exite).
+/// Check existence of value and type. Returns position (index) value (-1 if not exist).
 //==============================================================================
 int JBinaryData::CheckGetValue(const std::string &name,bool optional,JBinaryDataDef::TpData type)const{
   const char met[]="CheckGetValue";
@@ -546,6 +586,7 @@ int JBinaryData::CheckGetValue(const std::string &name,bool optional,JBinaryData
 
 //==============================================================================
 /// Comprueba tipo de valor, y sino existe lo crea. Devuelve posicion de valor.
+/// Check value type, create if it does not exists, Returns position value.
 //==============================================================================
 int JBinaryData::CheckSetValue(const std::string &name,JBinaryDataDef::TpData type){
   const char met[]="CheckSetValue";
@@ -567,6 +608,7 @@ int JBinaryData::CheckSetValue(const std::string &name,JBinaryDataDef::TpData ty
 
 //==============================================================================
 /// Reset del valor pasado como referencia.
+/// Reset the value passed by reference.
 //==============================================================================
 void JBinaryData::ResetValue(const std::string &name,JBinaryDataDef::TpData type,JBinaryData::StValue &v){
   v.name=name; v.type=type; v.vdouble3=TDouble3(0);
@@ -574,6 +616,7 @@ void JBinaryData::ResetValue(const std::string &name,JBinaryDataDef::TpData type
 
 //==============================================================================
 /// Devuelve Value en formato XML.
+/// Value returned in XML format.
 //==============================================================================
 std::string JBinaryData::ValueToXml(const StValue &v)const{
   const char met[]="ValueToXml";
@@ -606,6 +649,7 @@ std::string JBinaryData::ValueToXml(const StValue &v)const{
 
 //==============================================================================
 /// Extrae datos del ptr indicado.
+/// Extract data from ptr indicated.
 //==============================================================================
 void JBinaryData::OutData(unsigned &count,unsigned size,const byte *ptr,byte *dat,unsigned sdat)const{
   const unsigned count2=count+sdat;
@@ -616,6 +660,7 @@ void JBinaryData::OutData(unsigned &count,unsigned size,const byte *ptr,byte *da
 
 //==============================================================================
 /// Extrae string de ptr.
+/// Remove string ptr.
 //==============================================================================
 std::string JBinaryData::OutStr(unsigned &count,unsigned size,const byte *ptr)const{
   unsigned len=OutUint(count,size,ptr);
@@ -630,6 +675,7 @@ std::string JBinaryData::OutStr(unsigned &count,unsigned size,const byte *ptr)co
 
 //==============================================================================
 /// Introduce datos en ptr.
+/// Put data in ptr.
 //==============================================================================
 void JBinaryData::InData(unsigned &count,unsigned size,byte *ptr,const byte *dat,unsigned sdat)const{
   const char met[]="InData";
@@ -643,6 +689,7 @@ void JBinaryData::InData(unsigned &count,unsigned size,byte *ptr,const byte *dat
 
 //==============================================================================
 /// Introduce string en ptr.
+/// Put string in ptr.
 //==============================================================================
 void JBinaryData::InStr(unsigned &count,unsigned size,byte *ptr,const std::string &cad)const{
   InUint(count,size,ptr,(unsigned)cad.length());
@@ -651,6 +698,7 @@ void JBinaryData::InStr(unsigned &count,unsigned size,byte *ptr,const std::strin
 
 //==============================================================================
 /// Introduce Value en ptr.
+/// Put Value in ptr.
 //==============================================================================
 void JBinaryData::InValue(unsigned &count,unsigned size,byte *ptr,const StValue &v)const{
   InStr(count,size,ptr,v.name);
@@ -678,6 +726,7 @@ void JBinaryData::InValue(unsigned &count,unsigned size,byte *ptr,const StValue 
 
 //==============================================================================
 /// Extrae Value en ptr.
+/// Extract Value in ptr.
 //==============================================================================
 void JBinaryData::OutValue(unsigned &count,unsigned size,const byte *ptr){
   string name=OutStr(count,size,ptr);
@@ -705,6 +754,7 @@ void JBinaryData::OutValue(unsigned &count,unsigned size,const byte *ptr){
 
 //==============================================================================
 /// Introduce datos basicos de Array en ptr.
+/// Put basic data Array in ptr.
 //==============================================================================
 void JBinaryData::InArrayBase(unsigned &count,unsigned size,byte *ptr,const JBinaryDataArray *ar)const{
   InStr(count,size,ptr,CodeArrayDef);
@@ -719,6 +769,7 @@ void JBinaryData::InArrayBase(unsigned &count,unsigned size,byte *ptr,const JBin
 }
 //==============================================================================
 /// Introduce contendido de Array en ptr.
+/// Put ptr Array content.
 //==============================================================================
 void JBinaryData::InArrayData(unsigned &count,unsigned size,byte *ptr,const JBinaryDataArray *ar)const{
   const JBinaryDataDef::TpData type=ar->GetType();
@@ -737,6 +788,7 @@ void JBinaryData::InArrayData(unsigned &count,unsigned size,byte *ptr,const JBin
 
 //==============================================================================
 /// Introduce Array en ptr.
+/// Put Array in ptr.
 //==============================================================================
 void JBinaryData::InArray(unsigned &count,unsigned size,byte *ptr,const JBinaryDataArray *ar)const{
   //-Calcula size de la definicion del array.
@@ -751,6 +803,7 @@ void JBinaryData::InArray(unsigned &count,unsigned size,byte *ptr,const JBinaryD
 
 //==============================================================================
 /// Introduce datos basicos de Item en ptr.
+/// Put basic data Item in ptr.
 //==============================================================================
 void JBinaryData::InItemBase(unsigned &count,unsigned size,byte *ptr,bool all)const{
   InStr(count,size,ptr,CodeItemDef);
@@ -767,6 +820,7 @@ void JBinaryData::InItemBase(unsigned &count,unsigned size,byte *ptr,bool all)co
 
 //==============================================================================
 /// Introduce Item en ptr.
+/// Put Item in ptr.
 //==============================================================================
 void JBinaryData::InItem(unsigned &count,unsigned size,byte *ptr,bool all)const{
   //-Calcula size de la definicion del item.
@@ -788,6 +842,7 @@ void JBinaryData::InItem(unsigned &count,unsigned size,byte *ptr,bool all)const{
 
 //==============================================================================
 /// Extrae datos basicos del Array de ptr.
+/// Extract basic data from ptr Array 
 //==============================================================================
 JBinaryDataArray* JBinaryData::OutArrayBase(unsigned &count,unsigned size,const byte *ptr,unsigned &countdata,unsigned &sizedata){
   const char met[]="OutArrayBase";
@@ -806,6 +861,7 @@ JBinaryDataArray* JBinaryData::OutArrayBase(unsigned &count,unsigned size,const 
 
 //==============================================================================
 /// Extrae contenido de Array de ptr.
+/// Extract the contents of the ptr Array
 //==============================================================================
 void JBinaryData::OutArrayData(unsigned &count,unsigned size,const byte *ptr,JBinaryDataArray *ar,unsigned countdata,unsigned sizedata){
   if(ar->GetType()==JBinaryDataDef::DatText){//-Array de strings.
@@ -814,9 +870,11 @@ void JBinaryData::OutArrayData(unsigned &count,unsigned size,const byte *ptr,JBi
   }
   else{
     //-Comprueba que los datos del array estan disponibles.
+	//-Checks that the data array is available.
     unsigned count2=count+sizedata;
     if(count2>size)RunException("OutArrayData","Overflow in reading data.");
     //-Extrae datos para el array.
+	//-Extracts the data for the array.
     ar->AddData(countdata,ptr+count,true);
     count=count2;
   }
@@ -824,18 +882,22 @@ void JBinaryData::OutArrayData(unsigned &count,unsigned size,const byte *ptr,JBi
 
 //==============================================================================
 /// Extrae Array de ptr.
+/// Extracts the Array of the ptr.
 //==============================================================================
 void JBinaryData::OutArray(unsigned &count,unsigned size,const byte *ptr){
   //-Crea y configura array a partir de ptr.
+  //-Creates and configures array from ptr 
   const unsigned sizearraydef=OutUint(count,size,ptr);
   unsigned countdata,sizedata;
   JBinaryDataArray *ar=OutArrayBase(count,size,ptr,countdata,sizedata);
   //-Extrae contenido del array.
+  //-Extract contents of the array.
   OutArrayData(count,size,ptr,ar,countdata,sizedata);
 }
 
 //==============================================================================
 /// Extrae propiedades basicas de Item de ptr.
+/// Extracts basic properties from the ptr Item
 //==============================================================================
 JBinaryData* JBinaryData::OutItemBase(unsigned &count,unsigned size,const byte *ptr,bool create,unsigned &narrays,unsigned &nitems,unsigned &sizevalues){
   if(OutStr(count,size,ptr)!=CodeItemDef)RunException("OutItem","Validation code is invalid.");
@@ -854,26 +916,32 @@ JBinaryData* JBinaryData::OutItemBase(unsigned &count,unsigned size,const byte *
 
 //==============================================================================
 /// Extrae Item de ptr.
+/// Extracts the Item ptr.
 //==============================================================================
 void JBinaryData::OutItem(unsigned &count,unsigned size,const byte *ptr,bool create){
   //-Extrae propiedades del item.
+  //-Extract item properties
   const unsigned sizeitemdef=OutUint(count,size,ptr);
   unsigned narrays,nitems,sizevalues;
   JBinaryData* item=OutItemBase(count,size,ptr,create,narrays,nitems,sizevalues);
   //-Extrae values del item.
+  //-Extract values of the item.
   if(sizevalues){
     if(OutStr(count,size,ptr)!=CodeValuesDef)RunException("OutItem","Validation code is invalid.");
     unsigned num=OutUint(count,size,ptr);
     for(unsigned c=0;c<num;c++)item->OutValue(count,size,ptr);
   }
   //-Extrae arrays del item.
+  //-Extract arrays from item.
   for(unsigned c=0;c<narrays;c++)item->OutArray(count,size,ptr);
   //-Extrae items del item.
+  //-Extract items from item.
   for(unsigned c=0;c<nitems;c++)item->OutItem(count,size,ptr,true);
 }
 
 //==============================================================================
 /// Devuelve el tamaño necesario para almacenar todos los values del item.
+/// Returns the size necessary to store all the values in the item 
 //==============================================================================
 unsigned JBinaryData::GetSizeValues()const{
   unsigned count=0;
@@ -883,6 +951,7 @@ unsigned JBinaryData::GetSizeValues()const{
 
 //==============================================================================
 /// Almacena datos de values en ptr.
+/// Data values stored in ptr.
 //==============================================================================
 void JBinaryData::SaveValues(unsigned &count,unsigned size,byte *ptr)const{
   unsigned num=unsigned(Values.size());
@@ -895,23 +964,24 @@ void JBinaryData::SaveValues(unsigned &count,unsigned size,byte *ptr)const{
 
 //==============================================================================
 /// Graba contenido de array en fichero.
+/// Saves the contents of array into the file.
 //==============================================================================
 void JBinaryData::WriteArrayData(std::fstream *pf,const JBinaryDataArray *ar)const{
   const JBinaryDataDef::TpData type=ar->GetType();
   const unsigned countdata=ar->GetCount();
   const void* pointer=ar->GetPointer();
   if(countdata&&!pointer)RunException("WriteArrayData","Pointer of array with data is invalid.");
-  if(type==JBinaryDataDef::DatText){//-Array de strings.
+  if(type==JBinaryDataDef::DatText){//-Array de strings. Stings Array
     const string *list=(string*)pointer;
     unsigned sbuf=0;
-    for(unsigned c=0;c<countdata;c++)InStr(sbuf,0,NULL,list[c]);//-Calcula size de buffer.
+    for(unsigned c=0;c<countdata;c++)InStr(sbuf,0,NULL,list[c]);//-Calcula size de buffer. Calculate buffer size.
     byte *buf=new byte[sbuf];
     unsigned cbuf=0;
-    for(unsigned c=0;c<countdata;c++)InStr(cbuf,sbuf,buf,list[c]);//-Copia en buffer.
+    for(unsigned c=0;c<countdata;c++)InStr(cbuf,sbuf,buf,list[c]);//-Copia en buffer. Copy buffer.
     pf->write((char*)buf,cbuf);
     delete[] buf;
   }
-  else{//-Array de tipos basicos.
+  else{//-Array de tipos basicos. Array of basic types.
     unsigned sizetype=(unsigned)JBinaryDataDef::SizeOfType(ar->GetType());
     pf->write((char*)pointer,sizetype*countdata);
   }
@@ -919,45 +989,53 @@ void JBinaryData::WriteArrayData(std::fstream *pf,const JBinaryDataArray *ar)con
 
 //==============================================================================
 /// Graba Array en fichero.
+/// Saves the Array in the file. 
 //==============================================================================
 void JBinaryData::WriteArray(std::fstream *pf,unsigned sbuf,byte *buf,const JBinaryDataArray *ar)const{
   //-Calcula size de la definicion del array.
   unsigned sizearray=0;
   InArrayBase(sizearray,0,NULL,ar);
-  //-Graba propiedades de array.
+  //-Graba propiedades de array. Saves properties of array.
   unsigned cbuf=0;
   InUint(cbuf,sbuf,buf,sizearray);
   InArrayBase(cbuf,sbuf,buf,ar);
   pf->write((char*)buf,cbuf);
-  //-Graba contenido del array.
+  //-Graba contenido del array. Saves contents of array.
   WriteArrayData(pf,ar);
 }
 
 //==============================================================================
 /// Graba Item en fichero.
+/// Saves items to file.
 //==============================================================================
 void JBinaryData::WriteItem(std::fstream *pf,unsigned sbuf,byte *buf,bool all)const{
   //-Calcula size de la definicion del item.
+  //-Calculates the size of the item's definition.
   unsigned sizeitem=0;
   InItemBase(sizeitem,0,NULL,all);
   //-Graba propiedades de item en fichero.
+  //-Saves item properties in the file.
   {
     unsigned cbuf=0;
     InUint(cbuf,sbuf,buf,sizeitem);
     InItemBase(cbuf,sbuf,buf,all);
     pf->write((char*)buf,cbuf);
   }
-  //-Graba values.
+  //-Graba values. 
+  //-Save values
   if(all||!GetHideValues())pf->write((char*)ValuesData,ValuesSize);
   //-Graba arrays.
+  //-Save arrays.
   for(unsigned c=0;c<Arrays.size();c++)if(all||!Arrays[c]->GetHide())WriteArray(pf,sbuf,buf,Arrays[c]);
   //-Graba items.
+  //-Save items.
   for(unsigned c=0;c<Items.size();c++)if(all||!Items[c]->GetHide())Items[c]->WriteItem(pf,sbuf,buf,all);
 }
 
 
 //==============================================================================
 /// Devuelve unsigned leido de fichero.
+/// Returns the unsigned value read from the file.
 //==============================================================================
 unsigned JBinaryData::ReadUint(std::ifstream *pf)const{
   unsigned v=0;
@@ -967,6 +1045,7 @@ unsigned JBinaryData::ReadUint(std::ifstream *pf)const{
 
 //==============================================================================
 /// Carga datos de array de fichero.
+/// Loads data to array from the file.
 //==============================================================================
 void JBinaryData::ReadArrayData(std::ifstream *pf,JBinaryDataArray *ar,unsigned countdata,unsigned sizedata,bool loadarraysdata){
   const JBinaryDataDef::TpData type=ar->GetType();
@@ -979,29 +1058,35 @@ void JBinaryData::ReadArrayData(std::ifstream *pf,JBinaryDataArray *ar,unsigned 
 
 //==============================================================================
 /// Carga array de fichero.
+/// Loads array from the file.
 //==============================================================================
 void JBinaryData::ReadArray(std::ifstream *pf,unsigned sbuf,byte *buf,bool loadarraysdata){
-  //-Carga propiedades del array.
+  //-Carga propiedades del array. 
+  //-Load array properties.
   const unsigned sizearraydef=ReadUint(pf);
   pf->read((char*)buf,sizearraydef);
   unsigned countdata,sizedata;
   unsigned cbuf=0;
   JBinaryDataArray *ar=OutArrayBase(cbuf,sizearraydef,buf,countdata,sizedata);
   //-Extrae contenido del array.
+  //-Extract contents of the array.
   ReadArrayData(pf,ar,countdata,sizedata,loadarraysdata);
 }
 
 //==============================================================================
 /// Carga Item de fichero.
+/// Loads item from the file.
 //==============================================================================
 void JBinaryData::ReadItem(std::ifstream *pf,unsigned sbuf,byte *buf,bool create,bool loadarraysdata){
   //-Carga propiedades del item.
+  //-Load item properties.
   const unsigned sizeitemdef=ReadUint(pf);
   pf->read((char*)buf,sizeitemdef);
   unsigned narrays,nitems,sizevalues;
   unsigned cbuf=0;
   JBinaryData* item=OutItemBase(cbuf,sizeitemdef,buf,create,narrays,nitems,sizevalues);
   //-Carga values del item.
+  //-Loading item values.
   if(sizevalues){
     byte* buf2=(sbuf>=sizevalues? buf: NULL);
     if(!buf2)buf2=new byte[sizevalues];
@@ -1013,13 +1098,16 @@ void JBinaryData::ReadItem(std::ifstream *pf,unsigned sbuf,byte *buf,bool create
     if(buf!=buf2)delete[] buf2;
   }
   //-Carga arrays del item.
+  // Load arrays from the item
   for(unsigned c=0;c<narrays;c++)item->ReadArray(pf,sbuf,buf,loadarraysdata);
   //-Carga items del item.
+  //-Loads items from the item.
   for(unsigned c=0;c<nitems;c++)item->ReadItem(pf,sbuf,buf,true,loadarraysdata);
 }
 
 //==============================================================================
 /// Genera cabecera para fichero.
+/// Generate header for file.
 //==============================================================================
 JBinaryData::StHeadFmtBin JBinaryData::MakeFileHead(const std::string &filecode)const{
   StHeadFmtBin hfmt; 
@@ -1036,13 +1124,17 @@ JBinaryData::StHeadFmtBin JBinaryData::MakeFileHead(const std::string &filecode)
 //==============================================================================
 /// Devuelve tamaño de fichero y su cabecera.
 /// Si el fichero no contiene una cabecera devuelve 0.
+/// Returns file size and its header.
+/// If the file does not contain a header returns 0.
 //==============================================================================
 unsigned JBinaryData::GetFileHead(std::ifstream *pf,JBinaryData::StHeadFmtBin &head)const{
   //-Obtiene size del fichero.
+  //-Gets file size.
   pf->seekg(0,ios::end);
   const unsigned fsize=(unsigned)pf->tellg();
   pf->seekg(0,ios::beg);
   //-Lee cabecera basica.
+  //-Reads basic header.
   if(fsize>=sizeof(StHeadFmtBin))pf->read((char*)&head,sizeof(StHeadFmtBin));
   else memset(&head,0,sizeof(StHeadFmtBin));
   return(fsize);
@@ -1051,11 +1143,14 @@ unsigned JBinaryData::GetFileHead(std::ifstream *pf,JBinaryData::StHeadFmtBin &h
 //==============================================================================
 /// Comprueba formato de cabecera con filecode y bitorder.
 /// Genera excepcion en caso de error.
+/// Check the format of the file header and bitorder.
+/// Generates exception on error.
 //==============================================================================
 void JBinaryData::CheckHead(const std::string &file,const StHeadFmtBin &head,const std::string &filecode)const{
   const char met[]="CheckHead";
   int err=0;
   //-Coprueba formato de cabecera y filecode.
+  //-Check header format and filecode.
   if(!err){
     StHeadFmtBin head2=MakeFileHead(filecode);
     unsigned c=0;
@@ -1064,6 +1159,7 @@ void JBinaryData::CheckHead(const std::string &file,const StHeadFmtBin &head,con
     else if(!filecode.empty()&&c<60)err=3;
   }
   //-Coprueba orden de bytes.
+  //-Check byte order.
   if(!err){
     byte byteorder=byte(fun::GetByteOrder());
     if(head.byteorder!=byte(fun::GetByteOrder()))err=1;
@@ -1077,12 +1173,17 @@ void JBinaryData::CheckHead(const std::string &file,const StHeadFmtBin &head,con
 /// Comprueba formato de cabecera con filecode y bitorder.
 /// Si el fichero este vacio tambien genera excepcion.
 /// Devuelve size de fichero.
+/// Check with filecode header format and bitorder.
+/// If the file is empty, it generates exception.
+/// Returns file size.
 //==============================================================================
 unsigned JBinaryData::CheckFileHead(const std::string &file,std::ifstream *pf,const std::string &filecode)const{
   JBinaryData::StHeadFmtBin head;
   //-Obtiene size y cabecera del fichero.
+  //-Get size and file header.
   const unsigned fsize=GetFileHead(pf,head);
   //-Comprueba validez de cabecera.
+  //-Check for valid header.
   CheckHead(file,head,filecode);
   return(fsize);
 }
@@ -1091,18 +1192,23 @@ unsigned JBinaryData::CheckFileHead(const std::string &file,std::ifstream *pf,co
 /// Comprueba formato de cabecera con filecode y bitorder.
 /// En caso de que el fichero este vacio no genera excepcion.
 /// Devuelve size de fichero.
+/// Check with filecode header format and bitorder.
+/// If the file is empty generates no exception.
+/// Returns file size.
 //==============================================================================
 unsigned JBinaryData::CheckFileListHead(const std::string &file,std::fstream *pf,const std::string &filecode)const{
   const char met[]="CheckFileHead";
   //-Obtiene size del fichero.
+  //-Gets file size.
   pf->seekg(0,ios::end);
   const unsigned fsize=(unsigned)pf->tellg();
   pf->seekg(0,ios::beg);
   //-Lee cabecera basica y comprueba validez.
+  //-Reads basic header and checks validity.
   StHeadFmtBin head;
   if(fsize>=sizeof(StHeadFmtBin)){
     pf->read((char*)&head,sizeof(StHeadFmtBin));
-    //-Comprueba validez de cabecera.
+    //-Check for valid header.
     CheckHead(file,head,filecode);
   }
   return(fsize);
@@ -1110,6 +1216,7 @@ unsigned JBinaryData::CheckFileListHead(const std::string &file,std::fstream *pf
 
 //==============================================================================
 /// Graba contenido en fichero XML.
+/// Saves contents to XML file.
 //==============================================================================
 void JBinaryData::WriteFileXmlArray(const std::string &tabs,std::ofstream* pf,bool svarrays,const JBinaryDataArray* ar)const{
   const char met[]="WriteFileXmlArray";
@@ -1159,6 +1266,7 @@ void JBinaryData::WriteFileXmlArray(const std::string &tabs,std::ofstream* pf,bo
 
 //==============================================================================
 /// Graba contenido en fichero XML.
+/// Saves contents to XML file.
 //==============================================================================
 void JBinaryData::WriteFileXml(const std::string &tabs,std::ofstream* pf,bool svarrays)const{
   (*pf) << tabs << "<item name=\"" << GetName() << "\" hide=\"" << (GetHide()? '1': '0') << "\" hidevalues=\"" << (GetHideValues()? '1': '0') << "\">" << endl;
@@ -1170,6 +1278,8 @@ void JBinaryData::WriteFileXml(const std::string &tabs,std::ofstream* pf,bool sv
 
 //==============================================================================
 /// Cambia nombre de objeto comprobando que no tenga hermanos con el mismo nombre.
+/// Changes the name of the object checking that there is no other object with 
+/// the same name 
 //==============================================================================
 void JBinaryData::SetName(const std::string &name){
   const char met[]="SetName";
@@ -1183,6 +1293,7 @@ void JBinaryData::SetName(const std::string &name){
 
 //==============================================================================
 /// Cambia oculatacion de values.
+/// Change the SetHide of the values
 //==============================================================================
 void JBinaryData::SetHideValues(bool hide,bool down){
   HideValues=hide;
@@ -1191,6 +1302,7 @@ void JBinaryData::SetHideValues(bool hide,bool down){
 
 //==============================================================================
 /// Cambia oculatacion de arrays.
+/// Change the SetHide of the arrays
 //==============================================================================
 void JBinaryData::SetHideArrays(bool hide,bool down){
   for(unsigned c=0;c<Arrays.size();c++){
@@ -1201,6 +1313,7 @@ void JBinaryData::SetHideArrays(bool hide,bool down){
 
 //==============================================================================
 /// Cambia oculatacion de items.
+/// Change the SetHide of the items
 //==============================================================================
 void JBinaryData::SetHideItems(bool hide,bool down){
   for(unsigned c=0;c<Items.size();c++){
@@ -1211,6 +1324,7 @@ void JBinaryData::SetHideItems(bool hide,bool down){
 
 //==============================================================================
 /// Cambia formato de texto para valores float.
+/// Change text format for floats.
 //==============================================================================
 void JBinaryData::SetFmtFloat(const std::string &fmt,bool down){
   FmtFloat=fmt;
@@ -1219,6 +1333,7 @@ void JBinaryData::SetFmtFloat(const std::string &fmt,bool down){
 
 //==============================================================================
 /// Cambia formato de texto para valores double.
+/// Change text format for doubles.
 //==============================================================================
 void JBinaryData::SetFmtDouble(const std::string &fmt,bool down){
   FmtDouble=fmt;
@@ -1228,6 +1343,8 @@ void JBinaryData::SetFmtDouble(const std::string &fmt,bool down){
 //==============================================================================
 /// Devuelve el tamaño necesario para almacenar todos los datos del item y descendientes.
 /// Con all activado se incluyen tambien los elementos ocultos.
+/// Returns the size needed to store the data from the item and "descendants"
+/// With bool "all" true the hidden elements are also included. 
 //==============================================================================
 unsigned JBinaryData::GetSizeDataConst(bool all)const{
   unsigned count=0;
@@ -1238,6 +1355,8 @@ unsigned JBinaryData::GetSizeDataConst(bool all)const{
 //==============================================================================
 /// Almacena datos de item en ptr y devuelve los bytes almacenados.
 /// Con all activado se incluyen tambien los elementos ocultos.
+/// Stores data of item in ptr and and returns the bytes stored.
+// With bool "all" true the hidden elements are also included.
 //==============================================================================
 unsigned JBinaryData::SaveDataConst(unsigned size,byte* ptr,bool all)const{
   if(!ptr)RunException("SaveDataConst","The pointer is invalid.");
@@ -1251,6 +1370,9 @@ unsigned JBinaryData::SaveDataConst(unsigned size,byte* ptr,bool all)const{
 /// descendientes. Actualiza la cache de values  para mejorar el rendimiento en 
 /// operaciones posteriores.
 /// Con all activado se incluyen tambien los elementos ocultos.
+/// Returns the size needed to store all the item and descendants.
+/// Updates the cache of values to improve performance for later operations.
+/// With bool "all" true the hidden items are also included.
 //==============================================================================
 unsigned JBinaryData::GetSizeData(bool all){
   ValuesCachePrepare(true);
@@ -1263,6 +1385,10 @@ unsigned JBinaryData::GetSizeData(bool all){
 /// Almacena datos de item en ptr y devuelve los bytes almacenados. Actualiza la
 /// cache de values para mejorar el rendimiento en operaciones posteriores.
 /// Con all activado se incluyen tambien los elementos ocultos.
+/// Stores data of item in ptr and returns the bytes stored. 
+/// Updates cache values to improve performance in subsequent operations.
+/// Activated Also included all the hidden items.
+/// With bool "all" true  the hidden items are also included.
 //==============================================================================
 unsigned JBinaryData::SaveData(unsigned size,byte* ptr,bool all){
   if(!ptr)RunException("SaveData","The pointer is invalid.");
@@ -1274,10 +1400,11 @@ unsigned JBinaryData::SaveData(unsigned size,byte* ptr,bool all){
 
 //==============================================================================
 /// Carga datos desde ptr.
+/// Loads data from ptr.
 //==============================================================================
 void JBinaryData::LoadData(unsigned size,const byte* ptr){
   if(!ptr)RunException("LoadData","The pointer is invalid.");
-  Clear(); //-Limpia contenido de objeto.
+  Clear(); //-Limpia contenido de objeto. Clean object content.
   unsigned count=0;
   OutItem(count,size,ptr,false);
 }
@@ -1288,21 +1415,25 @@ void JBinaryData::LoadData(unsigned size,const byte* ptr){
 /// Con memory utiliza un buffer para todos los datos. Consume mas memoria pero
 /// es mas rapido si no hay arrays grandes.
 /// Con all activado se incluyen tambien los elementos ocultos.
+/// Save data file.
+/// With a buffer memory used for all data. It consumes more memory but
+/// it is faster if there are large arrays.
+/// With bool "all" true  the hidden items are also included.
 //==============================================================================
 void JBinaryData::SaveFileData(std::fstream *pf,bool head,const std::string &filecode,bool memory,bool all)const{
   if(head){//-Graba cabecera basica.
     StHeadFmtBin head=MakeFileHead(filecode); 
     pf->write((char*)&head,sizeof(StHeadFmtBin));
   }
-  //-Graba datos.
-  if(memory){//-Graba datos desde memoria.
+  //-Graba datos. Save data.
+  if(memory){//-Graba datos desde memoria. Write data from memory.
     const unsigned sbuf=GetSizeDataConst(all);
     byte *buf=new byte[sbuf];
     unsigned sbuf2=SaveDataConst(sbuf,buf,all);
     pf->write((char*)buf,sbuf);
     delete[] buf;
   }
-  else{//-Graba datos directamente.
+  else{//-Graba datos directamente. Save data directly.
     const unsigned sbuf=1024;
     byte buf[sbuf];
     WriteItem(pf,sbuf,buf,all);
@@ -1314,6 +1445,10 @@ void JBinaryData::SaveFileData(std::fstream *pf,bool head,const std::string &fil
 /// Con memory utiliza un buffer para todos los datos. Consume mas memoria pero
 /// es mas rapido si no hay arrays grandes.
 /// Con all activado se incluyen tambien los elementos ocultos.
+/// Save data file.
+/// With a buffer memory used for all data. It consumes more memory but
+/// It is faster if there are large arrays.
+/// With bool "all" true  the hidden items are also included.
 //==============================================================================
 void JBinaryData::SaveFile(const std::string &file,bool memory,bool all){
   const char met[]="SaveFile";
@@ -1332,23 +1467,26 @@ void JBinaryData::SaveFile(const std::string &file,bool memory,bool all){
 /// Carga datos de un fichero.
 /// Con memory utiliza un buffer para todos los datos. Consume mas memoria pero
 /// es mas rapido cuando no hay arrays grandes.
+/// Load data from a file.
+/// With a buffer memory used for all data. It consumes more memory but
+/// it is faster if there are large arrays.
 //==============================================================================
 void JBinaryData::LoadFile(const std::string &file,const std::string &filecode,bool memory){
   const char met[]="LoadFile";
-  Clear(); //-Limpia contenido de objeto.
+  Clear(); //-Limpia contenido de objeto. Clean object content.
   ifstream pf;
   pf.open(file.c_str(),ios::binary|ios::in);
   if(pf){
     const unsigned fsize=CheckFileHead(file,&pf,filecode);
     //-Carga datos.
-    if(memory){//-Carga datos desde memoria.
+    if(memory){//-Carga datos desde memoria. Write data from memory.
       const unsigned sbuf=fsize-sizeof(StHeadFmtBin);
       byte *buf=new byte[sbuf];
       pf.read((char*)buf,sbuf);
       LoadData(sbuf,buf);
       delete[] buf;
     }
-    else{//-Carga datos directamente.
+    else{//-Carga datos directamente. Save data directly.
       const unsigned sbuf=1024;
       byte buf[sbuf];
       ReadItem(&pf,sbuf,buf,false,true);
@@ -1363,6 +1501,11 @@ void JBinaryData::LoadFile(const std::string &file,const std::string &filecode,b
 /// Con memory utiliza un buffer para todos los datos. Consume mas memoria pero
 /// es mas rapido si no hay arrays grandes.
 /// Con all activado se incluyen tambien los elementos ocultos.
+
+/// Save Item in file below from the items that already existed.
+/// With a buffer memory used for all data. It consumes more memory but
+/// it is faster if there are large arrays.
+/// With bool "all" true the hidden items are also included.
 //==============================================================================
 void JBinaryData::SaveFileListApp(const std::string &file,const std::string &filecode,bool memory,bool all){
   const char met[]="SaveFile";
@@ -1373,9 +1516,9 @@ void JBinaryData::SaveFileListApp(const std::string &file,const std::string &fil
   if(pf){
     const unsigned fsize=CheckFileListHead(file,&pf,filecode);
     pf.seekp(0,pf.end);
-    //-Graba datos de parent.
+    //-Graba datos de parent. Save parent data.
     if(!fsize)Parent->SaveFileData(&pf,true,filecode,memory,all);
-    //-Graba datos de item.
+    //-Graba datos de item. Save item data.
     SaveFileData(&pf,false,filecode,memory,all);
     if(pf.fail())RunException(met,"File writing failure.",file);
     pf.close();
@@ -1387,10 +1530,13 @@ void JBinaryData::SaveFileListApp(const std::string &file,const std::string &fil
 /// Carga datos de un fichero.
 /// Con memory utiliza un buffer para todos los datos. Consume mas memoria pero
 /// es mas rapido cuando no hay arrays grandes.
+/// Load data from a file.
+/// With a buffer memory used for all data. It consumes more memory but
+/// it is faster if there are large arrays.
 //==============================================================================
 void JBinaryData::LoadFileListApp(const std::string &file,const std::string &filecode,bool memory){
   const char met[]="LoadFileListApp";
-  Clear(); //-Limpia contenido de objeto.
+  Clear(); //-Limpia contenido de objeto. Clean object content.
   ifstream pf;
   pf.open(file.c_str(),ios::binary|ios::in);
   if(pf){
@@ -1399,25 +1545,25 @@ void JBinaryData::LoadFileListApp(const std::string &file,const std::string &fil
     unsigned pfile=(unsigned)pf.tellg();
     while(pfile<fsize){
       //-Carga datos.
-      if(memory){//-Carga datos desde memoria.
+      if(memory){//-Carga datos desde memoria. Loads data from memory.
         const unsigned sbuf=fsize-sizeof(StHeadFmtBin);
         byte *buf=new byte[sbuf];
         pf.read((char*)buf,sbuf);
         unsigned cbuf=0;
         while(cbuf<sbuf){
           OutItem(cbuf,sbuf,buf,true);
-          //-Renombra ultimo item leido.
+          //-Renombra ultimo item leido. Renames last read item.
           unsigned lastitem=GetItemsCount()-1;
           JBinaryData* ite=GetItem(lastitem);
           ite->SetName(fun::PrintStr("LS%04u_",lastitem)+ite->GetName());
         }
         delete[] buf;
       }
-      else{//-Carga datos directamente.
+      else{//-Carga datos directamente. Load data directly.
         const unsigned sbuf=1024;
         byte buf[sbuf];
         ReadItem(&pf,sbuf,buf,true,true);
-        //-Renombra ultimo item leido.
+        //-Renombra ultimo item leido. Renames last read item.
         unsigned lastitem=GetItemsCount()-1;
         JBinaryData* ite=GetItem(lastitem);
         ite->SetName(fun::PrintStr("LS%04u_",lastitem)+ite->GetName());
@@ -1432,11 +1578,13 @@ void JBinaryData::LoadFileListApp(const std::string &file,const std::string &fil
 //==============================================================================
 /// Abre fichero y carga estructura de datos pero sin cargar el contenido de los
 /// arrays.
+/// Open file and load data structure but without loading the contents of the
+/// arrays.
 //==============================================================================
 void JBinaryData::OpenFileStructure(const std::string &file,const std::string &filecode){
   const char met[]="OpenFileStructure";
   if(Parent)RunException(met,"Item is not root.");
-  Clear(); //-Limpia contenido de objeto.
+  Clear(); //-Limpia contenido de objeto. Clean object content.
   FileStructure=new ifstream;
   FileStructure->open(file.c_str(),ios::binary|ios::in);
   if(*FileStructure){
@@ -1453,6 +1601,7 @@ void JBinaryData::OpenFileStructure(const std::string &file,const std::string &f
 
 //==============================================================================
 /// Cierra fichero abierto con OpenFileStructure().
+/// Close open file using OpenFileStructure ().
 //==============================================================================
 void JBinaryData::CloseFileStructure(){
   if(FileStructure&&FileStructure->is_open())FileStructure->close();
@@ -1461,6 +1610,7 @@ void JBinaryData::CloseFileStructure(){
 
 //==============================================================================
 /// Devuelve puntero al fichero abierto con OpenFileStructure().
+/// Returns pointer to open file with OpenFileStructure ().
 //==============================================================================
 std::ifstream* JBinaryData::GetFileStructure()const{
   if(Parent)RunException("GetFileStructure","Item is not root.");
@@ -1469,6 +1619,7 @@ std::ifstream* JBinaryData::GetFileStructure()const{
 
 //==============================================================================
 /// Graba contenido en fichero XML.
+/// Record XML file content.
 //==============================================================================
 void JBinaryData::SaveFileXml(std::string file,bool svarrays,const std::string &head)const{
   const char* met="SaveFileXml";
@@ -1488,6 +1639,7 @@ void JBinaryData::SaveFileXml(std::string file,bool svarrays,const std::string &
 
 //==============================================================================
 /// Devuelve item principal.
+/// Returns main item.
 //==============================================================================
 JBinaryData* JBinaryData::GetItemRoot(){
   return(Parent? Parent->GetItemRoot(): this);
@@ -1495,6 +1647,7 @@ JBinaryData* JBinaryData::GetItemRoot(){
 
 //==============================================================================
 /// Devuelve el numero de items no marcados como ocultos.
+/// Returns the number of items not marked as hidden.
 //==============================================================================
 unsigned JBinaryData::GetVisibleItemsCount()const{
   unsigned num=0;
@@ -1513,6 +1666,7 @@ int JBinaryData::GetItemIndex(const std::string &name){
 
 //==============================================================================
 /// Devuelve item con el nombre indicado o NULL si no existe.
+/// Returns item with the specified name or NULL if not present.
 //==============================================================================
 JBinaryData* JBinaryData::GetItem(const std::string &name){
   JBinaryData* ret=NULL;
@@ -1522,6 +1676,7 @@ JBinaryData* JBinaryData::GetItem(const std::string &name){
 
 //==============================================================================
 /// Devuelve item segun el indice indicado o NULL si no existe.
+/// Returns index according to the indicated item or NULL if no index exists.
 //==============================================================================
 JBinaryData* JBinaryData::GetItem(unsigned index){
   return(index>=GetItemsCount()? NULL: Items[index]);
@@ -1529,6 +1684,7 @@ JBinaryData* JBinaryData::GetItem(unsigned index){
 
 //==============================================================================
 /// Crea y devuelve item con el nombre. Genera excepcion si ya existe.
+/// Creates and returns item with the name. It generates exception if it already exists.
 //==============================================================================
 JBinaryData* JBinaryData::CreateItem(const std::string &name){
   if(GetItem(name)!=NULL)RunException("CreateItem","There is already an item with the name given.");
@@ -1540,6 +1696,7 @@ JBinaryData* JBinaryData::CreateItem(const std::string &name){
 
 //==============================================================================
 /// Elimina el item indicado.
+/// Deletes the item indicated.
 //==============================================================================
 void JBinaryData::RemoveItem(const std::string &name){
   int idx=GetItemIndex(name);
@@ -1552,6 +1709,7 @@ void JBinaryData::RemoveItem(const std::string &name){
 
 //==============================================================================
 /// Elimina todos los items almacenados.
+/// Remove all stored items.
 //==============================================================================
 void JBinaryData::RemoveItems(){
   for(unsigned c=0;c<Items.size();c++)delete Items[c];
@@ -1560,6 +1718,7 @@ void JBinaryData::RemoveItems(){
 
 //==============================================================================
 /// Devuelve el numero de arrays no marcados como ocultos.
+/// Returns the number of arrays not marked as hidden.
 //==============================================================================
 unsigned JBinaryData::GetVisibleArraysCount()const{
   unsigned num=0;
@@ -1569,6 +1728,7 @@ unsigned JBinaryData::GetVisibleArraysCount()const{
 
 //==============================================================================
 /// Devuelve posicion de la variable solicitada, -1 en caso de no existir.
+/// Returns the requested position variable, -1 if does not exist.
 //==============================================================================
 int JBinaryData::GetArrayIndex(const std::string &name)const{
   int idx=-1; 
@@ -1578,6 +1738,7 @@ int JBinaryData::GetArrayIndex(const std::string &name)const{
 
 //==============================================================================
 /// Devuelve array con el nombre indicado o NULL si no existe.
+/// Returns array with the specified name or NULL if does not exist.
 //==============================================================================
 JBinaryDataArray* JBinaryData::GetArray(const std::string &name){
   JBinaryDataArray* ret=NULL;
@@ -1587,6 +1748,7 @@ JBinaryDataArray* JBinaryData::GetArray(const std::string &name){
 
 //==============================================================================
 /// Devuelve array segun el indice indicado o NULL si no existe.
+/// Returns array according to the specified index or NULL if not present.
 //==============================================================================
 JBinaryDataArray* JBinaryData::GetArray(unsigned index){
   return(index>=GetArraysCount()? NULL: Arrays[index]);
@@ -1594,6 +1756,7 @@ JBinaryDataArray* JBinaryData::GetArray(unsigned index){
 
 //==============================================================================
 /// Crea y devuelve array con el nombre. Genera excepcion si ya existe.
+/// Creates and returns array with the name. It generates exception if it already exists.
 //==============================================================================
 JBinaryDataArray* JBinaryData::CreateArray(const std::string &name,JBinaryDataDef::TpData type){
   if(GetItem(name)!=NULL)RunException("CreateArray","There is already an array with the name given.");
@@ -1604,6 +1767,7 @@ JBinaryDataArray* JBinaryData::CreateArray(const std::string &name,JBinaryDataDe
 
 //==============================================================================
 /// Crea y devuelve array con datos.
+/// Creates and returns array data.
 //==============================================================================
 JBinaryDataArray* JBinaryData::CreateArray(const std::string &name,JBinaryDataDef::TpData type,unsigned count,const void *data,bool externalpointer){
   JBinaryDataArray *ar=CreateArray(name,type);
@@ -1613,6 +1777,7 @@ JBinaryDataArray* JBinaryData::CreateArray(const std::string &name,JBinaryDataDe
 
 //==============================================================================
 /// Elimina el array indicado.
+/// Removes the specified array.
 //==============================================================================
 void JBinaryData::RemoveArray(const std::string &name){
   int idx=GetArrayIndex(name);
@@ -1625,6 +1790,7 @@ void JBinaryData::RemoveArray(const std::string &name){
 
 //==============================================================================
 /// Elimina todos los arrays almacenados.
+/// Remove all storage arrays.
 //==============================================================================
 void JBinaryData::RemoveArrays(){
   for(unsigned c=0;c<Arrays.size();c++)delete Arrays[c];
@@ -1633,6 +1799,7 @@ void JBinaryData::RemoveArrays(){
 
 //==============================================================================
 /// Devuelve posicion de la variable solicitada, -1 en caso de no existir.
+/// Returns the requested position variable, -1 if does not exist.
 //==============================================================================
 int JBinaryData::GetValueIndex(const std::string &name)const{
   int pos=-1; 
@@ -1642,6 +1809,7 @@ int JBinaryData::GetValueIndex(const std::string &name)const{
 
 //==============================================================================
 /// Devuelve el nombre del value solicitado (vacio si no existe).
+/// Returns the name of the requested value (empty if does not exist).
 //==============================================================================
 std::string JBinaryData::NameOfValue(unsigned index)const{
   return(index>=GetValuesCount()? "": Values[index].name);
@@ -1649,6 +1817,7 @@ std::string JBinaryData::NameOfValue(unsigned index)const{
 
 //==============================================================================
 /// Devuelve el tipo del value solicitado (DatNull si no existe).
+/// Returns the type of value requested (DatNull if any).
 //==============================================================================
 JBinaryDataDef::TpData JBinaryData::TypeOfValue(const std::string &name)const{
   int idx=GetValueIndex(name);
@@ -1657,6 +1826,7 @@ JBinaryDataDef::TpData JBinaryData::TypeOfValue(const std::string &name)const{
 
 //==============================================================================
 /// Devuelve el tipo del value solicitado (DatNull si no existe).
+/// Returns the type of value requested (DatNull if any).
 //==============================================================================
 JBinaryDataDef::TpData JBinaryData::TypeOfValue(unsigned index)const{
   return(index>=GetValuesCount()? JBinaryDataDef::DatNull: Values[index].type);
@@ -1664,6 +1834,7 @@ JBinaryDataDef::TpData JBinaryData::TypeOfValue(unsigned index)const{
 
 //==============================================================================
 /// Indica si existe el value solicitado.
+/// Indicates whether the requested value exists.
 //==============================================================================
 bool JBinaryData::ExistsValue(const std::string &name)const{
   return(GetValueIndex(name)>=0);
@@ -1671,6 +1842,7 @@ bool JBinaryData::ExistsValue(const std::string &name)const{
 
 //==============================================================================
 /// Indica si existe el value solicitado del tipo indicado.
+/// It indicates the existance of the requested value of the type.
 //==============================================================================
 bool JBinaryData::ExistsValue(const std::string &name,JBinaryDataDef::TpData type)const{
   int idx=GetValueIndex(name);
@@ -1679,6 +1851,7 @@ bool JBinaryData::ExistsValue(const std::string &name,JBinaryDataDef::TpData typ
 
 //==============================================================================
 /// Elimina el value indicado.
+/// Deletes the value indicated.
 //==============================================================================
 void JBinaryData::RemoveValue(const std::string &name){
   int idx=GetValueIndex(name);
@@ -1688,6 +1861,7 @@ void JBinaryData::RemoveValue(const std::string &name){
 
 //==============================================================================
 /// Elimina todos los values almacenados.
+/// Removes all stored values.
 //==============================================================================
 void JBinaryData::RemoveValues(){
   Values.clear();
@@ -1696,6 +1870,7 @@ void JBinaryData::RemoveValues(){
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo texto.
+/// Returns the requested type value text.
 //==============================================================================
 std::string JBinaryData::GetvText(const std::string &name,bool optional,std::string valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatText);
@@ -1704,6 +1879,7 @@ std::string JBinaryData::GetvText(const std::string &name,bool optional,std::str
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo bool.
+/// Returns the requested value of bool type.
 //==============================================================================
 bool JBinaryData::GetvBool(const std::string &name,bool optional,bool valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatBool);
@@ -1712,6 +1888,7 @@ bool JBinaryData::GetvBool(const std::string &name,bool optional,bool valdef)con
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo char.
+/// Returns the requested value of char type .
 //==============================================================================
 char JBinaryData::GetvChar(const std::string &name,bool optional,char valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatChar);
@@ -1720,6 +1897,7 @@ char JBinaryData::GetvChar(const std::string &name,bool optional,char valdef)con
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo unsigned char.
+/// Returns the requested value of unsigned char type.
 //==============================================================================
 unsigned char JBinaryData::GetvUchar(const std::string &name,bool optional,unsigned char valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUchar);
@@ -1728,6 +1906,7 @@ unsigned char JBinaryData::GetvUchar(const std::string &name,bool optional,unsig
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo short.
+/// Returns the requested value of type short.
 //==============================================================================
 short JBinaryData::GetvShort(const std::string &name,bool optional,short valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatShort);
@@ -1736,6 +1915,7 @@ short JBinaryData::GetvShort(const std::string &name,bool optional,short valdef)
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo unsigned short.
+/// Returns the requested value of type unsigned short.
 //==============================================================================
 unsigned short JBinaryData::GetvUshort(const std::string &name,bool optional,unsigned short valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUshort);
@@ -1744,6 +1924,7 @@ unsigned short JBinaryData::GetvUshort(const std::string &name,bool optional,uns
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo int.
+/// Returns the requested value of type int.
 //==============================================================================
 int JBinaryData::GetvInt(const std::string &name,bool optional,int valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatInt);
@@ -1752,6 +1933,7 @@ int JBinaryData::GetvInt(const std::string &name,bool optional,int valdef)const{
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo unsigned.
+/// Returns the requested value of unsigned type.
 //==============================================================================
 unsigned JBinaryData::GetvUint(const std::string &name,bool optional,unsigned valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUint);
@@ -1760,6 +1942,7 @@ unsigned JBinaryData::GetvUint(const std::string &name,bool optional,unsigned va
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo long long.
+/// Returns the requested value long long.
 //==============================================================================
 llong JBinaryData::GetvLlong(const std::string &name,bool optional,llong valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatLlong);
@@ -1768,6 +1951,7 @@ llong JBinaryData::GetvLlong(const std::string &name,bool optional,llong valdef)
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo unsigned long long.
+/// Returns the requested value of type unsigned long long.
 //==============================================================================
 ullong JBinaryData::GetvUllong(const std::string &name,bool optional,ullong valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUllong);
@@ -1776,6 +1960,7 @@ ullong JBinaryData::GetvUllong(const std::string &name,bool optional,ullong vald
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo float.
+/// Returns the requested value of type float.
 //==============================================================================
 float JBinaryData::GetvFloat(const std::string &name,bool optional,float valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatFloat);
@@ -1784,6 +1969,7 @@ float JBinaryData::GetvFloat(const std::string &name,bool optional,float valdef)
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo double.
+/// Returns the requested value of type double.
 //==============================================================================
 double JBinaryData::GetvDouble(const std::string &name,bool optional,double valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatDouble);
@@ -1792,6 +1978,7 @@ double JBinaryData::GetvDouble(const std::string &name,bool optional,double vald
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo tint3.
+/// Returns the value of tint3 type requested.
 //==============================================================================
 tint3 JBinaryData::GetvInt3(const std::string &name,bool optional,tint3 valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatInt3);
@@ -1800,6 +1987,7 @@ tint3 JBinaryData::GetvInt3(const std::string &name,bool optional,tint3 valdef)c
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo tuint3.
+/// Returns the value of tint3 type requested.
 //==============================================================================
 tuint3 JBinaryData::GetvUint3(const std::string &name,bool optional,tuint3 valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatUint3);
@@ -1808,6 +1996,7 @@ tuint3 JBinaryData::GetvUint3(const std::string &name,bool optional,tuint3 valde
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo tfloat3.
+/// Returns the requested value of type tfloat3.
 //==============================================================================
 tfloat3 JBinaryData::GetvFloat3(const std::string &name,bool optional,tfloat3 valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatFloat3);
@@ -1816,6 +2005,7 @@ tfloat3 JBinaryData::GetvFloat3(const std::string &name,bool optional,tfloat3 va
 
 //==============================================================================
 /// Devuelve el valor solicitado de tipo tdouble3.
+/// Returns the requested value of type tdouble3.
 //==============================================================================
 tdouble3 JBinaryData::GetvDouble3(const std::string &name,bool optional,tdouble3 valdef)const{
   int pos=CheckGetValue(name,optional,JBinaryDataDef::DatDouble3);
@@ -1824,6 +2014,7 @@ tdouble3 JBinaryData::GetvDouble3(const std::string &name,bool optional,tdouble3
 
 //==============================================================================
 /// Crea o modifica un valor de tipo texto.
+/// Creates or modifies a text value.
 //==============================================================================
 void JBinaryData::SetvText(const std::string &name,const std::string &v){
   Values[CheckSetValue(name,JBinaryDataDef::DatText)].vtext=v;
@@ -1831,6 +2022,7 @@ void JBinaryData::SetvText(const std::string &name,const std::string &v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo bool.
+/// Creates or modifies a value of type bool.
 //==============================================================================
 void JBinaryData::SetvBool(const std::string &name,bool v){
   Values[CheckSetValue(name,JBinaryDataDef::DatBool)].vint=(v? 1: 0);
@@ -1838,6 +2030,7 @@ void JBinaryData::SetvBool(const std::string &name,bool v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo char.
+/// Creates or modifies a value of type char.
 //==============================================================================
 void JBinaryData::SetvChar(const std::string &name,char v){
   Values[CheckSetValue(name,JBinaryDataDef::DatChar)].vchar=v;
@@ -1845,6 +2038,7 @@ void JBinaryData::SetvChar(const std::string &name,char v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo unsigned char.
+/// Creates or modifies a value of type unsigned char.
 //==============================================================================
 void JBinaryData::SetvUchar(const std::string &name,unsigned char v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUchar)].vuchar=v;
@@ -1852,6 +2046,7 @@ void JBinaryData::SetvUchar(const std::string &name,unsigned char v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo short.
+/// Creates or modifies a value of type short.
 //==============================================================================
 void JBinaryData::SetvShort(const std::string &name,short v){
   Values[CheckSetValue(name,JBinaryDataDef::DatShort)].vshort=v;
@@ -1859,6 +2054,7 @@ void JBinaryData::SetvShort(const std::string &name,short v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo unsigned short.
+/// Creates or modifies a value of type unsigned short
 //==============================================================================
 void JBinaryData::SetvUshort(const std::string &name,unsigned short v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUshort)].vushort=v;
@@ -1866,6 +2062,7 @@ void JBinaryData::SetvUshort(const std::string &name,unsigned short v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo int.
+/// Creates or modifies a value of type int.
 //==============================================================================
 void JBinaryData::SetvInt(const std::string &name,int v){
   Values[CheckSetValue(name,JBinaryDataDef::DatInt)].vint=v;
@@ -1873,6 +2070,7 @@ void JBinaryData::SetvInt(const std::string &name,int v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo unsigned.
+/// Creates or modifies a value of type unsigned.
 //==============================================================================
 void JBinaryData::SetvUint(const std::string &name,unsigned v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUint)].vuint=v;
@@ -1880,6 +2078,7 @@ void JBinaryData::SetvUint(const std::string &name,unsigned v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo long long.
+/// Creates or modifies a value of type long long.
 //==============================================================================
 void JBinaryData::SetvLlong(const std::string &name,llong v){
   Values[CheckSetValue(name,JBinaryDataDef::DatLlong)].vllong=v;
@@ -1887,6 +2086,7 @@ void JBinaryData::SetvLlong(const std::string &name,llong v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo unsigned long long.
+/// Creates or modifies a value of type unsigned long long.
 //==============================================================================
 void JBinaryData::SetvUllong(const std::string &name,ullong v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUllong)].vullong=v;
@@ -1894,6 +2094,7 @@ void JBinaryData::SetvUllong(const std::string &name,ullong v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo float.
+/// Creates or modifies a value of type float.
 //==============================================================================
 void JBinaryData::SetvFloat(const std::string &name,float v){
   Values[CheckSetValue(name,JBinaryDataDef::DatFloat)].vfloat=v;
@@ -1901,6 +2102,7 @@ void JBinaryData::SetvFloat(const std::string &name,float v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo double.
+/// Creates or modifies a value of type double.
 //==============================================================================
 void JBinaryData::SetvDouble(const std::string &name,double v){
   Values[CheckSetValue(name,JBinaryDataDef::DatDouble)].vdouble=v;
@@ -1908,6 +2110,7 @@ void JBinaryData::SetvDouble(const std::string &name,double v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo tint3.
+/// Creates or modifies a value of type tint3.
 //==============================================================================
 void JBinaryData::SetvInt3(const std::string &name,tint3 v){
   Values[CheckSetValue(name,JBinaryDataDef::DatInt3)].vint3=v;
@@ -1915,6 +2118,7 @@ void JBinaryData::SetvInt3(const std::string &name,tint3 v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo tuint3.
+/// Creates or modifies a value of type tuint3.
 //==============================================================================
 void JBinaryData::SetvUint3(const std::string &name,tuint3 v){
   Values[CheckSetValue(name,JBinaryDataDef::DatUint3)].vuint3=v;
@@ -1922,6 +2126,7 @@ void JBinaryData::SetvUint3(const std::string &name,tuint3 v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo tfloat3.
+/// Creates or modifies a value of type tfloat3.
 //==============================================================================
 void JBinaryData::SetvFloat3(const std::string &name,tfloat3 v){
   Values[CheckSetValue(name,JBinaryDataDef::DatFloat3)].vfloat3=v;
@@ -1929,6 +2134,7 @@ void JBinaryData::SetvFloat3(const std::string &name,tfloat3 v){
 
 //==============================================================================
 /// Crea o modifica un valor de tipo tdouble3.
+/// Creates or modifies a value of type tdouble3.
 //==============================================================================
 void JBinaryData::SetvDouble3(const std::string &name,tdouble3 v){
   Values[CheckSetValue(name,JBinaryDataDef::DatDouble3)].vdouble3=v;

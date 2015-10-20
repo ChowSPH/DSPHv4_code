@@ -18,6 +18,7 @@
 /// \file JPartFloatBi4.cpp \brief Implements the class \ref JPartFloatBi4
 
 #include "JPartFloatBi4.h"
+//#include "JBinaryData.h"
 #include "Functions.h"
 #include <fstream>
 #include <cmath>
@@ -62,6 +63,7 @@ void JPartFloatBi4Save::Reset(){
 
 //==============================================================================
 /// Elimina informacion de Data.
+/// Deletes information from data. 
 //==============================================================================
 void JPartFloatBi4Save::ResetData(){
   delete Data; 
@@ -72,16 +74,18 @@ void JPartFloatBi4Save::ResetData(){
 
 //==============================================================================
 /// Elimina informacion de PARTs.
+/// Deletes information from PARTs.
 //==============================================================================
 void JPartFloatBi4Save::ResetPart(){
   Part->Clear();
 }
 
 //==============================================================================
-// Devuelve la memoria reservada.
+/// Devuelve la memoria reservada.
+/// Returns allocated memory
 //==============================================================================
-llong JPartFloatBi4Save::GetAllocMemory()const{  
-  llong s=0;
+long long JPartFloatBi4Save::GetAllocMemory()const{  
+  long long s=0;
   s+=Data->GetAllocMemory();
   if(HeadMkbound)s=s+sizeof(word)    *FtCount;
   if(HeadBegin)  s=s+sizeof(unsigned)*FtCount;
@@ -96,10 +100,11 @@ llong JPartFloatBi4Save::GetAllocMemory()const{
 
 //==============================================================================
 /// Redimensiona memoria para datos de floatings.
+/// Resize memory for floating data.
 //==============================================================================
 void JPartFloatBi4Save::ResizeFtData(unsigned ftcount){
   FtCount=ftcount;
-  //-Libera memoria.
+  //-Libera memoria. Free memory
   delete[] HeadMkbound; HeadMkbound=NULL;
   delete[] HeadBegin;   HeadBegin=NULL;
   delete[] HeadCount;   HeadCount=NULL;
@@ -108,7 +113,7 @@ void JPartFloatBi4Save::ResizeFtData(unsigned ftcount){
   delete[] PartCenter;  PartCenter=NULL;
   delete[] PartFvel;    PartFvel=NULL;
   delete[] PartFomega;  PartFomega=NULL;
-  //-Asigna memoria.
+  //-Asigna memoria. Assign memory.
   if(FtCount){
     HeadMkbound=new word    [FtCount];
     HeadBegin  =new unsigned[FtCount];
@@ -129,6 +134,7 @@ void JPartFloatBi4Save::ResizeFtData(unsigned ftcount){
 
 //==============================================================================
 /// Vacia datos de floatings por PART.
+/// Clears data of floatings by PART.
 //==============================================================================
 void JPartFloatBi4Save::ClearPartData(){
   if(PartCenter)memset(PartCenter ,0,sizeof(tdouble3)*FtCount);
@@ -138,13 +144,15 @@ void JPartFloatBi4Save::ClearPartData(){
 
 //==============================================================================
 /// Devuelve nombre de part segun su numero.
+/// Returns name of part according to their number.
 //==============================================================================
 std::string JPartFloatBi4Save::GetNamePart(unsigned cpart){
   return(fun::PrintStr("PART_%04u",cpart));
 }
 
 //==============================================================================
-// Devuelve nombre de fichero PART segun los parametros indicados.
+/// Devuelve nombre de fichero PART segun los parametros indicados.
+/// Returns the filename PART according to the specified parameters.
 //==============================================================================
 std::string JPartFloatBi4Save::GetFileNamePart(){
   return("PartFloat.fbi4");
@@ -152,6 +160,7 @@ std::string JPartFloatBi4Save::GetFileNamePart(){
 
 //==============================================================================
 /// Configuracion de datos de cabecera.
+/// Configuration of header data.
 //==============================================================================
 void JPartFloatBi4Save::Config(std::string appname,const std::string &dir,unsigned ftcount){
   Reset();
@@ -162,6 +171,7 @@ void JPartFloatBi4Save::Config(std::string appname,const std::string &dir,unsign
 
 //==============================================================================
 /// Añade datos de cabecera de floatings.
+/// Adds data to floating header.
 //==============================================================================
 void JPartFloatBi4Save::AddHeadData(unsigned cf,word mkbound,unsigned begin,unsigned count,float mass,float radius){
   if(cf>=FtCount)RunException("AddHeadData","Number of floating is invalid.");
@@ -174,6 +184,7 @@ void JPartFloatBi4Save::AddHeadData(unsigned cf,word mkbound,unsigned begin,unsi
 
 //==============================================================================
 /// Grabacion inicial de fichero con info de Data.
+/// Initial file recording with info from Data.
 //==============================================================================
 void JPartFloatBi4Save::SaveInitial(){
   if(!InitialSaved){
@@ -192,6 +203,7 @@ void JPartFloatBi4Save::SaveInitial(){
 
 //==============================================================================
 /// Añade datos de particulas de de nuevo part.
+/// Adds data of particles to new part.
 //==============================================================================
 void JPartFloatBi4Save::AddPartData(unsigned cf,const tdouble3 &center,const tfloat3 &fvel,const tfloat3 &fomega){
   if(cf>=FtCount)RunException("AddPartData","Number of floating is invalid.");
@@ -200,19 +212,21 @@ void JPartFloatBi4Save::AddPartData(unsigned cf,const tdouble3 &center,const tfl
   PartFomega[cf]=fomega;
 }
 
+
 //==============================================================================
 /// Añade datos de particulas de de nuevo part.
+/// Adds data of particles to new part.
 //==============================================================================
 JBinaryData* JPartFloatBi4Save::AddPartFloat(unsigned cpart,double timestep,double demdtforce){
   const char met[]="AddPartFloat";
-  //-Configura item Part.
+  //-Configura item Part. Configures item Part.
   Part->Clear();
   Cpart=cpart;
   Part->SetName(GetNamePart(cpart));
   Part->SetvUint("Cpart",cpart);
   Part->SetvDouble("TimeStep",timestep);
   Part->SetvDouble("DemDtForce",demdtforce);
-  //-Crea array con datos de floatings.
+  //-Crea array con datos de floatings. Create array with floatings data.
   Part->CreateArray("center",JBinaryDataDef::DatDouble3,FtCount,PartCenter,false);
   Part->CreateArray("fvel",JBinaryDataDef::DatFloat3,FtCount,PartFvel,false);
   Part->CreateArray("fomega",JBinaryDataDef::DatFloat3,FtCount,PartFomega,false);
@@ -221,13 +235,16 @@ JBinaryData* JPartFloatBi4Save::AddPartFloat(unsigned cpart,double timestep,doub
 }
 
 //==============================================================================
-// Graba particulas excluidas del PART.
+/// Graba particulas excluidas del PART.
+/// Records particles excluded from PART.
 //==============================================================================
 void JPartFloatBi4Save::SavePartFloat(){
   if(!InitialSaved)SaveInitial();
   Part->SaveFileListApp(Dir+GetFileNamePart(),"JPartFloatBi4",true,true);
   Part->RemoveArrays();
 }
+
+
 
 //##############################################################################
 //# JPartFloatBi4Load
@@ -265,6 +282,7 @@ void JPartFloatBi4Load::Reset(){
 
 //==============================================================================
 /// Elimina informacion de PART.
+/// Removes information from PART.
 //==============================================================================
 void JPartFloatBi4Load::ResetPart(){
   Part=NULL;
@@ -273,10 +291,11 @@ void JPartFloatBi4Load::ResetPart(){
 
 //==============================================================================
 /// Redimensiona memoria para datos de floatings.
+/// Resize memory for floating data.
 //==============================================================================
 void JPartFloatBi4Load::ResizeFtData(unsigned ftcount){
   FtCount=ftcount;
-  //-Libera memoria.
+  //-Libera memoria. Frees memory
   delete[] HeadMkbound; HeadMkbound=NULL;
   delete[] HeadBegin;   HeadBegin=NULL;
   delete[] HeadCount;   HeadCount=NULL;
@@ -285,7 +304,7 @@ void JPartFloatBi4Load::ResizeFtData(unsigned ftcount){
   delete[] PartCenter;  PartCenter=NULL;
   delete[] PartFvel;    PartFvel=NULL;
   delete[] PartFomega;  PartFomega=NULL;
-  //-Asigna memoria.
+  //-Asigna memoria. Asign memory
   if(FtCount){
     HeadMkbound=new word    [FtCount];
     HeadBegin  =new unsigned[FtCount];
@@ -308,6 +327,7 @@ void JPartFloatBi4Load::ResizeFtData(unsigned ftcount){
 
 //==============================================================================
 // Devuelve nombre de fichero PART segun los parametros indicados.
+// Returns the filename PART according to the specified parameters.
 //==============================================================================
 std::string JPartFloatBi4Load::GetFileNamePart(){
   return("PartFloat.fbi4");
@@ -315,6 +335,7 @@ std::string JPartFloatBi4Load::GetFileNamePart(){
 
 //==============================================================================
 /// Carga datos de fichero sin comprobar cabecera.
+/// Load file data without checking header.
 //==============================================================================
 JBinaryDataArray* JPartFloatBi4Load::CheckArray(JBinaryData *bd,const std::string &name,JBinaryDataDef::TpData type){
   const char met[]="CheckArray";
@@ -327,6 +348,7 @@ JBinaryDataArray* JPartFloatBi4Load::CheckArray(JBinaryData *bd,const std::strin
 
 //==============================================================================
 /// Carga datos de fichero y comprueba cabecera.
+/// Loads data from file and verifies header.
 //==============================================================================
 void JPartFloatBi4Load::LoadFile(const std::string &dir){
   const char met[]="LoadFile";
@@ -337,7 +359,7 @@ void JPartFloatBi4Load::LoadFile(const std::string &dir){
   if(!head)RunException(met,"The head item is missing.");
   FtCount=head->GetvUint("FtCount",true,0);
   PartCount=Data->GetItemsCount()-1;
-  //-Carga datos constantes de floatings (head).
+  //-Carga datos constantes de floatings (head). Load constant data of floatings (head).
   ResizeFtData(FtCount);
   {//-Loads array mkbound.
     JBinaryDataArray *ar=CheckArray(head,"mkbound",JBinaryDataDef::DatUshort);
@@ -359,10 +381,13 @@ void JPartFloatBi4Load::LoadFile(const std::string &dir){
     JBinaryDataArray *ar=CheckArray(head,"radius",JBinaryDataDef::DatFloat);
     memcpy(HeadRadius,(const float *)ar->GetDataPointer(),sizeof(float)*FtCount);
   }
+  //head->SaveFileXml("probando.xml",true);
+  //Data->SaveFileXml("probando.xml",true);
 }
 
 //==============================================================================
 /// Carga datos de fichero sin comprobar cabecera.
+/// Load file data without checking header.
 //==============================================================================
 void JPartFloatBi4Load::CheckHeadData(unsigned cf,word mkbound,unsigned begin,unsigned count,float mass){
   const char met[]="CheckHeadData";
@@ -375,6 +400,7 @@ void JPartFloatBi4Load::CheckHeadData(unsigned cf,word mkbound,unsigned begin,un
 
 //==============================================================================
 /// Selecciona el PART indicado y devuelve false en caso de error.
+/// Selects the indicated PART and returns false in case of error.
 //==============================================================================
 void JPartFloatBi4Load::LoadPart(unsigned cpart){
   const char met[]="LoadPart";
@@ -409,6 +435,7 @@ void JPartFloatBi4Load::LoadPart(unsigned cpart){
 
 //==============================================================================
 /// Selecciona el PART indicado y devuelve false en caso de error.
+/// Select the indicated PART and returns false on error.
 //==============================================================================
 void JPartFloatBi4Load::CheckPart()const{
   if(!Part)RunException("CheckPart","PART not found.");
@@ -416,6 +443,7 @@ void JPartFloatBi4Load::CheckPart()const{
 
 //==============================================================================
 /// Comprueba que el numero de floating sea valido.
+/// Verifies that the number of floating is valid.
 //==============================================================================
 void JPartFloatBi4Load::CheckFloating(unsigned cf)const{
   if(cf>=FtCount)RunException("CheckFloating","Number of floating is invalid.");

@@ -18,6 +18,7 @@
 /// \file JPartOutBi4Save.cpp \brief Implements the class \ref JPartOutBi4Save
 
 #include "JPartOutBi4Save.h"
+//#include "JBinaryData.h"
 #include "Functions.h"
 #include <fstream>
 #include <cmath>
@@ -76,22 +77,25 @@ void JPartOutBi4Save::ResetData(){
 
 //==============================================================================
 /// Elimina informacion de PARTs.
+/// Deletes information from PARTs.
 //==============================================================================
 void JPartOutBi4Save::ResetPart(){
   Part->Clear();
 }
 
 //==============================================================================
-// Devuelve la memoria reservada.
+/// Devuelve la memoria reservada.
+/// Returns allocated memory
 //==============================================================================
-llong JPartOutBi4Save::GetAllocMemory()const{  
-  llong s=0;
+long long JPartOutBi4Save::GetAllocMemory()const{  
+  long long s=0;
   s+=Data->GetAllocMemory();
   return(s);
 }
 
 //==============================================================================
-// Devuelve nombre de fichero PART segun los parametros indicados.
+/// Devuelve nombre de fichero PART segun los parametros indicados.
+/// Returns the filename PART according to the specified parameters.
 //==============================================================================
 std::string JPartOutBi4Save::GetFileNamePart(unsigned block,unsigned piece,unsigned npiece){
   string fname="PartOut";
@@ -106,6 +110,7 @@ std::string JPartOutBi4Save::GetFileNamePart(unsigned block,unsigned piece,unsig
 
 //==============================================================================
 /// Configuracion de variables basicas.
+/// Configuration of basic variables.
 //==============================================================================
 void JPartOutBi4Save::ConfigBasic(unsigned piece,unsigned npiece,std::string runcode,std::string appname,bool data2d,const std::string &dir){
   Reset();
@@ -123,6 +128,7 @@ void JPartOutBi4Save::ConfigBasic(unsigned piece,unsigned npiece,std::string run
 
 //==============================================================================
 /// Configuracion de numero de particulas.
+/// Configuration of number of particles.
 //==============================================================================
 void JPartOutBi4Save::ConfigParticles(ullong casenp,ullong casenfixed,ullong casenmoving,ullong casenfloat,ullong casenfluid){
   if(casenp!=casenfixed+casenmoving+casenfloat+casenfluid)RunException("ConfigParticles","Error in the number of particles.");
@@ -135,6 +141,7 @@ void JPartOutBi4Save::ConfigParticles(ullong casenp,ullong casenfixed,ullong cas
 
 //==============================================================================
 /// Configuracion de limites para exclusion de particulas.
+/// Setting of limits for exclusion of particles.
 //==============================================================================
 void JPartOutBi4Save::ConfigLimits(const tdouble3 &mapposmin,const tdouble3 &mapposmax,float rhopmin,float rhopmax){
   Data->SetvDouble3("MapPosMin",mapposmin);
@@ -145,6 +152,7 @@ void JPartOutBi4Save::ConfigLimits(const tdouble3 &mapposmin,const tdouble3 &map
 
 //==============================================================================
 /// Grabacion inicial de fichero con info de Data.
+/// Initial recording of file with Data info.
 //==============================================================================
 void JPartOutBi4Save::SaveInitial(){
   Part->SetHide(true);
@@ -155,6 +163,7 @@ void JPartOutBi4Save::SaveInitial(){
 
 //==============================================================================
 /// Devuelve nombre de part segun su numero.
+/// Returns name of part according to their number.
 //==============================================================================
 std::string JPartOutBi4Save::GetNamePart(unsigned cpart){
   char cad[64];
@@ -164,19 +173,20 @@ std::string JPartOutBi4Save::GetNamePart(unsigned cpart){
 
 //==============================================================================
 /// Añade datos de particulas de de nuevo part.
+/// Adds data of particles to new part.
 //==============================================================================
 JBinaryData* JPartOutBi4Save::AddPartOut(unsigned cpart,double timestep,unsigned nout,const unsigned *idp,const ullong *idpd,const tfloat3 *pos,const tdouble3 *posd,const tfloat3 *vel,const float *rhop){
   const char met[]="AddPartOut";
   if(!idp&&!idpd)RunException(met,"The id of particles is invalid.");
   if(!pos&&!posd)RunException(met,"The position of particles is invalid.");
-  //-Configura item Part.
+  //-Configura item Part. Configures item Part.
   Part->Clear();
   Cpart=cpart;
   Part->SetName(GetNamePart(cpart));
   Part->SetvUint("Cpart",cpart);
   Part->SetvDouble("TimeStep",timestep);
   Part->SetvUint("Nout",nout);
-  //-Crea array con particulas excluidas.
+  //-Crea array con particulas excluidas. Creates array with excluded particles.
   if(idpd)Part->CreateArray("Idpd",JBinaryDataDef::DatUllong,nout,idpd,true);
   else    Part->CreateArray("Idp" ,JBinaryDataDef::DatUint,nout,idp,true);
   if(posd)Part->CreateArray("Posd",JBinaryDataDef::DatDouble3,nout,posd,true);
@@ -187,13 +197,14 @@ JBinaryData* JPartOutBi4Save::AddPartOut(unsigned cpart,double timestep,unsigned
 }
 
 //==============================================================================
-// Graba particulas excluidas del PART.
+/// Graba particulas excluidas del PART.
+/// Records particles excluded from the PART.
 //==============================================================================
 void JPartOutBi4Save::SavePartOut(){
   if(!InitialSaved)SaveInitial();
   unsigned nout=Part->GetvUint("Nout");
   if(nout){
-    if(BlockNout>=BlockNoutMin && BlockNout+nout>BlockNoutMax){//-Cambio de bloque, graba en otro fichero.
+    if(BlockNout>=BlockNoutMin && BlockNout+nout>BlockNoutMax){//-Cambio de bloque, graba en otro fichero. Change of block, writes in another file.
       BlockNout=0;
       Block++;
       SaveInitial();

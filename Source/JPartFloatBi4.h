@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Descripcion:
 //# =============
 //# Clase JPartFloatBi4Save para grabar la informacion de los floatings.
@@ -28,7 +29,21 @@
 //# =========
 //# - Implementacion. (04-12-2014)
 //# - Implementacion independiente de StFloatingData en Types.h. (11-05-2015)
-//# - Remplaza long long por llong. (01-10-2015)
+//#
+//# EN:
+//# Description: 
+//# ============= 
+//# Class JPartFloatBi4Save to record the floating information. 
+//# Class JPartFloatBi4Load to retrieve the floating information. 
+//# Some of its features are: 
+//# - Record header data and state of floatings by PART. 
+//# - Verifies header and retrieves data from state of floatings by PART. 
+//# 
+//# Changes: 
+//# ========= 
+//# - Implementation. (04-12 -2014) 
+//# - Independent implementation of StFloatingData in Types.h. (11-05 -2015)
+
 //#############################################################################
 
 /// \file JPartFloatBi4.h \brief Declares the class \ref JPartFloatBi4Save and class \ref JPartFloatBi4Load.
@@ -50,32 +65,32 @@
 class JPartFloatBi4Save : protected JObject
 {
  private:
-  JBinaryData *Data;      ///<Almacena la informacion general de los datos (constante para cada PART).
-  JBinaryData *Part;      ///<Pertenece a Data y almacena informacion de un part (incluyendo datos de floatings).
+  JBinaryData *Data;      ///<Almacena la informacion general de los datos (constante para cada PART). Stores general information of data (constant for each PART).
+  JBinaryData *Part;      ///<Pertenece a Data y almacena informacion de un part (incluyendo datos de floatings). Belongs to data and stores information of a part (including data of floatings).
 
-  //-Variables de gestion.
-  static const unsigned FormatVerDef=141204;    ///<Version de formato by default.
-  unsigned FormatVer;    ///<Version de formato.
+  //-Variables de gestion. Management of variables.
+  static const unsigned FormatVerDef=141204;    ///<Version de formato by default. Version of format by default.
+  unsigned FormatVer;    ///<Version de formato. Format version.
 
-  bool InitialSaved;     ///<Indica si se grabo la informacion de cabecera.
+  bool InitialSaved;     ///<Indica si se grabo la informacion de cabecera. Indicates if header information is recorded.
 
-  std::string AppName;   ///<Nombre de aplicacion.
-  std::string Dir;       ///<Directorio de datos.
-  unsigned FtCount;      ///<Numero de floatings.
+  std::string AppName;   ///<Nombre de aplicacion. Application Name.
+  std::string Dir;       ///<Directorio de datos. Data Directory.
+  unsigned FtCount;      ///<Numero de floatings. Number of floats.
 
-  //-Datos constantes de floatings (head).
+  //-Datos constantes de floatings (head). Constant data of floats (head).
   word *HeadMkbound;
   unsigned *HeadBegin;
   unsigned *HeadCount;
   float *HeadMass;
   float *HeadRadius;
 
-  //-Datos variables de floatings (PARTs).
+  //-Datos variables de floatings (PARTs). Data variables of floats (parts).
   tdouble3 *PartCenter;
   tfloat3 *PartFvel;
   tfloat3 *PartFomega;
   
-  unsigned Cpart;    ///<Numero de PART.
+  unsigned Cpart;    ///<Numero de PART. PART number.
 
   void ResizeFtData(unsigned ftcount);
   void ClearPartData();
@@ -88,21 +103,22 @@ class JPartFloatBi4Save : protected JObject
   void ResetData();
   void ResetPart();
 
-  llong GetAllocMemory()const;
+  long long GetAllocMemory()const;
   static std::string GetFileNamePart();
 
   //Grabacion de datos:
+  //Data recording:
   //====================
-  //-Configuracion de objeto.
+  //-Configuracion de objeto. Object Configuration.
   void Config(std::string appname,const std::string &dir,unsigned ftcount);
   void AddHeadData(unsigned cf,word mkbound,unsigned begin,unsigned count,float mass,float radius);
   void SaveInitial();
 
-  ////-Configuracion de parts.
+  ////-Configuracion de parts.  Parts Configuration.
   void AddPartData(unsigned cf,const tdouble3 &center,const tfloat3 &fvel,const tfloat3 &fomega);
   JBinaryData* AddPartFloat(unsigned cpart,double timestep,double demdtforce);
 
-  ////-Grabacion de fichero.
+  ////-Grabacion de fichero. File recording.
   void SavePartFloat();
   void SavePartFloat(unsigned cpart,double timestep,double demdtforce){   AddPartFloat(cpart,timestep,demdtforce); SavePartFloat();   }
 };
@@ -114,22 +130,22 @@ class JPartFloatBi4Save : protected JObject
 class JPartFloatBi4Load : protected JObject
 {
  private:
-  JBinaryData *Data;      ///<Almacena la informacion general de los datos (constante para cada PART).
-  unsigned FtCount;       ///<Numero de floatings.
-  unsigned PartCount;     ///<Numero de PARTs.
-  JBinaryData *Part;      ///<Pertenece a Data y almacena informacion de un part (incluyendo datos de floatings).
+  JBinaryData *Data;      ///<Almacena la informacion general de los datos (constante para cada PART). Stores general information of data (constant for each PART).
+  unsigned FtCount;       ///<Numero de floatings. Floating number
+  unsigned PartCount;     ///<Numero de PARTs. PARTs number
+  JBinaryData *Part;      ///<Pertenece a Data y almacena informacion de un part (incluyendo datos de floatings). Belongs to data and stores information of a part (including data of floatings).
 
-  //-Datos constantes de floatings (head).
+  //-Datos constantes de floatings (head). Constant data of floatings (head).
   word *HeadMkbound;
   unsigned *HeadBegin;
   unsigned *HeadCount;
   float *HeadMass;
   float *HeadRadius;
 
-  //-Informacion de PART.
+  //-Informacion de PART. PART information.
   double TimeStep;
   double DemDtForce;
-  //-Datos variables de floatings (PARTs).
+  //-Datos variables de floatings (PARTs). Data variables of floatings (parts).
   tdouble3 *PartCenter;
   tfloat3 *PartFvel;
   tfloat3 *PartFomega;

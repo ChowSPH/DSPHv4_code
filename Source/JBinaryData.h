@@ -16,6 +16,7 @@
 */
 
 //#############################################################################
+//# ES:
 //# Descripcion:
 //# =============
 //# Clase base para la definicion de cualquier formato binario de fichero.
@@ -40,6 +41,33 @@
 //# - Ahora el metodo SaveFileListApp() graba los datos del Parent al principio
 //#   del fichero. (12-01-2014)
 //# - Opcion en SaveFileXml() para grabar datos de arrays. (04-12-2014)
+//#
+//# EN:
+//# Description:
+//# =============
+//# Class base for the definition of any binary file format.
+//# Some of its features are:
+//# - Save all data in binary format.
+//# - All data contains name and type to allow use without knowing 
+//#   its structure.
+//# - The data can be organized into different tree-shaped levels.
+//# - Saves basic data and arrays of basic types and strings.
+//# - Reading arrays from file content can be done selectively, 
+//#   only when needed.
+//# - The arrays resize automatically as more data 
+//#   are introduced.
+//# - It allows use of external pointers to reduce the memory consumption.
+//# - Implementation of constructor copy and overloaded assignment.
+//# - It allows recording and reading several consecutive items in a file,
+//#   this allows the extension of files without rewrite the entire content.
+//#
+//# Changes:
+//# =========
+//# - Implementation. (25-08-2013 <-> 23-11-2013)
+//# - Now the SaveFileListApp() method writes data from the Parent at 
+//#   the beginning of the file. (12-01-2014)
+//# - Option in SaveFileXml() to record data in arrays. (04-12-2014)
+//#
 //#############################################################################
 
 /// \file JBinaryData.h \brief Declares the class \ref JBinaryData.
@@ -83,13 +111,13 @@ class JBinaryDataArray : protected JObject
   std::string Name;
   bool Hide;
   const JBinaryDataDef::TpData Type;
-  unsigned Count;         //-Numero de elementos almacenados en pointer.
-  unsigned Size;          //-Numero de elementos para los que hay memoria reservada.
+  unsigned Count;         //-Numero de elementos almacenados en pointer. Number of elements stored in pointer.
+  unsigned Size;          //-Numero de elementos para los que hay memoria reservada. Number of elements for which there is reserved memory.
   void* Pointer;
-  bool ExternalPointer;   //-Indica que el puntero es externo y no debe liberarse.
-  llong FileDataPos;      //-Valor mayor o igual a cero indica la posicion de lectura en el fichero abierto en el ItemHead.
-  unsigned FileDataCount; //-Numero de elemetos del array en fichero.
-  unsigned FileDataSize;  //-Size de datos del array en fichero.
+  bool ExternalPointer;   //-Indica que el puntero es externo y no debe liberarse. Indicates that the pointer is external, and should not be released.
+  llong FileDataPos;      //-Valor mayor o igual a cero indica la posicion de lectura en el fichero abierto en el ItemHead. Value greater than or equal to zero indicates the position of reading in the file opened in the ItemHead.
+  unsigned FileDataCount; //-Numero de elemetos del array en fichero. Number of elements in the array in a file.
+  unsigned FileDataSize;  //-Size de datos del array en fichero. Size of array data in file.
 
   void FreePointer(void* ptr)const;
   void* AllocPointer(unsigned size)const;
@@ -97,7 +125,7 @@ class JBinaryDataArray : protected JObject
 
   void        OutData(unsigned &count,unsigned size,const byte *ptr,byte *dat,unsigned sdat)const;
   std::string OutStr (unsigned &count,unsigned size,const byte *ptr)const;
-  unsigned    OutUint(unsigned &count,unsigned size,const byte *ptr)const{  unsigned v; OutData(count,size,ptr,(byte*)&v,sizeof(unsigned)); return(v);  }  /// Extrae unsigned de ptr.
+  unsigned    OutUint(unsigned &count,unsigned size,const byte *ptr)const{  unsigned v; OutData(count,size,ptr,(byte*)&v,sizeof(unsigned)); return(v);  }  /// Extrae unsigned de ptr. Extract ptr unsigned.
 
  public:
   JBinaryDataArray(JBinaryData* parent,const std::string &name,JBinaryDataDef::TpData type);
@@ -178,16 +206,16 @@ class JBinaryData : protected JObject
       tint3 vint3;
       tuint3 vuint3;
       tfloat3 vfloat3;
-      tdouble3 vdouble3;   //-Elemento de mayor tamaño utilizado para poner a Zero.
+      tdouble3 vdouble3;   //-Elemento de mayor tamaño utilizado para poner a Zero. Large item used to zero elements.
     };
   }StValue;
 
  private:
-  std::string Name;      //-Nombre de item.
-  bool HideAll;          //-Ignora el item en determinados metodos como SaveData().
-  bool HideValues;       //-Ignora los Values en determinados metodos como SaveData().
-  std::string FmtFloat;  //-Formato para valores float, por defecto "%.7E"
-  std::string FmtDouble; //-Formato para valores double, por defecto "%.15E"
+  std::string Name;      //-Nombre de item. Name of item.
+  bool HideAll;          //-Ignora el item en determinados metodos como SaveData(). It ignores the item in certain functions as SaveData().
+  bool HideValues;       //-Ignora los Values en determinados metodos como SaveData(). It ignores the values in certain functions as SaveData( ).
+  std::string FmtFloat;  //-Formato para valores float, por defecto "%.7E". Format for float, by default " %.7E". 
+  std::string FmtDouble; //-Formato para valores double, por defecto "%.15E" Format for double, by default " %.15E".
 
   JBinaryData* Parent;
   std::vector<JBinaryData*> Items;
@@ -196,12 +224,12 @@ class JBinaryData : protected JObject
 
   std::ifstream *FileStructure;
 
-  //-Variables para cache de values.
+  //-Variables para cache de values. Variables to cache values.
   bool ValuesModif;
   byte* ValuesData;
   unsigned ValuesSize;
 
-  //-Gestion de Values.
+  //-Gestion de Values. Management of Values.
   void ValuesCacheReset();
   int CheckGetValue(const std::string &name,bool optional,JBinaryDataDef::TpData type)const;
   int CheckSetValue(const std::string &name,JBinaryDataDef::TpData type);
@@ -210,39 +238,39 @@ class JBinaryData : protected JObject
 
   void InData   (unsigned &count,unsigned size,byte *ptr,const byte *dat,unsigned sdat)const;
   void InStr    (unsigned &count,unsigned size,byte *ptr,const std::string &cad)const;
-  void InBool   (unsigned &count,unsigned size,byte *ptr,bool v)const{            int vv=(v? 1: 0); InInt(count,size,ptr,vv);               }  ///<Introduce bool en ptr.
-  void InChar   (unsigned &count,unsigned size,byte *ptr,char v)const{            InData(count,size,ptr,(byte*)&v,sizeof(char));            }  ///<Introduce char en ptr.
-  void InUchar  (unsigned &count,unsigned size,byte *ptr,unsigned char v)const{   InData(count,size,ptr,(byte*)&v,sizeof(unsigned char));   }  ///<Introduce unsigned char en ptr.
-  void InShort  (unsigned &count,unsigned size,byte *ptr,short v)const{           InData(count,size,ptr,(byte*)&v,sizeof(short));           }  ///<Introduce short en ptr.
-  void InUshort (unsigned &count,unsigned size,byte *ptr,unsigned short v)const{  InData(count,size,ptr,(byte*)&v,sizeof(unsigned short));  }  ///<Introduce unsigned short en ptr.
-  void InInt    (unsigned &count,unsigned size,byte *ptr,int v)const{             InData(count,size,ptr,(byte*)&v,sizeof(int));             }  ///<Introduce int en ptr.
-  void InUint   (unsigned &count,unsigned size,byte *ptr,unsigned v)const{        InData(count,size,ptr,(byte*)&v,sizeof(unsigned));        }  ///<Introduce unsigned en ptr.
-  void InLlong  (unsigned &count,unsigned size,byte *ptr,llong v)const{           InData(count,size,ptr,(byte*)&v,sizeof(llong));           }  ///<Introduce long long en ptr.
-  void InUllong (unsigned &count,unsigned size,byte *ptr,ullong v)const{          InData(count,size,ptr,(byte*)&v,sizeof(ullong));          }  ///<Introduce unsigned long long en ptr.
-  void InFloat  (unsigned &count,unsigned size,byte *ptr,float v)const{           InData(count,size,ptr,(byte*)&v,sizeof(float));           }  ///<Introduce float en ptr.
-  void InDouble (unsigned &count,unsigned size,byte *ptr,double v)const{          InData(count,size,ptr,(byte*)&v,sizeof(double));          }  ///<Introduce double en ptr.
-  void InInt3   (unsigned &count,unsigned size,byte *ptr,tint3 v)const{           InData(count,size,ptr,(byte*)&v,sizeof(tint3));           }  ///<Introduce tint3 en ptr.
-  void InUint3  (unsigned &count,unsigned size,byte *ptr,tuint3 v)const{          InData(count,size,ptr,(byte*)&v,sizeof(tuint3));          }  ///<Introduce tuint3 en ptr.
-  void InFloat3 (unsigned &count,unsigned size,byte *ptr,tfloat3 v)const{         InData(count,size,ptr,(byte*)&v,sizeof(tfloat3));         }  ///<Introduce tfloat3 en ptr.
-  void InDouble3(unsigned &count,unsigned size,byte *ptr,tdouble3 v)const{        InData(count,size,ptr,(byte*)&v,sizeof(tdouble3));        }  ///<Introduce tdouble3 en ptr.
+  void InBool   (unsigned &count,unsigned size,byte *ptr,bool v)const{            int vv=(v? 1: 0); InInt(count,size,ptr,vv);               }  ///<Introduce bool en ptr. Introduces bool in ptr.
+  void InChar   (unsigned &count,unsigned size,byte *ptr,char v)const{            InData(count,size,ptr,(byte*)&v,sizeof(char));            }  ///<Introduce char en ptr. Introduces char in ptr.
+  void InUchar  (unsigned &count,unsigned size,byte *ptr,unsigned char v)const{   InData(count,size,ptr,(byte*)&v,sizeof(unsigned char));   }  ///<Introduce unsigned char en ptr. Introduces unsigned char in ptr.
+  void InShort  (unsigned &count,unsigned size,byte *ptr,short v)const{           InData(count,size,ptr,(byte*)&v,sizeof(short));           }  ///<Introduce short en ptr. Introduces short in ptr.
+  void InUshort (unsigned &count,unsigned size,byte *ptr,unsigned short v)const{  InData(count,size,ptr,(byte*)&v,sizeof(unsigned short));  }  ///<Introduce unsigned short en ptr. Introduces unsigned short in ptr.
+  void InInt    (unsigned &count,unsigned size,byte *ptr,int v)const{             InData(count,size,ptr,(byte*)&v,sizeof(int));             }  ///<Introduce int en ptr. Introduces int in ptr.
+  void InUint   (unsigned &count,unsigned size,byte *ptr,unsigned v)const{        InData(count,size,ptr,(byte*)&v,sizeof(unsigned));        }  ///<Introduce unsigned en ptr. Introduces unsigned in ptr
+  void InLlong  (unsigned &count,unsigned size,byte *ptr,llong v)const{           InData(count,size,ptr,(byte*)&v,sizeof(llong));           }  ///<Introduce long long en ptr. Introduces long long in ptr
+  void InUllong (unsigned &count,unsigned size,byte *ptr,ullong v)const{          InData(count,size,ptr,(byte*)&v,sizeof(ullong));          }  ///<Introduce unsigned long long en ptr. Introduces unsigned long in ptr
+  void InFloat  (unsigned &count,unsigned size,byte *ptr,float v)const{           InData(count,size,ptr,(byte*)&v,sizeof(float));           }  ///<Introduce float en ptr. Introduces float in ptr
+  void InDouble (unsigned &count,unsigned size,byte *ptr,double v)const{          InData(count,size,ptr,(byte*)&v,sizeof(double));          }  ///<Introduce double en ptr. Introduces double in ptr
+  void InInt3   (unsigned &count,unsigned size,byte *ptr,tint3 v)const{           InData(count,size,ptr,(byte*)&v,sizeof(tint3));           }  ///<Introduce tint3 en ptr. Introduces tint3 in ptr
+  void InUint3  (unsigned &count,unsigned size,byte *ptr,tuint3 v)const{          InData(count,size,ptr,(byte*)&v,sizeof(tuint3));          }  ///<Introduce tuint3 en ptr. Introduces tuint3 in ptr
+  void InFloat3 (unsigned &count,unsigned size,byte *ptr,tfloat3 v)const{         InData(count,size,ptr,(byte*)&v,sizeof(tfloat3));         }  ///<Introduce tfloat3 en ptr. Introduces tfloat3 in ptr
+  void InDouble3(unsigned &count,unsigned size,byte *ptr,tdouble3 v)const{        InData(count,size,ptr,(byte*)&v,sizeof(tdouble3));        }  ///<Introduce tdouble3 en ptr. Introduces tdouble3 in ptr
 
   void           OutData   (unsigned &count,unsigned size,const byte *ptr,byte *dat,unsigned sdat)const;
   std::string    OutStr    (unsigned &count,unsigned size,const byte *ptr)const;
   bool           OutBool   (unsigned &count,unsigned size,const byte *ptr)const{  return(OutInt(count,size,ptr)!=0);  }  /// Extrae bool de ptr.
-  char           OutChar   (unsigned &count,unsigned size,const byte *ptr)const{  char v;           OutData(count,size,ptr,(byte*)&v,sizeof(char));           return(v);  }  /// Extrae char de ptr.
-  unsigned char  OutUchar  (unsigned &count,unsigned size,const byte *ptr)const{  unsigned char v;  OutData(count,size,ptr,(byte*)&v,sizeof(unsigned char));  return(v);  }  /// Extrae unsigned char de ptr.
-  short          OutShort  (unsigned &count,unsigned size,const byte *ptr)const{  short v;          OutData(count,size,ptr,(byte*)&v,sizeof(short));          return(v);  }  /// Extrae short de ptr.
-  unsigned short OutUshort (unsigned &count,unsigned size,const byte *ptr)const{  unsigned short v; OutData(count,size,ptr,(byte*)&v,sizeof(unsigned short)); return(v);  }  /// Extrae unsigned short de ptr.
-  int            OutInt    (unsigned &count,unsigned size,const byte *ptr)const{  int v;            OutData(count,size,ptr,(byte*)&v,sizeof(int));            return(v);  }  /// Extrae int de ptr.
-  unsigned       OutUint   (unsigned &count,unsigned size,const byte *ptr)const{  unsigned v;       OutData(count,size,ptr,(byte*)&v,sizeof(unsigned));       return(v);  }  /// Extrae unsigned de ptr.
-  llong          OutLlong  (unsigned &count,unsigned size,const byte *ptr)const{  llong v;          OutData(count,size,ptr,(byte*)&v,sizeof(llong));          return(v);  }  /// Extrae long long de ptr.
-  ullong         OutUllong (unsigned &count,unsigned size,const byte *ptr)const{  ullong v;         OutData(count,size,ptr,(byte*)&v,sizeof(ullong));         return(v);  }  /// Extrae unsigned long long de ptr.
-  float          OutFloat  (unsigned &count,unsigned size,const byte *ptr)const{  float v;          OutData(count,size,ptr,(byte*)&v,sizeof(float));          return(v);  }  /// Extrae float de ptr.
-  double         OutDouble (unsigned &count,unsigned size,const byte *ptr)const{  double v;         OutData(count,size,ptr,(byte*)&v,sizeof(double));         return(v);  }  /// Extrae double de ptr.
-  tint3          OutInt3   (unsigned &count,unsigned size,const byte *ptr)const{  tint3 v;          OutData(count,size,ptr,(byte*)&v,sizeof(tint3));          return(v);  }  /// Extrae tint3 de ptr.
-  tuint3         OutUint3  (unsigned &count,unsigned size,const byte *ptr)const{  tuint3 v;         OutData(count,size,ptr,(byte*)&v,sizeof(tuint3));         return(v);  }  /// Extrae tuint3 de ptr.
-  tfloat3        OutFloat3 (unsigned &count,unsigned size,const byte *ptr)const{  tfloat3 v;        OutData(count,size,ptr,(byte*)&v,sizeof(tfloat3));        return(v);  }  /// Extrae tfloat3 de ptr.
-  tdouble3       OutDouble3(unsigned &count,unsigned size,const byte *ptr)const{  tdouble3 v;       OutData(count,size,ptr,(byte*)&v,sizeof(tdouble3));       return(v);  }  /// Extrae tdouble3 de ptr.
+  char           OutChar   (unsigned &count,unsigned size,const byte *ptr)const{  char v;           OutData(count,size,ptr,(byte*)&v,sizeof(char));           return(v);  }  /// Extrae char de ptr. Extracts char of ptr.
+  unsigned char  OutUchar  (unsigned &count,unsigned size,const byte *ptr)const{  unsigned char v;  OutData(count,size,ptr,(byte*)&v,sizeof(unsigned char));  return(v);  }  /// Extrae unsigned char de ptr. Extracts unsigned char of ptr.
+  short          OutShort  (unsigned &count,unsigned size,const byte *ptr)const{  short v;          OutData(count,size,ptr,(byte*)&v,sizeof(short));          return(v);  }  /// Extrae short de ptr. Extracts short of ptr.
+  unsigned short OutUshort (unsigned &count,unsigned size,const byte *ptr)const{  unsigned short v; OutData(count,size,ptr,(byte*)&v,sizeof(unsigned short)); return(v);  }  /// Extrae unsigned short de ptr. Extracts unsigned short of ptr.
+  int            OutInt    (unsigned &count,unsigned size,const byte *ptr)const{  int v;            OutData(count,size,ptr,(byte*)&v,sizeof(int));            return(v);  }  /// Extrae int de ptr. Extracts int of ptr.
+  unsigned       OutUint   (unsigned &count,unsigned size,const byte *ptr)const{  unsigned v;       OutData(count,size,ptr,(byte*)&v,sizeof(unsigned));       return(v);  }  /// Extrae unsigned de ptr. Extracts unsigned of ptr.
+  llong          OutLlong  (unsigned &count,unsigned size,const byte *ptr)const{  llong v;          OutData(count,size,ptr,(byte*)&v,sizeof(llong));          return(v);  }  /// Extrae long long de ptr. Extracts long long of ptr.
+  ullong         OutUllong (unsigned &count,unsigned size,const byte *ptr)const{  ullong v;         OutData(count,size,ptr,(byte*)&v,sizeof(ullong));         return(v);  }  /// Extrae unsigned long long de ptr. Extracts unsigned long long of ptr.
+  float          OutFloat  (unsigned &count,unsigned size,const byte *ptr)const{  float v;          OutData(count,size,ptr,(byte*)&v,sizeof(float));          return(v);  }  /// Extrae float de ptr. Extracts float of ptr.
+  double         OutDouble (unsigned &count,unsigned size,const byte *ptr)const{  double v;         OutData(count,size,ptr,(byte*)&v,sizeof(double));         return(v);  }  /// Extrae double de ptr. Extracts double of ptr.
+  tint3          OutInt3   (unsigned &count,unsigned size,const byte *ptr)const{  tint3 v;          OutData(count,size,ptr,(byte*)&v,sizeof(tint3));          return(v);  }  /// Extrae tint3 de ptr. Extracts tint3 of ptr.
+  tuint3         OutUint3  (unsigned &count,unsigned size,const byte *ptr)const{  tuint3 v;         OutData(count,size,ptr,(byte*)&v,sizeof(tuint3));         return(v);  }  /// Extrae tuint3 de ptr. Extracts tuint3 of ptr.
+  tfloat3        OutFloat3 (unsigned &count,unsigned size,const byte *ptr)const{  tfloat3 v;        OutData(count,size,ptr,(byte*)&v,sizeof(tfloat3));        return(v);  }  /// Extrae tfloat3 de ptr. Extracts tfloat3 of ptr.
+  tdouble3       OutDouble3(unsigned &count,unsigned size,const byte *ptr)const{  tdouble3 v;       OutData(count,size,ptr,(byte*)&v,sizeof(tdouble3));       return(v);  }  /// Extrae tdouble3 de ptr. Extracts tdouble3 of ptr.
 
   void InValue(unsigned &count,unsigned size,byte *ptr,const StValue &v)const;
   void OutValue(unsigned &count,unsigned size,const byte *ptr);
@@ -325,7 +353,7 @@ class JBinaryData : protected JObject
 
   void SaveFileXml(std::string file,bool svarrays=false,const std::string &head=" fmt=\"JBinaryData\"")const;
 
-  //-Gestion de items.
+  //-Gestion de items. Management of items.
   JBinaryData* GetParent(){ return(Parent); };
   JBinaryData* GetItemRoot();
   unsigned GetItemsCount()const{ return(unsigned(Items.size())); }
@@ -337,7 +365,7 @@ class JBinaryData : protected JObject
   void RemoveItem(const std::string &name);
   void RemoveItems();
   
-  //-Gestion de Arrays.
+  //-Gestion de Arrays. Management of Arrays.
   unsigned GetArraysCount()const{ return(unsigned(Arrays.size())); }
   unsigned GetVisibleArraysCount()const;
   int GetArrayIndex(const std::string &name)const;
@@ -348,7 +376,7 @@ class JBinaryData : protected JObject
   void RemoveArray(const std::string &name);
   void RemoveArrays();
 
-  //-Gestion de values.
+  //-Gestion de values. Management of values.
   unsigned GetValuesCount()const{ return(unsigned(Values.size())); }
   int GetValueIndex(const std::string &name)const;
   std::string NameOfValue(unsigned index)const;
