@@ -33,44 +33,44 @@ private:
   JCellDivCpu* CellDiv;
 
 protected:
-  int OmpThreads;        //-Numero maximo de hilos OpenMP en ejecucion por host en CPU (minimo 1).
-  std::string RunMode;   //-Almacena modo de ejecucion (simetria,openmp,balanceo,...).
+  int OmpThreads;        //-Max number of OpenMP threads in execution on CPU host (minimum 1) / Numero maximo de hilos OpenMP en ejecucion por host en CPU (minimo 1).
+  std::string RunMode;   //-Overall mode of execution (symmetry, openmp, load balancing) /  Almacena modo de ejecucion (simetria,openmp,balanceo,...).
 
-  //-Numero de particulas del dominio.
-  unsigned Np;     //-Numero total de particulas (incluidas las duplicadas periodicas).
-  unsigned Npb;    //-Numero de particulas contorno (incluidas las contorno periodicas).
-  unsigned NpbOk;  //-Numero de particulas contorno cerca del fluido (incluidas las contorno periodicas).
+  //-Number of particles in domain / Numero de particulas del dominio.
+  unsigned Np;     //-Total number of particles (including periodic duplicates) / Numero total de particulas (incluidas las duplicadas periodicas).
+  unsigned Npb;    //-Total number of boundary particles (including periodic boundaries) / Numero de particulas contorno (incluidas las contorno periodicas).
+  unsigned NpbOk;  //-Total number of boundary particles near fluid (including periodic duplicates) / Numero de particulas contorno cerca del fluido (incluidas las contorno periodicas).
 
-  unsigned NpfPer;   //-Numero de particulas fluidas-floating periodicas.
-  unsigned NpbPer;   //-Numero de particulas contorno periodicas.
-  unsigned NpfPerM1; //-Numero de particulas fluidas-floating periodicas (valores anteriores).
-  unsigned NpbPerM1; //-Numero de particulas contorno periodicas (valores anteriores).
+  unsigned NpfPer;   //-Number of periodic floating-fluid particles / Numero de particulas fluidas-floating periodicas.
+  unsigned NpbPer;   //-Number of periodic boundary particles / Numero de particulas contorno periodicas.
+  unsigned NpfPerM1; //-Number of periodic floating-fluid particles (previous values) / Numero de particulas fluidas-floating periodicas (valores anteriores).
+  unsigned NpbPerM1; //-Number of periodic boundary particles (previous values) / Numero de particulas contorno periodicas (valores anteriores).
 
   bool WithFloating;
-  bool BoundChanged; //-Indica si el contorno seleccionado a cambiado desde el ultimo divide.
+  bool BoundChanged; //-Indicates if selected boundary has changed since last call of divide / Indica si el contorno seleccionado a cambiado desde el ultimo divide.
 
-  unsigned CpuParticlesSize;  //-Numero de particulas para las cuales se reservo memoria en cpu.
-  llong MemCpuParticles;      //-Mermoria reservada para vectores de datos de particulas.
-  llong MemCpuFixed;          //-Mermoria reservada en AllocMemoryFixed.
+  unsigned CpuParticlesSize;  //-Number of particles with reserved memory on the CPU / Numero de particulas para las cuales se reservo memoria en cpu.
+  llong MemCpuParticles;      //-Memory reserved for particles' vectors / Mermoria reservada para vectores de datos de particulas.
+  llong MemCpuFixed;          //-Memory reserved in AllocMemoryFixed / Mermoria reservada en AllocMemoryFixed.
 
-  //-Posicion de particula segun id.
-  unsigned *RidpMove;//-Solo para boundary moving particles [CaseNmoving] y cuando CaseNmoving!=0 
+  //-Particle Position according to id / Posicion de particula segun id.
+  unsigned *RidpMove;//-Only for moving boundary particles [CaseNmoving] and when CaseNmoving!=0 / Solo para boundary moving particles [CaseNmoving] y cuando CaseNmoving!=0 
 
-  //-Lista de arrays en Cpu para particulas.
+  //-List of particle arrays on CPU / Lista de arrays en Cpu para particulas.
   JArraysCpu* ArraysCpu;
-  //-Variables con datos de las particulas para ejecucion (size=ParticlesSize).
-  unsigned *Idpc;    //-Identificador de particula.
-  word *Codec;       //-Indica el grupo de las particulas y otras marcas especiales.
-  unsigned *Dcellc;  //-Celda dentro de DomCells codificada con DomCellCode.
+  //-Execution Variables for particles (size=ParticlesSize). / Variables con datos de las particulas para ejecucion (size=ParticlesSize).
+  unsigned *Idpc;    //-Identifier of particle / Identificador de particula.
+  word *Codec;       //-Indicator of group of particles & other special markers / Indica el grupo de las particulas y otras marcas especiales.
+  unsigned *Dcellc;  //-Cells inside DomCells coded with DomCellCode / Celda dentro de DomCells codificada con DomCellCode.
   tdouble3 *Posc;
   tfloat4 *Velrhopc;
     
-  //-Vars. para compute step: VERLET
-  tfloat4 *VelrhopM1c;  //-Verlet: para guardar valores anteriores
+  //-Variables for compute step: VERLET / Vars. para compute step: VERLET
+  tfloat4 *VelrhopM1c;  //-Verlet: in order to keep previous values / Verlet: para guardar valores anteriores
   int VerletStep;
 
-  //-Vars. para compute step: SYMPLECTIC
-  tdouble3 *PosPrec;  //-Sympletic: para guardar valores en predictor
+  //-Variables for compute step: SYMPLECTIC / Vars. para compute step: SYMPLECTIC
+  tdouble3 *PosPrec;  //-Sympletic: in order to keep previous values / Sympletic: para guardar valores en predictor
   tfloat4 *VelrhopPrec;
   double DtPre;   
 
@@ -79,21 +79,21 @@ protected:
   StFtoForces *FtoForces; //-Almacena fuerzas de floatings [FtCount].
 
 
-  //-Vars. para computo de fuerzas.
-  tfloat3 *PsPosc;    //-Posicion y prrhop para interaccion Pos-Simple.
+  //-Variables for computation of forces / Vars. para computo de fuerzas.
+  tfloat3 *PsPosc;    //-Position and prrhop for Pos-Simple interaction / Posicion y prrhop para interaccion Pos-Simple.
 
-  tfloat3 *Acec;      //-Acumula fuerzas de interaccion
+  tfloat3 *Acec;      //-Sum of interaction forces / Acumula fuerzas de interaccion
   float *Arc; 
-  float *Deltac;      //-Acumula ajuste de Delta-SPH con DELTA_DynamicExt
+  float *Deltac;      //-Adjusted sum with Delta-SPH with DELTA_DynamicExt / Acumula ajuste de Delta-SPH con DELTA_DynamicExt
 
   tfloat3 *ShiftPosc;    //-Particle displacement using Shifting.
   float *ShiftDetectc;    //-Used to detect free surface with Shifting.
 
   double VelMax;      ///<Maximum value of Vel[] sqrt(vel.x^2 + vel.y^2 + vel.z^2) computed in PreInteraction_Forces().
   double AceMax;      ///<Maximum value of Ace[] sqrt(ace.x^2 + ace.y^2 + ace.z^2) computed in Interaction_Forces().
-  float ViscDtMax;    ///<Valor maximo de ViscDt calculado en Interaction_Forces().
+  float ViscDtMax;    ///<Max value of ViscDt calculated in Interaction_Forces() / Valor maximo de ViscDt calculado en Interaction_Forces().
 
-  //-Vars. derivadas para computo de fuerzas [INTER_Forces,INTER_ForcesCorr]
+  //-Variables for computing forces [INTER_Forces,INTER_ForcesCorr] / Vars. derivadas para computo de fuerzas [INTER_Forces,INTER_ForcesCorr]
   float *Pressc;     //- Press[]=B*((Rhop^2/Rhop0)^gamma-1)
 
   //-Variables for Laminar+SPS viscosity.  

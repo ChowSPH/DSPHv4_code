@@ -40,8 +40,8 @@ protected:
   const bool Floating;
   const byte PeriActive;
   const TpCellOrder CellOrder;
-  const TpCellMode CellMode;    //-Modo de division en celdas.
-  const unsigned Hdiv;          //-Valor por el que se divide a DosH
+  const TpCellMode CellMode;    //-Mode of cell division / Modo de division en celdas.
+  const unsigned Hdiv;          //-Value for those divided in DosH / Valor por el que se divide a DosH
   const float Scell,OvScell;
   const tdouble3 Map_PosMin,Map_PosMax,Map_PosDif;
   const tuint3 Map_Cells;
@@ -49,70 +49,70 @@ protected:
   JLog2 *Log;
   std::string DirOut;
 
-  bool AllocFullNct; //-Reserva memoria para el numero maximo de celdas del dominio (DomCells).
-  float OverMemoryNp;//-Porcentaje que se añade a la reserva de memoria de Np. (def=0).
-  word OverMemoryCells;//-Numero celdas que se incrementa en cada dimension reservar memoria. (def=0).
+  bool AllocFullNct; //-Resserve memory for max number of cells of domain (DomCells) / Reserva memoria para el numero maximo de celdas del dominio (DomCells).
+  float OverMemoryNp;//-Percentage that is added to the memory reserved for Np. (def=0) / Porcentaje que se añade a la reserva de memoria de Np. (def=0).
+  word OverMemoryCells;//-Cell number that is incremented in each dimension to reserve memory / Numero celdas que se incrementa en cada dimension reservar memoria. (def=0).
 
-  //-Vars del dominio definido.
-  unsigned DomCellCode;   //-Clave para la codificacion de la celda de posicion.
+  //-Variables of defined domain / Vars del dominio definido.
+  unsigned DomCellCode;   //-Key for codifying cell of position / Clave para la codificacion de la celda de posicion.
   tuint3 DomCelIni,DomCelFin;
   tdouble3 DomPosMin,DomPosMax;
   tuint3 DomCells;
 
-  //-Memoria reservada en funcion de particulas.
+  //-Memory reserved in particle function / Memoria reservada en funcion de particulas.
   unsigned SizeNp;
   unsigned *CellPart;
   unsigned *SortPart;
 
-  //-Memoria reservada en funcion de celdas.
+  //-Memory reserved in cell function / Memoria reservada en funcion de celdas.
   unsigned SizeNct;
   unsigned *PartsInCell;
-  unsigned *BeginCell;  //-Contiene el principio de cada celda. 
+  unsigned *BeginCell;  //-Get first value of each cell / Contiene el principio de cada celda. 
   // BeginCell=[BoundOk(nct),BoundIgnore(1),Fluid(nct),BoundOut(1),FluidOut(1),BoundOutIgnore(1),FluidOutIgnore(1),END)]
 
-  //-Variables para reordenar particulas
-  byte *VSort;//-Memoria para reordenar particulas. [sizeof(tdouble3)*Np]
-  word *VSortWord;//-Para ordenar vectores word (apunta a VSort).
-  int *VSortInt;//-Para ordenar vectores int (apunta a VSort).
-  float *VSortFloat;//-Para ordenar vectores float (apunta a VSort).
-  tfloat3 *VSortFloat3;//-Para ordenar vectores tfloat3 (apunta a VSort).
-  tfloat4 *VSortFloat4;//-Para ordenar vectores tfloat4 (apunta a VSort).
-  tdouble3 *VSortDouble3;//-Para ordenar vectores tdouble3 (apunta a VSort).
-  tsymatrix3f *VSortSymmatrix3f;//-Para ordenar vectores tsymatrix3f (apunta a VSort).
+  //-Variables to reorder particles / Variables para reordenar particulas
+  byte *VSort;//-Memory to reorder particles / Memoria para reordenar particulas. [sizeof(tdouble3)*Np]
+  word *VSortWord;//-To order word vectors (write to VSort) / Para ordenar vectores word (apunta a VSort).
+  int *VSortInt;//-To order vectors int (write to VSort) / Para ordenar vectores int (apunta a VSort).
+  float *VSortFloat;//-To order vectors float (write to VSort) / Para ordenar vectores float (apunta a VSort).
+  tfloat3 *VSortFloat3;//-To order vectors tfloat3 (write to VSort) / Para ordenar vectores tfloat3 (apunta a VSort).
+  tfloat4 *VSortFloat4;//- To order vectors tfloat4 (write to VSort) / Para ordenar vectores tfloat4 (apunta a VSort).
+  tdouble3 *VSortDouble3;//- To order vectors tdouble3 (write to VSort) / Para ordenar vectores tdouble3 (apunta a VSort).
+  tsymatrix3f *VSortSymmatrix3f;//-To order vectors tsymatrix3f (write to VSort) / Para ordenar vectores tsymatrix3f (apunta a VSort).
 
-  llong MemAllocNp;  //-Mermoria reservada para particulas.
-  llong MemAllocNct; //-Mermoria reservada para celdas.
+  llong MemAllocNp;  //-Memory reserved for particles / Mermoria reservada para particulas.
+  llong MemAllocNct; //-Memory reserved for cells / Mermoria reservada para celdas.
 
   unsigned Ndiv,NdivFull;
 
-  //-Numero de particulas por tipo al iniciar el divide.
+  //-Number of particles by type to initialise in divide / Numero de particulas por tipo al iniciar el divide.
   unsigned Npb1;
   unsigned Npf1;
   unsigned Npb2;
   unsigned Npf2;
 
-  unsigned Nptot;  //-Numero total de particulas incluidas las que se excluyeron al terminar el divide.
+  unsigned Nptot;  //-Total number of particles included that are excluded at the end of divide / Numero total de particulas incluidas las que se excluyeron al terminar el divide.
   unsigned NpbOut,NpfOut,NpbOutIgnore,NpfOutIgnore;
   
   unsigned NpFinal,NpbFinal;
   unsigned NpfOutRhop,NpfOutMove,NpbIgnore;
 
-  tuint3 CellDomainMin,CellDomainMax; //-Limites del dominio en celdas dentro de DomCells.
+  tuint3 CellDomainMin,CellDomainMax; //-Domain limits in cells inside of DomCells / Limites del dominio en celdas dentro de DomCells.
   unsigned Ncx,Ncy,Ncz,Nsheet,Nct;
-  ullong Nctt; //-Numero total de celdas incluyendo las especiales Nctt=SizeBeginCell()
+  ullong Nctt; //-Total number of special cells included  Nctt=SizeBeginCell() / Numero total de celdas incluyendo las especiales Nctt=SizeBeginCell()
   unsigned BoxIgnore,BoxFluid,BoxBoundOut,BoxFluidOut,BoxBoundOutIgnore,BoxFluidOutIgnore;
 
-  bool BoundLimitOk;  //-Indica que los limites del contorno ya estan calculados en BoundLimitCellMin y BoundLimitCellMax.
+  bool BoundLimitOk;  //-Indicate that the boundary limits are already calculated in BoundLimitCellMin & BoundLimitCellMax / Indica que los limites del contorno ya estan calculados en BoundLimitCellMin y BoundLimitCellMax.
   tuint3 BoundLimitCellMin,BoundLimitCellMax;
 
-  bool BoundDivideOk;   //-Indica que los limites del contorno utilizados en el divide previo fueron BoundDivideCellMin y BoundDivideCellMax.
+  bool BoundDivideOk;   //-Indicate that the limits of boundaries used in  previous divide will go in BoundDivideCellMin & BoundDivideCellMax / Indica que los limites del contorno utilizados en el divide previo fueron BoundDivideCellMin y BoundDivideCellMax.
   tuint3 BoundDivideCellMin,BoundDivideCellMax;
 
-  bool DivideFull;  //-Indica que el divide se aplico a fluido y contorno (no solo al fluido).
+  bool DivideFull;  //-Indicate that divie is applied to fluid & boundary (not only to fluid) / Indica que el divide se aplico a fluido y contorno (no solo al fluido).
 
   void Reset();
 
-  //-Gestion de reserva dinamica de memoria.
+  //-Control of dynamic memory allocation / Gestion de reserva dinamica de memoria.
   void FreeMemoryNct();
   void FreeMemoryNp();
   void FreeMemoryAll();

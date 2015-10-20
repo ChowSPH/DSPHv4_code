@@ -24,7 +24,7 @@
 using namespace std;
 
 //==============================================================================
-// Constructor.
+/// Constructor.
 //==============================================================================
 JCellDivCpu::JCellDivCpu(bool stable,bool floating,byte periactive,TpCellOrder cellorder,TpCellMode cellmode,float scell,tdouble3 mapposmin,tdouble3 mapposmax,tuint3 mapcells,unsigned casenbound,unsigned casenfixed,unsigned casenpb,JLog2 *log,std::string dirout,bool allocfullnct,float overmemorynp,word overmemorycells):Stable(stable),Floating(floating),PeriActive(periactive),CellOrder(cellorder),CellMode(cellmode),Hdiv(cellmode==CELLMODE_2H? 1: (cellmode==CELLMODE_H? 2: 0)),Scell(scell),OvScell(1.f/scell),Map_PosMin(mapposmin),Map_PosMax(mapposmax),Map_PosDif(mapposmax-mapposmin),Map_Cells(mapcells),CaseNbound(casenbound),CaseNfixed(casenfixed),CaseNpb(casenpb),Log(log),DirOut(dirout),AllocFullNct(allocfullnct),OverMemoryNp(overmemorynp),OverMemoryCells(overmemorycells)
 {
@@ -36,14 +36,14 @@ JCellDivCpu::JCellDivCpu(bool stable,bool floating,byte periactive,TpCellOrder c
 }
 
 //==============================================================================
-// Destructor.
+/// Destructor.
 //==============================================================================
 JCellDivCpu::~JCellDivCpu(){
   Reset();
 }
 
 //==============================================================================
-// Initialization of variables.
+/// Initialization of variables.
 //==============================================================================
 void JCellDivCpu::Reset(){
   SizeNp=SizeNct=0;
@@ -65,7 +65,8 @@ void JCellDivCpu::Reset(){
 }
 
 //==============================================================================
-// Libera memoria reservada para celdas.
+/// Libera memoria reservada para celdas.
+/// Free memory reserved for cells.
 //==============================================================================
 void JCellDivCpu::FreeMemoryNct(){
   delete[] PartsInCell;   PartsInCell=NULL;
@@ -75,7 +76,8 @@ void JCellDivCpu::FreeMemoryNct(){
 }
 
 //==============================================================================
-// Libera memoria reservada para celdas.
+/// Libera memoria reservada para celdas.
+/// Free memory reserved for cells.
 //==============================================================================
 void JCellDivCpu::FreeMemoryNp(){
   delete[] CellPart;    CellPart=NULL;
@@ -86,7 +88,8 @@ void JCellDivCpu::FreeMemoryNp(){
 }
 
 //==============================================================================
-// Libera memoria reservada para particulas y celdas.
+/// Libera memoria reservada para particulas y celdas.
+/// Free memory reserved for particles and cells.
 //==============================================================================
 void JCellDivCpu::FreeMemoryAll(){
   FreeMemoryNct();
@@ -94,7 +97,8 @@ void JCellDivCpu::FreeMemoryAll(){
 }
 
 //==============================================================================
-// Ajusta buffers para reordenar datos de particulas.
+/// Ajusta buffers para reordenar datos de particulas.
+/// Adjust buffers to reorder particle values.
 //==============================================================================
 void JCellDivCpu::SetMemoryVSort(byte *vsort){
   VSort=vsort;
@@ -105,15 +109,16 @@ void JCellDivCpu::SetMemoryVSort(byte *vsort){
 }
 
 //==============================================================================
-// Asigna memoria segun numero de particulas. 
+/// Asigna memoria segun numero de particulas. 
+/// Assign memory according to number of particles. 
 //==============================================================================
 void JCellDivCpu::AllocMemoryNp(ullong np){
   const char met[]="AllocMemoryNp";
   FreeMemoryNp();
   SizeNp=unsigned(np);
-  //-Comprueba numero de particulas.
+  //-Check number of particles / Comprueba numero de particulas.
   if(np!=SizeNp)RunException(met,string("Failed memory allocation for ")+fun::UlongStr(np)+" particles.");
-  //-Reserva memoria para particulas.
+  //-Reserve memory for particles / Reserva memoria para particulas.
   MemAllocNp=0;
   try{
     CellPart=new unsigned[SizeNp];                      MemAllocNp+=sizeof(unsigned)*SizeNp;
@@ -123,20 +128,21 @@ void JCellDivCpu::AllocMemoryNp(ullong np){
   catch(const std::bad_alloc){
     RunException(met,fun::PrintStr("Failed CPU memory allocation of %.1f MB for %u particles.",double(MemAllocNp)/(1024*1024),SizeNp));
   }
-  //-Muestra la memoria solicitada.
+  //-Show requested memory / Muestra la memoria solicitada.
   Log->Printf("**CellDiv: Requested cpu memory for %u particles: %.1f MB.",SizeNp,double(MemAllocNp)/(1024*1024));
 }
 
 //==============================================================================
-// Asigna memoria segun numero de celdas. 
+/// Asigna memoria segun numero de celdas. 
+/// Assign memory according to number of cells. 
 //==============================================================================
 void JCellDivCpu::AllocMemoryNct(ullong nct){
   const char met[]="AllocMemoryNct";
   FreeMemoryNct();
   SizeNct=unsigned(nct);
-  //-Comprueba numero de celdas.
+  //-Check number of cells / Comprueba numero de celdas.
   if(nct!=SizeNct)RunException(met,string("Failed GPU memory allocation for ")+fun::UlongStr(nct)+" cells.");
-  //-Reserva memoria para celdas.
+  //-Reserve memory for cells / Reserva memoria para celdas.
   MemAllocNct=0;
   const unsigned nc=(unsigned)SizeBeginCell(nct);
   try{
@@ -146,13 +152,17 @@ void JCellDivCpu::AllocMemoryNct(ullong nct){
   catch(const std::bad_alloc){
     RunException(met,fun::PrintStr("Failed CPU memory allocation of %.1f MB for %u cells.",double(MemAllocNct)/(1024*1024),SizeNct));
   }
-  //-Muestra la memoria solicitada.
+  //-Show requested memory / Muestra la memoria solicitada.
   Log->Printf("**CellDiv: Requested cpu memory for %u cells (CellMode=%s): %.1f MB.",SizeNct,GetNameCellMode(CellMode),double(MemAllocNct)/(1024*1024));
 }
 
 //==============================================================================
-// Comprueba la reserva de memoria para el numero indicado de particulas. 
-// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
+/// (ES):
+/// Comprueba la reserva de memoria para el numero indicado de particulas. 
+/// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
+/// (EN):
+/// Check reserved memory for the indicated number of particles. 
+/// If there is insufficient memory or it is not reserved, then reserve the requested memory.
 //==============================================================================
 void JCellDivCpu::CheckMemoryNp(unsigned npmin){
   if(SizeNp<npmin)AllocMemoryNp(ullong(npmin)+ullong(OverMemoryNp*npmin));
@@ -160,8 +170,12 @@ void JCellDivCpu::CheckMemoryNp(unsigned npmin){
 }
 
 //==============================================================================
-// Comprueba la reserva de memoria para el numero indicado de celdas. 
-// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
+/// (ES):
+/// Comprueba la reserva de memoria para el numero indicado de celdas. 
+/// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
+/// (EN):
+/// Check reserved memory for the indicated number of cells. 
+/// If there is insufficient memory or it is not reserved, then reserve the requested memory.
 //==============================================================================
 void JCellDivCpu::CheckMemoryNct(unsigned nctmin){
   if(SizeNct<nctmin){
@@ -178,7 +192,8 @@ void JCellDivCpu::CheckMemoryNct(unsigned nctmin){
 }
 
 //==============================================================================
-// Define el dominio de simulacion a usar.
+/// Define el dominio de simulacion a usar.
+/// Define simulation domain to use.
 //==============================================================================
 void JCellDivCpu::DefineDomain(unsigned cellcode,tuint3 domcelini,tuint3 domcelfin,tdouble3 domposmin,tdouble3 domposmax){
   DomCellCode=cellcode;
@@ -190,7 +205,8 @@ void JCellDivCpu::DefineDomain(unsigned cellcode,tuint3 domcelini,tuint3 domcelf
 }
 
 //==============================================================================
-// Visualiza la informacion de una particula de contorno excluida.
+/// Visualiza la informacion de una particula de contorno excluida.
+/// Visualize information of a particle excluded from boundary.
 //==============================================================================
 void JCellDivCpu::VisuBoundaryOut(unsigned p,unsigned id,tdouble3 pos,word code)const{
   string info="particle boundary out> type:";
@@ -207,10 +223,16 @@ void JCellDivCpu::VisuBoundaryOut(unsigned p,unsigned id,tdouble3 pos,word code)
 }
 
 //==============================================================================
-// Calcula celda minima y maxima de las particulas validas.
-// En code[] ya estan marcadas las particulas excluidas.
-// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
-// Si encuentra alguna particula excluida genera excepcion mostrando su info.
+/// (ES):
+/// Calcula celda minima y maxima de las particulas validas.
+/// En code[] ya estan marcadas las particulas excluidas.
+/// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
+/// Si encuentra alguna particula excluida genera excepcion mostrando su info.
+/// (EN):
+/// Calculate minimum and maximum cells of valid particles.
+/// In code[] they are already marked as excluded.
+/// In case of there being no valid particles, the minimum is set to be greater than the maximum.
+/// If some excluded particles are encountered, generate an exception showing its info.
 //==============================================================================
 void JCellDivCpu::LimitsCellBound(unsigned n,unsigned pini,const unsigned* dcellc,const word* codec,const unsigned* idpc,const tdouble3* posc,tuint3 &cellmin,tuint3 &cellmax)const{
   tuint3 cmin=TUint3(1);
@@ -224,7 +246,7 @@ void JCellDivCpu::LimitsCellBound(unsigned n,unsigned pini,const unsigned* dcell
     const unsigned cz=PC__Cellz(DomCellCode,rcell);
     const word rcode=codec[p];
     const word rcodsp=CODE_GetSpecialValue(rcode);
-    if(rcodsp<CODE_OUTIGNORE){ //-Particula no excluida.
+    if(rcodsp<CODE_OUTIGNORE){ //-Particle not excluded / Particula no excluida.
       if(cmin.x>cx)cmin.x=cx;
       if(cmin.y>cy)cmin.y=cy;
       if(cmin.z>cz)cmin.z=cz;
@@ -243,8 +265,12 @@ void JCellDivCpu::LimitsCellBound(unsigned n,unsigned pini,const unsigned* dcell
 }
 
 //==============================================================================
-// Calcula posiciones minimas y maximas del rango de particulas Bound indicado.
-// En code[] ya estan marcadas las particulas excluidas.
+/// (ES):
+/// Calcula posiciones minimas y maximas del rango de particulas Bound indicado.
+/// En code[] ya estan marcadas las particulas excluidas.
+/// (EN):
+/// Calculate max and min positions of the indicated Bound particle range.
+/// In code[] these particles are already marked as excluded.
 //==============================================================================
 void JCellDivCpu::CalcCellDomainBound(unsigned n,unsigned pini,unsigned n2,unsigned pini2,const unsigned* dcellc,const word* codec,const unsigned* idpc,const tdouble3* posc,tuint3 &cellmin,tuint3 &cellmax){
   tuint3 cmin,cmax;
@@ -261,10 +287,16 @@ void JCellDivCpu::CalcCellDomainBound(unsigned n,unsigned pini,unsigned n2,unsig
 }
 
 //==============================================================================
-// Calcula celda minima y maxima de las particulas validas.
-// En code[] ya estan marcadas las particulas excluidas.
-// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
-// Si encuentra alguna particula floating excluida genera excepcion mostrando su info.
+/// (ES):
+/// Calcula celda minima y maxima de las particulas validas.
+/// En code[] ya estan marcadas las particulas excluidas.
+/// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
+/// Si encuentra alguna particula floating excluida genera excepcion mostrando su info.
+/// (EN):
+/// Calculate minimum and maximum cells of valid particles.
+/// In code[] they are already marked as excluded.
+/// In case of there being no valid particles, the minimum is set to be greater than the maximum.
+/// If some excluded particles are encountered, generate an exception showing its info.
 //==============================================================================
 void JCellDivCpu::LimitsCellFluid(unsigned n,unsigned pini,const unsigned* dcellc,const word* codec,const unsigned* idpc,const tdouble3* posc,tuint3 &cellmin,tuint3 &cellmax,unsigned &npfoutrhop,unsigned &npfoutmove)const{
   unsigned noutrhop=0,noutmove=0;
@@ -279,7 +311,7 @@ void JCellDivCpu::LimitsCellFluid(unsigned n,unsigned pini,const unsigned* dcell
     const unsigned cz=PC__Cellz(DomCellCode,rcell);
     const word rcode=codec[p];
     const word rcodsp=CODE_GetSpecialValue(rcode);
-    if(rcodsp<CODE_OUTIGNORE){ //-Particula no excluida.
+    if(rcodsp<CODE_OUTIGNORE){ //-Particle not excluded / Particula no excluida.
       if(cmin.x>cx)cmin.x=cx;
       if(cmin.y>cy)cmin.y=cy;
       if(cmin.z>cz)cmin.z=cz;
@@ -304,8 +336,12 @@ void JCellDivCpu::LimitsCellFluid(unsigned n,unsigned pini,const unsigned* dcell
 }
 
 //==============================================================================
+/// (ES):
 // Calcula posiciones minimas y maximas del rango de particulas Fluid indicado.
 // Ignora particulas excluidas que ya estan marcadas en code[].
+/// (EN):
+/// Calculate max and min positions of the indicated Fluid particle range.
+/// Ignore excluded particles that are already marked in code[] 
 //==============================================================================
 void JCellDivCpu::CalcCellDomainFluid(unsigned n,unsigned pini,unsigned n2,unsigned pini2,const unsigned* dcellc,const word* codec,const unsigned* idpc,const tdouble3* posc,tuint3 &cellmin,tuint3 &cellmax){
   tuint3 cmin,cmax;
@@ -322,7 +358,8 @@ void JCellDivCpu::CalcCellDomainFluid(unsigned n,unsigned pini,unsigned n2,unsig
 }
 
 //==============================================================================
-// Reordena datos de todas las particulas.
+/// Reordena datos de todas las particulas.
+/// Reorder values of all particles.
 //==============================================================================
 void JCellDivCpu::SortArray(word *vec){
   if(DivideFull){
@@ -402,7 +439,8 @@ void JCellDivCpu::SortArray(tsymatrix3f *vec){
 }
 
 //==============================================================================
-// Devuelve limites actuales del dominio.
+/// Devuelve limites actuales del dominio.
+/// Return current limites of domain.
 //==============================================================================
 tdouble3 JCellDivCpu::GetDomainLimits(bool limitmin,unsigned slicecellmin)const{
   tuint3 celmin=GetCellDomainMin(),celmax=GetCellDomainMax();
