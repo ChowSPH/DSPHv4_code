@@ -52,9 +52,9 @@
 #include "TypesDef.h"
 
 /// \brief Almacena todos los datos relativos a los puntos no vacios del espacio 
-/// de dibujo definido, para convertir estos puntos en partículas.
-/// \brief Stores all the data concerning points without empty space !!!ASKJOSE!!!
-/// for the drawing pattern, to convert these points into particles.
+/// de dibujo definido, para convertir estos puntos en particulas.
+/// \brief Stores all the data concerning points without any empty space
+/// for the drawing pattern in order to convert these points into particles.
 class JRadixSort : protected JObject
 {
 private:

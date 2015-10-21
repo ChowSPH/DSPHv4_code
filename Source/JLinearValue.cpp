@@ -62,8 +62,8 @@ unsigned JLinearValue::GetAllocMemory()const{
 }
 
 //==============================================================================
-/// Ajusta al tamaño indicado manteniendo el contenido.
-/// Sets the indicated size for maintaining the content. !!!ASKJOSE!!!
+/// Ajusta al tamano indicado manteniendo el contenido.
+/// Sets the indicated size to maintain the content.
 //==============================================================================
 void JLinearValue::SetSize(unsigned size){
   if(size>=SIZEMAX)RunException("SetSize","It has reached the maximum size allowed.");
