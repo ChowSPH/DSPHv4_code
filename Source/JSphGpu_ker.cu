@@ -322,7 +322,7 @@ __global__ void KerPreInteractionSimple(unsigned n,const double2 *posxy,const do
     //Calcular press en simple o doble precision no parece tener ningun efecto positivo significativo,
     //y como para PosDouble si se calcula antes y se lee en la interaccion supondria una perdida de 
     //rendimiento del 6% o 15% (gtx480 o k20c) mejor se calcula en simple siempre.
-	//Computes press in single or double precision, it does not seem to have any significant positive effect, !!!ASKJOSE!!!
+	//Computes press in single or double precision,although the latter does not have any significant positive effect,
     //and like PosDouble if it is previously calculated and read the interaction can incur losses of
     //performance of 6% or 15% (GTX480 or k20c) so it is best calculated as always simple.
     const float rrhop=velrhop[p].w;

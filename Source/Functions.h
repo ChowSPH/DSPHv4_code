@@ -59,8 +59,8 @@
 //# - Functions for converting data between BigEndian and LittleEndian. (09/03/2011)
 //# - Groups functions in namespace fun. (09/03/2011)
 //# - New functions FileExists() and DirExists(). (10/03/2011)
-//# - Correction in getExtension() and GetWithoutExtension() now seeks
-//#   extension starting from the last file or directory. (08/05/2011) !!!ASKJOSE!!!
+//# - Correction in GetExtension() and GetWithoutExtension(), they now seek the
+//#   extension starting from the last file or directory. (08/05/2011)
 //# - New function varstr() for data vectors. (02/11/2011)
 //# - Function StrSplit() to extract text parts. (27/01/2012)
 //# - Comment English translation. (10/02/2012)

@@ -124,7 +124,7 @@ void JCellDivGpuSingle::PreSort(const unsigned *dcellg,const word *codeg){
 /// EN:
 /// Initial processing of Divide: Calculte the limits of the domain and
 /// compute the new position of each particle (SortPart).
-/// The value for np includes periodic boundary and fluid particles (npbper and npfper) !!!ASKJOSE!!!
+/// The value for np includes periodic boundary and fluid particles (npbper and npfper)
 /// The floating bodies are treated as fluids (both to be ignored as excluded)
 //==============================================================================
 void JCellDivGpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigned npf2,bool boundchanged,const unsigned *dcellg,const word* codeg,TimersGpu timers,const double2 *posxy,const double *posz,const unsigned *idp){

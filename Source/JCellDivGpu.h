@@ -19,7 +19,9 @@
 #define _JCellDivGpu_
 
 //#############################################################################
-//# Cambios: !!!ASKJOSE!!!
+//# Cambios:
+//# =========
+//# Changes:
 //# =========
 //#############################################################################
 
@@ -92,7 +94,7 @@ protected:
   unsigned NpFinal,NpbFinal;
   unsigned NpfOutRhop,NpfOutMove,NpbIgnore;
 
-  tuint3 CellDomainMin,CellDomainMax; ///<ES: Limites del dominio en celdas dentro de DomCells. EN: Domain limits in cells within DomCells !!!ASKJOSE!!!
+  tuint3 CellDomainMin,CellDomainMax; ///<ES: Limites del dominio en celdas dentro de DomCells. EN: Domain limits in cells within DomCells.
   unsigned Ncx,Ncy,Ncz,Nsheet,Nct;
   ullong Nctt; ///<ES: Numero total de celdas incluyendo las especiales Nctt=SizeBeginEndCell() EN: Number of cells including the special Nctt=SizeBeginEndCell() 
   unsigned BoxIgnore,BoxFluid,BoxBoundOut,BoxFluidOut,BoxBoundOutIgnore,BoxFluidOutIgnore;

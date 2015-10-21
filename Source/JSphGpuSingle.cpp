@@ -317,7 +317,7 @@ void JSphGpuSingle::RunPeriodic(){
           unsigned nmax=GpuParticlesSize-1; //-Numero maximo de particulas que caben en la lista. //-maximum number of particles that can be included in the list
           //-Genera lista de nuevas periodicas.
 		  //-Generates list of new periodic particles
-          if(Np>=0x80000000)RunException(met,"The number of particles is too big.");//-Pq el ultimo bit se usa para marcar el sentido en que se crea la nueva periodica. !!!ASKJOSE!!!
+          if(Np>=0x80000000)RunException(met,"The number of particles is too big.");//-Pq el ultimo bit se usa para marcar el sentido en que se crea la nueva periodica. //-Because the last bit is used to mark the reason the new periodical is created
           unsigned count=cusph::PeriodicMakeList(num2,pini2,Stable,nmax,Map_PosMin,Map_PosMax,perinc,Posxyg,Poszg,Codeg,listpg);
           //-Redimensiona memoria para particulas si no hay espacio suficiente y repite el proceso de busqueda.
 		  //-Resizes the memory size for the particles if there is not sufficient space and repeats the serach process.
@@ -390,7 +390,7 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     CellDivSingle->SortDataArrays(VelrhopM1g,velrhopg);
     swap(VelrhopM1g,velrhopg);   ArraysGpu->Free(velrhopg);
   }
-  else if(TStep==STEP_Symplectic && (PosxyPreg || PoszPreg || VelrhopPreg)){//En realidad solo es necesario en el divide del corrector, no en el predictor??? !!!ASKJOSE!!!
+  else if(TStep==STEP_Symplectic && (PosxyPreg || PoszPreg || VelrhopPreg)){//En realidad solo es necesario en el divide del corrector, no en el predictor??? //In reality, only necessary in the corrector not the predictor step?
     if(!PosxyPreg || !PoszPreg || !VelrhopPreg)RunException(met,"Symplectic data is invalid.") ;
     double2* posxyg=ArraysGpu->ReserveDouble2();
     double* poszg=ArraysGpu->ReserveDouble();
@@ -439,7 +439,7 @@ void JSphGpuSingle::RunRenCorrection(){
   float *presskf=ArraysGpu->ReserveFloat();
   cusph::Interaction_Ren(Psimple,WithFloating,CellMode,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,Gravity,presskf);
   //-Recalcula valores de presion y densidad en contorno segun RenBeta.
-  //-Recalculates values of pressure and density on the boundary accordng to RenBeta !!!ASKJOSE!!!
+  //-Computes corrected values of pressure and density on the boundary accordng to RenBeta
   cusph::ComputeRenPress(Psimple,NpbOk,RenCorrection,presskf,Velrhopg,PsPospressg);
   ArraysGpu->Free(presskf); presskf=NULL;
 }
@@ -560,7 +560,7 @@ double JSphGpuSingle::ComputeStep_Sym(){
 //==============================================================================
 void JSphGpuSingle::RunFloating(double dt,bool predictor){
   const char met[]="RunFloating";
-  if(TimeStep>=FtPause){//-Se usa >= pq si FtPause es cero en symplectic-predictor no entraria. !!!ASKJOSE!!!
+  if(TimeStep>=FtPause){//-Se usa >= pq si FtPause es cero en symplectic-predictor no entraria. //-Used because if FtPause is zero we don't enter the predictor.
     TmgStart(Timers,TMG_SuFloating);
     //-Calcula fuerzas sobre floatings.
 	//-Computes forces for the floating objects

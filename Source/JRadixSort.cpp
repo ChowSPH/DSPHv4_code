@@ -128,7 +128,7 @@ template<class T> unsigned JRadixSort::TCalcNbits(unsigned size,const T *data)co
       vmax[OMPSTRIDE*th]=mx;
     }
     //-Calcula reduce maximo de todos los hilos.
-	//-Computes maximum for all threads. !!!ASKJOSE!!!
+	//-Computes maximum for all threads.
     T mx=0;
     for(int t=0;t<threads;t++)mx=max(mx,vmax[OMPSTRIDE*t]);
     delete[] vmax; vmax=NULL;

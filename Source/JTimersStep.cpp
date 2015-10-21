@@ -93,7 +93,7 @@ void JTimersStep::AddTimer(std::string name,const double* ptrtime){
 
 //==============================================================================
 /// Cambia.
-/// Changes. !!!ASKJOSE!!!
+/// Changes.
 //==============================================================================
 void JTimersStep::SetInitialTime(float timestep){
   TimeStepInit=timestep;

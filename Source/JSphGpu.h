@@ -82,7 +82,7 @@ protected:
   //-Variables holding particle data for the execution (size=ParticlesSize)
   unsigned *Idp;   ///<ES: Identificador de particula. EN: Particle identifier
   word *Code;      ///<ES: Indica el grupo de las particulas y otras marcas especiales. EN: Indicates particle group and other special marks
-  unsigned *Dcell; ///<ES: Celda dentro de DomCells codificada con DomCellCode. EN: Cell within DomCells encoded with DomCellCode !!!ASKJOSE!!!
+  unsigned *Dcell; ///<ES: Celda dentro de DomCells codificada con DomCellCode. EN: Cell within DomCells encoded with DomCellCode.
   tdouble2 *Posxy;
   double *Posz;
   tfloat4 *Velrhop;
@@ -93,7 +93,7 @@ protected:
   tfloat3 *AuxVel; 
   float *AuxRhop;
 
-  unsigned GpuParticlesSize;  ///<ES: Numero de particulas para las cuales se reservo memoria en gpu. EN: Number of particles for which GPU memory was allocated !!!ASKJOSE!!!
+  unsigned GpuParticlesSize;  ///<ES: Numero de particulas para las cuales se reservo memoria en gpu. EN: Number of particles for which GPU memory was allocated
   llong MemGpuParticles;      ///<ES: Mermoria reservada para vectores de datos de particulas. EN: Allocated GPU memory for arrays with particle data
   llong MemGpuFixed;          ///<ES: Mermoria reservada en AllocGpuMemoryFixed. EN: Allocated memory in AllocGpuMemoryFixed
 
@@ -107,7 +107,7 @@ protected:
   //-Variables con datos de las particulas para ejecucion (size=ParticlesSize).
   //-Variables holding particle data for the execution (size=ParticlesSize)
   unsigned *Idpg;   ///<ES: Identificador de particula. EN: Particle identifier
-  word *Codeg;      ///<ES: Indica el grupo de las particulas y otras marcas especiales. EN: Indicates paricle group and other special marks !!!ASKJOSE!!!
+  word *Codeg;      ///<ES: Indica el grupo de las particulas y otras marcas especiales. EN: Indicates paricle group and other special marks
   unsigned *Dcellg; ///<ES: Celda dentro de DomCells codificada con DomCellCode. EN: Cell within DomCells encoded within DomCellCode
   double2 *Posxyg;
   double *Poszg;
@@ -126,7 +126,7 @@ protected:
   double DtPre;   
 
   //-Variables for floating bodies.
-  unsigned *FtRidpg;         ///<Identifier to access to the particles of the floating object [CaseNfloat] in GPU. !!!ASKJOSE!!! Identifier for the floating object particles?
+  unsigned *FtRidpg;         ///<Identifier to access the particles of the floating object [CaseNfloat] in GPU.
   float *FtoMasspg;          ///<Mass of the particle for each floating body [FtCount] in GPU (used in interaction forces).
 
   float4 *FtoDatag;    ///<ES: Datos constantes de floatings {pini_u,np_u,radius_f,mass_f} [FtCount] //__device__ int __float_as_int(float x) //__device__ float __int_as_float(int x) EN: Constant data of floating bodies {pini_u,np_u,radius_f,mass_f} [FtCount] //__device__ int __float_as_int (float x) //__device__ float __int_as_float(int x)
@@ -134,7 +134,7 @@ protected:
 
   double3 *FtoCenterg; ///<ES: Mantiene centro de floating. [FtCount]  EN: Maintains centre of floating bodies [Ftcount]
   float3 *FtoVelg;     ///<ES: Mantiene vel de floating. [FtCount] EN: Maintains velocity of floating bodies [FtCount]
-  float3 *FtoOmegag;   ///<ES: Mantiene omega de floating. [FtCount] EN: Maintains omega (angular velocity) of floating bodies [FtCount] !!!ASKJOSE!!!
+  float3 *FtoOmegag;   ///<ES: Mantiene omega de floating. [FtCount] EN: Maintains omega of floating bodies [FtCount]
 
   StFtoForces *FtoForces; ///<ES: Almacena fuerzas de floatings en CPU [FtCount]. EN: Stores forces for floating bodies on the CPU
   tdouble3 *FtoCenter;    ///<ES: Almacena centro de floating en CPU. [FtCount]  EN: Stores centre of floating bodies on the CPU

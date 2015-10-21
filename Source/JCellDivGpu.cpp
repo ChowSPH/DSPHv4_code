@@ -150,7 +150,7 @@ void JCellDivGpu::AllocMemoryNct(ullong nct){
 ///
 /// EN:
 /// Checks allocated memory for the indicated number of particles.
-/// If the memory cannot be allocated, return an error message. !!!ASKJOSE!!! 
+/// If the allocated memeory is not sufficient, reserve the required memory.
 //==============================================================================
 void JCellDivGpu::CheckMemoryNp(unsigned npmin){
   if(SizeNp<npmin)AllocMemoryNp(ullong(npmin)+ullong(OverMemoryNp*npmin));
@@ -164,7 +164,7 @@ void JCellDivGpu::CheckMemoryNp(unsigned npmin){
 ///
 /// EN:
 /// Checks allocated memory for the indicated number of cells.
-/// If the memory cannot be allocated, returns error message !!!ASKJOSE!!!
+/// If the allocated memeory is not sufficient, reserve the required memory.
 //==============================================================================
 void JCellDivGpu::CheckMemoryNct(unsigned nctmin){
   if(SizeNct<nctmin){
