@@ -464,7 +464,7 @@ void JSphCpu::AddVarAcc(){
         if(!setgravity)acc=acc-ToTDouble3(Gravity); //-Subtract global gravity from the acceleration if it is set in the input file
         if(withaccang){                             //-Adds angular acceleration.
           const tdouble3 dc=Posc[p]-centre;
-          const tdouble3 vel=TDouble3(Velrhopc[p].x-vellin.x,Velrhopc[p].y-vellin.y,Velrhopc[p].z-vellin.z);//-Get the current particle's velocity
+          const tdouble3 vel=TDouble3(Velrhopc[p].x,Velrhopc[p].y,Velrhopc[p].z);//-Get the current particle's velocity
 
           //-Calculate angular acceleration ((Dw/Dt) x (r_i - r)) + (w x (w x (r_i - r))) + (2w x (v_i - v))
           //(Dw/Dt) x (r_i - r) (term1)
@@ -483,9 +483,9 @@ void JSphCpu::AddVarAcc(){
           acc.z+=(velang.x*innery)-(velang.y*innerx);
 
           //Coriolis acceleration 2w x (v_i - v) (term3)
-          acc.x+=((2.0*velang.y)*vel.z)-((2.0*velang.z)*vel.y);
-          acc.y+=((2.0*velang.z)*vel.x)-((2.0*velang.x)*vel.z);
-          acc.z+=((2.0*velang.x)*vel.y)-((2.0*velang.y)*vel.x);
+          acc.x+=((2.0*velang.y)*vel.z)-((2.0*velang.z)*(vel.y-vellin.y));
+          acc.y+=((2.0*velang.z)*vel.x)-((2.0*velang.x)*(vel.z-vellin.z));
+          acc.z+=((2.0*velang.x)*vel.y)-((2.0*velang.y)*(vel.x-vellin.x));
         }
         //-Stores the new acceleration value.
         Acec[p]=ToTFloat3(acc);

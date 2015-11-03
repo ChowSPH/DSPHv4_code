@@ -1020,7 +1020,7 @@ template<bool psimple,TpFtMode ftmode> __device__ void KerInteractionRenBoundBox
       //-Acumula numerador y denominador para calculo de Pkf.
 	  //-Sums numerator and denominator for the Pkf computation.
       const float pkf=((USE_FLOATING? ftmassp2: massf)/rhopp2)*wab;
-      pkfap1+=pkf*(pressp2+rhopp2*gravity.z*drz); //<--La gravedad debe aplicarse de forma general... //<--Gravity must apply in general form... !!ASKJOSE!!!
+      pkfap1+=pkf*(pressp2+rhopp2*gravity.z*drz); //<--La gravedad debe aplicarse de forma general... //<--Gravity must apply in general form...
       pkfbp1+=pkf;
     }
   }
@@ -2626,9 +2626,9 @@ __global__ void KerAddVarAccAng(unsigned n,unsigned pini,word codesel,float3 gra
       const double dcz=posz[p]-centre.z;
       //-Get the current particle's velocity
       const float4 rvel=velrhop[p];
-      const double velx=rvel.x-vellin.x;
-      const double vely=rvel.y-vellin.y;
-      const double velz=rvel.z-vellin.z;
+      const double velx=rvel.x;
+      const double vely=rvel.y;
+      const double velz=rvel.z;
 
       //-Calculate angular acceleration ((Dw/Dt) x (r_i - r)) + (w x (w x (r_i - r))) + (2w x (v_i - v))
       //(Dw/Dt) x (r_i - r) (term1)
@@ -2647,9 +2647,9 @@ __global__ void KerAddVarAccAng(unsigned n,unsigned pini,word codesel,float3 gra
       accz+=(velang.x*innery)-(velang.y*innerx);
 
       //Coriolis acceleration 2w x (v_i - v) (term3)
-      accx+=((2.0*velang.y)*velz)-((2.0*velang.z)*vely);
-      accy+=((2.0*velang.z)*velx)-((2.0*velang.x)*velz);
-      accz+=((2.0*velang.x)*vely)-((2.0*velang.y)*velx);
+      accx+=((2.0*velang.y)*velz)-((2.0*velang.z)*(vely-vellin.y));
+      accy+=((2.0*velang.z)*velx)-((2.0*velang.x)*(velz-vellin.z));
+      accz+=((2.0*velang.x)*vely)-((2.0*velang.y)*(velx-vellin.x));
 
       //-Stores the new acceleration value.
       ace[p]=make_float3(float(accx),float(accy),float(accz));

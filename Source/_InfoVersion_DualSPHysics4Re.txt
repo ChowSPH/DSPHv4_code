@@ -312,18 +312,21 @@
   - Cleaning code. (v4.0.010 / 02-10-2015)
   - Remove RHOPCERO and OVERRHOPCERO. (v4.0.011 / 02-10-2015)
   - Add external forces code from DualSPHysics v3. (v4.0.012 / 02-10-2015)
-  - Add new external forces code with centripetal and coriolis acceleartion. (v4.0.013 / 03-10-2015)
+  - Add new external forces code with centripetal and coriolis acceleration. (v4.0.013 / 03-10-2015)
   - Use of double precision for external forces. (v4.0.013 / 03-10-2015)
   - Remove JSaveCsv and JDgKerPrint. (v4.0.013 / 03-10-2015)
   - Update Makefile and Makefile_cpu for Linux. (v4.0.014 / 03-10-2015)
   - Remove JBuffer. (v4.0.014 / 03-10-2015)
   - Replace tabs with spaces. (v4.0.015 / 03-10-2015)
   - Include Corrado Altomare. (v4.0.015 / 03-10-2015)
+  - Error solved in external forces. (v4.0.016 / 03-11-2015)
   
   
 Remaining issues:
 ==================
+- Add kernel Cubic.
 - Option for rotation from data file.
+- To use Special cofiguration for external forces.
 - Use of SDAT_info?
 - Example with DtFixed.
 - Examples with DomainLimits
