@@ -44,7 +44,6 @@ protected:
   void RunPeriodic();
   void RunCellDivide(bool updateperiodic);
 
-  void RunRenCorrection();
   void Interaction_Forces(TpInter tinter);
   double ComputeAceMax(float *auxmem);
 

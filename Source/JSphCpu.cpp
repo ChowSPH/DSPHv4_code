@@ -603,19 +603,6 @@ void JSphCpu::GetKernel(float rr2,float drx,float dry,float drz,float &frx,float
 }
 
 //==============================================================================
-/// Devuelve valores de kernel: Wab = W(q) con q=r/H.
-/// Return values of kernel: Wab = W(q) where q=r/H.
-//==============================================================================
-float JSphCpu::GetKernelWab(float rr2)const{
-  const float qq=sqrt(rr2)/H;
-  //-Wendland kernel.
-  const float wqq=2.f*qq+1.f;
-  const float wqq1=1.f-0.5f*qq;
-  const float wqq2=wqq1*wqq1;
-  return(Awen*wqq*wqq2*wqq2);
-}
-
-//==============================================================================
 /// Devuelve limites de celdas para interaccion.
 /// Return cell limits for interaction.
 //==============================================================================
@@ -635,114 +622,6 @@ void JSphCpu::GetInteractionCells(unsigned rcell
   zini=cz-min(cz,hdiv);
   zfin=cz+min(nc.z-cz-1,hdiv)+1;
 }
-
-//==============================================================================
-/// Realiza interaccion entre particulas para Ren correction. Bound-Fluid/Float
-/// Perform interaction between particles for Ren correction. Bound-Fluid/Float
-//==============================================================================
-template<bool psimple,TpFtMode ftmode> void JSphCpu::InteractionRenBound
-  (unsigned n,unsigned pinit,tint4 nc,int hdiv,unsigned cellinitial
-  ,const unsigned *beginendcell,tint3 cellzero,const unsigned *dcell
-  ,const tdouble3 *pos,const tfloat3 *pspos,const tfloat4 *velrhop,const word *code,const unsigned *idp
-  ,const float *press,float *presskf)const
-{
-  //-Initial execution with OpenMP / Inicia ejecucion con OpenMP.
-  const int pfin=int(pinit+n);
-  #ifdef _WITHOMP
-    #pragma omp parallel for schedule (guided)
-  #endif
-  for(int p1=int(pinit);p1<pfin;p1++){
-    float pkfap1=0,pkfbp1=0;
-
-    //-Load values of particle p1 / Carga datos de particula p1.
-    const tfloat3 psposp1=(psimple? pspos[p1]: TFloat3(0));
-    const tdouble3 posp1=(psimple? TDouble3(0): pos[p1]);
-    const float rhopp1=velrhop[p1].w;
-    const float pressp1=press[p1];
-
-    //-Get interaction limits / Obtiene limites de interaccion
-    int cxini,cxfin,yini,yfin,zini,zfin;
-    GetInteractionCells(dcell[p1],hdiv,nc,cellzero,cxini,cxfin,yini,yfin,zini,zfin);
-
-    //-Search for neighbours in adjacent cells / Busqueda de vecinos en celdas adyacentes.
-    for(int z=zini;z<zfin;z++){
-      const int zmod=(nc.w)*z+cellinitial; //-Sum starting from fluid cells / Le suma donde empiezan las celdas de fluido.
-      for(int y=yini;y<yfin;y++){
-        int ymod=zmod+nc.x*y;
-        const unsigned pini=beginendcell[cxini+ymod];
-        const unsigned pfin=beginendcell[cxfin+ymod];
-
-        //-Interaction of Bound with type Fluid/Float / Interaccion de Bound con varias Fluid/Float.
-        //----------------------------------------------
-        for(unsigned p2=pini;p2<pfin;p2++){
-          const float drx=(psimple? psposp1.x-pspos[p2].x: float(posp1.x-pos[p2].x));
-          const float dry=(psimple? psposp1.y-pspos[p2].y: float(posp1.y-pos[p2].y));
-          const float drz=(psimple? psposp1.z-pspos[p2].z: float(posp1.z-pos[p2].z));
-          const float rr2=drx*drx+dry*dry+drz*drz;
-          if(rr2<=Fourh2 && rr2>=ALMOSTZERO){
-            //-Wendland kernel
-            const float wab=GetKernelWab(rr2);
-
-            //===== Get particle p2 values / Obtiene datos de particula p2 ===== 
-            const float rhopp2=velrhop[p2].w;
-            float massp2=MassFluid; //-Contains particle mass of incorrect fluid / Contiene masa de particula por defecto fluid.
-            if(USE_FLOATING){
-              bool ftp2=(CODE_GetType(code[p2])==CODE_TYPE_FLOATING);
-              if(ftp2)massp2=FtObjs[CODE_GetTypeValue(code[p2])].massp;
-            }
-
-            //-Accumulate numerator & denominator to compute Pkf / Acumula numerador y denominador para calculo de Pkf.
-            const float pkf=(massp2/rhopp2)*wab;
-            pkfap1+=pkf*(press[p2]+rhopp2*Gravity.z*drz); //<--Gravity must be applied in a general form / La gravedad debe aplicarse de forma general...
-            pkfbp1+=pkf;
-          }
-        }
-      }
-    }
-    //-Sum results / Almacena resultados.
-    presskf[p1]=(pkfbp1!=0? pkfap1/pkfbp1: 0); //<--Must be done to control when it is applied in a funtion of the fluid particles in question ... / Se deberia controlar cuando se aplica en función de las particulas de fluido que vea...
-  }
-}
-
-//==============================================================================
-/// Calcula presion suavizada de fluido en contorno para Ren Correction. Bound-Fluid/Float
-/// Calculate fluid reduced pressure required for Ren Correction. Bound-Fluid/Float
-//==============================================================================
-void JSphCpu::Interaction_Ren(unsigned npbok
-  ,tuint3 ncells,const unsigned *begincell,tuint3 cellmin,const unsigned *dcell
-  ,const tdouble3 *pos,const tfloat3 *pspos,const tfloat4 *velrhop,const unsigned *idp,const word *code
-  ,const float *press,float *presskf)const
-{
-  const tint4 nc=TInt4(int(ncells.x),int(ncells.y),int(ncells.z),int(ncells.x*ncells.y));
-  const tint3 cellzero=TInt3(cellmin.x,cellmin.y,cellmin.z);
-  const unsigned cellfluid=nc.w*nc.z+1;
-  const int hdiv=(CellMode==CELLMODE_H? 2: 1);
-  if(!WithFloating){ const TpFtMode ftmode=FTMODE_None;
-    if(Psimple)InteractionRenBound<true ,ftmode> (npbok,0,nc,hdiv,cellfluid,begincell,cellzero,dcell,pos,pspos,velrhop,code,idp,press,presskf);
-    else       InteractionRenBound<false,ftmode> (npbok,0,nc,hdiv,cellfluid,begincell,cellzero,dcell,pos,pspos,velrhop,code,idp,press,presskf);
-  }
-  else{              const TpFtMode ftmode=FTMODE_Sph;  
-    if(Psimple)InteractionRenBound<true ,ftmode> (npbok,0,nc,hdiv,cellfluid,begincell,cellzero,dcell,pos,pspos,velrhop,code,idp,press,presskf);
-    else       InteractionRenBound<false,ftmode> (npbok,0,nc,hdiv,cellfluid,begincell,cellzero,dcell,pos,pspos,velrhop,code,idp,press,presskf);
-  }
-}
-
-//==============================================================================
-/// Calcula nuevo valor de presion y desidad aplicando Ren correction.
-/// Calculate new value of pressure and density applying Ren correction.
-//==============================================================================
-void JSphCpu::ComputeRenPress(unsigned npbok,float beta,const float *presskf,tfloat4 *velrhop,float *press)const{
-  const int n=int(npbok);
-  #ifdef _WITHOMP
-    #pragma omp parallel for schedule (static) if(n>LIMIT_PREINTERACTION_OMP)
-  #endif
-  for(int p=0;p<n;p++){
-    const float pressc=press[p]=beta*presskf[p]+(1.f-beta)*press[p];
-    Velrhopc[p].w=RhopZero*pow(pressc/CteB+1.f,1.f/Gamma);
-  }
-}
-
-
 
 //==============================================================================
 /// Realiza interaccion entre particulas. Bound-Fluid/Float

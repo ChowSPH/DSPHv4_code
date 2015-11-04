@@ -163,8 +163,6 @@ protected:
   TpDeltaSph TDeltaSph;       //-Tipo de Delta-SPH: None, Basic o Dynamic.                                      //-Delta-SPH type: None, Basic or Dynamic.
   float DeltaSph;             //-Constante para DeltaSPH. El valor por defecto es 0.1f, con 0 no tiene efecto.  //-DeltaSPH constant. The default value is 0.1f, with 0 having no effect.
 
-  float RenCorrection;        //-Constant for Ren correction in DBC (0-1), with 0 disabled (def=0).
-
   TpShifting TShifting; //-Tipo de Shifting: None, NoBound, NoFixed, Full.                                      //-Shifting type: None, NoBound, NoFixed, Full. 
   float ShiftCoef;      //-Coefficient for shifting computation.
   float ShiftTFS;       //-Threshold to detect free surface. Typically 1.5 for 2D and 2.75 for 3D (def=0).

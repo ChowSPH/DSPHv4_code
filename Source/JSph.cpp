@@ -104,7 +104,6 @@ void JSph::InitVars(){
   TVisco=VISCO_None;
   TDeltaSph=DELTA_None; DeltaSph=0;
   TShifting=SHIFT_None; ShiftCoef=ShiftTFS=0;
-  RenCorrection=0;
   Visco=0; ViscoBoundFactor=1;
   UseDEM=false;  //(DEM)
   DemDtForce=0;  //(DEM)
@@ -319,8 +318,6 @@ void JSph::LoadConfig(const JCfgRun *cfg){
   }
   if(TDeltaSph==DELTA_Dynamic && Cpu)TDeltaSph=DELTA_DynamicExt; //-It is necessary because the interaction is divided in two steps: fluid-fluid/float and fluid-bound.
 
-  if(cfg->RenCorrection>=0)RenCorrection=cfg->RenCorrection;
-
   if(cfg->Shifting>=0){
     switch(cfg->Shifting){
       case 0:  TShifting=SHIFT_None;     break;
@@ -405,9 +402,6 @@ void JSph::LoadCaseConfig(){
     if(ShiftCoef==0)TShifting=SHIFT_None;
     else ShiftTFS=eparms.GetValueFloat("ShiftTFS",true,0);
   }
-
-  RenCorrection=eparms.GetValueFloat("RenCorrection",true,0);
-  if(RenCorrection<0 || RenCorrection>1)RunException(met,"Value of RenCorrection is invalid.");
 
   FtPause=eparms.GetValueFloat("FtPause",true,0);
   TimeMax=eparms.GetValueDouble("TimeMax");
@@ -763,7 +757,6 @@ void JSph::VisuConfig()const{
     Log->Print(fun::VarStr("ShiftCoef",ShiftCoef));
     if(ShiftTFS)Log->Print(fun::VarStr("ShiftTFS",ShiftTFS));
   }
-  Log->Print(fun::VarStr("RenCorrection",RenCorrection));
   Log->Print(fun::VarStr("FloatingFormulation",(!FtCount? "None": (UseDEM? "SPH+DEM": "SPH"))));
   Log->Print(fun::VarStr("FloatingCount",FtCount));
   if(FtCount)Log->Print(fun::VarStr("FtPause",FtPause));
@@ -796,7 +789,6 @@ void JSph::VisuConfig()const{
   Log->Print(fun::VarStr("MassFluid",MassFluid));
   Log->Print(fun::VarStr("MassBound",MassBound));
   if(TKernel==KERNEL_Wendland){
-    if(RenCorrection)Log->Print(fun::VarStr("Awen (wendland)",Awen));
     Log->Print(fun::VarStr("Bwen (wendland)",Bwen));
   }
   if(TVisco==VISCO_LaminarSPS){     

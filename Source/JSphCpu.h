@@ -151,23 +151,9 @@ protected:
   void PosInteraction_Forces();
 
   inline void GetKernel(float rr2,float drx,float dry,float drz,float &frx,float &fry,float &frz)const;
-  inline float GetKernelWab(float rr2)const;
   inline void GetInteractionCells(unsigned rcell
     ,int hdiv,const tint4 &nc,const tint3 &cellzero
     ,int &cxini,int &cxfin,int &yini,int &yfin,int &zini,int &zfin)const;
-
-  template<bool psimple,TpFtMode ftmode> void InteractionRenBound
-    (unsigned n,unsigned pinit,tint4 nc,int hdiv,unsigned cellinitial
-    ,const unsigned *beginendcell,tint3 cellzero,const unsigned *dcell
-    ,const tdouble3 *pos,const tfloat3 *pspos,const tfloat4 *velrhop,const word *code,const unsigned *idp
-    ,const float *press,float *presskf)const;
-
-  void Interaction_Ren(unsigned npbok
-    ,tuint3 ncells,const unsigned *begincell,tuint3 cellmin,const unsigned *dcell
-    ,const tdouble3 *pos,const tfloat3 *pspos,const tfloat4 *velrhop,const unsigned *idp,const word *code
-    ,const float *press,float *presskf)const;
-
-  void ComputeRenPress(unsigned npbok,float beta,const float *presskf,tfloat4 *velrhop,float *press)const;
 
   template<bool psimple,TpFtMode ftmode> void InteractionForcesBound
     (unsigned n,unsigned pini,tint4 nc,int hdiv,unsigned cellinitial

@@ -253,9 +253,6 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-shiftpos
     if(ShiftTFS)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,1); //-shiftdetectc
   }
-  if(RenCorrection){
-    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,1); //-presskf
-  }
   //-Muestra la memoria reservada.
   //-Shows the allocated memory
   MemGpuParticles=ArraysGpu->GetAllocMemoryGpu();

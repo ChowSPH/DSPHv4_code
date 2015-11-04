@@ -89,17 +89,6 @@ void Interaction_Forces(bool psimple,bool floating,bool usedem,bool lamsps
   ,TpShifting tshifting,float3 *shiftpos,float *shiftdetect
   ,bool simulate2d);
 
-//# Kernels para calculo de Ren correction
-//#Kernels for calculating the REn correction
-void Interaction_Ren(bool psimple,bool floating,TpCellMode cellmode
-  ,unsigned npbok,tuint3 ncells,const int2 *begincell,tuint3 cellmin,const unsigned *dcell
-  ,const double2 *posxy,const double *posz,const float4 *pospress
-  ,const float4 *velrhop,const word *code,const unsigned *idp
-  ,const float *ftomassp,tfloat3 gravity,float *presskf);
-
-void ComputeRenPress(bool psimple,unsigned npbok
-  ,float beta,const float *presskf,float4 *velrhop,float4 *pospress);
-
 
 //# Kernels para calculo de fuerzas DEM
 //# for the calculation of the DEM forces

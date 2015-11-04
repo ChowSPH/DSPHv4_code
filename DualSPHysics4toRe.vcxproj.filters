@@ -175,6 +175,9 @@
     <ClInclude Include="Source\JReadDatafile.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Source\JMatrix4.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\JCfgRun.cpp">

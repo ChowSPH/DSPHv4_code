@@ -52,7 +52,6 @@ protected:
     ,int hdiv,const tint4 &nc,const tint3 &cellzero
     ,int &cxini,int &cxfin,int &yini,int &yfin,int &zini,int &zfin)const;
 
-  void RunRenCorrection();
   void Interaction_Forces(TpInter tinter);
   double ComputeAceMax();
 

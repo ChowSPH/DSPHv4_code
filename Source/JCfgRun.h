@@ -65,7 +65,6 @@ public:
   float ViscoBoundFactor;
   double TimeMax,TimePart;
   float DeltaSph;
-  float RenCorrection;
   int Shifting; //-Shifting mode -1:sin definir, 0:none, 1:nobound, 2:nofixed, 3:full
   bool SvRes,SvTimers,SvDomainVtk;
   float SvTimersStep;

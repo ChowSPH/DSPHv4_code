@@ -324,6 +324,7 @@
   - New class JReadDatafile to facilitate reading data from CSV files. (v4.0.017 / 03-11-2015)
   - Replace tabs with spaces. (v4.0.018 / 03-10-2015)
   - Include XML configuration for external forces. (v4.0.019 / 03-10-2015)
+  - RenCorrection was removed. (v4.0.020 / 04-10-2015)
   
 
 

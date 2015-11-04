@@ -79,7 +79,6 @@ void JSphCpuSingle::LoadConfig(JCfgRun *cfg){
   //-Load basic general configuraction / Carga configuracion basica general
   JSph::LoadConfig(cfg);
   //-Checks compatibility of selected options.
-  if(RenCorrection && UseDEM)RunException(met,"Ren correction is not implemented with Floatings-DEM.");
   Log->Print("**Special case configuration is loaded");
 }
 
@@ -487,20 +486,6 @@ void JSphCpuSingle::GetInteractionCells(unsigned rcell
 }
 
 //==============================================================================
-/// Aplica correccion de Ren a la presion y densidad del contorno.
-/// Apply Ren correction to pressure and density in boundary.
-//==============================================================================
-void JSphCpuSingle::RunRenCorrection(){
-  //-Calculate pressure in boundary starting from fluid / Calcula presion en contorno a partir de fluido.
-  float *presskf=ArraysCpu->ReserveFloat();
-  Interaction_Ren(NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell()
-    ,CellDivSingle->GetCellDomainMin(),Dcellc,Posc,PsPosc,Velrhopc,Idpc,Codec,Pressc,presskf);
-  //-Recalculate pressure & density in boundary according to RenBeta / Recalcula valores de presion y densidad en contorno segun RenBeta.
-  ComputeRenPress(NpbOk,RenCorrection,presskf,Velrhopc,Pressc);
-  ArraysCpu->Free(presskf); presskf=NULL;
-}
-
-//==============================================================================
 /// Interaccion para el calculo de fuerzas.
 /// Interaction to calculate forces.
 //==============================================================================
@@ -508,7 +493,6 @@ void JSphCpuSingle::Interaction_Forces(TpInter tinter){
   const char met[]="Interaction_Forces";
   PreInteraction_Forces(tinter);
   TmcStart(Timers,TMC_CfForces);
-  if(RenCorrection)RunRenCorrection();
 
   //-Interaction of Fluid-Fluid/Bound & Bound-Fluid (forces and DEM) / Interaccion Fluid-Fluid/Bound & Bound-Fluid (forces and DEM).
   float viscdt=0;

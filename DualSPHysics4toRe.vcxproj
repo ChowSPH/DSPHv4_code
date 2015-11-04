@@ -702,6 +702,7 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\JLinearValue.h" />
+    <ClInclude Include="Source\JMatrix4.h" />
     <ClInclude Include="Source\JPartDataBi4.h" />
     <ClInclude Include="Source\JPartFloatBi4.h" />
     <ClInclude Include="Source\JPartOutBi4Save.h" />
