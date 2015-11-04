@@ -99,7 +99,7 @@ protected:
 
   //-Posicion de particula segun id para motion.
   //-Particle position according to the identifier for the motion
-  unsigned *RidpMoveg;	///<ES: Solo para boundary moving particles [CaseNmoving] y cuando CaseNmoving!=0 EN: Only for moving boundary particles [CaseNmoving] and when CaseNmoving!=0
+  unsigned *RidpMoveg;  ///<ES: Solo para boundary moving particles [CaseNmoving] y cuando CaseNmoving!=0 EN: Only for moving boundary particles [CaseNmoving] and when CaseNmoving!=0
 
   //-Lista de arrays en Gpu para particulas.
   //-List of arrays in the GPU gor the particles

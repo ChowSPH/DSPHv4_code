@@ -206,7 +206,7 @@ void JBinaryDataArray::CheckMemory(unsigned count,bool resize){
   const char met[]="CheckMemory";
   if(count){
     //-Reserva memoria si fuese necesario.
-	//-Allocates memory if necessary.
+    //-Allocates memory if necessary.
     if(!Pointer){
       if(!resize)RunException(met,"Memory no allocated.");
       AllocMemory(count);
@@ -364,10 +364,10 @@ void JBinaryDataArray::ReadData(unsigned count,unsigned size,std::ifstream *pf,b
 void JBinaryDataArray::AddData(unsigned count,const void* data,bool resize){
   if(count){
     //-Reserva memoria si fuese necesario.
-	//-Allocates memory if necessary.
+    //-Allocates memory if necessary.
     CheckMemory(count,resize);
     //-Añade datos al puntero.
-	//-Add data to the pointer.
+    //-Add data to the pointer.
     if(Type==JBinaryDataDef::DatText){
       string *strings=(string*)Pointer;
       string *strings2=(string*)data;
@@ -409,10 +409,10 @@ void JBinaryDataArray::AddText(const std::string &str,bool resize){
   unsigned count=1;
   if(count){
     //-Reserva memoria si fuese necesario.
-	//-Allocates memory if necessary.
+    //-Allocates memory if necessary.
     CheckMemory(count,resize);
     //-Añade string al array.
-	//-Add string to array.
+    //-Add string to array.
     string *strings=(string*)Pointer;
     strings[Count]=str;
     Count+=count;
@@ -870,11 +870,11 @@ void JBinaryData::OutArrayData(unsigned &count,unsigned size,const byte *ptr,JBi
   }
   else{
     //-Comprueba que los datos del array estan disponibles.
-	//-Checks that the data array is available.
+    //-Checks that the data array is available.
     unsigned count2=count+sizedata;
     if(count2>size)RunException("OutArrayData","Overflow in reading data.");
     //-Extrae datos para el array.
-	//-Extracts the data for the array.
+    //-Extracts the data for the array.
     ar->AddData(countdata,ptr+count,true);
     count=count2;
   }

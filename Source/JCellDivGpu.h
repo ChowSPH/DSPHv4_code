@@ -51,8 +51,8 @@ protected:
   JLog2 *Log;
   std::string DirOut;
 
-  bool AllocFullNct;	///<ES: Reserva memoria para el numero maximo de celdas del dominio (DomCells). EN: Allocates memory for the maximum number of cells in the doamin (DomCells).
-  float OverMemoryNp;	///<ES: Porcentaje que se añade a la reserva de memoria de Np. (def=0). EN: Percentage to be added to the allocated memory for Np (def=0).
+  bool AllocFullNct;    ///<ES: Reserva memoria para el numero maximo de celdas del dominio (DomCells). EN: Allocates memory for the maximum number of cells in the doamin (DomCells).
+  float OverMemoryNp;   ///<ES: Porcentaje que se añade a la reserva de memoria de Np. (def=0). EN: Percentage to be added to the allocated memory for Np (def=0).
   word OverMemoryCells; ///<ES: Numero celdas que se incrementa en cada dimension reservar memoria. (def=0). EN: Number of cells that increase the allocated memoery in each dimension
 
   //-Vars del dominio definido.

@@ -87,11 +87,11 @@ class JSpacePartBlock : public JObject
 {
 private:
   const JSpaceProperties* Properties;   ///<Pointer to properties object.
-  std::string Props;					///<Assigned properties.
-  word Mk;								///<Absolute label.
-  word MkType;							///<Label of block fluid or bound.
-  unsigned Begin;						///<Id of the first particle of the block.
-  unsigned Count;						///<Number of particles.
+  std::string Props;                    ///<Assigned properties.
+  word Mk;                              ///<Absolute label.
+  word MkType;                          ///<Label of block fluid or bound.
+  unsigned Begin;                       ///<Id of the first particle of the block.
+  unsigned Count;                       ///<Number of particles.
 
 public:
   const TpParticles Type;    ///<Type of particle.

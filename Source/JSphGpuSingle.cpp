@@ -294,33 +294,33 @@ void JSphGpuSingle::RunPeriodic(){
   BoundChanged=true;
   for(unsigned ctype=0;ctype<2;ctype++){//-0:bound, 1:fluid+floating.
     //-Calcula rango de particulas a examinar (bound o fluid).
-	//-Computes the particle range to be examined (bound and fluid).
+    //-Computes the particle range to be examined (bound and fluid).
     const unsigned pini=(ctype? npb0: 0);
     const unsigned num= (ctype? npf0: npb0);
     //-Busca periodicas en cada eje (X, Y e Z).
-	//-Searches for periodic zones on each axis (X, Y and Z).
+    //-Searches for periodic zones on each axis (X, Y and Z).
     for(unsigned cper=0;cper<3;cper++)if((cper==0 && PeriActive&1) || (cper==1 && PeriActive&2) || (cper==2 && PeriActive&4)){
       tdouble3 perinc=(cper==0? PeriXinc: (cper==1? PeriYinc: PeriZinc));
       //-Primero busca en la lista de periodicas nuevas y despues en la lista inicial de particulas (necesario para periodicas en mas de un eje).
-	  //-First searches in the list of new periodic particles and then in the initial particle list (necessary for periodic zones in more than one axis)
+      //-First searches in the list of new periodic particles and then in the initial particle list (necessary for periodic zones in more than one axis)
       for(unsigned cblock=0;cblock<2;cblock++){//-0:periodicas nuevas, 1:particulas originales //-0:new periodic particles, 1:original periodic particles
         const unsigned nper=(ctype? NpfPer: NpbPer); //-Numero de periodicas nuevas del tipo a procesar. //-number of new periodic particles for the type currently computed (bound or fluid) 
         const unsigned pini2=(cblock? pini: Np-nper);
         const unsigned num2= (cblock? num:  nper);
         //-Repite la busqueda si la memoria disponible resulto insuficiente y hubo que aumentarla.
-		//-Repeats search if the available memory was insufficient and had to be increased.
+        //-Repeats search if the available memory was insufficient and had to be increased.
         bool run=true;
         while(run && num2){
           //-Reserva memoria para crear lista de particulas periodicas.
-		  //-Allocates memory to create the periodic particle list.
+          //-Allocates memory to create the periodic particle list.
           unsigned* listpg=ArraysGpu->ReserveUint();
           unsigned nmax=GpuParticlesSize-1; //-Numero maximo de particulas que caben en la lista. //-maximum number of particles that can be included in the list
           //-Genera lista de nuevas periodicas.
-		  //-Generates list of new periodic particles
+          //-Generates list of new periodic particles
           if(Np>=0x80000000)RunException(met,"The number of particles is too big.");//-Pq el ultimo bit se usa para marcar el sentido en que se crea la nueva periodica. //-Because the last bit is used to mark the reason the new periodical is created
           unsigned count=cusph::PeriodicMakeList(num2,pini2,Stable,nmax,Map_PosMin,Map_PosMax,perinc,Posxyg,Poszg,Codeg,listpg);
           //-Redimensiona memoria para particulas si no hay espacio suficiente y repite el proceso de busqueda.
-		  //-Resizes the memory size for the particles if there is not sufficient space and repeats the serach process.
+          //-Resizes the memory size for the particles if there is not sufficient space and repeats the serach process.
           if(count>nmax || count+Np>GpuParticlesSize){
             ArraysGpu->Free(listpg); listpg=NULL;
             TmgStop(Timers,TMG_SuPeriodic);
@@ -330,18 +330,18 @@ void JSphGpuSingle::RunPeriodic(){
           else{
             run=false;
             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
-			//-Create new periodic particles duplicating the particles from the list
+            //-Create new periodic particles duplicating the particles from the list
             if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g);
             if(TStep==STEP_Symplectic){
               if((PosxyPreg || PoszPreg || VelrhopPreg) && (!PosxyPreg || !PoszPreg || !VelrhopPreg))RunException(met,"Symplectic data is invalid.") ;
               cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg);
             }
             //-Libera lista y actualiza numero de particulas.
-			//-Releases memory and updates the particle number.
+            //-Releases memory and updates the particle number.
             ArraysGpu->Free(listpg); listpg=NULL;
             Np+=count;
             //-Actualiza numero de periodicas nuevas.
-			//-Updated number of new periodic particles.
+            //-Updated number of new periodic particles.
             if(!ctype)NpbPer+=count;
             else NpfPer+=count;
           }
@@ -563,10 +563,10 @@ void JSphGpuSingle::RunFloating(double dt,bool predictor){
   if(TimeStep>=FtPause){//-Se usa >= pq si FtPause es cero en symplectic-predictor no entraria. //-Used because if FtPause is zero we don't enter the predictor.
     TmgStart(Timers,TMG_SuFloating);
     //-Calcula fuerzas sobre floatings.
-	//-Computes forces for the floating objects
+    //-Computes forces for the floating objects
     cusph::FtCalcForces(PeriActive!=0,FtCount,Gravity,FtoDatag,FtoMasspg,FtoCenterg,FtRidpg,Posxyg,Poszg,Aceg,FtoForcesg);
     //-Aplica movimiento sobre floatings.
-	//-Applies movement to the floating objects
+    //-Applies movement to the floating objects
     cusph::FtUpdate(PeriActive!=0,predictor,Simulate2D,FtCount,dt,Gravity,FtoDatag,FtRidpg,FtoForcesg,FtoCenterg,FtoVelg,FtoOmegag,Posxyg,Poszg,Dcellg,Velrhopg,Codeg);
     TmgStop(Timers,TMG_SuFloating);
   }

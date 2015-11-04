@@ -95,7 +95,7 @@ __global__ void KerPreSortFluid(unsigned n,unsigned pini,unsigned cellcode,const
     const unsigned cellsort=cellfluid+cx+cy*ncells.x+cz*nsheet;
     const word codeout=CODE_GetSpecialValue(code[p]);
     //-Particulas fluid and floatings.
-	//-Fluid and floating particles.
+    //-Fluid and floating particles.
     cellpart[p]=(codeout<CODE_OUTIGNORE? cellsort: (codeout==CODE_OUTIGNORE? cellfluidoutignore: cellfluidout));
   }
 }

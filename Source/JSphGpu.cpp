@@ -196,7 +196,7 @@ void JSphGpu::AllocCpuMemoryParticles(unsigned np){
       AuxVel=new tfloat3[np];    MemCpuParticles+=sizeof(tfloat3)*np;
       AuxRhop=new float[np];     MemCpuParticles+=sizeof(float)*np;
       //-Memoria auxiliar para floatings.
-	  //-Auxiliary memory for floating bodies.
+      //-Auxiliary memory for floating bodies.
       FtoForces=new StFtoForces[FtCount];  MemCpuParticles+=sizeof(StFtoForces)*FtCount;
       FtoCenter=new tdouble3[FtCount];     MemCpuParticles+=sizeof(tdouble3)*FtCount;
     }
@@ -563,7 +563,7 @@ void JSphGpu::SelecDevice(int gpuid){
     GpuSharedMem=int(devp.sharedMemPerBlock);
     GpuCompute=devp.major*10+devp.minor;
     //-Muestra informacion del hardware seleccionado.
-	//-Displays information on the selected hardware.
+    //-Displays information on the selected hardware.
     Log->Print("[GPU Hardware]");
     if(gpuid<0)Hardware=fun::PrintStr("Gpu_%d?=\"%s\"",GpuSelect,GpuName.c_str());
     else Hardware=fun::PrintStr("Gpu_%d=\"%s\"",GpuSelect,GpuName.c_str());
@@ -735,10 +735,10 @@ void JSphGpu::InitFloating(){
     JPartFloatBi4Load ftdata;
     ftdata.LoadFile(PartBeginDir);
     //-Comprueba coincidencia de datos constantes.
-	//-Checks if the constant data match.
+    //-Checks if the constant data match.
     for(unsigned cf=0;cf<FtCount;cf++)ftdata.CheckHeadData(cf,FtObjs[cf].mkbound,FtObjs[cf].begin,FtObjs[cf].count,FtObjs[cf].mass);
     //-Carga datos de PART.
-	//-Loads PART data.
+    //-Loads PART data.
     ftdata.LoadPart(PartBegin);
     for(unsigned cf=0;cf<FtCount;cf++){
       FtObjs[cf].center=OrderCodeValue(CellOrder,ftdata.GetPartCenter(cf));
@@ -1104,7 +1104,7 @@ void JSphGpu::RunMotion(double stepdt){
     if(nmove){
       cusph::CalcRidp(PeriActive!=0,Npb,0,CaseNfixed,CaseNfixed+CaseNmoving,Codeg,Idpg,RidpMoveg);
       //-Movimiento de particulas boundary
-	  //-Movement of boundary particles
+      //-Movement of boundary particles
       for(unsigned c=0;c<nmove;c++){
         unsigned ref;
         tdouble3 mvsimple;
@@ -1131,7 +1131,7 @@ void JSphGpu::RunMotion(double stepdt){
     if(!nmove)cusph::CalcRidp(PeriActive!=0,Npb,0,CaseNfixed,CaseNfixed+CaseNmoving,Codeg,Idpg,RidpMoveg);
     BoundChanged=true;
     //-Gestion de WaveGen.
-	//-Management of WaveGen.
+    //-Management of WaveGen.
     if(WaveGen)for(unsigned c=0;c<WaveGen->GetCount();c++){
       tdouble3 mvsimple;
       tmatrix4d mvmatrix;

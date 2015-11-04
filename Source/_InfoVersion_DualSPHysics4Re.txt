@@ -322,6 +322,7 @@
   - Error solved in external forces. (v4.0.016 / 03-11-2015)
   - External forces uses Special configuration. (v4.0.017 / 03-11-2015)
   - New class JReadDatafile to facilitate reading data from CSV files. (v4.0.017 / 03-11-2015)
+  - Replace tabs with spaces. (v4.0.018 / 03-10-2015)
   
 
 

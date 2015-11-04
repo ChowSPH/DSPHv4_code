@@ -111,20 +111,20 @@ double JLinearValue::GetValue(double timestep){
   else if(Count>1){
     double tini=Times[Position];
     //-Si t de position es mayor que el timestep solicitado reinicia position. 
-	//-If the t of the position is greater than the requested time step, restart position.
+    //-If the t of the position is greater than the requested time step, restart position.
     if(tini>timestep && Position>0){
       Position=0;
       tini=Times[Position];
     }
     //-Busca intervalo del instante indicado.
-	//=Finds indicated interval of time.
+    //=Finds indicated interval of time.
     double tnext=(Position+1<Count? Times[Position+1]: tini);
     for(;tnext<timestep&&Position+2<Count;Position++){
       tini=tnext;
       tnext=Times[Position+2];
     }
     //-Calcula valor en el instante indicado.
-	//-computes value in the indicated instant.
+    //-computes value in the indicated instant.
     if(timestep<=tini)ret=Values[Position];
     else if(timestep>=tnext)ret=Values[Position+1];
     else{

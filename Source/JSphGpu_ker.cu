@@ -322,7 +322,7 @@ __global__ void KerPreInteractionSimple(unsigned n,const double2 *posxy,const do
     //Calcular press en simple o doble precision no parece tener ningun efecto positivo significativo,
     //y como para PosDouble si se calcula antes y se lee en la interaccion supondria una perdida de 
     //rendimiento del 6% o 15% (gtx480 o k20c) mejor se calcula en simple siempre.
-	//Computes press in single or double precision,although the latter does not have any significant positive effect,
+    //Computes press in single or double precision,although the latter does not have any significant positive effect,
     //and like PosDouble if it is previously calculated and read the interaction can incur losses of
     //performance of 6% or 15% (GTX480 or k20c) so it is best calculated as always simple.
     const float rrhop=velrhop[p].w;
@@ -561,7 +561,7 @@ template<bool psimple,TpFtMode ftmode> __device__ void KerInteractionForcesBound
 
       const float4 velrhop2=velrhop[p2];
       //-Obtiene masa de particula p2 en caso de existir floatings.
-	  //-Obtains particle mass p2 if there are floating bodies.
+      //-Obtains particle mass p2 if there are floating bodies.
       float ftmassp2;    //-Contiene masa de particula floating o massf si es fluid. //-Contains mass of floating body or massf if fluid.
       bool compute=true; //-Se desactiva cuando se usa DEM y es float-float o float-bound. //-Deactivated when DEM is used and is float-float or float-bound.
       if(USE_FLOATING){
@@ -601,18 +601,18 @@ template<bool psimple,TpFtMode ftmode> __global__ void KerInteractionForcesBound
     float visc=0,arp1=0;
 
     //-Carga datos de particula p1.
-	//-Loads particle p1 data.
+    //-Loads particle p1 data.
     double3 posdp1;
     float3 posp1,velp1;
     KerGetParticleData<psimple>(p1,posxy,posz,pospress,velrhop,velp1,posdp1,posp1);
 
     //-Obtiene limites de interaccion
-	//-Obtains interaction limits
+    //-Obtains interaction limits
     int cxini,cxfin,yini,yfin,zini,zfin;
     KerGetInteractionCells(dcell[p1],hdiv,nc,cellzero,cxini,cxfin,yini,yfin,zini,zfin);
 
     //-Interaccion de Contorno con Fluidas.
-	//-Boundary-Fluid interaction.
+    //-Boundary-Fluid interaction.
     for(int z=zini;z<zfin;z++){
       int zmod=(nc.w)*z+(nc.w*nc.z+1);//-Le suma Nct+1 que es la primera celda de fluido. //-Adds Nct + 1 which is the first cell fluid.
       for(int y=yini;y<yfin;y++){
@@ -629,7 +629,7 @@ template<bool psimple,TpFtMode ftmode> __global__ void KerInteractionForcesBound
       }
     }
     //-Almacena resultados.
-	//-Stores results.
+    //-Stores results.
     if(arp1 || visc){
       ar[p1]+=arp1;
       if(visc>viscdt[p1])viscdt[p1]=visc;
@@ -662,7 +662,7 @@ template<bool psimple,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelta,bool shift> 
       KerGetKernel(rr2,drx,dry,drz,frx,fry,frz);
 
       //-Obtiene masa de particula p2 en caso de existir floatings.
-	  //-Obtains mass of particle p2 if any floating bodies exist.
+      //-Obtains mass of particle p2 if any floating bodies exist.
       bool ftp2;         //-Indica si es floating. //-indicates if it is floating.
       float ftmassp2;    //-Contiene masa de particula floating o massp2 si es bound o fluid. //-Contains mass of floating body or massf if fluid.
       bool compute=true; //-Se desactiva cuando se usa DEM y es float-float o float-bound. //-Deactivated when DEM is used and is float-float or float-bound.
@@ -780,7 +780,7 @@ template<bool psimple,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelta,bool shift> 
     float3 acep1=make_float3(0,0,0);
 
     //-Vars para Shifting.
-	//-Variables for Shifting.
+    //-Variables for Shifting.
     float3 shiftposp1;
     float shiftdetectp1;
     if(shift){
@@ -789,7 +789,7 @@ template<bool psimple,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelta,bool shift> 
     }
 
     //-Obtiene datos de particula p1 en caso de existir floatings.
-	//-Obtains data of particle p1 in case there are floating bodies.
+    //-Obtains data of particle p1 in case there are floating bodies.
     bool ftp1;       //-Indica si es floating. //-Indicates if it is floating.
     float ftmassp1;  //-Contiene masa de particula floating o 1.0f si es fluid. //-Contains floating particle mass or 1.0f if it is fluid.
     if(USE_FLOATING){
@@ -801,14 +801,14 @@ template<bool psimple,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelta,bool shift> 
     }
 
     //-Obtiene datos basicos de particula p1.
-	//-Obtains basic data of particle p1.
+    //-Obtains basic data of particle p1.
     double3 posdp1;
     float3 posp1,velp1;
     float rhopp1,pressp1;
     KerGetParticleData<psimple>(p1,posxy,posz,pospress,velrhop,velp1,rhopp1,posdp1,posp1,pressp1);
     
     //-Vars para Laminar+SPS
-	//-Variables for Laminar+SPS
+    //-Variables for Laminar+SPS
     float2 taup1_xx_xy,taup1_xz_yy,taup1_yz_zz;
     if(lamsps){
       taup1_xx_xy=tauff[p1*3];
@@ -816,7 +816,7 @@ template<bool psimple,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelta,bool shift> 
       taup1_yz_zz=tauff[p1*3+2];
     }
     //-Vars para Laminar+SPS (calculo).
-	//-Variables for Laminar+SPS (computation).
+    //-Variables for Laminar+SPS (computation).
     float2 grap1_xx_xy,grap1_xz_yy,grap1_yz_zz;
     if(lamsps){
       grap1_xx_xy=make_float2(0,0);
@@ -825,12 +825,12 @@ template<bool psimple,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelta,bool shift> 
     }
 
     //-Obtiene limites de interaccion
-	//-Obtains interaction limits
+    //-Obtains interaction limits
     int cxini,cxfin,yini,yfin,zini,zfin;
     KerGetInteractionCells(dcell[p1],hdiv,nc,cellzero,cxini,cxfin,yini,yfin,zini,zfin);
 
     //-Interaccion con Fluidas.
-	//-Interaction with fluids.
+    //-Interaction with fluids.
     for(int z=zini;z<zfin;z++){
       int zmod=(nc.w)*z+cellfluid; //-Le suma donde empiezan las celdas de fluido. //-The sum showing where fluid cells start
       for(int y=yini;y<yfin;y++){
@@ -847,7 +847,7 @@ template<bool psimple,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelta,bool shift> 
       }
     }
     //-Interaccion con contorno.
-	//-Interaction with boundaries.
+    //-Interaction with boundaries.
     for(int z=zini;z<zfin;z++){
       int zmod=(nc.w)*z;
       for(int y=yini;y<yfin;y++){
@@ -864,7 +864,7 @@ template<bool psimple,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelta,bool shift> 
       }
     }
     //-Almacena resultados.
-	//-Stores results.
+    //-Stores results.
     if(shift||arp1||acep1.x||acep1.y||acep1.z||visc){
       if(tdelta==DELTA_Dynamic&&deltap1!=FLT_MAX)arp1+=deltap1;
       if(tdelta==DELTA_DynamicExt){
@@ -1007,7 +1007,7 @@ template<bool psimple,TpFtMode ftmode> __device__ void KerInteractionRenBoundBox
       const float wab=KerGetKernelWab(rr2);
 
       //===== Obtiene datos de particula p2 ===== 
-	  //===== Obtains particle p2 data =====
+      //===== Obtains particle p2 data =====
       const float rhopp2=velrhop[p2].w;
       if(!psimple)pressp2=(CTE.cteb*(powf(rhopp2*CTE.ovrhopzero,CTE.gamma)-1.0f));
       float ftmassp2;    //-Contiene masa de particula floating o massf si es fluid. //-Contains mass of floating particle or massf if it is fluid.
@@ -1018,7 +1018,7 @@ template<bool psimple,TpFtMode ftmode> __device__ void KerInteractionRenBoundBox
       }
 
       //-Acumula numerador y denominador para calculo de Pkf.
-	  //-Sums numerator and denominator for the Pkf computation.
+      //-Sums numerator and denominator for the Pkf computation.
       const float pkf=((USE_FLOATING? ftmassp2: massf)/rhopp2)*wab;
       pkfap1+=pkf*(pressp2+rhopp2*gravity.z*drz); //<--La gravedad debe aplicarse de forma general... //<--Gravity must apply in general form...
       pkfbp1+=pkf;
@@ -1041,17 +1041,17 @@ template<bool psimple,TpFtMode ftmode> __global__ void KerInteractionRenBound
     float pkfap1=0,pkfbp1=0;
 
     //-Carga datos de particula p1.
-	//-Loads particle p1 data.
+    //-Loads particle p1 data.
     double3 posdp1;
     float3 posp1;
     KerGetParticleData<psimple>(p1,posxy,posz,pospress,posdp1,posp1);
 
     //-Obtiene limites de interaccion
-	//-Obtains interaction limits.
+    //-Obtains interaction limits.
     int cxini,cxfin,yini,yfin,zini,zfin;
     KerGetInteractionCells(dcell[p1],hdiv,nc,cellzero,cxini,cxfin,yini,yfin,zini,zfin);
     //-Interaccion de Contorno con Fluidas.
-	//-Interaction of boundaries with fluids.
+    //-Interaction of boundaries with fluids.
     for(int z=zini;z<zfin;z++){
       int zmod=(nc.w)*z+(nc.w*nc.z+1);//-Le suma Nct+1 que es la primera celda de fluido. //-Adds Nct+1 which is the first cell fluid.
       for(int y=yini;y<yfin;y++){
@@ -1068,7 +1068,7 @@ template<bool psimple,TpFtMode ftmode> __global__ void KerInteractionRenBound
       }
     }
     //-Almacena resultados.
-	//-Stores results.
+    //-Stores results.
     presskf[p1]=(pkfbp1!=0? pkfap1/pkfbp1: 0); //<--Se deberia controlar cuando se aplica en función de las particulas de fluido que vea... //<--It should be controlled when applied according to the fluid particles you see...
   }
 }
@@ -1154,7 +1154,7 @@ template<bool psimple> __device__ void KerInteractionForcesDemBox
       const float rad=sqrt(rr2);
 
       //-Calcula valor maximo de demdt.
-	  //-Computes maximum value of demdt.
+      //-Computes maximum value of demdt.
       float4 demdatap2=demdata[CODE_GetTypeAndValue(codep2)];
       const float nu_mass=(boundp2? masstotp1/2: masstotp1*demdatap2.x/(masstotp1+demdatap2.x)); //-Con boundary toma la propia masa del floating 1. //-With boundary takes the actual mass of floating 1.
       const float kn=4/(3*(taup1+demdatap2.y))*sqrt(CTE.dp/4);  //generalized rigidity - Lemieux 2008
@@ -1210,7 +1210,7 @@ template<bool psimple> __global__ void KerInteractionForcesDem
       float3 acep1=make_float3(0,0,0);
 
       //-Obtiene datos basicos de particula p1.
-	  //-Obtains basic data of particle p1.
+      //-Obtains basic data of particle p1.
       double3 posdp1;
       float3 posp1,velp1;
       KerGetParticleData<psimple>(p1,posxy,posz,pospress,velrhop,velp1,posdp1,posp1);
@@ -1222,12 +1222,12 @@ template<bool psimple> __global__ void KerInteractionForcesDem
       const float restitup1=rdata.w;
 
       //-Obtiene limites de interaccion
-	  //-Obtains interaction limits
+      //-Obtains interaction limits
       int cxini,cxfin,yini,yfin,zini,zfin;
       KerGetInteractionCells(dcell[p1],hdiv,nc,cellzero,cxini,cxfin,yini,yfin,zini,zfin);
 
       //-Interaccion con contorno.
-	  //-Interaction with boundaries.
+      //-Interaction with boundaries.
       for(int z=zini;z<zfin;z++){
         int zmod=(nc.w)*z;
         for(int y=yini;y<yfin;y++){
@@ -1245,7 +1245,7 @@ template<bool psimple> __global__ void KerInteractionForcesDem
       }
 
       //-Interaccion con Fluidas.
-	  //-Interaction with fluids.
+      //-Interaction with fluids.
       for(int z=zini;z<zfin;z++){
         int zmod=(nc.w)*z+cellfluid; //-Le suma donde empiezan las celdas de fluido. //-The sum showing where fluid cells start
         for(int y=yini;y<yfin;y++){
@@ -1262,7 +1262,7 @@ template<bool psimple> __global__ void KerInteractionForcesDem
         }
       }
       //-Almacena resultados.
-	  //-Stores results.
+      //-Stores results.
       if(acep1.x || acep1.y || acep1.z || demdtp1){
         float3 r=ace[p1]; r.x+=acep1.x; r.y+=acep1.y; r.z+=acep1.z; ace[p1]=r;
         if(viscdt[p1]<demdtp1)viscdt[p1]=demdtp1;
@@ -1330,7 +1330,7 @@ __global__ void KerComputeSpsTau(unsigned n,unsigned pini,float smag,float blin
     const float twovisc_sps=(visc_sps+visc_sps);
     float one_rho2=1.0f/velrhop[p1].w;
     //-Calcula nuevos valores de tau[].
-	//-Computes new values of tau[].
+    //-Computes new values of tau[].
     const float tau_xx=one_rho2*(twovisc_sps*grad_xx +sumsps);
     const float tau_xy=one_rho2*(visc_sps   *grad_xy);
     tauff[p1*3]=make_float2(tau_xx,tau_xy);
@@ -1464,19 +1464,19 @@ template<bool floating,bool shift> __global__ void KerComputeStepVerlet
     }
     else{ //-Particulas: Floating & Fluid //-Particles: Floating & Fluid
       //-Actualiza densidad.
-	  //-Updates density.
+      //-Updates density.
       float4 rvelrhop2=velrhop2[p];
       rvelrhop2.w=float(double(rvelrhop2.w)+dt2*ar[p]);
       float4 rvel1=velrhop1[p];
       if(!floating || CODE_GetType(code[p])==CODE_TYPE_FLUID){//-Particulas: Fluid //-Particles: Fluid
         //-Comprueba limites de rhop.
-		//-Checks rhop limits.
+        //-Checks rhop limits.
         if(rvelrhop2.w<rhopoutmin||rvelrhop2.w>rhopoutmax){//-Solo marca como excluidas las normales (no periodicas). //-Only brands as excluded normal particles (not periodic)
           const word rcode=code[p];
           if(CODE_GetSpecialValue(rcode)==CODE_NORMAL)code[p]=CODE_SetOutRhop(rcode);
         }
         //-Calcula y graba desplazamiento de posicion.
-		//-Comutes and stores position displacement.
+        //-Comutes and stores position displacement.
         const float3 race=ace[p];
         double dx=double(rvel1.x)*dt + double(race.x)*dt205;
         double dy=double(rvel1.y)*dt + double(race.y)*dt205;
@@ -1490,7 +1490,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepVerlet
         movxy[p]=make_double2(dx,dy);
         movz[p]=dz;
         //-Actualiza velocidad.
-		//-Updates velocity.
+        //-Updates velocity.
         rvelrhop2.x=float(double(rvelrhop2.x)+double(race.x)*dt2);
         rvelrhop2.y=float(double(rvelrhop2.y)+double(race.y)*dt2);
         rvelrhop2.z=float(double(rvelrhop2.z)+double(race.z)*dt2);
@@ -1547,18 +1547,18 @@ template<bool floating,bool shift> __global__ void KerComputeStepSymplecticPre
     }
     else{ //-Particulas: Floating & Fluid //-Particles: Floating & Fluid
       //-Actualiza densidad.
-	  //-Updates density.
+      //-Updates density.
       float4 rvelrhop=velrhoppre[p];
       rvelrhop.w=float(double(rvelrhop.w)+dtm*ar[p]);
       if(!floating || CODE_GetType(code[p])==CODE_TYPE_FLUID){//-Particulas: Fluid //-Particles: Fluid
         //-Comprueba limites de rhop.
-		//-Checks rhop limits.
+        //-Checks rhop limits.
         if(rvelrhop.w<rhopoutmin||rvelrhop.w>rhopoutmax){//-Solo marca como excluidas las normales (no periodicas).  //-Only brands as excluded normal particles (not periodic)
           const word rcode=code[p];
           if(CODE_GetSpecialValue(rcode)==CODE_NORMAL)code[p]=CODE_SetOutRhop(rcode);
         }
         //-Calcula y graba desplazamiento de posicion.
-		//-Computes and stores position displacement.
+        //-Computes and stores position displacement.
         double dx=double(rvelrhop.x)*dtm;
         double dy=double(rvelrhop.y)*dtm;
         double dz=double(rvelrhop.z)*dtm;
@@ -1571,7 +1571,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepSymplecticPre
         movxy[p]=make_double2(dx,dy);
         movz[p]=dz;
         //-Actualiza velocidad.
-		//-Updates velocity.
+        //-Updates velocity.
         const float3 race=ace[p];
         rvelrhop.x=float(double(rvelrhop.x)+double(race.x)*dtm);
         rvelrhop.y=float(double(rvelrhop.y)+double(race.y)*dtm);
@@ -1581,7 +1581,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepSymplecticPre
         rvelrhop.w=(rvelrhop.w<CTE.rhopzero? CTE.rhopzero: rvelrhop.w); //-Evita q las floating absorvan a las fluidas.  //-To prevent absorption of fluid particles by boundaries.
       }
       //-Graba nueva velocidad y densidad.
-	  //-Stores new velocity and density.
+      //-Stores new velocity and density.
       velrhop[p]=rvelrhop;
     }
   }
@@ -1632,26 +1632,26 @@ template<bool floating,bool shift> __global__ void KerComputeStepSymplecticCor
     }
     else{ //-Particulas: Floating & Fluid //-Particles: Floating & Fluid
       //-Actualiza densidad.
-		//-Updates density.
+        //-Updates density.
       double epsilon_rdot=(-double(ar[p])/double(velrhop[p].w))*dt;
       float4 rvelrhop=velrhoppre[p];
       rvelrhop.w=float(double(rvelrhop.w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));
       if(!floating || CODE_GetType(code[p])==CODE_TYPE_FLUID){//-Particulas: Fluid //-Particles: Fluid
         float4 rvelp=rvelrhop;
         //-Actualiza velocidad.
-		//-Updates velocity.
+        //-Updates velocity.
         float3 race=ace[p];
         rvelrhop.x=float(double(rvelrhop.x)+double(race.x)*dt);
         rvelrhop.y=float(double(rvelrhop.y)+double(race.y)*dt);
         rvelrhop.z=float(double(rvelrhop.z)+double(race.z)*dt);
         //-Comprueba limites de rhop.
-		//-Checks rhop limits.
+        //-Checks rhop limits.
         if(rvelrhop.w<rhopoutmin||rvelrhop.w>rhopoutmax){//-Solo marca como excluidas las normales (no periodicas). //-Only brands as excluded normal particles (not periodic)
           const word rcode=code[p];
           if(CODE_GetSpecialValue(rcode)==CODE_NORMAL)code[p]=CODE_SetOutRhop(rcode);
         }
         //-Calcula y graba desplazamiento de posicion.
-		//-Computes and stores position displacement.
+        //-Computes and stores position displacement.
         double dx=(double(rvelp.x)+double(rvelrhop.x))*dtm;
         double dy=(double(rvelp.y)+double(rvelrhop.y))*dtm;
         double dz=(double(rvelp.z)+double(rvelrhop.z))*dtm;
@@ -1668,7 +1668,7 @@ template<bool floating,bool shift> __global__ void KerComputeStepSymplecticCor
         rvelrhop.w=(rvelrhop.w<CTE.rhopzero? CTE.rhopzero: rvelrhop.w); //-Evita q las floating absorvan a las fluidas. //-To prevent absorption of fluid particles by boundaries.
       }
       //-Graba nueva velocidad y densidad.
-	  //-Stores new velocity and density.
+      //-Stores new velocity and density.
       velrhop[p]=rvelrhop;
     }
   }
@@ -1829,7 +1829,7 @@ template<bool periactive,bool floating> __global__ void KerComputeStepPos(unsign
       KerUpdatePos<periactive>(posxy[p],posz[p],rmovxy.x,rmovxy.y,movz[p],outrhop,p,posxy,posz,dcell,code);
     }
     //-En caso de floating mantiene la posicion original.
-	//-In case of floating maintains the original position.
+    //-In case of floating maintains the original position.
   }
 }
 
@@ -1974,10 +1974,10 @@ template<bool periactive> __global__ void KerMoveLinBound(unsigned n,unsigned in
     int pid=ridpmv[p+ini];
     if(pid>=0){
       //-Calcula desplazamiento y actualiza posicion.
-	  //-Computes displacement and updates position.
+      //-Computes displacement and updates position.
       KerUpdatePos<periactive>(posxy[pid],posz[pid],mvpos.x,mvpos.y,mvpos.z,false,pid,posxy,posz,dcell,code);
       //-Calcula velocidad.
-	  //-Computes velocity.
+      //-Computes velocity.
       velrhop[pid]=make_float4(mvvel.x,mvvel.y,mvvel.z,velrhop[pid].w);
     }
   }
@@ -2011,20 +2011,20 @@ template<bool periactive,bool simulate2d> __global__ void KerMoveMatBound(unsign
       double2 rxy=posxy[pid];
       double3 rpos=make_double3(rxy.x,rxy.y,posz[pid]);
       //-Calcula nueva posicion.
-	  //-Computes new position.
+      //-Computes new position.
       double3 rpos2;
       rpos2.x= rpos.x*m.a11 + rpos.y*m.a12 + rpos.z*m.a13 + m.a14;
       rpos2.y= rpos.x*m.a21 + rpos.y*m.a22 + rpos.z*m.a23 + m.a24;
       rpos2.z= rpos.x*m.a31 + rpos.y*m.a32 + rpos.z*m.a33 + m.a34;
       if(simulate2d)rpos2.y=rpos.y;
       //-Calcula desplazamiento y actualiza posicion.
-	  //-Computes displacement and updates position.
+      //-Computes displacement and updates position.
       const double dx=rpos2.x-rpos.x;
       const double dy=rpos2.y-rpos.y;
       const double dz=rpos2.z-rpos.z;
       KerUpdatePos<periactive>(make_double2(rpos.x,rpos.y),rpos.z,dx,dy,dz,false,pid,posxy,posz,dcell,code);
       //-Calcula velocidad.
-	  //-Computes velocity.
+      //-Computes velocity.
       velrhop[pid]=make_float4(float(dx/dt),float(dy/dt),float(dz/dt),velrhop[pid].w);
     }
   }
@@ -2144,17 +2144,17 @@ template<bool periactive> __global__ void KerFtCalcForces( //fdata={pini,np,radi
         race.x-=gravity.x; race.y-=gravity.y; race.z-=gravity.z;
         rfacex[tid]+=race.x; rfacey[tid]+=race.y; rfacez[tid]+=race.z;
         //-Calcula distancia al centro.
-		//-Computes distance from the centre.
+        //-Computes distance from the centre.
         double2 rposxy=posxy[rp];
         float dx,dy,dz;
         KerFtPeriodicDist<periactive>(rposxy.x,rposxy.y,posz[rp],rcenter.x,rcenter.y,rcenter.z,fradius,dx,dy,dz);
         //-Calcula omegavel.
-		//-Computes omegavel.
+        //-Computes omegavel.
         rfomegavelx[tid]+=(race.z*dy - race.y*dz);
         rfomegavely[tid]+=(race.x*dz - race.z*dx);
         rfomegavelz[tid]+=(race.y*dx - race.x*dy);
         //-Calcula inertia tensor.
-		//-Computes inertia tensor.
+        //-Computes inertia tensor.
         rinert11[tid]+= (dy*dy+dz*dz)*fmassp;
         rinert12[tid]+=-(dx*dy)*fmassp;
         rinert13[tid]+=-(dx*dz)*fmassp;
@@ -2201,7 +2201,7 @@ template<bool periactive> __global__ void KerFtCalcForces( //fdata={pini,np,radi
       invinert3.z= (inert1.x*inert2.y-inert1.y*inert2.x)/detiner;
     }
     //-Calcula omega a partir de fomegavel y invinert.
-	//-Computes omega from fomegavel and invinert.
+    //-Computes omega from fomegavel and invinert.
     {
       float3 omega;
       omega.x=(fomegavel.x*invinert1.x+fomegavel.y*invinert1.y+fomegavel.z*invinert1.z);
@@ -2210,7 +2210,7 @@ template<bool periactive> __global__ void KerFtCalcForces( //fdata={pini,np,radi
       fomegavel=omega;
     }
     //-Guarda resultados en ftoforces[].
-	//-Stores results in ftoforces[].
+    //-Stores results in ftoforces[].
     ftoforces[cf*2]=face;
     ftoforces[cf*2+1]=fomegavel;
   }
@@ -2293,13 +2293,13 @@ template<bool periactive> __global__ void KerFtUpdate(bool predictor,bool simula
         double rposz=posz[p];
         float4 rvel=velrhop[p];
         //-Calcula y graba desplazamiento de posicion.
-		//-Computes and stores position displacement.
+        //-Computes and stores position displacement.
         const double dx=dt*double(rvel.x);
         const double dy=dt*double(rvel.y);
         const double dz=dt*double(rvel.z);
         KerUpdatePos<periactive>(rposxy,rposz,dx,dy,dz,false,p,posxy,posz,dcell,code);
         //-Calcula y graba nueva velocidad.
-		//-Computes and stores new velocity.
+        //-Computes and stores new velocity.
         float disx,disy,disz;
         KerFtPeriodicDist<periactive>(rposxy.x+dx,rposxy.y+dy,rposz+dz,fcenter.x,fcenter.y,fcenter.z,fradius,disx,disy,disz);
         rvel.x=fvel.x+(fomega.y*disz-fomega.z*disy);
@@ -2349,7 +2349,7 @@ __global__ void KerPeriodicIgnore(unsigned n,word *code)
   const unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula //-NI of the particle
   if(p<n){
     //-Comprueba codigo de particula.
-	//-Checks code of particles.
+    //-Checks code of particles.
     const word rcode=code[p];
     if(CODE_GetSpecialValue(rcode)==CODE_PERIODIC)code[p]=CODE_SetOutIgnore(rcode);
   }
@@ -2385,10 +2385,10 @@ __global__ void KerPeriodicMakeList(unsigned n,unsigned pini,unsigned nmax
   if(p<n){
     const unsigned p2=p+pini;
     //-Se queda con particulas normales o periodicas.
-	//-Inteacts with normal or periodic particles.
+    //-Inteacts with normal or periodic particles.
     if(CODE_GetSpecialValue(code[p2])<=CODE_PERIODIC){
       //-Obtiene posicion de particula.
-	  //-Obtains particle position.
+      //-Obtains particle position.
       const double2 rxy=posxy[p2];
       const double rx=rxy.x,ry=rxy.y;
       const double rz=posz[p2];
@@ -2432,14 +2432,14 @@ unsigned PeriodicMakeList(unsigned n,unsigned pini,bool stable,unsigned nmax
   unsigned count=0;
   if(n){
     //-Inicializa tamaño de lista lspg a cero.
-	//-Lspg size list initialized to zero.
+    //-Lspg size list initialized to zero.
     cudaMemset(listp+nmax,0,sizeof(unsigned));
     dim3 sgrid=GetGridSize(n,SPHBSIZE);
     const unsigned smem=(SPHBSIZE*2+1)*sizeof(unsigned); //-De cada particula pueden salir 2 nuevas periodicas mas la posicion del contador. //-Each particle can leave two new periodic over the counter position.
     KerPeriodicMakeList <<<sgrid,SPHBSIZE,smem>>> (n,pini,nmax,Double3(mapposmin),Double3(mapposmax),Double3(perinc),posxy,posz,code,listp);
     cudaMemcpy(&count,listp+nmax,sizeof(unsigned),cudaMemcpyDeviceToHost);
     //-Reordena lista si es valida y stable esta activado.
-	//-Reorders list if it is valid and stable has been activated.
+    //-Reorders list if it is valid and stable has been activated.
     if(stable && count && count<=nmax){
       thrust::device_ptr<unsigned> dev_list(listp);
       thrust::sort(dev_list,dev_list+count);
@@ -2514,10 +2514,10 @@ __global__ void KerPeriodicDuplicateVerlet(unsigned n,unsigned pini,uint3 cellma
     const unsigned rp=listp[p];
     const unsigned pcopy=(rp&0x7FFFFFFF);
     //-Ajusta posicion y celda de nueva particula.
-	//-Adjusts cell position of the new particles.
+    //-Adjusts cell position of the new particles.
     KerPeriodicDuplicatePos(pnew,pcopy,(rp>=0x80000000),perinc.x,perinc.y,perinc.z,cellmax,posxy,posz,dcell);
     //-Copia el resto de datos.
-	//-Copies the remaining data.
+    //-Copies the remaining data.
     idp[pnew]=idp[pcopy];
     code[pnew]=CODE_SetPeriodic(code[pcopy]);
     velrhop[pnew]=velrhop[pcopy];
@@ -2561,10 +2561,10 @@ template<bool varspre> __global__ void KerPeriodicDuplicateSymplectic(unsigned n
     const unsigned rp=listp[p];
     const unsigned pcopy=(rp&0x7FFFFFFF);
     //-Ajusta posicion y celda de nueva particula.
-	//-Adjusts cell position of the new particles.
+    //-Adjusts cell position of the new particles.
     KerPeriodicDuplicatePos(pnew,pcopy,(rp>=0x80000000),perinc.x,perinc.y,perinc.z,cellmax,posxy,posz,dcell);
     //-Copia el resto de datos.
-	//-Copies the remaining data.
+    //-Copies the remaining data.
     idp[pnew]=idp[pcopy];
     code[pnew]=CODE_SetPeriodic(code[pcopy]);
     velrhop[pnew]=velrhop[pcopy];

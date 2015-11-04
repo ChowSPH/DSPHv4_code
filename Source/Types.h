@@ -48,22 +48,22 @@
 
 
 //-Codigos para particulas:
-#define CODE_MASKSPECIAL 0xe000   //-Bits de special:     1110 0000 0000 0000							//-Special bits: 1110 0000 0000 0000
-#define CODE_NORMAL   0x0         //-0  Particulas normales no excluidas.								//-0 Normal particles (not excluded)
-#define CODE_PERIODIC 0x2000      //-1  Particulas duplicadas por periodicas.							//-1 Duplicate particles for periodic
-#define CODE_OUTIGNORE 0x4000     //-2  Marca particulas que se van a ignorar en el siguiente divide.	//-2 Brands particles to be ignored in the next division.
-#define CODE_OUTMOVE 0x6000       //-3  Particulas normales excluidas por movimiento.					//-3 Normal particles excluded for motion
-#define CODE_OUTPOS 0x8000        //-4  Particulas normales excluidas por posicion.						//-4 Normal particles excluded for position
-#define CODE_OUTRHOP 0xA000       //-5  Particulas normales excluidas por densidad.						//-5 Normal particles excluded for density
-//#define CODE_SPECIAL1 0xC000   //-6  Por ejemplo, CODE_DOMAINPREV pertenece a Proceso-1				//-6 For example, CODE_DOMAINPREV belongs to Process-1
-//#define CODE_SPECIAL2 0xE000   //-7  Por ejemplo, CODE_DOMAINNEXT pertenece a Proceso+1				//-7 For example, CODE_DOMAINNEXT belongs to Process+1
+#define CODE_MASKSPECIAL 0xe000   //-Bits de special:     1110 0000 0000 0000                           //-Special bits: 1110 0000 0000 0000
+#define CODE_NORMAL   0x0         //-0  Particulas normales no excluidas.                               //-0 Normal particles (not excluded)
+#define CODE_PERIODIC 0x2000      //-1  Particulas duplicadas por periodicas.                           //-1 Duplicate particles for periodic
+#define CODE_OUTIGNORE 0x4000     //-2  Marca particulas que se van a ignorar en el siguiente divide.   //-2 Brands particles to be ignored in the next division.
+#define CODE_OUTMOVE 0x6000       //-3  Particulas normales excluidas por movimiento.                   //-3 Normal particles excluded for motion
+#define CODE_OUTPOS 0x8000        //-4  Particulas normales excluidas por posicion.                     //-4 Normal particles excluded for position
+#define CODE_OUTRHOP 0xA000       //-5  Particulas normales excluidas por densidad.                     //-5 Normal particles excluded for density
+//#define CODE_SPECIAL1 0xC000   //-6  Por ejemplo, CODE_DOMAINPREV pertenece a Proceso-1               //-6 For example, CODE_DOMAINPREV belongs to Process-1
+//#define CODE_SPECIAL2 0xE000   //-7  Por ejemplo, CODE_DOMAINNEXT pertenece a Proceso+1               //-7 For example, CODE_DOMAINNEXT belongs to Process+1
 
-#define CODE_MASKTYPEVALUE 0x1fff //-Bits de type:    0001 1111 1111 1111								//-Bits for type:    0001 1111 1111 1111
-#define CODE_MASKTYPE 0x1800      //-Bits de type:    0001 1000 0000 0000								//-Bits for type:    0001 1000 0000 0000
-#define CODE_TYPE_FIXED 0x0       //---Particles fixed:  0-2047											
-#define CODE_TYPE_MOVING 0x800    //---Particles moving: 2048-4095										
-#define CODE_TYPE_FLOATING 0x1000 //---Particles float:  4096-6143										
-#define CODE_TYPE_FLUID 0x1800    //---Particles fluid:  6144-8191										
+#define CODE_MASKTYPEVALUE 0x1fff //-Bits de type:    0001 1111 1111 1111                               //-Bits for type:    0001 1111 1111 1111
+#define CODE_MASKTYPE 0x1800      //-Bits de type:    0001 1000 0000 0000                               //-Bits for type:    0001 1000 0000 0000
+#define CODE_TYPE_FIXED 0x0       //---Particles fixed:  0-2047                                         
+#define CODE_TYPE_MOVING 0x800    //---Particles moving: 2048-4095                                      
+#define CODE_TYPE_FLOATING 0x1000 //---Particles float:  4096-6143                                      
+#define CODE_TYPE_FLUID 0x1800    //---Particles fluid:  6144-8191                                      
 #define CODE_MASKVALUE 0x7ff      //-Bits type-value: 0000 0111 1111 1111  Range:0-2047
 
 #define CODE_SetNormal(code)    (code&(~CODE_MASKSPECIAL))
@@ -331,7 +331,7 @@ inline tmatrix4d OrderCodeValue(TpCellOrder order,tmatrix4d x){
 typedef enum{ 
    CELLMODE_None=0
   ,CELLMODE_2H=1      //-Divide en celdas de tamaño 2h. //-Cell division of size 2h.
-  ,CELLMODE_H=2       //-Divide en celdas de tamaño h.	//-Cell division of size h.
+  ,CELLMODE_H=2       //-Divide en celdas de tamaño h.  //-Cell division of size h.
 }TpCellMode; 
 
 ///Devuelve el nombre de CellMode en texto.

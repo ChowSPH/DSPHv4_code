@@ -108,12 +108,12 @@ template<class T> unsigned JRadixSort::TCalcNbits(unsigned size,const T *data)co
   }
   else{//-Con OpenMP. //-With OpenMP.
     //-Calcula bloques de ejecucion.
-	//-Computes execution blocks.
+    //-Computes execution blocks.
     const int nk=int(size/OMPSIZE)+1;
     if(nk<0)RunException(met,"Number of values is invalid.");
     const int rk=int(size%OMPSIZE);
     //-Calcula maximo de nk bloques con varios hilos.
-	//-Calculate maximum of nk blocks with several threads.
+    //-Calculate maximum of nk blocks with several threads.
     T *vmax=new T[threads*OMPSTRIDE];
     memset(vmax,0,sizeof(T)*threads*OMPSTRIDE);
     #ifdef _WITHOMP
@@ -128,7 +128,7 @@ template<class T> unsigned JRadixSort::TCalcNbits(unsigned size,const T *data)co
       vmax[OMPSTRIDE*th]=mx;
     }
     //-Calcula reduce maximo de todos los hilos.
-	//-Computes maximum for all threads.
+    //-Computes maximum for all threads.
     T mx=0;
     for(int t=0;t<threads;t++)mx=max(mx,vmax[OMPSTRIDE*t]);
     delete[] vmax; vmax=NULL;
@@ -191,7 +191,7 @@ template<class T> void JRadixSort::LoadBeginKeys(const T* data){
       } 
     }
     //-Carga valores en BeginKeys.
-	//-Loads values in BeginKeys.
+    //-Loads values in BeginKeys.
     for(unsigned ck=0;ck<Nkeys;ck++){
       BeginKeys[ck*KEYSRANGE]=0;
       for(unsigned c=1;c<KEYSRANGE;c++){
@@ -202,17 +202,17 @@ template<class T> void JRadixSort::LoadBeginKeys(const T* data){
   }
   else{//-con OpenMP. //-with OpenMP.
     //-Calcula bloques de ejecucion.
-	//-Computes execution blocks.
+    //-Computes execution blocks.
     const int nk=int(Size/OMPSIZE)+1;
     if(nk<0)RunException(met,"Number of values is invalid.");
     const int rk=int(Size%OMPSIZE);
     //-Reserva memoria auxiliar para conteo.
-	//-Allocates auxiliary memory for counting.
+    //-Allocates auxiliary memory for counting.
     const unsigned skeys=Nkeys*KEYSRANGE+100;
     unsigned *nkeys=new unsigned[skeys*threads];
     memset(nkeys,0,sizeof(unsigned)*skeys*threads);
     //-Realiza conteo con varios hilos.
-	//-Performs count with several threads.
+    //-Performs count with several threads.
     #ifdef _WITHOMP
       #pragma omp parallel for schedule (static)
     #endif
@@ -230,10 +230,10 @@ template<class T> void JRadixSort::LoadBeginKeys(const T* data){
       }
     }
     //-Reduce conteo de todos los hilos.
-	//-Reduced count for all threads.
+    //-Reduced count for all threads.
     for(int t=1;t<threads;t++)for(unsigned ck=0;ck<Nkeys;ck++)for(unsigned c=0;c<KEYSRANGE;c++)nkeys[ck*KEYSRANGE+c]+=nkeys[t*skeys+ck*KEYSRANGE+c];
     //-Carga valores en BeginKeys.
-	//-Loads values in BeginKeys.
+    //-Loads values in BeginKeys.
     for(unsigned ck=0;ck<Nkeys;ck++){
       BeginKeys[ck*KEYSRANGE]=0;
       for(unsigned c=1;c<KEYSRANGE;c++){
@@ -241,7 +241,7 @@ template<class T> void JRadixSort::LoadBeginKeys(const T* data){
       }
     }
     //-Libera memoria auxiliar.
-	//-Frees auxiliary memory.
+    //-Frees auxiliary memory.
     delete[] nkeys;
   }
 }
@@ -307,7 +307,7 @@ void JRadixSort::IndexCreate(){
     if(nk<0)RunException(met,"Number of values is invalid.");
     const int rk=int(Size%OMPSIZE);
     //-Realiza proceso con varios hilos.
-	//-Performs process with several threads.
+    //-Performs process with several threads.
     #ifdef _WITHOMP
       #pragma omp parallel for schedule (static)
     #endif

@@ -62,12 +62,12 @@ void JReadDatafile::LoadFile(const std::string &file,unsigned maxsize){
   ifstream pf;
   pf.open(file.c_str(),ios::binary);
   if(pf){
-	  pf.seekg(0,ios::end);
+    pf.seekg(0,ios::end);
     SizeFile=unsigned(pf.tellg());
     if(SizeFile>maxsize)RunException(met,"File exceeds the maximum size allowed.",file);
     Data=new char[SizeFile];
     pf.seekg(0,ios::beg);
-	  pf.read(Data,SizeFile);
+    pf.read(Data,SizeFile);
     pf.close();
   }
   else RunException(met,"Cannot open the file.",file);
@@ -85,8 +85,8 @@ void JReadDatafile::ProcessLines(){
   unsigned c2=0;
   for(unsigned c=0;c<SizeFile;c++){
     char let=Data[c];
-	  if(let=='\n')LineCount++;
-	  if(c!=c2)Data[c2]=let;
+    if(let=='\n')LineCount++;
+    if(c!=c2)Data[c2]=let;
     if(let!='\r')c2++;
   }
   Size=c2;
@@ -97,9 +97,9 @@ void JReadDatafile::ProcessLines(){
   LineBegin[0]=0;
   for(unsigned c=0;c<Size;c++){
     char let=Data[c];
-	  if(let=='\n'){
+    if(let=='\n'){
       lin++; LineBegin[lin]=c+1;
-	  }
+    }
   }
   if(lin!=LineCount)RunException(met,"Error counting lines.");
   LineBegin[LineCount]=Size;
