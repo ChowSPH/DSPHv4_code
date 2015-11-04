@@ -1,4 +1,4 @@
-#DualSPHysics v4 Re (03-10-2015)
+#DualSPHysics v4 Re (03-11-2015)
 
 #=============== Cluster selection ===============
 CLUSTER=EPH
@@ -14,8 +14,8 @@ CLUSTER=EPH
 #=============== Files to compile ===============
 OBJ_BASIC=main.o Functions.o FunctionsMath.o JArraysCpu.o JBinaryData.o JCellDivCpu.o JCfgRun.o JException.o
 OBJ_BASIC:=$(OBJ_BASIC) JLinearValue.o JLog2.o JObject.o JPartDataBi4.o JPartFloatBi4.o JPartOutBi4Save.o JPartsOut.o 
-OBJ_BASIC:=$(OBJ_BASIC) JRadixSort.o JRangeFilter.o JSaveDt.o JSpaceCtes.o JSpaceEParms.o JSpaceParts.o 
-OBJ_BASIC:=$(OBJ_BASIC) JSpaceProperties.o JSph.o JSphCpu.o JSphDtFixed.o JSphVarAcc.o JSphVisco.o randomc.o
+OBJ_BASIC:=$(OBJ_BASIC) JRadixSort.o JRangeFilter.o JReadDatafile.o JSaveDt.o JSpaceCtes.o JSpaceEParms.o JSpaceParts.o 
+OBJ_BASIC:=$(OBJ_BASIC) JSpaceProperties.o JSph.o JSphAccInput.o JSphCpu.o JSphDtFixed.o JSphVisco.o randomc.o
 OBJ_BASIC:=$(OBJ_BASIC) JTimersStep.o
 OBJ_CPU_SINGLE=JCellDivCpuSingle.o JSphCpuSingle.o JPartsLoad4.o
 OBJECTS=$(OBJ_BASIC) $(OBJ_CPU_SINGLE)

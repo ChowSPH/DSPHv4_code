@@ -2595,13 +2595,13 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
 
 
 //##############################################################################
-//# Kernels para external forces (JSphVarAcc)
-//# Kernels for external forces (JSphVarAcc)
+//# Kernels para external forces (JSphAccInput)
+//# Kernels for external forces (JSphAccInput)
 //##############################################################################
 //------------------------------------------------------
 /// Adds variable forces to particle sets.
 //------------------------------------------------------
-__global__ void KerAddVarAccAng(unsigned n,unsigned pini,word codesel,float3 gravity
+__global__ void KerAddAccInputAng(unsigned n,unsigned pini,word codesel,float3 gravity
   ,bool setgravity,double3 acclin,double3 accang,double3 centre,double3 velang,double3 vellin
   ,const word *code,const double2 *posxy,const double *posz,const float4 *velrhop,float3 *ace)
 {
@@ -2660,7 +2660,7 @@ __global__ void KerAddVarAccAng(unsigned n,unsigned pini,word codesel,float3 gra
 //------------------------------------------------------
 /// Adds variable forces to particle sets.
 //------------------------------------------------------
-__global__ void KerAddVarAccLin(unsigned n,unsigned pini,word codesel,float3 gravity
+__global__ void KerAddAccInputLin(unsigned n,unsigned pini,word codesel,float3 gravity
   ,bool setgravity,double3 acclin,const word *code,float3 *ace)
 {
   unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x;
@@ -2685,15 +2685,15 @@ __global__ void KerAddVarAccLin(unsigned n,unsigned pini,word codesel,float3 gra
 //==================================================================================================
 /// Adds variable acceleration forces for particle MK groups that have an input file.
 //==================================================================================================
-void AddVarAcc(unsigned n,unsigned pini,word codesel
+void AddAccInput(unsigned n,unsigned pini,word codesel
   ,tdouble3 acclin,tdouble3 accang,tdouble3 centre,tdouble3 velang,tdouble3 vellin,bool setgravity
   ,tfloat3 gravity,const word *code,const double2 *posxy,const double *posz,const float4 *velrhop,float3 *ace)
 {
   if(n){
     dim3 sgrid=GetGridSize(n,SPHBSIZE);
     const bool withaccang=(accang.x!=0 || accang.y!=0 || accang.z!=0);
-    if(withaccang)KerAddVarAccAng <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(gravity),setgravity,Double3(acclin),Double3(accang),Double3(centre),Double3(velang),Double3(vellin),code,posxy,posz,velrhop,ace);
-    else          KerAddVarAccLin <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(gravity),setgravity,Double3(acclin),code,ace);
+    if(withaccang)KerAddAccInputAng <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(gravity),setgravity,Double3(acclin),Double3(accang),Double3(centre),Double3(velang),Double3(vellin),code,posxy,posz,velrhop,ace);
+    else          KerAddAccInputLin <<<sgrid,SPHBSIZE>>> (n,pini,codesel,Float3(gravity),setgravity,Double3(acclin),code,ace);
   }
 }
 

@@ -52,7 +52,7 @@ class JSphDtFixed;
 class JSaveDt;
 class JSphVisco;
 class JWaveGen;
-class JSphVarAcc;
+class JSphAccInput;
 class JSpaceParts;
 class JPartDataBi4;
 class JPartOutBi4Save;
@@ -266,7 +266,7 @@ protected:
 
   JWaveGen *WaveGen;      //-Objecto para generacion de oleaje.													//-Object for wave generation
 
-  JSphVarAcc *VarAcc;     ///<Object for variable acceleration functionality.
+  JSphAccInput *AccInput;     ///<Object for variable acceleration functionality.
 
   TpCellOrder CellOrder;  //-Orden de ejes en ordenacion de particulas en celdas.								//-Defines axes' ordination of particles in cells.
 

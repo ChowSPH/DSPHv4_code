@@ -25,7 +25,7 @@
 #include "JWaveGen.h"
 #include "JXml.h"
 #include "JSaveDt.h"
-#include "JSphVarAcc.h"
+#include "JSphAccInput.h"
 
 #include <climits>
 
@@ -421,9 +421,16 @@ void JSphCpu::InitRun(){
 
   //-Prepares WaveGen configuration.
   if(WaveGen){
-    Log->Printf("\nWave paddles configuration:");
+    Log->Print("\nWave paddles configuration:");
     WaveGen->Init(TimeMax,Gravity,Simulate2D,CellOrder,MassFluid,Dp,Dosh,Scell,Hdiv,DomPosMin,DomRealPosMin,DomRealPosMax);
     WaveGen->VisuConfig(""," ");
+  }
+
+  //-Prepares AccInput configuration.
+  if(AccInput){
+    Log->Print("\nAccInput configuration:");
+    AccInput->Init(TimeMax);
+    AccInput->VisuConfig(""," ");
   }
 
   //-Process Special configurations in XML.
@@ -444,12 +451,12 @@ void JSphCpu::InitRun(){
 //==============================================================================
 /// Adds variable acceleration from input files.
 //==============================================================================
-void JSphCpu::AddVarAcc(){
-  for(unsigned c=0;c<VarAcc->GetCount();c++){
+void JSphCpu::AddAccInput(){
+  for(unsigned c=0;c<AccInput->GetCount();c++){
     unsigned mkfluid;
     tdouble3 acclin,accang,centre,velang,vellin;
     bool setgravity;
-    VarAcc->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre,velang,vellin,setgravity);
+    AccInput->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre,velang,vellin,setgravity);
     const bool withaccang=(accang.x!=0||accang.y!=0||accang.z!=0);
     const word codesel=word(mkfluid);
     const int npb=int(Npb),np=int(Np);
@@ -510,7 +517,7 @@ void JSphCpu::PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb)
   if(SpsGradvelc)memset(SpsGradvelc+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelc[]=(0,0,0,0,0,0).
 
   //-Apply the extra forces to the correct particle sets.
-  if(VarAcc)AddVarAcc();
+  if(AccInput)AddAccInput();
 
   //-Prepare values of rhop for interaction / Prepara datos derivados de rhop para interaccion.
   const int n=int(np);

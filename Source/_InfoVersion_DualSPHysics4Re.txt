@@ -320,13 +320,16 @@
   - Replace tabs with spaces. (v4.0.015 / 03-10-2015)
   - Include Corrado Altomare. (v4.0.015 / 03-10-2015)
   - Error solved in external forces. (v4.0.016 / 03-11-2015)
+  - External forces uses Special configuration. (v4.0.017 / 03-11-2015)
+  - New class JReadDatafile to facilitate reading data from CSV files. (v4.0.017 / 03-11-2015)
   
-  
+
+
 Remaining issues:
 ==================
 - Add kernel Cubic.
 - Option for rotation from data file.
-- To use Special cofiguration for external forces.
+- To use JREadDatafile in JSphDtFixed, JSphVisco and JRotationFile.
 - Use of SDAT_info?
 - Example with DtFixed.
 - Examples with DomainLimits
@@ -345,6 +348,7 @@ Remaining issues:
 - Usar thrust en? diferencia en rendimiento?
   if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
 
+x To use Special configuration for external forces.
 x Remove JSaveCsv before creating release.  
 x Remove JDgKerPrint before creating release.  
 x Remove KPrint, ik.

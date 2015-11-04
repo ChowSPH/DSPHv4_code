@@ -169,8 +169,11 @@
     <ClInclude Include="Source\JWaveGen.h">
       <Filter>Libs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JSphVarAcc.h">
+    <ClInclude Include="Source\JSphAccInput.h">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\JReadDatafile.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -288,8 +291,11 @@
     <ClCompile Include="Source\JSaveDt.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\JSphVarAcc.cpp">
+    <ClCompile Include="Source\JSphAccInput.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\JReadDatafile.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

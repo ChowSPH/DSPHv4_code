@@ -31,7 +31,7 @@
 #include "JSaveDt.h"
 #include "JSphVisco.h"
 #include "JWaveGen.h"
-#include "JSphVarAcc.h"
+#include "JSphAccInput.h"
 #include "JPartDataBi4.h"
 #include "JPartOutBi4Save.h"
 #include "JPartFloatBi4.h"
@@ -60,7 +60,7 @@ JSph::JSph(bool cpu,bool withmpi):Cpu(cpu),WithMpi(withmpi){
   Motion=NULL;
   FtObjs=NULL;
   WaveGen=NULL;
-  VarAcc=NULL;
+  AccInput=NULL;
   TimersStep=NULL;
   InitVars();
 }
@@ -80,7 +80,7 @@ JSph::~JSph(){
   delete Motion;
   AllocMemoryFloating(0);
   delete WaveGen;
-  delete VarAcc;
+  delete AccInput;
   delete TimersStep;
 }
 
@@ -262,7 +262,7 @@ llong JSph::GetAllocMemoryCpu()const{
   if(TimersStep)s+=TimersStep->GetAllocMemory();
   if(ViscoTime)s+=ViscoTime->GetAllocMemory();
   if(DtFixed)s+=DtFixed->GetAllocMemory();
-  if(VarAcc)s+=VarAcc->GetAllocMemory();
+  if(AccInput)s+=AccInput->GetAllocMemory();
   return(s);
 }
 
@@ -490,14 +490,9 @@ void JSph::LoadCaseConfig(){
     WaveGen=new JWaveGen(Log,DirCase,&xml,"case.execution.special.wavepaddles");
   }
 
-  //-Reads the values for the base file path and file count for the variable acceleration input file(s)
-  string accinput=eparms.GetValueStr("VarAccInput",true,"");
-  int accinputcount=eparms.GetValueInt("VarAccInputCount",true,0);
-  if(!accinput.empty() && accinputcount>0){
-    VarAcc=new JSphVarAcc();
-    if(int(accinput.find("/"))<0 && int(accinput.find("\\"))<0)accinput=DirCase+accinput; //-Only name of the file.
-    VarAcc->Config(accinput,unsigned(accinputcount),TimeMax);
-    Log->Print("Variable acceleration data successfully loaded.");
+  //-Configuration of AccInput.
+  if(xml.GetNode("case.execution.special.accinputs",false)){
+    AccInput=new JSphAccInput(Log,DirCase,&xml,"case.execution.special.accinputs");
   }
 
   //-Loads and configures MOTION.
@@ -818,7 +813,6 @@ void JSph::VisuConfig()const{
     Log->Print(fun::VarStr("RhopOutMin",RhopOutMin));
     Log->Print(fun::VarStr("RhopOutMax",RhopOutMax));
   }
-  if(VarAcc)Log->Print(fun::VarStr("VarAcc",VarAcc->GetBaseFile()+":"+fun::UintStr(VarAcc->GetCount())));
   if(CteB==0)RunException(met,"Constant \'b\' can not be zero.\n\'b\' is zero when fluid height is zero (or fluid particles were not created)");
 }
 

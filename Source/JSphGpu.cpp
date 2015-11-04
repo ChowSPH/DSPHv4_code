@@ -26,7 +26,7 @@
 #include "JSphDtFixed.h"
 #include "JSaveDt.h"
 #include "JWaveGen.h"
-#include "JSphVarAcc.h"
+#include "JSphAccInput.h"
 #include "JXml.h"
 
 using namespace std;
@@ -837,9 +837,16 @@ void JSphGpu::InitRun(){
 
   //-Prepares WaveGen configuration.
   if(WaveGen){
-    Log->Printf("\nWave paddles configuration:");
+    Log->Print("\nWave paddles configuration:");
     WaveGen->Init(TimeMax,Gravity,Simulate2D,CellOrder,MassFluid,Dp,Dosh,Scell,Hdiv,DomPosMin,DomRealPosMin,DomRealPosMax);
     WaveGen->VisuConfig(""," ");
+  }
+
+  //-Prepares AccInput configuration.
+  if(AccInput){
+    Log->Print("\nAccInput configuration:");
+    AccInput->Init(TimeMax);
+    AccInput->VisuConfig(""," ");
   }
 
   //-Process Special configurations in XML.
@@ -861,14 +868,14 @@ void JSphGpu::InitRun(){
 //==============================================================================
 /// Adds variable acceleration from input files.
 //==============================================================================
-void JSphGpu::AddVarAcc(){
-  for(unsigned c=0;c<VarAcc->GetCount();c++){
+void JSphGpu::AddAccInput(){
+  for(unsigned c=0;c<AccInput->GetCount();c++){
     unsigned mkfluid;
     tdouble3 acclin,accang,centre,velang,vellin;
     bool setgravity;
-    VarAcc->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre,velang,vellin,setgravity);
+    AccInput->GetAccValues(c,TimeStep,mkfluid,acclin,accang,centre,velang,vellin,setgravity);
     const word codesel=word(mkfluid);
-    cusph::AddVarAcc(Np-Npb,Npb,codesel,acclin,accang,centre,velang,vellin,setgravity,Gravity,Codeg,Posxyg,Poszg,Velrhopg,Aceg);
+    cusph::AddAccInput(Np-Npb,Npb,codesel,acclin,accang,centre,velang,vellin,setgravity,Gravity,Codeg,Posxyg,Poszg,Velrhopg,Aceg);
   }
 }
 
@@ -890,7 +897,7 @@ void JSphGpu::PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb)
   if(SpsGradvelg)cudaMemset(SpsGradvelg+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelg[]=(0,0,0,0,0,0).
 
   //-Apply the extra forces to the correct particle sets.
-  if(VarAcc)AddVarAcc();
+  if(AccInput)AddAccInput();
 }
 
 //==============================================================================

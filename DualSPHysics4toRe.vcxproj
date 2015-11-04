@@ -710,6 +710,7 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\JPartsLoad4.h" />
+    <ClInclude Include="Source\JReadDatafile.h" />
     <ClInclude Include="Source\JSaveDt.h" />
     <ClInclude Include="Source\JRadixSort.h" />
     <ClInclude Include="Source\JRangeFilter.h" />
@@ -724,7 +725,7 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\JSphMotion.h" />
-    <ClInclude Include="Source\JSphVarAcc.h" />
+    <ClInclude Include="Source\JSphAccInput.h" />
     <ClInclude Include="Source\JSphVisco.h" />
     <ClInclude Include="Source\JPartsOut.h" />
     <ClInclude Include="Source\JSphCpuSingle.h" />
@@ -805,6 +806,7 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\JPartsLoad4.cpp" />
+    <ClCompile Include="Source\JReadDatafile.cpp" />
     <ClCompile Include="Source\JSaveDt.cpp" />
     <ClCompile Include="Source\JRadixSort.cpp" />
     <ClCompile Include="Source\JRangeFilter.cpp" />
@@ -814,7 +816,7 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Source\JSphVarAcc.cpp" />
+    <ClCompile Include="Source\JSphAccInput.cpp" />
     <ClCompile Include="Source\JSphVisco.cpp" />
     <ClCompile Include="Source\JPartsOut.cpp" />
     <ClCompile Include="Source\JSphCpuSingle.cpp" />
