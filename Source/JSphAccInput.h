@@ -35,6 +35,26 @@ class JXml;
 class TiXmlElement;
 
 //##############################################################################
+//# XML format.
+//##############################################################################
+//<special>
+//  <accinputs>
+//    <accinput>
+//      <mkfluid value="0" comment="Mk-Fluid of selected particles" />
+//      <acccentre x="0" y="0" z="0" comment="Center of acceleration" />
+//      <globalgravity value="0" comment="Global gravity enabled (1) or disabled (0)" />
+//      <datafile value="CaseForcesData_0.csv" comment="File with acceleration data" />
+//    </accinput>
+//    <accinput>
+//      <mkfluid value="1" comment="Mk-Fluid of selected particles" />
+//      <acccentre x="0" y="0" z="0" comment="Center of acceleration" />
+//      <globalgravity value="0" comment="Global gravity enabled (1) or disabled (0)" />
+//      <datafile value="CaseForcesData_1.csv" comment="File with acceleration data" />
+//    </accinput>
+//  </accinputs>
+//</special>
+
+//##############################################################################
 //# JSphAccInputMk
 //##############################################################################
 /// \brief Provides the force to be applied to different blocks of particles that is loaded from files.
