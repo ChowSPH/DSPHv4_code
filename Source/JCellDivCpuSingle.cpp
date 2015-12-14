@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -302,7 +302,7 @@ void JCellDivCpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   //-Calculate number of particles / Calcula numeros de particulas.
   NpbIgnore=CellSize(BoxIgnore);
   NpbOut=CellSize(BoxBoundOut);
-  if(NpbOut)RunException(met,"There can not be excluded boundary particles.");
+  if(NpbOut)RunException(met,"There cannot be excluded boundary particles.");
   NpfOut=CellSize(BoxFluidOut);
   NpbOutIgnore=CellSize(BoxBoundOutIgnore);
   NpfOutIgnore=CellSize(BoxFluidOutIgnore);

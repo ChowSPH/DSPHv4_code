@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -269,7 +269,7 @@ void JPartsLoad4::GetMapSize(tdouble3 &mapmin,tdouble3 &mapmax)const{
 // Calcula limites de las particulas cargadas.
 //==============================================================================
 void JPartsLoad4::CalculateCasePos(){
-  if(!PartBegin)RunException("CalculateCasePos","The limits of the initial case can not be calculated from a file PART.");
+  if(!PartBegin)RunException("CalculateCasePos","The limits of the initial case cannot be calculated from a file PART.");
   tdouble3 pmin=TDouble3(DBL_MAX),pmax=TDouble3(-DBL_MAX);
   //-Calcula posicion minima y maxima. 
   for(unsigned p=0;p<Count;p++){

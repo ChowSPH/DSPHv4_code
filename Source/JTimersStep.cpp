@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -86,7 +86,7 @@ void JTimersStep::ClearData(){
 //==============================================================================
 void JTimersStep::AddTimer(std::string name,const double* ptrtime){
   ClearData();
-  if(TimersCount>=TIMERSMAX)RunException("AddTimer","You can not create more timers.");
+  if(TimersCount>=TIMERSMAX)RunException("AddTimer","You cannot create more timers.");
   Timers[TimersCount].Config(name,ptrtime);
   TimersCount++;
 }

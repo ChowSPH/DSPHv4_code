@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -136,7 +136,7 @@ void JSpaceCtes::WriteXmlDef(JXml *sxml,TiXmlElement* node)const{
   WriteXmlElementAuto(sxml,node,"speedsound",GetSpeedSound(),GetSpeedSoundAuto(),"Speed of sound to use in the simulation (by default speedofsound=coefsound*speedsystem)");
   if(!GetCoefH()&&GetCoefHdp())JXml::AddAttribute(JXml::AddElementAttrib(node,"coefh","hdp",GetCoefHdp()),"comment","Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
   else JXml::AddAttribute(JXml::AddElementAttrib(node,"coefh","value",GetCoefH()),"comment","Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
-  JXml::AddAttribute(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"comment","Politropic constant for water used in the state equation");
+  JXml::AddAttribute(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"comment","Polytropic constant for water used in the state equation");
   JXml::AddAttribute(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"comment","Reference density of the fluid");
   WriteXmlElementAuto(sxml,node,"h",GetH(),GetHAuto());
   WriteXmlElementAuto(sxml,node,"b",GetB(),GetBAuto());

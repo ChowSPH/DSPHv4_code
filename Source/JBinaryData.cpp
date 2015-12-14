@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -320,8 +320,12 @@ void JBinaryDataArray::ClearFileData(){
 //==============================================================================
 void JBinaryDataArray::ReadFileData(bool resize){
   const char met[]="ReadFileData";
+  //printf("ReadFileData Parent_name:[%s] p:%p\n",Parent->GetName().c_str(),Parent);
+  //printf("ReadFileData Parent2_name:[%s] p:%p\n",(Parent->GetParent()? Parent->GetParent()->GetName().c_str(): "none"),Parent->GetParent());
+  //printf("ReadFileData root_name:[%s] p:%p\n",Parent->GetItemRoot()->GetName().c_str(),Parent->GetItemRoot());
   ifstream *pf=Parent->GetItemRoot()->GetFileStructure();
   if(!pf||!pf->is_open())RunException(met,"The file with data is not available.");
+  //printf("ReadFileData[%s]> fpos:%llu count:%u size:%u\n",Name.c_str(),FileDataPos,FileDataCount,FileDataSize);
   if(FileDataPos<0)RunException(met,"The access information to data file is not available.");
   pf->seekg(FileDataPos,ios::beg);
   ReadData(FileDataCount,FileDataSize,pf,resize);
@@ -579,6 +583,7 @@ void JBinaryData::ValuesCachePrepare(bool down){
 int JBinaryData::CheckGetValue(const std::string &name,bool optional,JBinaryDataDef::TpData type)const{
   const char met[]="CheckGetValue";
   int idx=GetValueIndex(name);
+  //if(idx<0&&GetArrayIndex(name)>=0)RunException(met,string("The value ")+name+" is an array.");
   if(!optional&&idx<0)RunException(met,string("Value ")+name+" not found.");
   if(idx>=0&&Values[idx].type!=type)RunException(met,string("Type of value ")+name+" invalid.");
   return(idx);
@@ -1201,7 +1206,7 @@ unsigned JBinaryData::CheckFileListHead(const std::string &file,std::fstream *pf
   //-Obtiene size del fichero.
   //-Gets file size.
   pf->seekg(0,ios::end);
-  const unsigned fsize=(unsigned)pf->tellg();
+  const unsigned fsize=(unsigned)pf->tellg();   //printf("CheckFileHead> FileSize:%u\n",fsize);
   pf->seekg(0,ios::beg);
   //-Lee cabecera basica y comprueba validez.
   //-Reads basic header and checks validity.
@@ -1428,8 +1433,10 @@ void JBinaryData::SaveFileData(std::fstream *pf,bool head,const std::string &fil
   //-Graba datos. Save data.
   if(memory){//-Graba datos desde memoria. Write data from memory.
     const unsigned sbuf=GetSizeDataConst(all);
+    //printf("SaveFile> sbuf:%u\n",sbuf);
     byte *buf=new byte[sbuf];
     unsigned sbuf2=SaveDataConst(sbuf,buf,all);
+    //printf("SaveFile> sbuf2:%u\n",sbuf2);
     pf->write((char*)buf,sbuf);
     delete[] buf;
   }
@@ -1481,6 +1488,7 @@ void JBinaryData::LoadFile(const std::string &file,const std::string &filecode,b
     //-Carga datos.
     if(memory){//-Carga datos desde memoria. Write data from memory.
       const unsigned sbuf=fsize-sizeof(StHeadFmtBin);
+      //printf("LoadFile> sbuf:%u\n",sbuf);
       byte *buf=new byte[sbuf];
       pf.read((char*)buf,sbuf);
       LoadData(sbuf,buf);
@@ -1547,6 +1555,7 @@ void JBinaryData::LoadFileListApp(const std::string &file,const std::string &fil
       //-Carga datos.
       if(memory){//-Carga datos desde memoria. Loads data from memory.
         const unsigned sbuf=fsize-sizeof(StHeadFmtBin);
+        //printf("LoadFile> sbuf:%u\n",sbuf);
         byte *buf=new byte[sbuf];
         pf.read((char*)buf,sbuf);
         unsigned cbuf=0;

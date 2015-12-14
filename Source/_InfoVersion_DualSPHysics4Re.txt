@@ -326,7 +326,9 @@
   - Include XML configuration for external forces. (v4.0.019 / 03-10-2015)
   - RenCorrection was removed. (v4.0.020 / 04-10-2015)
   - Add 2nd order wave generation. (v4.0.021 / 11-12-2015)
-  
+  - English correction. (v4.0.022 / 14-12-2015)
+  - Header update. (v4.0.022 / 14-12-2015)
+  - Code synchronisation. (v4.0.022 / 14-12-2015)
 
 
 Remaining issues:

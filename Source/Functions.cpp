@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -263,6 +263,21 @@ std::string StrRepeat(const std::string &cad,unsigned count){
   std::string ret;
   for(unsigned c=0;c<count;c++)ret=ret+cad;
   return(ret);
+}
+
+//==============================================================================
+/// Inidicates if the string cad only contains characters in the string chars.
+//==============================================================================
+bool StrOnlyChars(const std::string &cad,const std::string &chars){
+  bool ok=true;
+  const unsigned nc=unsigned(chars.length());
+  for(int c=0;c<int(cad.length()) && ok;c++){
+    const char let=cad[c];
+    unsigned c2=0;
+    for(;c2<nc && chars[c2]!=let;c2++);
+    if(c2>=nc)ok=false;
+  }
+  return(ok);
 }
 
 //==============================================================================

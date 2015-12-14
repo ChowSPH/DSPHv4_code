@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -75,7 +75,7 @@ private:
 
   double CoefH;           ///<Coefficient to calculate the smoothing length H (H=coefficient*sqrt(3*dp^2) in 3D).
   double CoefHdp;         ///<Relationship between h and dp. (it is optional).
-  double Gamma;           ///<Politropic constant. (1-7).
+  double Gamma;           ///<Polytropic constant. (1-7).
   double Rhop0;           ///<Density of reference.
 
   double Eps;             ///<Epsilon constant for XSPH variant.
@@ -132,8 +132,8 @@ public:
   void SetLatticeFluid(bool simple){ LatticeFluid=(simple? 1: 2); }
   void SetGravity(const tdouble3& g){ Gravity=g; }
   void SetCFLnumber(double v){ 
-    if(!v)RunException("SetCFLnumber","Value can not be zero.");
-    if(v>1)RunException("SetCFLnumber","Value can not be higher than 1.");
+    if(!v)RunException("SetCFLnumber","Value cannot be zero.");
+    if(v>1)RunException("SetCFLnumber","Value cannot be greater than 1.");
     CFLnumber=v;
   }
   void SetHSwlAuto(bool on){ HSwlAuto=on; }

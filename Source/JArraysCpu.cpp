@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -114,8 +114,8 @@ void JArraysCpuSize::FreePointer(void* pointer)const{
 //==============================================================================
 void JArraysCpuSize::SetArrayCount(unsigned count){
   const char met[]="SetArrayCount";
-  if(count>MAXPOINTERS)RunException(met,"El numero de arrays solicitados supera el maximo.");
-  if(count<CountUsed)RunException(met,"No se pude liberar arrays en uso.");
+  if(count>MAXPOINTERS)RunException(met,"Number of requested arrays exceeds the maximum.");
+  if(count<CountUsed)RunException(met,"Unable to free arrays in use.");
   if(ArraySize){
     if(Count<count){//-Genera nuevos arrays. //-Generates new arrays.
       for(unsigned c=Count;c<count;c++)Pointers[c]=AllocPointer(ArraySize);
@@ -137,7 +137,7 @@ void JArraysCpuSize::SetArrayCount(unsigned count){
 /// If there is any array in use raises an exception.
 //==============================================================================
 void JArraysCpuSize::SetArraySize(unsigned size){
-  if(CountUsed)RunException("SetArraySize","No se puede cambiar la dimension de los arrays porque hay alguno en uso.");
+  if(CountUsed)RunException("SetArraySize","Unable to change the dimension of the arrays because some are in use.");
   if(ArraySize!=size){
     ArraySize=size;
     unsigned count=Count;
@@ -151,7 +151,7 @@ void JArraysCpuSize::SetArraySize(unsigned size){
 /// Requests allocating an array.
 //==============================================================================
 void* JArraysCpuSize::Reserve(){
-  if(CountUsed==Count||!ArraySize)RunException("Reserve",fun::PrintStr("No hay arrays disponibles de %u bytes.",ElementSize));
+  if(CountUsed==Count||!ArraySize)RunException("Reserve",fun::PrintStr("There are no arrays available with %u bytes.",ElementSize));
   CountUsed++;
   CountUsedMax=max(CountUsedMax,CountUsed);
   return(Pointers[CountUsed-1]);
@@ -174,7 +174,7 @@ unsigned JArraysCpuSize::FindPointerUsed(void *pointer)const{
 void JArraysCpuSize::Free(void *pointer){
   if(pointer){
     unsigned pos=FindPointerUsed(pointer);
-    if(pos==MAXPOINTERS)RunException("Free","El puntero indicado no estaba reservado.");
+    if(pos==MAXPOINTERS)RunException("Free","The pointer indicated was not reserved.");
     if(pos+1<CountUsed){
       void *aux=Pointers[CountUsed-1]; Pointers[CountUsed-1]=Pointers[pos]; Pointers[pos]=aux;
     }

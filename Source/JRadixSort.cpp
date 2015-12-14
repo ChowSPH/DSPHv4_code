@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -497,7 +497,7 @@ void JRadixSort::SortData(unsigned size,const tdouble2 *data,tdouble2 *result){ 
 void JRadixSort::DgCheckResult32()const{
   unsigned p=1;
   for(;p<Size&&InitData32[p-1]<=InitData32[p];p++);
-  if(p!=Size)RunException("DgCheckResult32","El orden no es correcto");
+  if(p!=Size)RunException("DgCheckResult32","The order is not correct");
 }
 //==============================================================================
 /// Comprueba ordenacion de datos.
@@ -506,6 +506,6 @@ void JRadixSort::DgCheckResult32()const{
 void JRadixSort::DgCheckResult64()const{
   unsigned p=1;
   for(;p<Size&&InitData64[p-1]<=InitData64[p];p++);
-  if(p!=Size)RunException("DgCheckResult64","El orden no es correcto");
+  if(p!=Size)RunException("DgCheckResult64","The order is not correct");
 }
 

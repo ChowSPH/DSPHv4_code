@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -77,7 +77,7 @@ void JCfgRun::VisuInfo()const{
   printf("    -h          Shows information about parameters\n\n");
   printf("    -opt <file> Load a file configuration\n\n");
   printf("    -cpu        Execution on Cpu (option by default)\n");
-  printf("    -gpu[:id]   Execucion on Gpu and id of the device\n");
+  printf("    -gpu[:id]   Execution on Gpu and id of the device\n");
   printf("    -stable     The result is always the same but the execution is slower\n");
   printf("    -psimple    Use position with low precision (option by default)\n");
   printf("    -pdouble    Use position with high precision (enables SvDouble)\n");
@@ -95,7 +95,7 @@ void JCfgRun::VisuInfo()const{
   printf("    -symplectic      Symplectic algorithm as time step algorithm\n");
   printf("    -verlet[:steps]  Verlet algorithm as time step algorithm and number of\n");
   printf("                     time steps to switch equations\n\n");
-  printf("    -viscoart:<float>          Artifitical viscosity [0-1]\n");
+  printf("    -viscoart:<float>          Artificial viscosity [0-1]\n");
   printf("    -viscolamsps:<float>       Laminar+SPS viscosity [order of 1E-6]\n");  
   printf("    -viscoboundfactor:<float>  Multiplies the viscosity value of boundary\n");
   printf("\n");
@@ -129,13 +129,12 @@ void JCfgRun::VisuInfo()const{
   printf("    -ftpause:<float> Time to start floating bodies movement. By default 0\n");
   printf("    -tmax:<float>   Maximum time of simulation\n");
   printf("    -tout:<float>   Time between output files\n\n");
-  printf("    -domain_particles[:xmin,ymin,zmin,xmax,ymax,zmax]  El dominio del caso se\n");
-  printf("     fija en funcion de las particulas iniciales y es modificado por xmin,...\n");
-  printf("    -domain_particles_prc:xmin,ymin,zmin,xmax,ymax,zmax  Los valores en \n");
-  printf("     proporcion con las dimensiones del caso segun las particulas iniciales\n");
-  printf("    -domain_fixed:xmin,ymin,zmin,xmax,ymax,zmax    El dominio del caso se\n");
-  printf("     fija con los valores especificados\n\n");
-  printf("    -move:x,y,z       Desplaza las particulas durante el calculo.\n");
+  printf("    -domain_particles[:xmin,ymin,zmin,xmax,ymax,zmax]  The domain is fixed as\n");
+  printf("     a function of the initial article positions and modified for xmin,...\n");
+  printf("    -domain_particles_prc:xmin,ymin,zmin,xmax,ymax,zmax  The values in \n");
+  printf("     proportion with the case dimensions according to the initial particles\n");
+  printf("    -domain_fixed:xmin,ymin,zmin,xmax,ymax,zmax    The domain is fixed\n");
+  printf("     with the specified values\n\n");
   printf("    -ptxasfile <file> Indicate the file with information about the compilation\n");
   printf("     of kernels in CUDA to adjust the size of the blocks depending on the \n");
   printf("     needed registers for each kernel (only for gpu)\n\n");

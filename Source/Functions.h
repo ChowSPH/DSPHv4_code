@@ -1,5 +1,5 @@
 ﻿/*
- <DUALSPHYSICS>  Copyright (c) 2015, Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -48,6 +48,7 @@
 //# - Nuevas funcion StrRepeat(). (03/10/2014)
 //# - Nuevas funciones GetFirstValueXXX(). (15/12/2014)
 //# - Remplaza long long por llong. (01-10-2015)
+//# - Nueva funcion StrOnlyChars(). (03-10-2015)
 //# - EN:
 //# Changes:
 //# ========
@@ -80,6 +81,7 @@
 //# - New function StrRepeat(). (03.10.2014)
 //# - New function GetFirstValueXXX(). (12.15.2014)
 //# - Replace long long by llong. (01-10-2015)
+//# - New function StrOnlyChars(). (03-10-2015)
 //#############################################################################
 
 /// \file Functions.h \brief Declares basic/general functions for the entire application.
@@ -135,6 +137,8 @@ std::string StrTrim(const std::string &cad);
 std::string StrTrimRepeated(const std::string &cad);
 std::string StrWithoutChar(const std::string &cad,char let);
 std::string StrRepeat(const std::string &cad,unsigned count);
+bool StrOnlyChars(const std::string &cad,const std::string &chars);
+
 std::string StrSplit(const std::string mark,std::string &text);
 unsigned StrSplitCount(const std::string mark,std::string text);
 std::string StrSplitValue(const std::string mark,std::string text,unsigned value);
