@@ -48,6 +48,7 @@ typedef struct{
   //-Values depending on the assigned domain (can change).
   unsigned cellcode;
   double domposminx,domposminy,domposminz;
+  float cubic_a1,cubic_a2,cubic_aa,cubic_a24,cubic_c1,cubic_d1,cubic_c2,cubic_odwdeltap; ///<Ctes of Cubic Spline kernel.
 }StCteInteraction; 
 
 namespace cusph{
@@ -77,7 +78,7 @@ void PreInteractionSimple(unsigned np,const double2 *posxy,const double *posz
 
 //# Kernels para calculo de fuerzas.
 //# Kernels for the force calculation.
-void Interaction_Forces(bool psimple,bool floating,bool usedem,bool lamsps
+void Interaction_Forces(bool psimple,TpKernel tkernel,bool floating,bool usedem,bool lamsps
   ,TpDeltaSph tdelta,TpCellMode cellmode
   ,float viscob,float viscof,unsigned bsbound,unsigned bsfluid
   ,unsigned np,unsigned npb,unsigned npbok,tuint3 ncells

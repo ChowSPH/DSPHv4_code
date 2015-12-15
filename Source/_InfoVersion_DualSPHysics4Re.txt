@@ -329,11 +329,12 @@
   - English correction. (v4.0.022 / 14-12-2015)
   - Header update. (v4.0.022 / 14-12-2015)
   - Code synchronisation. (v4.0.022 / 14-12-2015)
+  - Add kernel Cubic. (v4.0.023 / 15-12-2015)
 
-
+  
 Remaining issues:
 ==================
-- Add kernel Cubic.
+- To change kernel Wendland by default in XML examples.
 - Option for rotation from data file.
 - To use JREadDatafile in JSphDtFixed, JSphVisco and JRotationFile.
 - Use of SDAT_info?

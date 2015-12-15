@@ -60,6 +60,7 @@ public:
   TpCellMode  CellMode;
   TpStep TStep;
   int VerletSteps;
+  TpKernel TKernel;
   TpVisco TVisco;
   float Visco;
   float ViscoBoundFactor;

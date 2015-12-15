@@ -54,6 +54,7 @@ void JCfgRun::Reset(){
   DomainParticlesPrcMin=DomainParticlesPrcMax=TDouble3(0);
   DomainFixedMin=DomainFixedMax=TDouble3(0);
   TStep=STEP_None; VerletSteps=-1;
+  TKernel=KERNEL_None;
   TVisco=VISCO_None; Visco=0; ViscoBoundFactor=-1;
   DeltaSph=-1;
   Shifting=-1;
@@ -95,6 +96,8 @@ void JCfgRun::VisuInfo()const{
   printf("    -symplectic      Symplectic algorithm as time step algorithm\n");
   printf("    -verlet[:steps]  Verlet algorithm as time step algorithm and number of\n");
   printf("                     time steps to switch equations\n\n");
+  printf("    -cubic           Cubic spline kernel\n");
+  printf("    -wendland        Wendland kernel\n\n");
   printf("    -viscoart:<float>          Artificial viscosity [0-1]\n");
   printf("    -viscolamsps:<float>       Laminar+SPS viscosity [order of 1E-6]\n");  
   printf("    -viscoboundfactor:<float>  Multiplies the viscosity value of boundary\n");
@@ -164,6 +167,7 @@ void JCfgRun::VisuConfig()const{
   PrintVar("  CellMode",GetNameCellMode(CellMode),ln);
   PrintVar("  TStep",TStep,ln);
   PrintVar("  VerletSteps",VerletSteps,ln);
+  PrintVar("  TKernel",TKernel,ln);
   PrintVar("  TVisco",TVisco,ln);
   PrintVar("  Visco",Visco,ln);
   PrintVar("  ViscoBoundFactor",ViscoBoundFactor,ln);
@@ -351,6 +355,8 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
       else if(txword=="VERLET"){ TStep=STEP_Verlet; 
         if(txopt!="")VerletSteps=atoi(txopt.c_str()); 
       }
+      else if(txword=="CUBIC")TKernel=KERNEL_Cubic;
+      else if(txword=="WENDLAND")TKernel=KERNEL_Wendland;
       else if(txword=="VISCOART"){ 
         Visco=float(atof(txopt.c_str())); 
         if(Visco>10)ErrorParm(opt,c,lv,file);

@@ -430,7 +430,13 @@ void JSphGpu::ConstantDataUp(){
   ctes.nbound=CaseNbound;
   ctes.massb=MassBound; ctes.massf=MassFluid;
   ctes.fourh2=Fourh2; ctes.h=H;
-  ctes.awen=Awen; ctes.bwen=Bwen;
+  if(TKernel==KERNEL_Wendland){
+    ctes.awen=Awen; ctes.bwen=Bwen;
+  }
+  else if(TKernel==KERNEL_Cubic){
+    ctes.cubic_a1=CubicCte.a1; ctes.cubic_a2=CubicCte.a2; ctes.cubic_aa=CubicCte.aa; ctes.cubic_a24=CubicCte.a24;
+    ctes.cubic_c1=CubicCte.c1; ctes.cubic_c2=CubicCte.c2; ctes.cubic_d1=CubicCte.d1; ctes.cubic_odwdeltap=CubicCte.od_wdeltap;
+  }
   ctes.cs0=float(Cs0); ctes.eta2=Eta2;
   ctes.delta2h=Delta2H;
   ctes.scell=Scell; ctes.dosh=Dosh; ctes.dp=float(Dp);
@@ -697,8 +703,8 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
     const TpFtMode ftmode=(CaseNfloat? (UseDEM? FTMODE_Dem: FTMODE_Sph): FTMODE_None);
     const bool lamsps=(TVisco==VISCO_LaminarSPS);
     const bool shift=(TShifting!=SHIFT_None);
-    BlockSizes.forcesbound=BlockSizeConfig("BsForcesBound",smgpu,pt.GetData("cusph_KerInteractionForcesBound",smcode,Psimple,ftmode));
-    BlockSizes.forcesfluid=BlockSizeConfig("BsForcesFluid",smgpu,pt.GetData("cusph_KerInteractionForcesFluid",smcode,Psimple,ftmode,lamsps,TDeltaSph,shift));
+    BlockSizes.forcesbound=BlockSizeConfig("BsForcesBound",smgpu,pt.GetData("cusph_KerInteractionForcesBound",smcode,Psimple,TKernel,ftmode));
+    BlockSizes.forcesfluid=BlockSizeConfig("BsForcesFluid",smgpu,pt.GetData("cusph_KerInteractionForcesFluid",smcode,Psimple,TKernel,ftmode,lamsps,TDeltaSph,shift));
     if(UseDEM)BlockSizes.forcesdem=BlockSizeConfig("BsForcesDEM",smgpu,pt.GetData("cusph_KerInteractionForcesDem",smcode,Psimple));
   }
   else RunException(met,"CellMode unrecognised.");

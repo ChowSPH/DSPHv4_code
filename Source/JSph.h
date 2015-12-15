@@ -67,6 +67,12 @@ public:
   static const unsigned int VersionMinor=0;
   static std::string GetVersionStr();
 
+/// Structure with constants for the Cubic Spline kernel.
+  typedef struct {
+    float a1,a2,aa,a24,c1,d1,c2;
+    float od_wdeltap;        ///<Parameter for tensile instability correction.  
+  }StCubicCte;
+
 /// Structure with mk information.
   typedef struct {
     unsigned begin;
@@ -159,6 +165,7 @@ protected:
   TpKernel TKernel;           //-Tipo de kernel: Cubic o Wendland.                                              //-Kernel type: Cubic or Wendland.
   float Awen;                 //-Constante para kernel wendland (awen).                                         //-Wendland kernel constant (awen).
   float Bwen;                 //-Constante para kernel wendland (bwen).                                         //-Wendland kernel constant (bwen).
+  StCubicCte CubicCte;        ///<Constants for Cubic Spline Kernel.
   TpVisco TVisco;             //-Tipo de viscosidad: Artificial,...                                             //-Viscosity type: Artificial,...
   TpDeltaSph TDeltaSph;       //-Tipo de Delta-SPH: None, Basic o Dynamic.                                      //-Delta-SPH type: None, Basic or Dynamic.
   float DeltaSph;             //-Constante para DeltaSPH. El valor por defecto es 0.1f, con 0 no tiene efecto.  //-DeltaSPH constant. The default value is 0.1f, with 0 having no effect.

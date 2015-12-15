@@ -101,6 +101,7 @@ void JSph::InitVars(){
   VerletSteps=40;
   TKernel=KERNEL_Wendland;
   Awen=Bwen=0;
+  memset(&CubicCte,0,sizeof(StCubicCte));
   TVisco=VISCO_None;
   TDeltaSph=DELTA_None; DeltaSph=0;
   TShifting=SHIFT_None; ShiftCoef=ShiftTFS=0;
@@ -310,6 +311,7 @@ void JSph::LoadConfig(const JCfgRun *cfg){
   //-Aplies configuration using command line.
   if(cfg->TStep)TStep=cfg->TStep;
   if(cfg->VerletSteps>=0)VerletSteps=cfg->VerletSteps;
+  if(cfg->TKernel)TKernel=cfg->TKernel;
   if(cfg->TVisco){ TVisco=cfg->TVisco; Visco=cfg->Visco; }
   if(cfg->ViscoBoundFactor>=0)ViscoBoundFactor=cfg->ViscoBoundFactor;
   if(cfg->DeltaSph>=0){
@@ -374,7 +376,11 @@ void JSph::LoadCaseConfig(){
     default: RunException(met,"Step algorithm is not valid.");
   }
   VerletSteps=eparms.GetValueInt("VerletSteps",true,40);
-  if(eparms.GetValueInt("Kernel",true,2)!=2)RunException(met,"Kernel choice is not valid.");
+  switch(eparms.GetValueInt("Kernel",true,2)){
+    case 1:  TKernel=KERNEL_Cubic;     break;
+    case 2:  TKernel=KERNEL_Wendland;  break;
+    default: RunException(met,"Kernel choice is not valid.");
+  }
   switch(eparms.GetValueInt("ViscoTreatment",true,1)){
     case 1:  TVisco=VISCO_Artificial;  break;
     case 2:  TVisco=VISCO_LaminarSPS;  break;
@@ -715,12 +721,42 @@ void JSph::ConfigConstants(bool simulate2d){
       Awen=float(0.557/(h*h));
       Bwen=float(-2.7852/(h*h*h));
     }
+	else if(TKernel==KERNEL_Cubic){
+      const double a1=10./(PI*7.);
+	  const double a2=a1/(h*h);
+	  const double aa=a1/(h*h*h);
+      const double deltap=1./1.5;
+      const double wdeltap=a2*(1.-1.5*deltap*deltap+0.75*deltap*deltap*deltap);
+      CubicCte.od_wdeltap=float(1./wdeltap);
+      CubicCte.a1=float(a1);
+      CubicCte.a2=float(a2);
+      CubicCte.aa=float(aa);
+      CubicCte.a24=float(0.25*a2);
+      CubicCte.c1=float(-3.*aa);
+      CubicCte.d1=float(9.*aa/4.);
+      CubicCte.c2=float(-3.*aa/4.);
+	}
   }
   else{
     if(TKernel==KERNEL_Wendland){
       Awen=float(0.41778/(h*h*h));
       Bwen=float(-2.08891/(h*h*h*h));
     }
+	else if(TKernel==KERNEL_Cubic){
+      const double a1=1./PI;
+      const double a2=a1/(h*h*h);
+	  const double aa=a1/(h*h*h*h);
+      const double deltap=1./1.5;
+      const double wdeltap=a2*(1.-1.5*deltap*deltap+0.75*deltap*deltap*deltap);
+      CubicCte.od_wdeltap=float(1./wdeltap);
+      CubicCte.a1=float(a1);
+      CubicCte.a2=float(a2);
+      CubicCte.aa=float(aa);
+      CubicCte.a24=float(0.25*a2);
+      CubicCte.c1=float(-3.*aa);
+      CubicCte.d1=float(9.*aa/4.);
+      CubicCte.c2=float(-3.*aa/4.);
+	}
   }
   //-Constants for Laminar viscosity + SPS turbulence model.
   if(TVisco==VISCO_LaminarSPS){  
@@ -790,6 +826,15 @@ void JSph::VisuConfig()const{
   Log->Print(fun::VarStr("MassBound",MassBound));
   if(TKernel==KERNEL_Wendland){
     Log->Print(fun::VarStr("Bwen (wendland)",Bwen));
+  }
+  else if(TKernel==KERNEL_Cubic){
+    Log->Print(fun::VarStr("CubicCte.a1",CubicCte.a1));
+    Log->Print(fun::VarStr("CubicCte.aa",CubicCte.aa));
+    Log->Print(fun::VarStr("CubicCte.a24",CubicCte.a24));
+    Log->Print(fun::VarStr("CubicCte.c1",CubicCte.c1));
+    Log->Print(fun::VarStr("CubicCte.c2",CubicCte.c2));
+    Log->Print(fun::VarStr("CubicCte.d1",CubicCte.d1));
+    Log->Print(fun::VarStr("CubicCte.od_wdeltap",CubicCte.od_wdeltap));
   }
   if(TVisco==VISCO_LaminarSPS){     
     Log->Print(fun::VarStr("SpsSmag",SpsSmag));
@@ -1428,7 +1473,8 @@ std::string JSph::GetStepName(TpStep tstep){
 //==============================================================================
 std::string JSph::GetKernelName(TpKernel tkernel){
   string tx;
-  if(tkernel==KERNEL_Wendland)tx="Wendland";
+  if(tkernel==KERNEL_Cubic)tx="Cubic";
+  else if(tkernel==KERNEL_Wendland)tx="Wendland";
   else tx="???";
   return(tx);
 }
