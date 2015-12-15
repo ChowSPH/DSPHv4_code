@@ -190,7 +190,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(SpsTauc);
   //-Resizes CPU memory allocation.
   const double mbparticle=(double(MemCpuParticles)/(1024*1024))/CpuParticlesSize; //-MB por particula.
-  Log->Printf("**JSphCpu: Requesting gpu memory for %u particles: %.1f MB.",npnew,mbparticle*npnew);
+  Log->Printf("**JSphCpu: Requesting cpu memory for %u particles: %.1f MB.",npnew,mbparticle*npnew);
   ArraysCpu->SetArraySize(npnew);
   //-Reserve pointers.
   Idpc    =ArraysCpu->ReserveUint();

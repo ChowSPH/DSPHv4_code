@@ -1155,7 +1155,7 @@ void JSph::PrintSizeNp(unsigned np,llong size)const{
 // Visualiza cabeceras de PARTs
 //==============================================================================
 void JSph::PrintHeadPart(){
-  Log->Print("PART       PartTime      TotalSteps    Steps    Time/Seg   Finish time        ");
+  Log->Print("PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        ");
   Log->Print("=========  ============  ============  =======  =========  ===================");
   fflush(stdout);
 }
