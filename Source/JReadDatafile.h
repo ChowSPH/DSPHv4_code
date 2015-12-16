@@ -26,7 +26,9 @@
 //# - Permite extraer valores int, unsigned, float, double y string.
 //# - Mantiene columna y fila del ultimo valor.
 //# - En caso de usar el separador \t los espacios y tabulaciones seguidas se
-//#   remplazan por una sola tabulacion. (16-12-2015)
+//#   remplazan por una sola tabulacion. Tambien elimina espacions y tabulaciones
+//#   al principio y final de la linea. (16-12-2015)
+//# - Ignora lineas vacias al final del fichero. (16-12-2015)
 //#############################################################################
 
 #ifndef _JReadDatafile_

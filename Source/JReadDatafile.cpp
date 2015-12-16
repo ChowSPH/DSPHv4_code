@@ -63,11 +63,12 @@ void JReadDatafile::LoadFile(const std::string &file,unsigned maxsize){
   pf.open(file.c_str(),ios::binary);
   if(pf){
     pf.seekg(0,ios::end);
-    SizeFile=unsigned(pf.tellg());
+    SizeFile=unsigned(pf.tellg())+1;
     if(SizeFile>maxsize)RunException(met,"File exceeds the maximum size allowed.",file);
     Data=new char[SizeFile];
     pf.seekg(0,ios::beg);
-    pf.read(Data,SizeFile);
+    pf.read(Data,SizeFile-1);
+    Data[SizeFile-1]='\n';
     pf.close();
   }
   else RunException(met,"Cannot open the file.",file);
@@ -78,20 +79,27 @@ void JReadDatafile::LoadFile(const std::string &file,unsigned maxsize){
 
 //==============================================================================
 /// Replaces several spaces and tabulations by a tabulation.
+/// Removes spaces and tabulations at begin and end of line.
 //==============================================================================
 void JReadDatafile::ProcessSpaces(){
   unsigned nsp=0;
   unsigned c2=0;
+  bool begin=true;
   for(unsigned c=0;c<Size;c++){
     char let=Data[c];
     if(let==' ' || let=='\t')nsp++;
     else{
-      if(nsp){ Data[c2]='\t'; c2++; nsp=0; }
+      if(let=='\n'){ nsp=0; begin=true; }
+      if(nsp){ 
+        if(!begin){ Data[c2]='\t'; c2++; }
+        nsp=0; 
+        begin=false;
+      }
       if(c!=c2)Data[c2]=let;
       c2++;
     }
   }
-  if(nsp){ Data[c2]='\t'; c2++; nsp=0; }
+  //if(nsp){ Data[c2]='\t'; c2++; nsp=0; }
   //printf("++> Remove spaces+tabs: %u -> %u\n",Size,c2);
   Size=c2;
 }
@@ -112,6 +120,9 @@ void JReadDatafile::ProcessLines(){
   }
   //printf("++> Remove \\r: %u -> %u\n",Size,c2);
   Size=c2;
+  //-Remove empty lines at end.
+  while(Size>1 && Data[Size-2]=='\n'){ Size--; LineCount--; }
+  //printf("++> Remove empty lines: %u\n",c2-Size);
   //-Allocate memory.
   LineBegin=new unsigned[LineCount+1];
   //-Prepares lines and looks for separator.
@@ -130,7 +141,18 @@ void JReadDatafile::ProcessLines(){
     if(lin!=LineCount)RunException(met,"Error counting lines.");
     LineBegin[LineCount]=Size;
     //-Counts remark lines.
+    RemLineCount=0;
     for(int c=0;c<LineCount;c++)if(Data[LineBegin[c]]=='#')RemLineCount++;
+    //printf("++> RemLineCount: %u\n",RemLineCount);
+    //-Prints lines.
+    if(0)for(int c=0;c<LineCount;c++){
+      const unsigned pini=LineBegin[c];
+      const unsigned pfin=LineBegin[c+1];
+      if(!c)printf("\n");
+      printf("++> Line[%02d]=[%2d]=[",c,pfin-pini-1); 
+      for(unsigned p=pini;p<pfin-1;p++)printf("%c",Data[p]);
+      printf("]\n");
+    }
     //-Determines the separator.
     {
       unsigned sep0=0,sep1=0,sep2=0,sep3=0;
@@ -159,6 +181,7 @@ void JReadDatafile::ProcessLines(){
       }
     }
   }
+  //throw "finito...";
   //printf("++> LineCount:%u(%u)  Size:%u -> %u\n",LineCount,RemLineCount,SizeFile,Size);
 }
 

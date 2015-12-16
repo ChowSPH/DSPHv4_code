@@ -112,12 +112,22 @@ void JSpaceCtes::ReadXmlDef(JXml *sxml,TiXmlElement* node){
 //==============================================================================
 /// Writes constants auto for definition of the case of xml node.
 //==============================================================================
-void JSpaceCtes::WriteXmlElementAuto(JXml *sxml,TiXmlElement* node,std::string name,double value,bool valueauto,std::string comment)const{
+void JSpaceCtes::WriteXmlElementAuto(JXml *sxml,TiXmlElement* node,std::string name,double value,bool valueauto,std::string comment,std::string unitscomment)const{
   TiXmlElement xele(name.c_str());
   JXml::AddAttribute(&xele,"value",value); 
   JXml::AddAttribute(&xele,"auto",valueauto);
   if(!comment.empty())JXml::AddAttribute(&xele,"comment",comment);
+  if(!unitscomment.empty())JXml::AddAttribute(&xele,"units_comment",unitscomment);
+
   node->InsertEndChild(xele);
+}
+
+//==============================================================================
+/// Writes constants with comment.
+//==============================================================================
+void JSpaceCtes::WriteXmlElementComment(TiXmlElement* ele,std::string comment,std::string unitscomment)const{
+  if(!comment.empty())JXml::AddAttribute(ele,"comment",comment);
+  if(!unitscomment.empty())JXml::AddAttribute(ele,"units_comment",unitscomment);
 }
 
 //==============================================================================
@@ -128,20 +138,27 @@ void JSpaceCtes::WriteXmlDef(JXml *sxml,TiXmlElement* node)const{
   JXml::AddAttribute(&lattice,"bound",GetLatticeBound());
   JXml::AddAttribute(&lattice,"fluid",GetLatticeFluid());
   node->InsertEndChild(lattice);
-  JXml::AddAttribute(JXml::AddElementDouble3(node,"gravity",GetGravity()),"comment","Gravitational acceleration");
-  JXml::AddAttribute(JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber()),"comment","Coefficient to multiply Dt");
-  WriteXmlElementAuto(sxml,node,"hswl",GetHSwl(),GetHSwlAuto(),"Maximum still water level to calculate speedofsound using coefsound");
+  //JXml::AddAttribute(JXml::AddElementDouble3(node,"gravity",GetGravity()),"comment","Gravitational acceleration");
+  //JXml::AddAttribute(JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber()),"comment","Coefficient to multiply Dt");
+  //JXml::AddAttribute(JXml::AddElementAttrib(node,"coefsound","value",GetCoefSound()),"comment","Coefficient to multiply speedsystem");
+  //if(!GetCoefH()&&GetCoefHdp())JXml::AddAttribute(JXml::AddElementAttrib(node,"coefh","hdp",GetCoefHdp()),"comment","Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
+  //else JXml::AddAttribute(JXml::AddElementAttrib(node,"coefh","value",GetCoefH()),"comment","Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
+  //JXml::AddAttribute(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"comment","Polytropic constant for water used in the state equation");
+  //JXml::AddAttribute(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"comment","Reference density of the fluid");
+  WriteXmlElementComment(JXml::AddElementDouble3(node,"gravity",GetGravity()),"Gravitational acceleration","m/s^2");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber()),"Coefficient to multiply Dt");
+  WriteXmlElementAuto(sxml,node,"hswl",GetHSwl(),GetHSwlAuto(),"Maximum still water level to calculate speedofsound using coefsound","metres (m)");
   WriteXmlElementAuto(sxml,node,"speedsystem",GetSpeedSystem(),GetSpeedSystemAuto(),"Maximum system speed (by default the dam-break propagation is used)");
-  JXml::AddAttribute(JXml::AddElementAttrib(node,"coefsound","value",GetCoefSound()),"comment","Coefficient to multiply speedsystem");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"coefsound","value",GetCoefSound()),"Coefficient to multiply speedsystem");
   WriteXmlElementAuto(sxml,node,"speedsound",GetSpeedSound(),GetSpeedSoundAuto(),"Speed of sound to use in the simulation (by default speedofsound=coefsound*speedsystem)");
-  if(!GetCoefH()&&GetCoefHdp())JXml::AddAttribute(JXml::AddElementAttrib(node,"coefh","hdp",GetCoefHdp()),"comment","Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
-  else JXml::AddAttribute(JXml::AddElementAttrib(node,"coefh","value",GetCoefH()),"comment","Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
-  JXml::AddAttribute(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"comment","Polytropic constant for water used in the state equation");
-  JXml::AddAttribute(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"comment","Reference density of the fluid");
-  WriteXmlElementAuto(sxml,node,"h",GetH(),GetHAuto());
-  WriteXmlElementAuto(sxml,node,"b",GetB(),GetBAuto());
-  WriteXmlElementAuto(sxml,node,"massbound",GetMassBound(),GetMassBoundAuto());
-  WriteXmlElementAuto(sxml,node,"massfluid",GetMassFluid(),GetMassFluidAuto());
+  if(!GetCoefH()&&GetCoefHdp())WriteXmlElementComment(JXml::AddElementAttrib(node,"coefh","hdp",GetCoefHdp()),"Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
+  else WriteXmlElementComment(JXml::AddElementAttrib(node,"coefh","value",GetCoefH()),"Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"Polytropic constant for water used in the state equation");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"Reference density of the fluid","kg/m3");
+  WriteXmlElementAuto(sxml,node,"h",GetH(),GetHAuto(),"","metres (m)");
+  WriteXmlElementAuto(sxml,node,"b",GetB(),GetBAuto(),"","metres (m)");
+  WriteXmlElementAuto(sxml,node,"massbound",GetMassBound(),GetMassBoundAuto(),"","kg");
+  WriteXmlElementAuto(sxml,node,"massfluid",GetMassFluid(),GetMassFluidAuto(),"","kg");
 }
 
 //==============================================================================
@@ -164,16 +181,26 @@ void JSpaceCtes::ReadXmlRun(JXml *sxml,TiXmlElement* node){
 /// Writes constants for execution of the case of xml node.
 //==============================================================================
 void JSpaceCtes::WriteXmlRun(JXml *sxml,TiXmlElement* node)const{
-  JXml::AddElementDouble3(node,"gravity",GetGravity());
-  JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber());
-  JXml::AddElementAttrib(node,"gamma","value",GetGamma());
-  JXml::AddElementAttrib(node,"rhop0","value",GetRhop0());
-  if(EpsDefined)JXml::AddElementAttrib(node,"eps","value",GetEps());
-  JXml::AddElementAttrib(node,"dp","value",GetDp());
-  JXml::AddElementAttrib(node,"h","value",GetH(),"%.10E");
-  JXml::AddElementAttrib(node,"b","value",GetB(),"%.10E");
-  JXml::AddElementAttrib(node,"massbound","value",GetMassBound(),"%.10E");
-  JXml::AddElementAttrib(node,"massfluid","value",GetMassFluid(),"%.10E");
+  WriteXmlElementComment(JXml::AddElementDouble3(node,"gravity",GetGravity()),"","m/s^2");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber()));
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"gamma","value",GetGamma()));
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"","kg/m3");
+  if(EpsDefined)WriteXmlElementComment(JXml::AddElementAttrib(node,"eps","value",GetEps()),"","m/s^2");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"dp","value",GetDp()),"","metres (m)");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"h","value",GetH(),"%.10E"),"","metres (m)");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"b","value",GetB(),"%.10E"),"","metres (m)");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"massbound","value",GetMassBound(),"%.10E"),"","kg");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"massfluid","value",GetMassFluid(),"%.10E"),"","kg");
+  //JXml::AddElementDouble3(node,"gravity",GetGravity());
+  //JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber());
+  //JXml::AddElementAttrib(node,"gamma","value",GetGamma());
+  //JXml::AddElementAttrib(node,"rhop0","value",GetRhop0());
+  //if(EpsDefined)JXml::AddElementAttrib(node,"eps","value",GetEps());
+  //JXml::AddElementAttrib(node,"dp","value",GetDp());
+  //JXml::AddElementAttrib(node,"h","value",GetH(),"%.10E");
+  //JXml::AddElementAttrib(node,"b","value",GetB(),"%.10E");
+  //JXml::AddElementAttrib(node,"massbound","value",GetMassBound(),"%.10E");
+  //JXml::AddElementAttrib(node,"massfluid","value",GetMassFluid(),"%.10E");
 }
 
 //==============================================================================

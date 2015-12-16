@@ -26,6 +26,7 @@
 //# - Traduccion de comentarios al ingles. (10/02/2012)
 //# - Nuevo metodo GetValueNumStr() para leer atributos string. (10/11/2012)
 //# - Nuevo metodo GetValueDouble3() para leer atributos tdouble3. (01-10-2015)
+//# - Se muestran unidades de los parametros. (15-12-2015)
 //# - EN:
 //# Changes:
 //# =========
@@ -36,6 +37,7 @@
 //# - Comment English translation. (10/02/2012)
 //# - New method GetValueNumStr() to read attributes string. (10/11/2012)
 //# - New method GetValueDouble3() to read tdouble3 attributes. (01-10-2015)
+//# - Units for parameters are showed. (15-12-2015)
 //#############################################################################
 
 /// \file JSpaceEParms.h \brief Declares the class \ref JSpaceEParms.
@@ -64,6 +66,7 @@ public:
     std::string key;
     std::string value;
     std::string comment;
+    std::string unitscomment;
   }JSpaceEParmsItem;
 private:
   typedef std::vector<JSpaceEParmsItem> VecList;
@@ -80,7 +83,7 @@ public:
   JSpaceEParms();
   ~JSpaceEParms();
   void Reset();
-  void Add(const std::string &key,const std::string &value,const std::string &comment);
+  void Add(const std::string &key,const std::string &value,const std::string &comment,const std::string &unitscomment="");
   void SetValue(const std::string &key,const std::string &value);
   void SetComment(const std::string &key,const std::string &comment);
   bool Exists(const std::string &key){ return(GetItemPointer(key)!=NULL); }

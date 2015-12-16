@@ -32,6 +32,7 @@
 //# - Se ampliaron los limites de CFLnumber de (0.1-0.5) a (0.001-1). (08-01-2015)
 //# - <speedsystem> y <speedsound> pasan a ser opcionales. (20-01-2015)
 //# - <eps> solo se pasa a <constants> cuando este definido en <constantsdef>. (20-01-2015)
+//# - Se muestran unidades de las constantes. (15-12-2015)
 //# - EN:
 //# Changes:
 //# =========
@@ -43,6 +44,7 @@
 //# - CFLnumber limits of (0.1-0.5) to (0001-1) were expanded. (08-01-2015)
 //# - <speedsystem> and <speedsound> become optional. (20-01-2015)
 //# - <eps> passes only <constants> when is set to <constantsdef>. (20-01-2015)
+//# - Units for constants are showed. (15-12-2015)
 //#############################################################################
 
 #include <string>
@@ -94,7 +96,9 @@ private:
   double Dp;              ///<Inter-particle distance.
 
   void ReadXmlElementAuto(JXml *sxml,TiXmlElement* node,bool optional,std::string name,double &value,bool &valueauto);
-  void WriteXmlElementAuto(JXml *sxml,TiXmlElement* node,std::string name,double value,bool valueauto,std::string comment="")const;
+  void WriteXmlElementAuto(JXml *sxml,TiXmlElement* node,std::string name,double value,bool valueauto,std::string comment="",std::string unitscomment="")const;
+
+  void WriteXmlElementComment(TiXmlElement* ele,std::string comment="",std::string unitscomment="")const;
 
   void ReadXmlDef(JXml *sxml,TiXmlElement* ele);
   void WriteXmlDef(JXml *sxml,TiXmlElement* ele)const;
