@@ -331,11 +331,12 @@
   - Code synchronisation. (v4.0.022 / 14-12-2015)
   - Add kernel Cubic. (v4.0.023 / 15-12-2015)
   - Minor error in the information displayed. (v4.0.024 / 15-12-2015)
+  - New type of movement (MovRotFile) int JMotion library. (v4.0.025 / 16-12-2015)
+  - JMotion uses class JReadDatafile to read movement data from files. (v4.0.025 / 16-12-2015)
 
   
 Remaining issues:
 ==================
-- Option for rotation from data file.
 - To use JREadDatafile in JSphDtFixed, JSphVisco and JRotationFile.
 - Use of SDAT_info?
 - Example with DtFixed.
@@ -356,6 +357,7 @@ Remaining issues:
   if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
 - Error en WaveGen si hay desfase importante.
   
+x Option for rotation from data file.
 x To change kernel Wendland by default in XML examples.
 x To use Special configuration for external forces.
 x Remove JSaveCsv before creating release.  

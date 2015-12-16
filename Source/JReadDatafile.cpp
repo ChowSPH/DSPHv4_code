@@ -71,8 +71,29 @@ void JReadDatafile::LoadFile(const std::string &file,unsigned maxsize){
     pf.close();
   }
   else RunException(met,"Cannot open the file.",file);
+  Size=SizeFile;
   ProcessLines();
   SetReadLine(0);
+}
+
+//==============================================================================
+/// Replaces several spaces and tabulations by a tabulation.
+//==============================================================================
+void JReadDatafile::ProcessSpaces(){
+  unsigned nsp=0;
+  unsigned c2=0;
+  for(unsigned c=0;c<Size;c++){
+    char let=Data[c];
+    if(let==' ' || let=='\t')nsp++;
+    else{
+      if(nsp){ Data[c2]='\t'; c2++; nsp=0; }
+      if(c!=c2)Data[c2]=let;
+      c2++;
+    }
+  }
+  if(nsp){ Data[c2]='\t'; c2++; nsp=0; }
+  //printf("++> Remove spaces+tabs: %u -> %u\n",Size,c2);
+  Size=c2;
 }
 
 //==============================================================================
@@ -83,48 +104,60 @@ void JReadDatafile::ProcessLines(){
   //-Remove character \r and counts lines.
   LineCount=0;
   unsigned c2=0;
-  for(unsigned c=0;c<SizeFile;c++){
+  for(unsigned c=0;c<Size;c++){
     char let=Data[c];
     if(let=='\n')LineCount++;
     if(c!=c2)Data[c2]=let;
     if(let!='\r')c2++;
   }
+  //printf("++> Remove \\r: %u -> %u\n",Size,c2);
   Size=c2;
   //-Allocate memory.
   LineBegin=new unsigned[LineCount+1];
-  //-Load LineBegin[].
-  unsigned lin=0;
-  LineBegin[0]=0;
-  for(unsigned c=0;c<Size;c++){
-    char let=Data[c];
-    if(let=='\n'){
-      lin++; LineBegin[lin]=c+1;
-    }
-  }
-  if(lin!=LineCount)RunException(met,"Error counting lines.");
-  LineBegin[LineCount]=Size;
-  //-Counts remark lines.
-  for(int c=0;c<LineCount;c++)if(Data[LineBegin[c]]=='#')RemLineCount++;
-  //-Ddetermines the separator.
-  {
-    unsigned sep1=0,sep2=0,sep3=0;
-    unsigned nlin=20;
-    for(int c=0;c<LineCount && nlin;c++)if(Data[LineBegin[c]]!='#'){
-      nlin--;
-      const unsigned pini=LineBegin[c];
-      const unsigned pfin=LineBegin[c+1];
-      for(unsigned p=pini;p<pfin;p++){
-        switch(Data[p]){
-          case '\t':  sep1++;  break;
-          case ';':   sep2++;  break;
-          case ',':   sep3++;  break;
-        }
+  //-Prepares lines and looks for separator.
+  bool run=true;
+  while(run){
+    run=false;
+    //-Load LineBegin[].
+    unsigned lin=0;
+    LineBegin[0]=0;
+    for(unsigned c=0;c<Size;c++){
+      char let=Data[c];
+      if(let=='\n'){
+        lin++; LineBegin[lin]=c+1;
       }
     }
-    if(sep1>=sep2 && sep1>=sep3)Sep="\t";
-    else if(sep2>=sep1 && sep2>=sep3)Sep=";";
-    else Sep=",";
-    //printf("++> Sep: %u %u %u\n",sep1,sep2,sep3);
+    if(lin!=LineCount)RunException(met,"Error counting lines.");
+    LineBegin[LineCount]=Size;
+    //-Counts remark lines.
+    for(int c=0;c<LineCount;c++)if(Data[LineBegin[c]]=='#')RemLineCount++;
+    //-Determines the separator.
+    {
+      unsigned sep0=0,sep1=0,sep2=0,sep3=0;
+      unsigned nlin=20;
+      for(int c=0;c<LineCount && nlin;c++)if(Data[LineBegin[c]]!='#'){
+        nlin--;
+        const unsigned pini=LineBegin[c];
+        const unsigned pfin=LineBegin[c+1];
+        for(unsigned p=pini;p<pfin;p++){
+          switch(Data[p]){
+            case ' ':   sep0++;  break;
+            case '\t':  sep1++;  break;
+            case ';':   sep2++;  break;
+            case ',':   sep3++;  break;
+          }
+        }
+      }
+      //printf("++> Sep: [ ]:%u [\\t]:%u [,]:%u [;]:%u\n",sep0,sep1,sep2,sep3);
+      sep1+=sep0;
+      if(sep1>=sep2 && sep1>=sep3)Sep="\t";
+      else if(sep2>=sep1 && sep2>=sep3)Sep=";";
+      else Sep=",";
+      if(Sep=="\t" && sep0){
+        ProcessSpaces();
+        run=true;
+      }
+    }
   }
   //printf("++> LineCount:%u(%u)  Size:%u -> %u\n",LineCount,RemLineCount,SizeFile,Size);
 }
@@ -169,6 +202,7 @@ std::string JReadDatafile::GetLine(int line)const{
 std::string JReadDatafile::ReadNextValue(bool in_line){
   if(in_line && ReadLine.empty())RunException("ReadNextValue",fun::PrintStr("Value %d does not exist in line %d.",ReadLinValue+1,ReadLin),File);
   while(ReadLine.empty() || ReadLine[0]=='#')SetReadLine(ReadLin+1);
+  //printf("==>> ReadLine:[%s] Sep:[%u]\n",ReadLine.c_str(),Sep[0]);
   ReadValue=fun::StrSplit(Sep,ReadLine); 
   ReadLinValue++;
   return(ReadValue);

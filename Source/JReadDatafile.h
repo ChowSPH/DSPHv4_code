@@ -19,12 +19,14 @@
 //# Cambios:
 //# =========
 //# Clase para facilitar la lectura de ficheros de datos en texto. (03-11-2015)
-//# - Los valores pueden estar delimitados por ',' ';' o tab.
+//# - Los valores pueden estar delimitados por ',' ';' o tabs-spaces.
 //# - El delimitador se identifica automaticamente.
 //# - Cuenta numero de lineas de datos y de comentarios.
 //# - Las lineas de comentarios empiezan por '#'.
 //# - Permite extraer valores int, unsigned, float, double y string.
 //# - Mantiene columna y fila del ultimo valor.
+//# - En caso de usar el separador \t los espacios y tabulaciones seguidas se
+//#   remplazan por una sola tabulacion. (16-12-2015)
 //#############################################################################
 
 #ifndef _JReadDatafile_
@@ -58,6 +60,7 @@ private:
   std::string ReadLine;
   std::string ReadValue;
 
+  void ProcessSpaces();
   void ProcessLines();
   void ResetReadLine();
 
