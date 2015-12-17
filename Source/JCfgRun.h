@@ -52,7 +52,7 @@ public:
   int GpuId;
   bool GpuFree;
   bool Stable;
-  bool Psimple;
+  int PosDouble;  ///<Precision in particle interaction 0:Simple, 1:Double, 2:Uses and save double (default=0).
 
   int OmpThreads;
 
@@ -70,7 +70,6 @@ public:
   bool SvRes,SvTimers,SvDomainVtk;
   float SvTimersStep;
   bool Sv_Binx,Sv_Info,Sv_Csv,Sv_Vtk;
-  bool SvDouble;
   std::string CaseName,RunName,DirOut;
   std::string PartBeginDir;
   unsigned PartBegin,PartBeginFirst;

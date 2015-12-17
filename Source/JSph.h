@@ -397,6 +397,7 @@ public:
   JSph(bool cpu,bool withmpi);
   ~JSph();
 
+  static std::string GetPosDoubleName(bool psimple,bool svdouble);
   static std::string GetStepName(TpStep tstep);
   static std::string GetKernelName(TpKernel tkernel);
   static std::string GetViscoName(TpVisco tvisco);

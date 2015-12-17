@@ -43,8 +43,7 @@ void JCfgRun::Reset(){
   Cpu=false;
   Gpu=false; GpuId=-1; GpuFree=false;
   Stable=false;
-  Psimple=true;
-  SvDouble=false;
+  PosDouble=-1;
   OmpThreads=0;
   SvTimers=true; SvTimersStep=0;
   CellOrder=ORDER_None;
@@ -80,10 +79,12 @@ void JCfgRun::VisuInfo()const{
   printf("    -cpu        Execution on Cpu (option by default)\n");
   printf("    -gpu[:id]   Execution on Gpu and id of the device\n");
   printf("    -stable     The result is always the same but the execution is slower\n");
-  printf("    -psimple    Use position with low precision (option by default)\n");
-  printf("    -pdouble    Use position with high precision (enables SvDouble)\n");
   printf("\n");
-
+  printf("    -posdouble:<mode>  Precision used in position for particle interactions\n");
+  printf("        0: Use and store in single precision (option by default)\n");
+  printf("        1: Use double precision but saves result in single precision\n");
+  printf("        2: Use and store in double precision\n");
+  printf("\n");
 #ifdef _WITHOMP
   printf("    -ompthreads:<int>  Only for Cpu execution, indicates the number of threads\n");
   printf("                   by host for parallel execution, it takes the number of \n");
@@ -114,7 +115,7 @@ void JCfgRun::VisuInfo()const{
   printf("        info    Information about execution in ibi4 format\n");
   printf("        vtk     VTK files\n");
   printf("        csv     CSV files\n");
-  printf("    -svdouble        Save position with high precision (disabled by default)\n");
+//  printf("    -svdouble        Save position with high precision (disabled by default)\n");
   printf("    -svres:<0/1>     Generate file that summarizes the execution process\n");
   printf("    -svtimers:<0/1>  Obtain timing for each individual process\n");
   printf("    -svtimersstep:<float> Obtain timing for each individual process. Specify\n");
@@ -161,7 +162,7 @@ void JCfgRun::VisuConfig()const{
   printf("  %s  %s\n",VarStr("Gpu",Gpu).c_str(),VarStr("GpuId",GpuId).c_str());
   PrintVar("  GpuFree",GpuFree,ln);
   PrintVar("  Stable",Stable,ln);
-  PrintVar("  Psimple",Psimple,ln);
+  PrintVar("  PosDouble",PosDouble,ln);
   PrintVar("  OmpThreads",OmpThreads,ln);
   PrintVar("  CellOrder",GetNameCellOrder(CellOrder),ln);
   PrintVar("  CellMode",GetNameCellMode(CellMode),ln);
@@ -181,7 +182,6 @@ void JCfgRun::VisuConfig()const{
   PrintVar("  Sv_Info",Sv_Info,ln);
   PrintVar("  Sv_Vtk",Sv_Vtk,ln);
   PrintVar("  Sv_Csv",Sv_Csv,ln);
-  PrintVar("  SvDouble",SvDouble,ln);
   PrintVar("  RhopOutModif",RhopOutModif,ln);
   if(RhopOutModif){
     PrintVar("  RhopOutMin",RhopOutMin,ln);
@@ -311,15 +311,13 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
         if(txopt!="")GpuId=atoi(txopt.c_str()); 
       }
       else if(txword=="STABLE")Stable=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
-      else if(txword=="PSIMPLE"){
-        Psimple=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
-        if(!Psimple)SvDouble=true;
+      else if(txword=="POSDOUBLE"){
+        const string tx=fun::StrUpper(txopt);
+        if(tx=="0")PosDouble=0;
+        else if(tx=="1")PosDouble=1;
+        else if(tx=="2")PosDouble=2;
+        else ErrorParm(opt,c,lv,file);
       }
-      else if(txword=="PDOUBLE"){
-        Psimple=!((txopt!=""? atoi(txopt.c_str()): 1)!=0);
-        if(!Psimple)SvDouble=true;
-      }
-      else if(txword=="SVDOUBLE")SvDouble=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
 #ifdef _WITHOMP
       else if(txword=="OMPTHREADS"){ 
         OmpThreads=atoi(txopt.c_str()); if(OmpThreads<0)OmpThreads=0;

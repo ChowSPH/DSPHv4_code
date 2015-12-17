@@ -273,8 +273,7 @@ void JSph::LoadConfig(const JCfgRun *cfg){
   const char* met="LoadConfig";
   TimerTot.Start();
   Stable=cfg->Stable;
-  Psimple=cfg->Psimple;
-  SvDouble=cfg->SvDouble;
+  Psimple=true; SvDouble=false; //-Options by default.
   DirOut=fun::GetDirWithSlash(cfg->DirOut);
   CaseName=cfg->CaseName; 
   DirCase=fun::GetDirWithSlash(fun::GetDirParent(CaseName));
@@ -309,6 +308,9 @@ void JSph::LoadConfig(const JCfgRun *cfg){
   LoadCaseConfig();
 
   //-Aplies configuration using command line.
+  if(cfg->PosDouble==0){      Psimple=true;  SvDouble=false; }
+  else if(cfg->PosDouble==1){ Psimple=false; SvDouble=false; }
+  else if(cfg->PosDouble==2){ Psimple=false; SvDouble=true;  }
   if(cfg->TStep)TStep=cfg->TStep;
   if(cfg->VerletSteps>=0)VerletSteps=cfg->VerletSteps;
   if(cfg->TKernel)TKernel=cfg->TKernel;
@@ -365,6 +367,12 @@ void JSph::LoadCaseConfig(){
   JSpaceParts parts;   parts.LoadXml(&xml,"case.execution.particles");
 
   //-Execution parameters.
+  switch(eparms.GetValueInt("PosDouble",true,0)){
+    case 0:  Psimple=true;  SvDouble=false;  break;
+    case 1:  Psimple=false; SvDouble=false;  break;
+    case 2:  Psimple=false; SvDouble=true;   break;
+    default: RunException(met,"PosDouble value is not valid.");
+  }
   switch(eparms.GetValueInt("RigidAlgorithm",true,1)){ //(DEM)
     case 1:  UseDEM=false;  break;
     case 2:  UseDEM=true;   break;
@@ -775,7 +783,7 @@ void JSph::VisuConfig()const{
   Log->Print(Simulate2D? "**2D-Simulation parameters:": "**3D-Simulation parameters:");
   Log->Print(fun::VarStr("CaseName",CaseName));
   Log->Print(fun::VarStr("RunName",RunName));
-  Log->Print(fun::VarStr("SvDouble",SvDouble));
+  Log->Print(fun::VarStr("PosDouble",GetPosDoubleName(Psimple,SvDouble)));
   Log->Print(fun::VarStr("SvTimers",SvTimers));
   Log->Print(fun::VarStr("SvTimersStep",(TimersStep!=NULL? TimersStep->GetTimeInterval(): 0)));
   Log->Print(fun::VarStr("StepAlgorithm",GetStepName(TStep)));
@@ -1455,6 +1463,18 @@ void JSph::ShowResume(bool stop,float tsim,float ttot,bool all,std::string infop
   Log->Printf("Maximum number of cells..........: %u",MaxCells);
   Log->Printf("CPU Memory.......................: %lld (%.2f MB)",MaxMemoryCpu,double(MaxMemoryCpu)/(1024*1024));
   if(MaxMemoryGpu)Log->Printf("GPU Memory.......................: %lld (%.2f MB)",MaxMemoryGpu,double(MaxMemoryGpu)/(1024*1024));
+}
+
+//==============================================================================
+// Returns text about PosDouble configuration.
+//==============================================================================
+std::string JSph::GetPosDoubleName(bool psimple,bool svdouble){
+  string tx;
+  if(psimple && !svdouble)tx="0: Use and store in single precision";
+  else if(!psimple && !svdouble)tx="1: Use double and store in single precision";
+  else if(!psimple && svdouble)tx="2: Use and store in double precision";
+  else tx="???";
+  return(tx);
 }
 
 //==============================================================================

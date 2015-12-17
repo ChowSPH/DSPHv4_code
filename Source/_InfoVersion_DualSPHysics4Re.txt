@@ -339,6 +339,7 @@
   - JLinearValue code was deleted. (v4.0.028 / 17-12-2015)
   - Makefile update. (v4.0.029 / 17-12-2015)
   - Improvements in code for DEM. (v4.0.030 / 17-12-2015)
+  - Precision configuration was improved by command and XML parameter. (v4.0.031 / 17-12-2015)
 
   
 Remaining issues:
@@ -361,6 +362,7 @@ Remaining issues:
   if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
 - Error en WaveGen si hay desfase importante.
   
+x Include -pdouble and -svdouble in XML file.
 x Example with DtFixed.
 x To use JREadDatafile in JSphDtFixed, JSphVisco and JRotationFile.
 x Option for rotation from data file.
