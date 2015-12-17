@@ -29,6 +29,7 @@
 //#   remplazan por una sola tabulacion. Tambien elimina espacions y tabulaciones
 //#   al principio y final de la linea. (16-12-2015)
 //# - Ignora lineas vacias al final del fichero. (16-12-2015)
+//# - Error corregido en ProcessSpaces(). (17-12-2015)
 //#############################################################################
 
 #ifndef _JReadDatafile_

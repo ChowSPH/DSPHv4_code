@@ -334,6 +334,7 @@
   - New type of movement (MovRotFile) int JMotion library. (v4.0.025 / 16-12-2015)
   - JMotion uses class JReadDatafile to read movement data from files. (v4.0.025 / 16-12-2015)
   - Improvements in JMotion, JReadDatafile, JSpaceCtes and JSpaceEParms. (v4.0.026 / 16-12-2015)
+  - JSphVisco uses class JReadDatafile to read viscosity data from files. (v4.0.027 / 17-12-2015)
   
 Remaining issues:
 ==================

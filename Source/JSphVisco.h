@@ -24,12 +24,14 @@
 //# =========
 //# - Gestiona el uso de un valor de viscosidad variable a partir de los valores 
 //#   para determinados instantes en segundos, interpolando los valores 
-//#   intermedios. (12/04/2013)
+//#   intermedios. (12-04-2013)
+//# - Usa JReadDatafile para cargar datos de fichero. (17-12-2015)
 //# - EN:
 //# Changes:
 //# =========
 //# - Manages the use of a variable viscosity value from values
-// # in certain moments in seconds, by interpolating intermediate values. (12/04/2013)
+//#   in certain moments in seconds, by interpolating intermediate values. (12-04-2013)
+//# - Uses JReadDatafile to load data from file. (17-12-2015)
 //#############################################################################
 
 #include "JObject.h"
@@ -47,8 +49,7 @@
 class JSphVisco : protected JObject
 {
 protected:
-  static const unsigned SIZEMAX=100000;
-  static const unsigned SIZEINITIAL=500;
+  static const unsigned FILESIZEMAX=104857600; ///<Maximum file size (100mb).
 
   std::string File;
   unsigned Size;

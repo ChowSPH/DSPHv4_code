@@ -93,8 +93,8 @@ void JReadDatafile::ProcessSpaces(){
       if(nsp){ 
         if(!begin){ Data[c2]='\t'; c2++; }
         nsp=0; 
-        begin=false;
       }
+      if(let!='\n')begin=false;
       if(c!=c2)Data[c2]=let;
       c2++;
     }
