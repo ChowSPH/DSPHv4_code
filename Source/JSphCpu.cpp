@@ -1010,14 +1010,14 @@ template<bool psimple> void JSphCpu::InteractionForcesDEM
 
               const float nu_mass=(!cellinitial? masstotp1/2: masstotp1*masstotp2/(masstotp1+masstotp2)); //-Con boundary toma la propia masa del floating 1.
               const float kn=4/(3*(taup1+taup2))*sqrt(float(Dp)/4); //generalized rigidity - Lemieux 2008
-              const float demvisc=float(PI)/(sqrt( kn/nu_mass ))*40.f;              
+              const float dvx=velrhop[p1].x-velrhop[p2].x, dvy=velrhop[p1].y-velrhop[p2].y, dvz=velrhop[p1].z-velrhop[p2].z; //vji
+              const float nx=drx/rad, ny=dry/rad, nz=drz/rad; //normal_ji               
+              const float vn=dvx*nx+dvy*ny+dvz*nz; //vji.nji
+              const float demvisc=0.2f/(3.21f*(pow(nu_mass/kn,0.4f)*pow(abs(vn),-0.2f))/40.f);
               if(demdtp1<demvisc)demdtp1=demvisc;
 
               const float over_lap=1.0f*float(Dp)-rad; //-(ri+rj)-|dij|
               if(over_lap>0.0f){ //-Contact
-                const float dvx=velrhop[p1].x-velrhop[p2].x, dvy=velrhop[p1].y-velrhop[p2].y, dvz=velrhop[p1].z-velrhop[p2].z; //vji
-                const float nx=drx/rad, ny=dry/rad, nz=drz/rad; //normal_ji               
-                const float vn=dvx*nx+dvy*ny+dvz*nz; //vji.nji      
                 //normal
                 const float eij=(restitup1+restitup2)/2;
                 const float gn=-(2.0f*log(eij)*sqrt(nu_mass*kn))/(sqrt(float(PI)+log(eij)*log(eij))); //generalized damping - Cummins 2010

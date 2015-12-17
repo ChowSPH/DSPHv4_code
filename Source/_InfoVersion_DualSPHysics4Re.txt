@@ -338,6 +338,7 @@
   - JSphDtFixed uses class JReadDatafile to read dt values from files. (v4.0.028 / 17-12-2015)
   - JLinearValue code was deleted. (v4.0.028 / 17-12-2015)
   - Makefile update. (v4.0.029 / 17-12-2015)
+  - Improvements in code for DEM. (v4.0.030 / 17-12-2015)
 
   
 Remaining issues:

@@ -1064,14 +1064,14 @@ template<bool psimple> __device__ void KerInteractionForcesDemBox
       float4 demdatap2=demdata[CODE_GetTypeAndValue(codep2)];
       const float nu_mass=(boundp2? masstotp1/2: masstotp1*demdatap2.x/(masstotp1+demdatap2.x)); //-Con boundary toma la propia masa del floating 1. //-With boundary takes the actual mass of floating 1.
       const float kn=4/(3*(taup1+demdatap2.y))*sqrt(CTE.dp/4);  //generalized rigidity - Lemieux 2008
-      const float demvisc=float(PI)/(sqrt( kn/nu_mass ))*40.f;
+      const float dvx=velp1.x-velrhop[p2].x, dvy=velp1.y-velrhop[p2].y, dvz=velp1.z-velrhop[p2].z; //vji
+      const float nx=drx/rad, ny=dry/rad, nz=drz/rad; //normal_ji             
+      const float vn=dvx*nx+dvy*ny+dvz*nz; //vji.nji    
+      const float demvisc=0.2f/(3.21f*(pow(nu_mass/kn,0.4f)*pow(abs(vn),-0.2f))/40.f);
       if(demdtp1<demvisc)demdtp1=demvisc;
 
       const float over_lap=1.0f*CTE.dp-rad; //-(ri+rj)-|dij|
       if(over_lap>0.0f){ //-Contact
-        const float dvx=velp1.x-velrhop[p2].x, dvy=velp1.y-velrhop[p2].y, dvz=velp1.z-velrhop[p2].z; //vji
-        const float nx=drx/rad, ny=dry/rad, nz=drz/rad; //normal_ji             
-        const float vn=dvx*nx+dvy*ny+dvz*nz; //vji.nji    
         //normal                    
         const float eij=(restitup1+demdatap2.w)/2;
         const float gn=-(2.0f*log(eij)*sqrt(nu_mass*kn))/(sqrt(float(PI)+log(eij)*log(eij))); //generalized damping - Cummins 2010
