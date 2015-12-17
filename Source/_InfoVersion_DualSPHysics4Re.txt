@@ -337,6 +337,7 @@
   - JSphVisco uses class JReadDatafile to read viscosity data from files. (v4.0.027 / 17-12-2015)
   - JSphDtFixed uses class JReadDatafile to read dt values from files. (v4.0.028 / 17-12-2015)
   - JLinearValue code was deleted. (v4.0.028 / 17-12-2015)
+  - Makefile update. (v4.0.029 / 17-12-2015)
 
   
 Remaining issues:
