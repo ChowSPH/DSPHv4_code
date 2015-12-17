@@ -142,9 +142,6 @@
     <ClInclude Include="Source\JSpaceProperties.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JLinearValue.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Source\JRadixSort.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -268,9 +265,6 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\JSpaceProperties.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\JLinearValue.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\JRadixSort.cpp">

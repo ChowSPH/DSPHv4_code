@@ -701,7 +701,6 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Source\JLinearValue.h" />
     <ClInclude Include="Source\JMatrix4.h" />
     <ClInclude Include="Source\JPartDataBi4.h" />
     <ClInclude Include="Source\JPartFloatBi4.h" />
@@ -798,7 +797,6 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Source\JLinearValue.cpp" />
     <ClCompile Include="Source\JPartDataBi4.cpp" />
     <ClCompile Include="Source\JPartFloatBi4.cpp" />
     <ClCompile Include="Source\JPartOutBi4Save.cpp" />

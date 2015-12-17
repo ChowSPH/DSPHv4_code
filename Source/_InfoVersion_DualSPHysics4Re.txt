@@ -335,12 +335,13 @@
   - JMotion uses class JReadDatafile to read movement data from files. (v4.0.025 / 16-12-2015)
   - Improvements in JMotion, JReadDatafile, JSpaceCtes and JSpaceEParms. (v4.0.026 / 16-12-2015)
   - JSphVisco uses class JReadDatafile to read viscosity data from files. (v4.0.027 / 17-12-2015)
+  - JSphDtFixed uses class JReadDatafile to read dt values from files. (v4.0.028 / 17-12-2015)
+  - JLinearValue code was deleted. (v4.0.028 / 17-12-2015)
+
   
 Remaining issues:
 ==================
-- To use JREadDatafile in JSphDtFixed, JSphVisco and JRotationFile.
 - Use of SDAT_info?
-- Example with DtFixed.
 - Examples with DomainLimits
 - Configure project with debug.
 - Check restart with floatings and DEM.
@@ -358,6 +359,8 @@ Remaining issues:
   if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
 - Error en WaveGen si hay desfase importante.
   
+x Example with DtFixed.
+x To use JREadDatafile in JSphDtFixed, JSphVisco and JRotationFile.
 x Option for rotation from data file.
 x To change kernel Wendland by default in XML examples.
 x To use Special configuration for external forces.

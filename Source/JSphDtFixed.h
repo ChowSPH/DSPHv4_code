@@ -51,8 +51,7 @@
 class JSphDtFixed : protected JObject
 {
 protected:
-  static const unsigned SIZEMAX=100000;
-  static const unsigned SIZEINITIAL=500;
+  static const unsigned FILESIZEMAX=104857600; ///<Maximum file size (100mb).
 
   std::string File;
   unsigned Size;
