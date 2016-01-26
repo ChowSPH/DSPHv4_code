@@ -291,7 +291,7 @@
   - 013. Eliminacion de codigo JRotationFile. (29-09-2015)
   - 014. Cambios varios. (30-09-2015)
 
-[30-09-2015]
+[17-12-2015]
   - Preparing initial files to share with GIT. (30-09-2015)
   - Cleaning Types.h. (v4.0.001 / 30-09-2015)
   - Review timers. (v4.0.001 / 30-09-2015)
@@ -341,9 +341,13 @@
   - Improvements in code for DEM. (v4.0.030 / 17-12-2015)
   - Precision configuration was improved by command and XML parameter. (v4.0.031 / 17-12-2015)
 
+[??-??-2015]
+  - Preliminary solution for strange error on some Linux... (v4.0.032 / 26-01-2016)
+  - Minor changes. (v4.0.032 / 26-01-2016)
   
 Remaining issues:
 ==================
+- Check error in JBinaryData.cpp:CheckHead(1164).
 - Use of SDAT_info?
 - Examples with DomainLimits
 - Configure project with debug.

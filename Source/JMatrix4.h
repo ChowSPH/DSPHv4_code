@@ -21,9 +21,10 @@
 //# - Error corregido: En el metodo rotate() de la clase JMatrix4 se cambio 
 //#   MulPre(MatrixRot(...)) por Mul(MatrixRot(...)) para que funcionase bien 
 //#   la combinación de movimiento con rotación.  (19-10-2010)
-//# - Traduccion de comentarios al ingles. (10/02/2012)
+//# - Traduccion de comentarios al ingles. (10-02-2012)
 //# - Metodo GetMotion() para obtener angulos con respecto a ejes y traslacion
-//#   a partir de la matriz de transformacion. (04/07/2014)
+//#   a partir de la matriz de transformacion. (04-07-2014)
+//# - Mejoras de precision en GetMotion(). (20-01-2016)
 //#############################################################################
 
 /// \file JMatrix4.h \brief Declares the template \ref JMatrix4
@@ -280,7 +281,7 @@ public:
     T3 pr[3]; MulArray(3,pt,pr);
     mov=pr[0];
     T3 imov={-mov.x,-mov.y,-mov.z};
-    JMatrix4::MatrixMov(imov).MulArray(3,pr);
+    JMatrix4d::MatrixMov(imov).MulArray(3,pr);
 
     double ppy=fabs(pr[1].y/sqrt(pr[1].x*pr[1].x+pr[1].y*pr[1].y));
     ppy=(ppy>1? 1.: ppy);
@@ -288,7 +289,7 @@ public:
     if(pr[1].x<0)angz1=(pr[1].y>=0? angz1: -angz1)-180;
     else if(pr[1].y>=0)angz1=-angz1;
     //printf("\n ppy:%f  angz1:%f \n",ppy,angz1); // fflush(stdout);
-    JMatrix4::MatrixRot(angz1,pt[3],pt[0]).MulArray(3,pr);
+    JMatrix4d::MatrixRot(angz1,pt[3],pt[0]).MulArray(3,pr);
 
     double ppz=fabs(pr[1].z/sqrt(pr[1].x*pr[1].x+pr[1].z*pr[1].z));
     ppz=(ppz>1? 1.: ppz);
@@ -296,7 +297,7 @@ public:
     if(pr[1].x<0)angy1=(pr[1].z>=0? -angy1: angy1)-180;
     else if(pr[1].z<0)angy1=-angy1;
     //printf("\n ppz:%f  angy1:%f \n",ppz,angy1); // fflush(stdout);
-    JMatrix4::MatrixRot(angy1,pt[2],pt[0]).MulArray(3,pr);
+    JMatrix4d::MatrixRot(angy1,pt[2],pt[0]).MulArray(3,pr);
 
     double ppz2=fabs(pr[2].z/sqrt(pr[2].y*pr[2].y+pr[2].z*pr[2].z));
     ppz2=(ppz2>1? 1.: ppz2);

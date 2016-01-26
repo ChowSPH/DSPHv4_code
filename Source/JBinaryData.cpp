@@ -1161,7 +1161,8 @@ void JBinaryData::CheckHead(const std::string &file,const StHeadFmtBin &head,con
     unsigned c=0;
     for(;head.titu[c]==head2.titu[c]&&c<60;c++);
     if(c<9)err=2;
-    else if(!filecode.empty()&&c<60)err=3;
+    //else if(!filecode.empty()&&c<60)err=3;
+    else if(!filecode.empty()&&c<50)err=3;    //<----- Preliminary solution for strange error on some Linux...
   }
   //-Coprueba orden de bytes.
   //-Check byte order.
