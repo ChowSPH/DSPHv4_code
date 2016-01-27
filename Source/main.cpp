@@ -84,7 +84,7 @@ int main(int argc, char** argv){
   std::string license=getlicense_gpl(progname);
   printf("%s",license.c_str());
   char appname[256],appnamesub[256];
-  sprintf(appname,"%s Re v4.0.032 (26-01-2016)%s",progname.c_str(),proginfo.c_str());
+  sprintf(appname,"%s Re v4.0.033 (27-01-2016)%s",progname.c_str(),proginfo.c_str());
   for(unsigned c=0;c<=strlen(appname);c++)appnamesub[c]='='; appnamesub[strlen(appname)+1]='\0';
   printf("\n%s\n%s\n",appname,appnamesub);
 

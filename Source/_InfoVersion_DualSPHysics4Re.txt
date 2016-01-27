@@ -344,6 +344,8 @@
 [??-??-2015]
   - Preliminary solution for strange error on some Linux... (v4.0.032 / 26-01-2016)
   - Minor changes. (v4.0.032 / 26-01-2016)
+  - New optional coefficient for DEM (Restitution_Coefficient_User) and shows these 
+    coefficients. (v4.0.033 / 27-01-2016)
   
 Remaining issues:
 ==================

@@ -338,6 +338,8 @@ protected:
   void LoadConfig(const JCfgRun *cfg);
   void LoadCaseConfig();
 
+  void VisuDemCoefficients()const;
+
   void ResetMkInfo();
   void LoadMkInfo(const JSpaceParts *parts);
   inline unsigned GetMkBlockById(unsigned id)const;

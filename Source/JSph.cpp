@@ -572,12 +572,34 @@ void JSph::LoadCaseConfig(){
         DemObjs[tav].tau=(DemObjs[tav].young? (1-DemObjs[tav].poisson*DemObjs[tav].poisson)/DemObjs[tav].young: 0);
         DemObjs[tav].kfric=block.GetSubValueFloat("Kfric","value",true,0);
         DemObjs[tav].restitu=block.GetSubValueFloat("Restitution_Coefficient","value",true,0);
+        if(block.ExistsValue("Restitution_Coefficient_User"))DemObjs[tav].restitu=block.GetValueFloat("Restitution_Coefficient_User");
       }
     }
   }
 
   NpMinimum=CaseNp-unsigned(PartsOutMax*CaseNfluid);
   Log->Print("**Basic case configuration is loaded");
+}
+
+//==============================================================================
+/// Shows coefficients used for DEM objects.
+//==============================================================================
+void JSph::VisuDemCoefficients()const{
+  //-Gets info for each block of particles.
+  Log->Printf("Coefficients for DEM:");
+  for(unsigned c=0;c<MkListSize;c++){
+    const word code=MkList[c].code;
+    const word type=CODE_GetType(code);
+    const unsigned tav=CODE_GetTypeAndValue(MkList[c].code);
+    if(type==CODE_TYPE_FIXED || type==CODE_TYPE_MOVING || type==CODE_TYPE_FLOATING){
+      Log->Printf("  Object %s  mkbound:%u  mk:%u",(type==CODE_TYPE_FIXED? "Fixed": (type==CODE_TYPE_MOVING? "Moving": "Floating")),MkList[c].mktype,MkList[c].mk);
+      //Log->Printf("    type: %u",type);
+      Log->Printf("    Young_Modulus: %g",DemObjs[tav].young);
+      Log->Printf("    PoissonRatio.: %g",DemObjs[tav].poisson);
+      Log->Printf("    Kfric........: %g",DemObjs[tav].kfric);
+      Log->Printf("    Restitution..: %g",DemObjs[tav].restitu);
+    }
+  }
 }
 
 //==============================================================================
@@ -847,7 +869,8 @@ void JSph::VisuConfig()const{
   if(TVisco==VISCO_LaminarSPS){     
     Log->Print(fun::VarStr("SpsSmag",SpsSmag));
     Log->Print(fun::VarStr("SpsBlin",SpsBlin));
-  } 
+  }
+  if(UseDEM)VisuDemCoefficients();
   if(CaseNfloat)Log->Print(fun::VarStr("FtPause",FtPause));
   Log->Print(fun::VarStr("TimeMax",TimeMax));
   Log->Print(fun::VarStr("TimePart",TimePart));
