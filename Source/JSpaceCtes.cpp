@@ -19,6 +19,28 @@
 
 #include "JSpaceCtes.h"
 #include "JXml.h"
+#include <cmath>
+
+//##############################################################################
+//# JSpaceCtes
+//##############################################################################
+//==============================================================================
+/// Compute constants using parameters nonzero.
+//==============================================================================
+JSpaceCtes::StConstants JSpaceCtes::CalcConstans(StConstants cte){
+  const double dim=(cte.data2d? 2: 3);
+  const double dpvol=(cte.data2d? cte.dp*cte.dp: cte.dp*cte.dp*cte.dp);
+  const double mg=sqrt((cte.gravity.x*cte.gravity.x)+(cte.gravity.y*cte.gravity.y)+(cte.gravity.z*cte.gravity.z));
+  if(cte.coefh)cte.coefhdp=cte.coefh*sqrt(dim);
+  else cte.coefh=cte.coefhdp/sqrt(dim);
+  if(!cte.cteh)cte.cteh=cte.coefh*sqrt(dim)*cte.dp;
+  if(!cte.massbound)cte.massbound=dpvol*cte.rhop0;
+  if(!cte.massfluid)cte.massfluid=dpvol*cte.rhop0;
+  if(!cte.speedsystem)cte.speedsystem=sqrt(mg*cte.hswl);
+  if(!cte.speedsound)cte.speedsound=std::max(cte.coefsound*cte.speedsystem,10.*sqrt(mg*cte.hswl));
+  if(!cte.cteb)cte.cteb=cte.speedsound*cte.speedsound*cte.rhop0/cte.gamma;
+  return(cte);
+}
 
 //==============================================================================
 /// Constructor.
@@ -85,6 +107,7 @@ void JSpaceCtes::ReadXmlElementAuto(JXml *sxml,TiXmlElement* node,bool optional,
 /// Reads constants for definition of the case of xml node.
 //==============================================================================
 void JSpaceCtes::ReadXmlDef(JXml *sxml,TiXmlElement* node){
+  const char met[]="ReadXmlDef";
   TiXmlElement* lattice=sxml->GetFirstElement(node,"lattice");
   SetLatticeBound(sxml->GetAttributeInt(lattice,"bound")==1);
   SetLatticeFluid(sxml->GetAttributeInt(lattice,"fluid")==1);
@@ -96,9 +119,11 @@ void JSpaceCtes::ReadXmlDef(JXml *sxml,TiXmlElement* node){
   ReadXmlElementAuto(sxml,node,true,"speedsound",SpeedSound,SpeedSoundAuto);
   double ch=sxml->ReadElementDouble(node,"coefh","value",true,0);
   if(!ch)ch=sxml->ReadElementDouble(node,"coefficient","value",true,0);
-  double chdp=sxml->ReadElementDouble(node,"coefh","hdp",true,0);
+  double chdp=sxml->ReadElementDouble(node,"hdp","value",true,0);
   if(!ch && !chdp)ch=sxml->ReadElementDouble(node,"coefh","value");
-  SetCoefH(ch); SetCoefHdp(chdp);
+  if(ch!=0 && chdp!=0)RunException(met,"Only one constant must be defined (coefh or hdp).",sxml->ErrGetFileRow(node));
+  if(ch)SetCoefH(ch); 
+  if(chdp)SetCoefHdp(chdp);
   SetGamma(sxml->ReadElementDouble(node,"gamma","value"));
   SetRhop0(sxml->ReadElementDouble(node,"rhop0","value"));
   EpsDefined=sxml->ExistsElement(node,"eps");
@@ -138,23 +163,16 @@ void JSpaceCtes::WriteXmlDef(JXml *sxml,TiXmlElement* node)const{
   JXml::AddAttribute(&lattice,"bound",GetLatticeBound());
   JXml::AddAttribute(&lattice,"fluid",GetLatticeFluid());
   node->InsertEndChild(lattice);
-  //JXml::AddAttribute(JXml::AddElementDouble3(node,"gravity",GetGravity()),"comment","Gravitational acceleration");
-  //JXml::AddAttribute(JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber()),"comment","Coefficient to multiply Dt");
-  //JXml::AddAttribute(JXml::AddElementAttrib(node,"coefsound","value",GetCoefSound()),"comment","Coefficient to multiply speedsystem");
-  //if(!GetCoefH()&&GetCoefHdp())JXml::AddAttribute(JXml::AddElementAttrib(node,"coefh","hdp",GetCoefHdp()),"comment","Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
-  //else JXml::AddAttribute(JXml::AddElementAttrib(node,"coefh","value",GetCoefH()),"comment","Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
-  //JXml::AddAttribute(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"comment","Polytropic constant for water used in the state equation");
-  //JXml::AddAttribute(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"comment","Reference density of the fluid");
   WriteXmlElementComment(JXml::AddElementDouble3(node,"gravity",GetGravity()),"Gravitational acceleration","m/s^2");
-  WriteXmlElementComment(JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber()),"Coefficient to multiply Dt");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"Reference density of the fluid","kg/m^3");
   WriteXmlElementAuto(sxml,node,"hswl",GetHSwl(),GetHSwlAuto(),"Maximum still water level to calculate speedofsound using coefsound","metres (m)");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"Politropic constant for water used in the state equation");
   WriteXmlElementAuto(sxml,node,"speedsystem",GetSpeedSystem(),GetSpeedSystemAuto(),"Maximum system speed (by default the dam-break propagation is used)");
   WriteXmlElementComment(JXml::AddElementAttrib(node,"coefsound","value",GetCoefSound()),"Coefficient to multiply speedsystem");
   WriteXmlElementAuto(sxml,node,"speedsound",GetSpeedSound(),GetSpeedSoundAuto(),"Speed of sound to use in the simulation (by default speedofsound=coefsound*speedsystem)");
-  if(!GetCoefH()&&GetCoefHdp())WriteXmlElementComment(JXml::AddElementAttrib(node,"coefh","hdp",GetCoefHdp()),"Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
-  else WriteXmlElementComment(JXml::AddElementAttrib(node,"coefh","value",GetCoefH()),"Coefficient to calculate the smoothing length (H=coefficient*sqrt(3*dp^2) in 3D)");
-  WriteXmlElementComment(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"Polytropic constant for water used in the state equation");
-  WriteXmlElementComment(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"Reference density of the fluid","kg/m3");
+  if(GetCoefH()||!GetCoefHdp())WriteXmlElementComment(JXml::AddElementAttrib(node,"coefh","value",GetCoefH()),"Coefficient to calculate the smoothing length (h=coefh*sqrt(3*dp^2) in 3D)");
+  if(GetCoefHdp())WriteXmlElementComment(JXml::AddElementAttrib(node,"hdp","value",GetCoefHdp()),"Coefficient to calculate the smoothing length (hdp=h/dp)");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber()),"Coefficient to multiply dt");
   WriteXmlElementAuto(sxml,node,"h",GetH(),GetHAuto(),"","metres (m)");
   WriteXmlElementAuto(sxml,node,"b",GetB(),GetBAuto(),"","metres (m)");
   WriteXmlElementAuto(sxml,node,"massbound",GetMassBound(),GetMassBoundAuto(),"","kg");
@@ -184,7 +202,7 @@ void JSpaceCtes::WriteXmlRun(JXml *sxml,TiXmlElement* node)const{
   WriteXmlElementComment(JXml::AddElementDouble3(node,"gravity",GetGravity()),"","m/s^2");
   WriteXmlElementComment(JXml::AddElementAttrib(node,"cflnumber","value",GetCFLnumber()));
   WriteXmlElementComment(JXml::AddElementAttrib(node,"gamma","value",GetGamma()));
-  WriteXmlElementComment(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"","kg/m3");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"","kg/m^3");
   if(EpsDefined)WriteXmlElementComment(JXml::AddElementAttrib(node,"eps","value",GetEps()),"","m/s^2");
   WriteXmlElementComment(JXml::AddElementAttrib(node,"dp","value",GetDp()),"","metres (m)");
   WriteXmlElementComment(JXml::AddElementAttrib(node,"h","value",GetH(),"%.10E"),"","metres (m)");

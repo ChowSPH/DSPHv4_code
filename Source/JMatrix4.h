@@ -24,6 +24,7 @@
 //# - Traduccion de comentarios al ingles. (10-02-2012)
 //# - Metodo GetMotion() para obtener angulos con respecto a ejes y traslacion
 //#   a partir de la matriz de transformacion. (04-07-2014)
+//# - Metodo MulNormal() para aplicar a normales. (19-10-2015)
 //# - Mejoras de precision en GetMotion(). (20-01-2016)
 //#############################################################################
 
@@ -145,7 +146,18 @@ public:
   }
 
 //==============================================================================
-/// Returns the product of the matrix by the vector \a p.
+/// Returns the product of the matrix by the normal \a n.
+//==============================================================================
+  T3 MulNormal(const T3 &n)const{
+    T3 r;
+    r.x= a11*n.x + a12*n.y + a13*n.z;
+    r.y= a21*n.x + a22*n.y + a23*n.z;
+    r.z= a31*n.x + a32*n.y + a33*n.z;
+    return(r);
+  }
+
+//==============================================================================
+/// Returns the product of the matrix by the point \a p.
 //==============================================================================
   T3 MulPoint(const T3 &p)const{
     T3 r;

@@ -37,6 +37,8 @@
 //# - Permite cambiar el numero de particulas de cada bloque. (13/08/2014)
 //# - JSpacePartsGetMk devuelve el ultimo mk de fluido para las particulas 
 //#   creadas con splitting. (12/05/2015)
+//# - Se graba el valor masspart para floating bodies en el fichero XML (05-01-2016)
+//# - Se graban los datos de floatingns con las unidades (29-01-2016)
 //# - EN:
 //# Changes:
 //# =========
@@ -58,6 +60,8 @@
 //# - Change the number of particles of each block. (13.08.2014)
 //# - JSpacePartsGetMk returns the last mk fluid particles
 //#   created with splitting. (05.12.2015)
+//# - Value masspart for floating bodies is saved in XML file (05-01-2016)
+//# - Floatings data is saved with units (29-01-2016)
 //#############################################################################
 
 /// \file JSpaceParts.h \brief Declares the class \ref JSpaceParts.

@@ -101,6 +101,7 @@ template<class T> unsigned JRadixSort::TCalcNbits(unsigned size,const T *data)co
   const char met[]="CalcNbits";
   const int threads=omp_get_max_threads();
   T mxdata=0;
+
   if(!UseOmp || threads<2){//-Secuencial. //-Sequential
     T vmax=0;
     for(unsigned c=0;c<size;c++)vmax=max(vmax,data[c]);
@@ -221,6 +222,7 @@ template<class T> void JRadixSort::LoadBeginKeys(const T* data){
       unsigned *n=nkeys+(skeys*th);
       const unsigned c2ini=OMPSIZE*c;
       const unsigned c2fin=c2ini+(c+1<nk? OMPSIZE: rk);
+      //printf(">> c2ini:%d  c2fin:%d\n",c2ini,c2fin);
       for(unsigned c2=c2ini;c2<c2fin;c2++){
         T v=data[c2];
         for(unsigned ck=0;ck<Nkeys;ck++){ 
@@ -452,7 +454,19 @@ void JRadixSort::SortData(unsigned size,const byte *data,byte *result){ TSortDat
 /// Ordena vector de datos en funcion del Index[] calculado previamente.
 /// Reorders data arrays as a function of the previously calculated Index[].
 //==============================================================================
+void JRadixSort::SortData(unsigned size,const word *data,word *result){ TSortData<word>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+/// Reorders data arrays as a function of the previously calculated Index[].
+//==============================================================================
 void JRadixSort::SortData(unsigned size,const unsigned *data,unsigned *result){ TSortData<unsigned>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+/// Reorders data arrays as a function of the previously calculated Index[].
+//==============================================================================
+void JRadixSort::SortData(unsigned size,const int *data,int *result){ TSortData<int>(size,data,result); }
 
 //==============================================================================
 /// Ordena vector de datos en funcion del Index[] calculado previamente.
@@ -508,4 +522,6 @@ void JRadixSort::DgCheckResult64()const{
   for(;p<Size&&InitData64[p-1]<=InitData64[p];p++);
   if(p!=Size)RunException("DgCheckResult64","The order is not correct");
 }
+
+
 

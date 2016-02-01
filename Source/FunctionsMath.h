@@ -49,6 +49,7 @@
 #include "TypesDef.h"
 #include <cstdlib>
 #include <cmath>
+#include <cfloat>
 
 /// Implements a set of basic/general math functions.
 namespace fmath{
@@ -184,7 +185,6 @@ inline tfloat3 VecUnitary(const tfloat3 &p1){
   return(p1/TFloat3(DistPoint(p1)));
 }
 
-
 //==============================================================================
 /// Devuelve la normal de un triangulo.
 /// Returns the normal of a triangle.
@@ -293,6 +293,7 @@ tfloat3 Intersec3Planes(const tfloat4 &pla1,const tfloat4 &pla2,const tfloat4 &p
 void OpenTriangle3Pt(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3,double openingdist,tdouble3 &pt1,tdouble3 &pt2,tdouble3 &pt3);
 
 //==============================================================================
+/// ES:
 /// A partir de un triangulo formado por 3 puntos devuelve los puntos que forman
 /// un triangulo mas o menos abierto segun openingdist.
 /// - EN:
@@ -312,6 +313,45 @@ double AreaTriangle(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3);
 /// Returns the area of a triangle formed by 3 points.
 //==============================================================================
 float AreaTriangle(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3);
+
+
+//==============================================================================
+/// Devuelve el angulo en grados que forman dos vectores.
+//==============================================================================
+inline double AngleVector(tdouble3 v1,tdouble3 v2){
+  return(acos(ProductScalar(v1,v2)/(DistPoint(v1)*DistPoint(v2)))*TODEG);
+}
+
+////==============================================================================
+///// Devuelve el plano formado por 1 vector y un punto.
+////==============================================================================
+//jplane JSpaceDraw::PlaneVect1Pt(tdouble3 v,tdouble3 p){ 
+//  jplane plano;
+//  plano.a=v.x; plano.b=v.y; plano.c=v.z; 
+//  plano.d=-((v.x*p.x)+(v.y*p.y)+(v.z*p.z));
+//  return(plano);
+//}
+
+//==============================================================================
+/// Devuelve normal eliminando error de precision en double.
+//==============================================================================
+inline tdouble3 CorrectNormal(tdouble3 n){
+  if(abs(n.x)<DBL_EPSILON*10)n.x=0;
+  if(abs(n.y)<DBL_EPSILON*10)n.y=0;
+  if(abs(n.z)<DBL_EPSILON*10)n.z=0;
+  return(VecUnitary(n));
+}
+
+//==============================================================================
+/// Devuelve normal eliminando error de precision en double.
+//==============================================================================
+inline tfloat3 CorrectNormal(tfloat3 n){
+  if(abs(n.x)<FLT_EPSILON*10)n.x=0;
+  if(abs(n.y)<FLT_EPSILON*10)n.y=0;
+  if(abs(n.z)<FLT_EPSILON*10)n.z=0;
+  return(VecUnitary(n));
+}
+
 
 //==============================================================================
 /// Returns cotangent of angle in radians.

@@ -33,6 +33,8 @@
 //# - <speedsystem> y <speedsound> pasan a ser opcionales. (20-01-2015)
 //# - <eps> solo se pasa a <constants> cuando este definido en <constantsdef>. (20-01-2015)
 //# - Se muestran unidades de las constantes. (15-12-2015)
+//# - Nueva funcion estatica para calcular constantes. (19-01-2016)
+//# - Ahora se puede definir <coefh> o <hdp> pero no ambos a la vez. (29-01-2016)
 //# - EN:
 //# Changes:
 //# =========
@@ -45,6 +47,8 @@
 //# - <speedsystem> and <speedsound> become optional. (20-01-2015)
 //# - <eps> passes only <constants> when is set to <constantsdef>. (20-01-2015)
 //# - Units for constants are showed. (15-12-2015)
+//# - New static function to calculate constants. (19-01-2016)
+//# - Now  <coefh> or <hdp> can be used but no both. (29-01-2016)
 //#############################################################################
 
 #include <string>
@@ -62,6 +66,34 @@ class TiXmlElement;
 
 class JSpaceCtes : protected JObject 
 {
+public:
+
+  /// Defines structure to calculate constants. 
+  typedef struct StrConstants{
+    bool data2d;
+    tdouble3 gravity;
+    double dp,coefh,coefhdp;
+    double hswl,speedsystem,coefsound,speedsound;
+    double gamma,rhop0;
+    double cteh,cteb;
+    double massbound;
+    double massfluid;
+
+    StrConstants(){ Clear(); }
+    StrConstants(bool vdata2d,tdouble3 vgravity,double vdp,double vcoefh,double vcoefhdp,double vhswl
+      ,double vspeedsystem,double vcoefsound,double vspeedsound,double vgamma,double vrhop0
+      ,double vcteh,double vcteb,double vmassbound,double vmassfluid)
+    {
+      data2d=vdata2d; gravity=vgravity; dp=vdp; coefh=vcoefh; coefhdp=vcoefhdp; hswl=vhswl;
+      speedsystem=vspeedsystem; coefsound=vcoefsound; speedsound=vspeedsound; gamma=vgamma; rhop0=vrhop0;
+      cteh=vcteh; cteb=vcteb; massbound=vmassbound; massfluid=vmassfluid;
+    }
+    void Clear(){ 
+      data2d=false; gravity=TDouble3(0);
+      dp=hswl=speedsystem=coefsound=speedsound=coefh=coefhdp=gamma=rhop0=cteh=cteb=massbound=massfluid=0;
+    }
+  }StConstants;
+
 private:
   int LatticeBound;       ///<Lattice to create boundary particles on its nodes.
   int LatticeFluid;       ///<Lattice to create fluid particles on its nodes.
@@ -104,8 +136,9 @@ private:
   void WriteXmlDef(JXml *sxml,TiXmlElement* ele)const;
   void ReadXmlRun(JXml *sxml,TiXmlElement* ele);
   void WriteXmlRun(JXml *sxml,TiXmlElement* ele)const;
+
 public:
-  
+  static StConstants CalcConstans(StConstants cte);
   JSpaceCtes();
   void Reset();
   void LoadDefault();

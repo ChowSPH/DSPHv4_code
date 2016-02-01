@@ -33,6 +33,7 @@
 //#   se indica si se quiere usoar OMP o una version secuencial. (30-12-2013)
 //# - Nuevo metodo MakeIndex(). (30-12-2013)
 //# - Remplaza unsigned long long por ullong. (01-10-2015)
+//# - Limpieza de codigo usado para debug. (30-01-2016)
 //# - EN:
 //# Changes:
 //# =========
@@ -46,6 +47,7 @@
 //#   indicates whether you want to use OMP or a sequential version. (30-12-2013)
 //# - New method MakeIndex(). (30-12-2013)
 //# - Replace unsigned long long by ullong. (01-10-2015)
+//# - Cleaning code used to debug. (30-01-2016)
 //#############################################################################
 
 #include "JObject.h"
@@ -114,6 +116,7 @@ public:
   void MakeIndex(unsigned size,const unsigned *data,unsigned nbits);
   void MakeIndex(unsigned size,const ullong *data,unsigned nbits);
 
+
   unsigned BitsSize(unsigned v)const;
   unsigned BitsSize(ullong v)const;
 
@@ -121,7 +124,9 @@ public:
   unsigned CalcNbits(unsigned size,const ullong *data)const;
 
   void SortData(unsigned size,const byte *data,byte *result);
+  void SortData(unsigned size,const word *data,word *result);
   void SortData(unsigned size,const unsigned *data,unsigned *result);
+  void SortData(unsigned size,const int *data,int *result);
   void SortData(unsigned size,const float *data,float *result);
   void SortData(unsigned size,const double *data,double *result);
   void SortData(unsigned size,const tfloat3 *data,tfloat3 *result);

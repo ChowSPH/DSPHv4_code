@@ -20,68 +20,74 @@
 //# Cambios:
 //# =========
 //# - Nuevas funciones para gestion de nombres de ficheros: GetFile(), 
-//#   GetFileNameSplit(). (10/08/2010)
+//#   GetFileNameSplit(). (10-08-2010)
 //# - Nuevas funciones para pasar de valores numericos a texto: UintStr(),
-//#   IntStr(). (17/12/2010)
-//# - Nueva funcion para ruats de ficheros: GetWithoutExtension(). (22/12/2010)
-//# - Funciones para convertir datos entre BigEndian y LittleEndian. (09/03/2011)
-//# - Agrupa funciones en namespace fun. (09/03/2011)
-//# - Nuevas funciones FileExists() y DirExists(). (10/03/2011)
+//#   IntStr(). (17-12-2010)
+//# - Nueva funcion para ruats de ficheros: GetWithoutExtension(). (22-12-2010)
+//# - Funciones para convertir datos entre BigEndian y LittleEndian. (09-03-2011)
+//# - Agrupa funciones en namespace fun. (09-03-2011)
+//# - Nuevas funciones FileExists() y DirExists(). (10-03-2011)
 //# - Correccion en GetExtension() y GetWithoutExtension(), ahora busca la 
-//#   extension apartir del punto del ultimo fichero o directorio. (08/05/2011)
-//# - Nuevas funciones VarStr() para vectores de datos. (02/11/2011)
-//# - Funcion StrSplit() para extraer partes de un texto. (27/01/2012)
-//# - Traduccion de comentarios al ingles. (10/02/2012)
-//# - Error corregido en ReverseByteOrder(). (21/03/2012)
+//#   extension apartir del punto del ultimo fichero o directorio. (08-05-2011)
+//# - Nuevas funciones VarStr() para vectores de datos. (02-11-2011)
+//# - Funcion StrSplit() para extraer partes de un texto. (27-01-2012)
+//# - Traduccion de comentarios al ingles. (10-02-2012)
+//# - Error corregido en ReverseByteOrder(). (21-03-2012)
 //# - Nuevas funciones ResizeAlloc para redimensionar la cantidad de memoria
-//#   reservada conservando los datos. (22/03/2012)
-//# - Nuevas funciones GetDateTimeFormat() y GetTextRandomCode(). (29/09/2012)
-//# - Nueva funcion LongStr(). (05/04/2013)
-//# - Mejora de funcion StrSplit(). (06/06/2013)
-//# - Nuevas funciones StrSplitCount() y StrSplitValue(). (06/06/2013)
-//# - Algunas funciones nuevas para tipos double. (14/11/2013)
-//# - Nueva funcion StrWithoutChar(). (13/12/2013)
-//# - Nueva funcion ResizeAlloc para tfloat4 y tdouble2. (21/12/2013)
-//# - Nueva funcion PrintStr usando argumentos como el printf(). (10/03/2014)
-//# - Nuevos metodos VarStr para arrays de unsigned y word. (18/03/2014)
-//# - Nuevas funcion StrTrimRepeated(). (08/05/2014)
-//# - Nuevas funcion StrRepeat(). (03/10/2014)
-//# - Nuevas funciones GetFirstValueXXX(). (15/12/2014)
+//#   reservada conservando los datos. (22-03-2012)
+//# - Nuevas funciones GetDateTimeFormat() y GetTextRandomCode(). (29-09-2012)
+//# - Nueva funcion LongStr(). (05-04-2013)
+//# - Mejora de funcion StrSplit(). (06-06-2013)
+//# - Nuevas funciones StrSplitCount() y StrSplitValue(). (06-06-2013)
+//# - Algunas funciones nuevas para tipos double. (14-11-2013)
+//# - Nueva funcion StrWithoutChar(). (13-12-2013)
+//# - Nueva funcion ResizeAlloc para tfloat4 y tdouble2. (21-12-2013)
+//# - Nueva funcion PrintStr usando argumentos como el printf(). (10-03-2014)
+//# - Nuevos metodos VarStr para arrays de unsigned y word. (18-03-2014)
+//# - Nuevas funcion StrTrimRepeated(). (08-05-2014)
+//# - Nuevas funcion StrRepeat(). (03-10-2014)
+//# - Nuevas funciones GetFirstValueXXX(). (15-12-2014)
 //# - Remplaza long long por llong. (01-10-2015)
 //# - Nueva funcion StrOnlyChars(). (03-10-2015)
+//# - Nuevas funciones ResizeAlloc(). (10-10-2015)
+//# - Nuevas funciones IsInfinity() y IsNaN(). (18-10-2015)
+//# - Nuevas funciones StrTo valor numerico. (14-01-2016)
 //# - EN:
 //# Changes:
 //# ========
 //# - New management functions for file names: GetFile()
-//#   GetFileName Split(). (10/08/2010)
+//#   GetFileName Split(). (10-08-2010)
 //# - New functions to move numeric values ​​to text: UintStr()
-//#   IntStr(). (17/12/2010)
-//# - New function for file routes: GetWithoutExtension(). (22/12/2010)
-//# - Functions for converting data between BigEndian and LittleEndian. (09/03/2011)
-//# - Groups functions in namespace fun. (09/03/2011)
-//# - New functions FileExists() and DirExists(). (10/03/2011)
+//#   IntStr(). (17-12-2010)
+//# - New function for file routes: GetWithoutExtension(). (22-12-2010)
+//# - Functions for converting data between BigEndian and LittleEndian. (09-03-2011)
+//# - Groups functions in namespace fun. (09-03-2011)
+//# - New functions FileExists() and DirExists(). (10-03-2011)
 //# - Correction in GetExtension() and GetWithoutExtension(), they now seek the
-//#   extension starting from the last file or directory. (08/05/2011)
-//# - New function varstr() for data vectors. (02/11/2011)
-//# - Function StrSplit() to extract text parts. (27/01/2012)
-//# - Comment English translation. (10/02/2012)
-//# - Error fixed in ReverseByteOrder(). (21/03/2012)
+//#   extension starting from the last file or directory. (08-05-2011)
+//# - New function varstr() for data vectors. (02-11-2011)
+//# - Function StrSplit() to extract text parts. (27-01-2012)
+//# - Comment English translation. (10-02-2012)
+//# - Error fixed in ReverseByteOrder(). (21-03-2012)
 //# - New function ResizeAlloc to resize the memory amount
-//# - allocated retaining the data. (22/03/2012)
-//# - New functions GetDateTimeFormat() and GetTextRandomCode(). (29/09/2012)
-//# - New function LongStr(). (05.04.2013)
-//# - Improved StrSplit function(). (06.06.2013)
-//# - New functions StrSplitCount() and StrSplitValue(). (06.06.2013)
-//# - Some new features for double types. (14.11.2013)
-//# - New function StrWithoutChar(). (12.13.2013)
-//# - New function for tfloat4 and tdouble2 ResizeAlloc. (21.12.2013)
-//# - New function PrintStr using arguments such as printf(). (03.10.2014)
-//# - New methods in VarStr for unsigned and word arrays. (18.03.2014)
-//# - New function StrTrimRepeated(). (05.08.2014)
-//# - New function StrRepeat(). (03.10.2014)
-//# - New function GetFirstValueXXX(). (12.15.2014)
+//# - allocated retaining the data. (22-03-2012)
+//# - New functions GetDateTimeFormat() and GetTextRandomCode(). (29-09-2012)
+//# - New function LongStr(). (05-04-2013)
+//# - Improved StrSplit function(). (06-06-2013)
+//# - New functions StrSplitCount() and StrSplitValue(). (06-06-2013)
+//# - Some new features for double types. (14-11-2013)
+//# - New function StrWithoutChar(). (13-12-2013)
+//# - New function for tfloat4 and tdouble2 ResizeAlloc. (21-12-2013)
+//# - New function PrintStr using arguments such as printf(). (10.03.2014)
+//# - New methods in VarStr for unsigned and word arrays. (18-03-2014)
+//# - New function StrTrimRepeated(). (08-05-2014)
+//# - New function StrRepeat(). (03-10-2014)
+//# - New function GetFirstValueXXX(). (15-12-2014)
 //# - Replace long long by llong. (01-10-2015)
 //# - New function StrOnlyChars(). (03-10-2015)
+//# - New functions ResizeAlloc(). (10-10-2015)
+//# - New functions IsInfinity() y IsNaN(). (18-10-2015)
+//# - New functions StrTo numeric value. (14-01-2016)
 //#############################################################################
 
 /// \file Functions.h \brief Declares basic/general functions for the entire application.
@@ -130,6 +136,16 @@ inline std::string Double3gRangeStr(const tdouble3 &v,const tdouble3 &v2){ retur
 std::string Double4Str(const tdouble4 &v,const char* fmt="%f,%f,%f");
 inline std::string Double4gStr(const tdouble4 &v){ return(Double4Str(v,"%g,%g,%g,%g")); }
 
+int      StrToInt    (const std::string &v);
+tint3    StrToInt3   (std::string v);
+double   StrToDouble (const std::string &v);
+tdouble3 StrToDouble3(std::string v);
+inline byte     StrToByte   (const std::string &v){ return(byte(StrToInt(v)));          }
+inline word     StrToWord   (const std::string &v){ return(word(StrToInt(v)));          }
+inline unsigned StrToUint   (const std::string &v){ return(unsigned(StrToInt(v)));      }
+inline tuint3   StrToUint3  (const std::string &v){ return(ToTUint3(StrToInt3(v)));     }
+inline float    StrToFloat  (const std::string &v){ return(float(StrToDouble(v)));      }
+inline tfloat3  StrToFloat3 (const std::string &v){ return(ToTFloat3(StrToDouble3(v))); }
 
 std::string StrUpper(const std::string &cad);
 std::string StrLower(const std::string &cad);
@@ -201,17 +217,23 @@ inline void ReverseByteOrder(llong *data,int count){ ReverseByteOrder(data,count
 inline void ReverseByteOrder(int *data,int count){ ReverseByteOrder(data,count,data); }
 inline void ReverseByteOrder(short *data,int count){ ReverseByteOrder(data,count,data); }
 
-byte* ResizeAlloc(byte *data,unsigned ndata,unsigned newsize);
-word* ResizeAlloc(word *data,unsigned ndata,unsigned newsize);
+byte*     ResizeAlloc(byte     *data,unsigned ndata,unsigned newsize);
+word*     ResizeAlloc(word     *data,unsigned ndata,unsigned newsize);
 unsigned* ResizeAlloc(unsigned *data,unsigned ndata,unsigned newsize);
-tuint3* ResizeAlloc(tuint3 *data,unsigned ndata,unsigned newsize);
-float* ResizeAlloc(float *data,unsigned ndata,unsigned newsize);
-tfloat3* ResizeAlloc(tfloat3 *data,unsigned ndata,unsigned newsize);
-tfloat4* ResizeAlloc(tfloat4 *data,unsigned ndata,unsigned newsize);
-double* ResizeAlloc(double *data,unsigned ndata,unsigned newsize);
+tuint3*   ResizeAlloc(tuint3   *data,unsigned ndata,unsigned newsize);
+int*      ResizeAlloc(int      *data,unsigned ndata,unsigned newsize);
+tint3*    ResizeAlloc(tint3    *data,unsigned ndata,unsigned newsize);
+float*    ResizeAlloc(float    *data,unsigned ndata,unsigned newsize);
+tfloat3*  ResizeAlloc(tfloat3  *data,unsigned ndata,unsigned newsize);
+tfloat4*  ResizeAlloc(tfloat4  *data,unsigned ndata,unsigned newsize);
+double*   ResizeAlloc(double   *data,unsigned ndata,unsigned newsize);
 tdouble2* ResizeAlloc(tdouble2 *data,unsigned ndata,unsigned newsize);
 tdouble3* ResizeAlloc(tdouble3 *data,unsigned ndata,unsigned newsize);
 
+bool IsInfinity(float v);
+bool IsInfinity(double v);
+bool IsNAN(float v);
+bool IsNAN(double v);
 
 }
 
