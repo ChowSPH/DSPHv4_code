@@ -199,7 +199,7 @@ TiXmlElement* JSpacePartBlock_Floating::WriteXml(JXml *sxml,TiXmlElement* ele)co
   sxml->AddAttribute(sxml->AddElementDouble3(ele,"center",Center),"units_comment","metres (m)");
   sxml->AddAttribute(sxml->AddElementDouble3(ele,"inertia",Inertia),"units_comment","kg*m^2");
   if(Velini!=TDouble3(0))sxml->AddAttribute(sxml->AddElementDouble3(ele,"velini",Velini),"units_comment","m/s");
-  if(Omegaini!=TDouble3(0))sxml->AddAttribute(sxml->AddElementDouble3(ele,"omegaini",Omegaini),"units_comment","degrees/s");
+  if(Omegaini!=TDouble3(0))sxml->AddAttribute(sxml->AddElementDouble3(ele,"omegaini",Omegaini),"units_comment","radians/s");
   return(ele);
 }
 

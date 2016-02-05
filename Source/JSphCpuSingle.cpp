@@ -647,6 +647,8 @@ void JSphCpuSingle::FtCalcForces(StFtoForces *ftoforces)const{
       fomegavel.x+= acez*dist.y - acey*dist.z;
       fomegavel.y+= acex*dist.z - acez*dist.x;
       fomegavel.z+= acey*dist.x - acex*dist.y;
+
+
       //inertia tensor
       inert.a11+=(float)  (dist.y*dist.y+dist.z*dist.z)*fmassp;
       inert.a12+=(float) -(dist.x*dist.y)*fmassp;
@@ -710,6 +712,7 @@ void JSphCpuSingle::RunFloating(double dt,bool predictor){
       face.x=(face.x+fmass*Gravity.x)/fmass;
       face.y=(face.y+fmass*Gravity.y)/fmass;
       face.z=(face.z+fmass*Gravity.z)/fmass;
+
       //-Compute fomega / Calculo de fomega.
       tfloat3 fomega=fobj.fomega;
       {

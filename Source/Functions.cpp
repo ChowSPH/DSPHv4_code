@@ -762,6 +762,14 @@ float* ResizeAlloc(float *data,unsigned ndata,unsigned newsize){
   return(data2);
 }
 //==============================================================================
+tfloat2* ResizeAlloc(tfloat2 *data,unsigned ndata,unsigned newsize){
+  tfloat2* data2=new tfloat2[newsize];
+  ndata=std::min(ndata,newsize);
+  if(ndata)memcpy(data2,data,sizeof(tfloat2)*ndata);
+  delete[] data;
+  return(data2);
+}
+//==============================================================================
 tfloat3* ResizeAlloc(tfloat3 *data,unsigned ndata,unsigned newsize){
   tfloat3* data2=new tfloat3[newsize];
   ndata=std::min(ndata,newsize);

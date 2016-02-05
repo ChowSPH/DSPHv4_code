@@ -484,6 +484,12 @@ void JRadixSort::SortData(unsigned size,const double *data,double *result){ TSor
 /// Ordena vector de datos en funcion del Index[] calculado previamente.
 /// Reorders data arrays as a function of the previously calculated Index[].
 //==============================================================================
+void JRadixSort::SortData(unsigned size,const tfloat2 *data,tfloat2 *result){ TSortData<tfloat2>(size,data,result); }
+
+//==============================================================================
+/// Ordena vector de datos en funcion del Index[] calculado previamente.
+/// Reorders data arrays as a function of the previously calculated Index[].
+//==============================================================================
 void JRadixSort::SortData(unsigned size,const tfloat3 *data,tfloat3 *result){ TSortData<tfloat3>(size,data,result); }
 
 //==============================================================================

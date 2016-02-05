@@ -94,7 +94,7 @@ typedef struct{
 /// Structure with the information of the floating object in forces calculation.
 typedef struct{
   tfloat3 face;      //-Sumatorio de ace de particulas. //-Sum of particle acceleration.
-  tfloat3 fomegavel; //-Sumatorio de ace de particulas combinado con la distancia al centro. //-Sum of particle acceleration combined with distance from the center.
+  tfloat3 fomegavel; //-Sumatorio de ace de particulas combinado con la distancia al centro. //-Sum of particle acceleration combined with distance from the center. MOMENTUM
 }StFtoForces;
 
 /// Structure with the information of the floating object for DEM interaction.

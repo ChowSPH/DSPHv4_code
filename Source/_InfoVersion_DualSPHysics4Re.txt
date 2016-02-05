@@ -348,6 +348,7 @@
     coefficients. (v4.0.033 / 27-01-2016)
   - Several changes in JSpaceCtes, JSpaceParts, JXml, JSphMotion... (v4.0.034 / 30-01-2016)
   - Minor changes to compile on Linux. (v4.0.035 / 01-02-2016)
+  - Code synchronisation. (v4.0.036 / 05-02-2016)
   
 Remaining issues:
 ==================
