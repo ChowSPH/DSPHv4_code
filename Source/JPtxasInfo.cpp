@@ -21,11 +21,14 @@
 #include "Functions.h"
 #include <algorithm>
 #include <cstring>
+#include <cstdlib>
+#include <cstdio>
+#include <sstream>
+#include <iostream>
+#include <fstream>
 
-using std::string;
-using std::ifstream;
-using std::ofstream;
-using std::endl;
+using namespace std;
+
 
 //##############################################################################
 //# JPtxasInfoKer
@@ -225,17 +228,49 @@ void JPtxasInfo::AddKernel(const JPtxasInfoKer &ker){
 //==============================================================================
 void JPtxasInfo::LoadFile(const std::string &file){
   const char met[]="LoadFile";
-  ifstream pf;
-  pf.open(file.c_str());
-  if(pf){
+  const unsigned MAXSIZE=104857600;
+  unsigned sizedata=0;
+  char *data=NULL;
+  {//-Loads file data.
+    ifstream pf;
+    pf.open(file.c_str(),ios::binary);
+    if(pf){
+      pf.seekg(0,ios::end);
+      sizedata=unsigned(pf.tellg())+1;
+      if(sizedata>MAXSIZE)RunException(met,"File exceeds the maximum size allowed.",file);
+      data=new char[sizedata];
+      pf.seekg(0,ios::beg);
+      pf.read(data,sizedata-1);
+      data[sizedata-1]='\n';
+      pf.close();
+    }
+    else RunException(met,"Cannot open the file.",file);
+  }
+  //-Removes character \r and counts lines.
+  if(data){
+    unsigned c2=0;
+    for(unsigned c=0;c<sizedata;c++){
+      char let=data[c];
+      if(let=='\n')data[c]=let='\0';
+      if(c!=c2)data[c2]=let;
+      if(let!='\r')c2++;
+    }
+    sizedata=c2;
+  }
+  //-Processes data.
+  if(data){
     JPtxasInfoKer ker;
     unsigned kersm;
     unsigned stackframe;
     bool fin=false;
-    while(!pf.eof()&&!fin){
-      char buff[1024];
-      pf.getline(buff,1024);
+    unsigned cline=1;
+    unsigned cdata=0;
+    while(cdata<sizedata && !fin){
+      char *buff=data+cdata;
       string line=buff;
+      //printf("%03u:> size:%u [%s]\n",cline,unsigned(line.size()),line.c_str());
+      cdata+=unsigned(line.size())+1;
+      if(cline>2850)throw "Stop";
       int pos=int(line.find("ptxas info"));
       if(pos<0)pos=int(line.find("ptxas : info"));
         if(pos>=0 && int(line.find("Function properties"))<0){
@@ -308,11 +343,10 @@ void JPtxasInfo::LoadFile(const std::string &file){
         string tx=fun::StrTrim(line.substr(0,pos2));
         stackframe=atoi(tx.c_str());
       }
-    } 
-    if(!pf.eof()&&pf.fail())RunException(met,"Failed reading to file.",file);
-    pf.close();
+      cline++;
+    }
+    delete[] data;
   }
-  else RunException(met,"File could not be opened.",file);
   Sort();
 }
 

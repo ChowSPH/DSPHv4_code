@@ -18,6 +18,7 @@
 #include "JSphGpu.h"
 #include "JSphGpu_ker.h"
 #include "JPtxasInfo.h"
+#include "JBlockSizeAuto.h"
 #include "JCellDivGpu.h"
 #include "JPartFloatBi4.h"
 #include "Functions.h"
@@ -43,6 +44,7 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,withmpi){
   ArraysGpu=new JArraysGpu;
   InitVars();
   TmgCreation(Timers,false);
+  BsAuto=NULL;
 }
 
 //==============================================================================
@@ -55,6 +57,7 @@ JSphGpu::~JSphGpu(){
   delete ArraysGpu;
   TmgDestruction(Timers);
   cudaDeviceReset();
+  delete BsAuto; BsAuto=NULL;
 }
 
 //==============================================================================
@@ -585,6 +588,7 @@ void JSphGpu::SelecDevice(int gpuid){
 /// Returns the optimal block size according to the CUDA kernel registers and the compute capability of the device
 //==============================================================================
 unsigned JSphGpu::OptimizeBlockSize(unsigned compute,unsigned nreg){
+  return(DgBlockSize);
   if(compute>=30){
     if(nreg<=32)return(256);       // 1-32 -> 128:100%  256:100%  512:100%
     else if(nreg<=40)return(256);  //33-40 -> 128:75%  256:75%  384:75%  512:75%
@@ -685,26 +689,53 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
   JPtxasInfo pt;
   if(fun::FileExists(PtxasFile)){
     pt.LoadFile(PtxasFile);
-    if(smgpu==20&&!pt.CheckSm(20))RunException(met,"Code is not compiled for sm20.");
-    if(smgpu==30&&!pt.CheckSm(30)){
+    if(smgpu==20 && !pt.CheckSm(20))RunException(met,"Code is not compiled for sm20.");
+    if(smgpu==30 && !pt.CheckSm(30)){
       if(!pt.CheckSm(20))RunException(met,"Code is not compiled for sm20 and sm30.");
       else smcode=20;
     }
-    if(smgpu==35&&!pt.CheckSm(35)){
+    if(smgpu==35 && !pt.CheckSm(35)){
       if(!pt.CheckSm(20))RunException(met,"Code is not compiled for sm20 and sm35.");
       else smcode=20;
     }
     Log->Printf("Use code for compute capability %3.1f on hardware %3.1f",float(smcode)/10,float(smgpu)/10);
   }
   else Log->Print("**Without optimization of registers.");
-  //pt.SaveCsv(DirOut+"ptxas_info.csv");
+  pt.SaveCsv(DirOut+"ptxas_info.csv");
   BlockSizesStr="";
   if(CellMode==CELLMODE_2H||CellMode==CELLMODE_H){
     const TpFtMode ftmode=(CaseNfloat? (UseDEM? FTMODE_Dem: FTMODE_Sph): FTMODE_None);
     const bool lamsps=(TVisco==VISCO_LaminarSPS);
     const bool shift=(TShifting!=SHIFT_None);
-    BlockSizes.forcesbound=BlockSizeConfig("BsForcesBound",smgpu,pt.GetData("cusph_KerInteractionForcesBound",smcode,Psimple,TKernel,ftmode));
-    BlockSizes.forcesfluid=BlockSizeConfig("BsForcesFluid",smgpu,pt.GetData("cusph_KerInteractionForcesFluid",smcode,Psimple,TKernel,ftmode,lamsps,TDeltaSph,shift));
+    if(!DgBlockSize){
+      unsigned bsfluid=0,bsbound=0;
+      cusph::Interaction_Forces(Psimple,TKernel,(CaseNfloat>0),UseDEM,lamsps,TDeltaSph,CellMode,0,0,bsbound,bsfluid,100,50,20,TUint3(0),NULL,TUint3(0),NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,TShifting,NULL,NULL,Simulate2D,NULL);
+      BlockSizes.forcesbound=(bsbound? bsbound: 128);
+      BlockSizes.forcesfluid=(bsfluid? bsfluid: 128);
+      Log->Printf("**BlockSize calculation is %s.",(bsbound? "AUTOMATIC": "FIXED"));
+      //Log->Printf("BsForcesBound=%u (%s)",BlockSizes.forcesbound,(bsbound? "auto": "fixed"));
+      //Log->Printf("BsForcesFluid=%u (%s)",BlockSizes.forcesfluid,(bsfluid? "auto": "fixed"));
+      string tx1=fun::PrintStr("BsForcesBound=%u (? regs)",BlockSizes.forcesbound); Log->Print(tx1);
+      string tx2=fun::PrintStr("BsForcesFluid=%u (? regs)",BlockSizes.forcesfluid); Log->Print(tx2);
+      if(!BlockSizesStr.empty())BlockSizesStr=BlockSizesStr+", ";
+      BlockSizesStr=BlockSizesStr+tx1+", "+tx2;
+    }
+    else if(DgBlockSize==1){
+      BsAuto=new JBlockSizeAuto(Log,500);
+      BsAuto->AddKernel("KerInteractionForcesFluid",64,31,32,128);  //15:512 31:1024
+      BsAuto->AddKernel("KerInteractionForcesBound",64,31,32,128);
+      BlockSizes.forcesbound=128;
+      BlockSizes.forcesfluid=128;
+      Log->Print("**BlockSize calculation is EMPIRICAL.");
+      string tx1=fun::PrintStr("BsForcesBound=%u (initial)",BlockSizes.forcesbound); Log->Print(tx1);
+      string tx2=fun::PrintStr("BsForcesFluid=%u (initial)",BlockSizes.forcesfluid); Log->Print(tx2);
+      if(!BlockSizesStr.empty())BlockSizesStr=BlockSizesStr+", ";
+      BlockSizesStr=BlockSizesStr+tx1+", "+tx2;
+    }
+    else{
+      BlockSizes.forcesbound=BlockSizeConfig("BsForcesBound",smgpu,pt.GetData("cusph_KerInteractionForcesBound",smcode,Psimple,TKernel,ftmode));
+      BlockSizes.forcesfluid=BlockSizeConfig("BsForcesFluid",smgpu,pt.GetData("cusph_KerInteractionForcesFluid",smcode,Psimple,TKernel,ftmode,lamsps,TDeltaSph,shift));
+    }
     if(UseDEM)BlockSizes.forcesdem=BlockSizeConfig("BsForcesDEM",smgpu,pt.GetData("cusph_KerInteractionForcesDem",smcode,Psimple));
   }
   else RunException(met,"CellMode unrecognised.");

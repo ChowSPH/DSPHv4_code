@@ -26,6 +26,7 @@
 class JPartsOut;
 class JArraysGpu;
 class JCellDivGpu;
+class JBlockSizeAuto;
 
 class JSphGpu : public JSph
 {
@@ -208,7 +209,7 @@ protected:
   unsigned ParticlesDataDown(unsigned n,unsigned pini,bool code,bool cellorderdecode,bool onlynormal);
   
   void SelecDevice(int gpuid);
-  static unsigned OptimizeBlockSize(unsigned compute,unsigned nreg);
+  unsigned OptimizeBlockSize(unsigned compute,unsigned nreg);
   unsigned BlockSizeConfig(const std::string& opname,unsigned compute,tuint2 data);
   void ConfigBlockSizes(bool usezone,bool useperi);
 
@@ -244,6 +245,7 @@ public:
   JSphGpu(bool withmpi);
   ~JSphGpu();
 
+  JBlockSizeAuto *BsAuto;
 };
 
 #endif

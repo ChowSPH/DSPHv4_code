@@ -349,9 +349,20 @@
   - Several changes in JSpaceCtes, JSpaceParts, JXml, JSphMotion... (v4.0.034 / 30-01-2016)
   - Minor changes to compile on Linux. (v4.0.035 / 01-02-2016)
   - Code synchronisation. (v4.0.036 / 05-02-2016)
+  - Improvements in JPtxasInfo. (v4.0.037 / 17-02-2016)
+  - Using cudaOccupancyMaxPotentialBlockSize() function. (v4.0.037 / 18-02-2016)
+  - Using empirical calculation of blocksize. (v4.0.037 / 21-02-2016)
   
 Remaining issues:
 ==================
+- Eliminar referencias a DgBlockSize
+- Cambios en JBlockSizeAuto:
+  - Eliminar KerComputeStepVerlet_X.
+  - Colocar BsAuto en JSphGpu.h.
+  - Solo para GPU (win y linux).
+  - Incluir timers para simplificar kernel.
+  - Opcion para generar csv con info.
+- Cambiar a CUDA 7.5
 - Check error in JBinaryData.cpp:CheckHead(1164).
 - Use of SDAT_info?
 - Examples with DomainLimits

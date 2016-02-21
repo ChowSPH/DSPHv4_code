@@ -23,6 +23,7 @@
 #include <cuda_runtime_api.h>
 
 class JLog2;
+class JBlockSizeAuto;
 
 #define SPHBSIZE 256
 
@@ -80,7 +81,7 @@ void PreInteractionSimple(unsigned np,const double2 *posxy,const double *posz
 //# Kernels for the force calculation.
 void Interaction_Forces(bool psimple,TpKernel tkernel,bool floating,bool usedem,bool lamsps
   ,TpDeltaSph tdelta,TpCellMode cellmode
-  ,float viscob,float viscof,unsigned bsbound,unsigned bsfluid
+  ,float viscob,float viscof,unsigned &bsbound,unsigned &bsfluid
   ,unsigned np,unsigned npb,unsigned npbok,tuint3 ncells
   ,const int2 *begincell,tuint3 cellmin,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *pospress
@@ -88,7 +89,7 @@ void Interaction_Forces(bool psimple,TpKernel tkernel,bool floating,bool usedem,
   ,const float *ftomassp,const tsymatrix3f *tau,tsymatrix3f *gradvel
   ,float *viscdt,float* ar,float3 *ace,float *delta
   ,TpShifting tshifting,float3 *shiftpos,float *shiftdetect
-  ,bool simulate2d);
+  ,bool simulate2d,JBlockSizeAuto *bsauto);
 
 
 //# Kernels para calculo de fuerzas DEM

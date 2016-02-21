@@ -84,6 +84,10 @@ public:
 
   std::string PtxasFile;           ///<File with ptxas information.
 
+
+  unsigned DgBlockSize;
+
+
   JCfgRun();
   void Reset();
   void VisuInfo()const;

@@ -26,6 +26,7 @@
 #include "JWaveGen.h"
 #include "JSphGpu_ker.h"
 #include "JPtxasInfo.h"
+#include "JBlockSizeAuto.h"
 
 using namespace std;
 //==============================================================================
@@ -433,18 +434,29 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
 /// Interaction for force computation.
 //==============================================================================
 void JSphGpuSingle::Interaction_Forces(TpInter tinter){
+  //Log->Print("000_000");
   const char met[]="Interaction_Forces";
   PreInteraction_Forces(tinter);
   TmgStart(Timers,TMG_CfForces);
 
   const bool lamsps=(TVisco==VISCO_LaminarSPS);
-  const unsigned bsfluid=BlockSizes.forcesfluid;
-  const unsigned bsbound=BlockSizes.forcesbound;
+  unsigned bsfluid=BlockSizes.forcesfluid;
+  unsigned bsbound=BlockSizes.forcesbound;
+
+  if(BsAuto && !(Nstep%BsAuto->GetStepsInterval())){ //-Cada cierto numero de pasos.
+    //Log->Print("000_001");
+    cusph::Interaction_Forces(Psimple,TKernel,WithFloating,UseDEM,lamsps,TDeltaSph,CellMode,Visco*ViscoBoundFactor,Visco,bsbound,bsfluid,Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,SpsTaug,SpsGradvelg,ViscDtg,Arg,Aceg,Deltag,TShifting,ShiftPosg,ShiftDetectg,Simulate2D,BsAuto);
+    PreInteractionVars_Forces(tinter,Np,Npb);
+    BsAuto->ProcessTimes(TimeStep,Nstep);
+    bsfluid=BlockSizes.forcesfluid=BsAuto->GetKernel(0)->GetOptimumBs();
+    bsbound=BlockSizes.forcesbound=BsAuto->GetKernel(1)->GetOptimumBs();
+    //Log->Print("000_002");
+  }
 
   //-Interaccion Fluid-Fluid/Bound & Bound-Fluid.
   //-Interaction Fluid-Fluid/Bound & Bound-Fluid.
-  cusph::Interaction_Forces(Psimple,TKernel,WithFloating,UseDEM,lamsps,TDeltaSph,CellMode,Visco*ViscoBoundFactor,Visco,bsbound,bsfluid,Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,SpsTaug,SpsGradvelg,ViscDtg,Arg,Aceg,Deltag,TShifting,ShiftPosg,ShiftDetectg,Simulate2D);
-  
+  cusph::Interaction_Forces(Psimple,TKernel,WithFloating,UseDEM,lamsps,TDeltaSph,CellMode,Visco*ViscoBoundFactor,Visco,bsbound,bsfluid,Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,SpsTaug,SpsGradvelg,ViscDtg,Arg,Aceg,Deltag,TShifting,ShiftPosg,ShiftDetectg,Simulate2D,NULL);
+
   //-Interaccion DEM Floating-Bound & Floating-Floating //(DEM)
   //-Interaction DEM Floating-Bound & Floating-Floating //(DEM)
   if(UseDEM)cusph::Interaction_ForcesDem(Psimple,CellMode,BlockSizes.forcesdem,CaseNfloat,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,FtRidpg,DemDatag,float(DemDtForce),Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,ViscDtg,Aceg);
@@ -467,6 +479,7 @@ void JSphGpuSingle::Interaction_Forces(TpInter tinter){
 
   TmgStop(Timers,TMG_CfForces);
   CheckCudaError(met,"Failed in reduction of viscdt.");
+  //Log->Print("000_fin");
 }
 
 //==============================================================================
@@ -629,7 +642,7 @@ void JSphGpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
     UpdateMaxValues();
     Nstep++;
     if(TimersStep&&TimersStep->Check(float(TimeStep)))SaveTimersStep(Np,Npb,NpbOk,CellDivSingle->GetNct());
-    //if(Nstep>=1)break;
+    //if(Nstep>=2)break;
   }
   TimerSim.Stop(); TimerTot.Stop();
 

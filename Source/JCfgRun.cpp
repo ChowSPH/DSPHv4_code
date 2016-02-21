@@ -65,6 +65,7 @@ void JCfgRun::Reset(){
   RhopOutModif=false; RhopOutMin=700; RhopOutMax=1300;
   PtxasFile="";
   FtPause=-1;
+  DgBlockSize=0;
 }
 
 //==============================================================================
@@ -456,6 +457,7 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
         DomainParticlesPrcMin=DomainParticlesPrcMax=TDouble3(0);
         DomainParticlesPrcMax.z=incz;
       }
+      else if(txword=="DGBLOCKSIZE")DgBlockSize=unsigned(atoi(txopt.c_str())); 
       else if(txword=="PTXASFILE"&&c+1<optn){ PtxasFile=optlis[c+1]; c++; }
       else if(txword=="OPT"&&c+1<optn){ LoadFile(optlis[c+1],lv+1); c++; }
       else if(txword=="H"||txword=="HELP"||txword=="?")PrintInfo=true;

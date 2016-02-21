@@ -262,6 +262,8 @@ protected:
   unsigned FtCount;          ///<Number of floating objects.
   float FtPause;             ///<Time to start floating bodies movement.
 
+  unsigned DgBlockSize;
+
   //-Vars para DEM. (DEM)
   //-Variabless for DEM (DEM)
   bool UseDEM;

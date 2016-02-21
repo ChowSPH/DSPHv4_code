@@ -175,6 +175,12 @@
     <ClInclude Include="Source\JMatrix4.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Source\JMeanValues.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\JBlockSizeAuto.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\JCfgRun.cpp">
@@ -293,6 +299,12 @@
     </ClCompile>
     <ClCompile Include="Source\JReadDatafile.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\JMeanValues.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\JBlockSizeAuto.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

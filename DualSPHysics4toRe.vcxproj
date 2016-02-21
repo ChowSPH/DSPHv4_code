@@ -678,6 +678,9 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClInclude Include="Source\FunctionsMath.h" />
     <ClInclude Include="Source\JArraysCpu.h" />
     <ClInclude Include="Source\JBinaryData.h" />
+    <ClInclude Include="Source\JBlockSizeAuto.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\JCellDivCpu.h" />
     <ClInclude Include="Source\JCellDivCpuSingle.h" />
     <ClInclude Include="Source\JCellDivGpu.h">
@@ -702,6 +705,9 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Source\JMatrix4.h" />
+    <ClInclude Include="Source\JMeanValues.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\JPartDataBi4.h" />
     <ClInclude Include="Source\JPartFloatBi4.h" />
     <ClInclude Include="Source\JPartOutBi4Save.h" />
@@ -783,6 +789,9 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClCompile Include="Source\FunctionsMath.cpp" />
     <ClCompile Include="Source\JArraysCpu.cpp" />
     <ClCompile Include="Source\JBinaryData.cpp" />
+    <ClCompile Include="Source\JBlockSizeAuto.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\JCellDivCpu.cpp" />
     <ClCompile Include="Source\JCellDivCpuSingle.cpp" />
     <ClCompile Include="Source\JCellDivGpu.cpp">
@@ -796,6 +805,9 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClCompile Include="Source\JArraysGpu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Source\JMeanValues.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Source\JPartDataBi4.cpp" />
     <ClCompile Include="Source\JPartFloatBi4.cpp" />

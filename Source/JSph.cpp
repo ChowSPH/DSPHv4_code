@@ -150,6 +150,8 @@ void JSph::InitVars(){
 
   FtCount=0;
   FtPause=0;
+  DgBlockSize=0;
+
   AllocMemoryFloating(0);
 
   CellOrder=ORDER_None;
@@ -335,6 +337,8 @@ void JSph::LoadConfig(const JCfgRun *cfg){
     }
     else ShiftCoef=ShiftTFS=0;
   }
+
+  DgBlockSize=cfg->DgBlockSize;
 
   if(cfg->FtPause>=0)FtPause=cfg->FtPause;
   if(cfg->TimeMax>0)TimeMax=cfg->TimeMax;
