@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -681,10 +681,8 @@ word JSph::CodeSetType(word code,TpParticle type,unsigned value)const{
 }
 
 //==============================================================================
-/// ES:
 /// Carga el codigo de grupo de las particulas y marca las nout ultimas
 /// particulas como excluidas.
-/// - EN:
 /// Loads the code of a particle group and flags the last "nout" 
 /// particles as excluded. 
 //==============================================================================
@@ -889,10 +887,8 @@ void JSph::VisuConfig()const{
 }
 
 //==============================================================================
-/// ES:
 /// Calcula celda de las particulas y comprueba que no existan mas particulas
 /// excluidas de las previstas.
-/// - EN:
 /// Computes cell particles and checks if there are more particles
 /// excluded than expected.
 //==============================================================================

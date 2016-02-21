@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -14,6 +14,8 @@
 
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
+
+/// \file JArraysGpu.cpp \brief Implements the class \ref JArraysGpu.
 
 #include "JArraysGpu.h"
 #include "Functions.h"
@@ -60,11 +62,9 @@ void JArraysGpuSize::FreeMemory(){
 }
 
 //==============================================================================
-/// ES:
 /// Cambia el numero de arrays almacenados. Asignando nuevos arrays o liberando
 /// los de los actuales sin uso. 
 /// Si count es inferior al numero de los que estan en uso lanza una excepcion.
-/// - EN:
 /// Changes the number of arrays stored. Assigns or releases new arrays if
 /// the current are unused.
 /// If the count is less than the number of those in use raises an exception.
@@ -87,10 +87,8 @@ void JArraysGpuSize::SetArrayCount(unsigned count){
 }
 
 //==============================================================================
-/// ES:
 /// Cambia el numero de elementos de los arrays.
 /// Si hay algun array en uso lanza una excepcion.
-/// - EN:
 /// Changes the number of elements in the arrays.
 /// If there is any array in use raises an exception.
 //==============================================================================
@@ -204,10 +202,8 @@ llong JArraysGpu::GetAllocMemoryGpu()const{
 }
 
 //==============================================================================
-/// ES:
 /// Cambia el numero de elementos de los arrays.
 /// Si hay algun array en uso lanza una excepcion.
-/// - EN:
 /// Changes the number of elements in the arrays.
 /// If there is any array in use raises an exception.
 //==============================================================================

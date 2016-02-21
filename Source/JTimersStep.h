@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,8 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-#ifndef _JTimersStep_
-#define _JTimersStep_
+/// \file JTimersStep.h \brief Declares the class \ref JTimersStep.
 
 //#############################################################################
 //# ES:
@@ -35,6 +34,9 @@
 //# continue the simulation. (06.09.2013)
 //#############################################################################
 
+#ifndef _JTimersStep_
+#define _JTimersStep_
+
 #include "JObject.h"
 #include "Types.h"
 #include "JTimer.h"
@@ -45,9 +47,11 @@
 #include <cstdlib>
 
 
-//==============================================================================
 //##############################################################################
-//==============================================================================
+//# JTimersStepValue
+//##############################################################################
+/// \brief NO_COMENTARIO   
+
 class JTimersStepValue
 {
 protected:
@@ -67,12 +71,16 @@ public:
   std::string GetName()const{ return(Name); }
 };
 
-//==============================================================================
 //##############################################################################
-//==============================================================================
+//# JTimersStep
+//##############################################################################
+/// \brief Defines NO_COMENTARIO.
+
 class JTimersStep : protected JObject
 {
 protected:
+
+  /// \brief NO_COMENTARIO 
   typedef struct{
     float timestep;
     double tsimula;
@@ -100,7 +108,7 @@ protected:
   JTimersStepValue Timers[TIMERSMAX];
 
   //-Vars para almacenar informacion.
-  //-Variables for stored information.
+  //-Variables to store information.
   static const unsigned BUFFERSIZE=1000;
   float *Values;
   StStepInfo StepInfo[BUFFERSIZE];

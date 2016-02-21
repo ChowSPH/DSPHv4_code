@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,6 +15,8 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+/// \file JSphGpu_ker.h \brief Declares functions and CUDA kernels for the particle interaction and system update.
+
 #ifndef _JSphGpu_ker_
 #define _JSphGpu_ker_
 
@@ -27,13 +29,17 @@ class JBlockSizeAuto;
 
 #define SPHBSIZE 256
 
+///Structure with constants stored in the constant memory of GPU for the particle interactions.
 typedef struct{
   unsigned nbound;
-  float massb,massf;
-  float fourh2,h;
-  float awen,bwen;
-  float cs0,eta2;
-  float delta2h;     //delta2h=DeltaSph*H*2
+  float massb;              ///<Mass of a boundary particle.
+  float massf;              ///<Mass of a fluid particle.
+  float h;                  ///<Smoothing length (=coef*sqrt(dx*dx+dy*dy+dz*dz))
+  float fourh2;             ///< \ref h * \ref h * 4 
+  float awen,bwen;          ///<Ctes of Wendland kernel.
+  float cs0;                ///<Speed of sound of reference.
+  float eta2;               ///<eta*eta being eta=0.1*\ref h
+  float delta2h;            ///<delta2h=DeltaSph*H*2
   float scell,dosh,dp;
   float cteb,gamma;
   float rhopzero;    //rhopzero=RhopZero
@@ -52,6 +58,7 @@ typedef struct{
   float cubic_a1,cubic_a2,cubic_aa,cubic_a24,cubic_c1,cubic_d1,cubic_c2,cubic_odwdeltap; ///<Ctes of Cubic Spline kernel.
 }StCteInteraction; 
 
+/// Implements a set of functions and CUDA kernels for the particle interaction and system update.
 namespace cusph{
 
 inline float3 Float3(const tfloat3& v){ float3 p={v.x,v.y,v.z}; return(p); }

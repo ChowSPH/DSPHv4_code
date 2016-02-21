@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -14,6 +14,8 @@
 
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
+
+/// \file JCellDivGpu_ker.cu \brief Implements functions and CUDA kernels to compute operations of the Neighbour List.
 
 #include "JCellDivGpu_ker.h"
 #include "Types.h"
@@ -236,11 +238,9 @@ template <unsigned int blockSize> __global__ void KerReduPosLimits(unsigned n,fl
 }
 
 //==============================================================================
-/// ES:
 /// Reduce los limites de posicion a partir de results[].
 /// En results[] cada bloque graba xmin,ymin,zmin,xmax,ymax,zmax agrupando por
 /// bloque.
-/// - EN:
 /// Reduction of position limits starting from results[].
 /// In results[] each block stores xmin,ymin,zmin,xmax,ymax,zmax
 /// grouped per block
@@ -370,11 +370,9 @@ template <unsigned int blockSize> __global__ void KerLimitsCellReduBase(unsigned
 }
 
 //==============================================================================
-/// ES:
 /// Reduce los limites de celdas a partir de results[].
 /// En results[] cada bloque graba cxmin,cymin,czmin,cxmax,cymax,czmax codificando
 /// los valores como celdas en 2 unsigned y agrupando por bloque.
-/// - EN:
 /// Reduction of cell limits starting from results[].
 /// In results[] each block stores cxmin,cymin,czmin,cxmax,cymax,czmax encodes
 /// the values as cells in 2 unsigned and groups them per block.
@@ -400,7 +398,6 @@ void LimitsCellRedu(unsigned cellcode,unsigned nblocks,unsigned *aux,tuint3 &cel
 }
 
 //------------------------------------------------------------------------------
-/// ES:
 /// Calcula celda minima y maxima de las particulas validas.
 /// Ignora las particulas con check[p]!=0 
 /// Las particulas fuera del dominio ya estan marcadas con check[p]=CHECK_OUTPOS
@@ -409,7 +406,6 @@ void LimitsCellRedu(unsigned cellcode,unsigned nblocks,unsigned *aux,tuint3 &cel
 /// En results[] cada bloque graba cxmin,cymin,czmin,cxmax,cymax,czmax codificando
 /// los valores como celdas en 2 unsigned y agrupando por bloque.
 /// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
-/// - EN:
 /// Computes minimu and maximum cells for valid particles.
 /// Ignores the particles with check[p]!=0.
 /// The particles outside of the domain are marked with check[p]=CHECK_OUTPOS.
@@ -457,13 +453,11 @@ template <unsigned int blockSize> __global__ void KerLimitsCell(unsigned n,unsig
 }
 
 //==============================================================================
-/// ES:
 /// Calcula celda minima y maxima de las particulas validas.
 /// Ignora las particulas excluidas con code[p].out!=CODE_OUT_OK 
 /// En results[] cada bloque graba cxmin,cymin,czmin,cxmax,cymax,czmax codificando
 /// los valores como celdas en 2 unsigned y agrupando por bloque.
 /// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
-/// - EN:
 /// Computes minimun and maximum cell for valid particles.
 /// Ignores excluded particles with code[p].out!=CODE_OUT_OK
 /// In results[], each block stores cxmin,cymin,czmin,cxmax,cymax,czmax encodes
@@ -641,10 +635,8 @@ template <unsigned int blockSize> __global__ void KerReduUintLimits(unsigned n,u
 }
 
 //==============================================================================
-/// ES:
 /// Reduce los limites de valores unsigned a partir de results[].
 /// En results[] cada bloque graba vmin,vmax agrupando por bloque.
-/// EN:
 /// Reduce the limits of unsigned values from results[].
 /// In results[] each block stores vmin,vamx gropued per block.
 //==============================================================================

@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,6 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+//NO_COMENTARIO
 //#############################################################################
 //# ES:
 //# Descripcion:
@@ -233,21 +234,17 @@ tfloat4 Plane3Pt(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3);
 
 
 //==============================================================================
-/// ES:
 /// Devuelve los tres planos normales que limitan un triangulo formado por 3 puntos.
 /// Con openingdist puedes abrir o cerrar los planos normales.
-/// - EN:
 /// Returns the three normal planes which bound a triangle formed by 3 points.
 /// With openingdist you can open or close normal planes.
 //==============================================================================
 void NormalPlanes3Pt(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3,double openingdist,tdouble4 &pla1,tdouble4 &pla2,tdouble4 &pla3);
 
 //==============================================================================
-/// ES:
 /// Devuelve los tres planos normales que limitan un triangulo formado por 3 puntos.
 /// Con openingdist puedes abrir o cerrar los planos normales.
 /// Los calculos internos se hacen con double precision.
-/// - EN:
 /// Returns the three normal planes which bound a triangle formed by 3 points.
 /// With openingdist you can open or close normal levels.
 /// The internal computation is performed with double precision.
@@ -259,10 +256,8 @@ inline void NormalPlanes3Pt_dbl(const tfloat3 &p1,const tfloat3 &p2,const tfloat
 }
 
 //==============================================================================
-/// ES:
 /// Devuelve los tres planos normales que limitan un triangulo formado por 3 puntos.
 /// Con openingdist puedes abrir o cerrar los planos normales.
-/// - EN:
 /// Returns the three normal planes which bound a triangle formed by 3 points.
 /// With openingdist you can open or close normal planes.
 //==============================================================================
@@ -283,20 +278,16 @@ tfloat3 Intersec3Planes(const tfloat4 &pla1,const tfloat4 &pla2,const tfloat4 &p
 
 
 //==============================================================================
-/// ES:
 /// A partir de un triangulo formado por 3 puntos devuelve los puntos que forman
 /// un triangulo mas o menos abierto segun openingdist.
-/// - EN:
 /// Starting from a triangle formed by 3 points returns the points that form
 /// a triangle more or less open according to openingdist.
 //==============================================================================
 void OpenTriangle3Pt(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3,double openingdist,tdouble3 &pt1,tdouble3 &pt2,tdouble3 &pt3);
 
 //==============================================================================
-/// ES:
 /// A partir de un triangulo formado por 3 puntos devuelve los puntos que forman
 /// un triangulo mas o menos abierto segun openingdist.
-/// - EN:
 /// Starting from a triangle formed by 3 points returns the points that form
 /// a triangle more or less open according to openingdist.
 //==============================================================================
@@ -324,6 +315,7 @@ inline double AngleVector(tdouble3 v1,tdouble3 v2){
 
 ////==============================================================================
 ///// Devuelve el plano formado por 1 vector y un punto.
+///// Returns the plane created by 1 vector and 1 point.
 ////==============================================================================
 //jplane JSpaceDraw::PlaneVect1Pt(tdouble3 v,tdouble3 p){ 
 //  jplane plano;
@@ -334,6 +326,7 @@ inline double AngleVector(tdouble3 v1,tdouble3 v2){
 
 //==============================================================================
 /// Devuelve normal eliminando error de precision en double.
+/// Returns normal removing the error of precision in double.
 //==============================================================================
 inline tdouble3 CorrectNormal(tdouble3 n){
   if(abs(n.x)<DBL_EPSILON*10)n.x=0;
@@ -343,7 +336,8 @@ inline tdouble3 CorrectNormal(tdouble3 n){
 }
 
 //==============================================================================
-/// Devuelve normal eliminando error de precision en double.
+/// Devuelve normal eliminando error de precision en float.
+/// Returns normal removing the error of precision in float.
 //==============================================================================
 inline tfloat3 CorrectNormal(tfloat3 n){
   if(abs(n.x)<FLT_EPSILON*10)n.x=0;

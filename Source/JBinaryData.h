@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,6 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+//NO_COMENTARIO
 //#############################################################################
 //# ES:
 //# Descripcion:
@@ -86,6 +87,9 @@ class JBinaryData;
 //##############################################################################
 //# JBinaryDataDef
 //##############################################################################
+/// \brief Defines types to be used in \ref JBinaryData and \ref JBinaryDataArray
+/// Define tipos usados en \ref JBinaryData y \ref JBinaryDataArray
+
 class JBinaryDataDef
 {
  public:
@@ -103,6 +107,9 @@ class JBinaryDataDef
 //##############################################################################
 //# JBinaryDataArray
 //##############################################################################
+/// \brief Defines data arrays included in binary files.
+/// Define arrays de datos incluidos en ficheros binarios.
+
 class JBinaryDataArray : protected JObject
 {
   //friend class JBinaryData;
@@ -111,13 +118,13 @@ class JBinaryDataArray : protected JObject
   std::string Name;
   bool Hide;
   const JBinaryDataDef::TpData Type;
-  unsigned Count;         //-Numero de elementos almacenados en pointer. Number of elements stored in pointer.
-  unsigned Size;          //-Numero de elementos para los que hay memoria reservada. Number of elements for which there is reserved memory.
+  unsigned Count;         ///<Numero de elementos almacenados en pointer. Number of elements stored in pointer.
+  unsigned Size;          ///<Numero de elementos para los que hay memoria reservada. Number of elements for which there is reserved memory.
   void* Pointer;
-  bool ExternalPointer;   //-Indica que el puntero es externo y no debe liberarse. Indicates that the pointer is external, and should not be released.
-  llong FileDataPos;      //-Valor mayor o igual a cero indica la posicion de lectura en el fichero abierto en el ItemHead. Value greater than or equal to zero indicates the position of reading in the file opened in the ItemHead.
-  unsigned FileDataCount; //-Numero de elemetos del array en fichero. Number of elements in the array in a file.
-  unsigned FileDataSize;  //-Size de datos del array en fichero. Size of array data in file.
+  bool ExternalPointer;   ///<Indica que el puntero es externo y no debe liberarse. Indicates that the pointer is external, and should not be released.
+  llong FileDataPos;      ///<Valor mayor o igual a cero indica la posicion de lectura en el fichero abierto en el ItemHead. Value greater than or equal to zero indicates the position of reading in the file opened in the ItemHead.
+  unsigned FileDataCount; ///<Numero de elemetos del array en fichero. Number of elements in the array in a file.
+  unsigned FileDataSize;  ///<Size de datos del array en fichero. Size of array data in file.
 
   void FreePointer(void* ptr)const;
   void* AllocPointer(unsigned size)const;
@@ -171,6 +178,9 @@ class JBinaryDataArray : protected JObject
 //##############################################################################
 //# JBinaryData
 //##############################################################################
+/// \brief Defines any binary format of a file.
+/// Clase base para la definicion de cualquier formato binario de fichero.
+
 class JBinaryData : protected JObject
 {
  private:
@@ -188,6 +198,8 @@ class JBinaryData : protected JObject
   static const std::string CodeArrayDef;
 
  public:
+
+  ///Structure that describes the information of a value.
   typedef struct{
     std::string name;
     JBinaryDataDef::TpData type;
@@ -206,16 +218,16 @@ class JBinaryData : protected JObject
       tint3 vint3;
       tuint3 vuint3;
       tfloat3 vfloat3;
-      tdouble3 vdouble3;   //-Elemento de mayor tamaño utilizado para poner a Zero. Large item used to zero elements.
+      tdouble3 vdouble3;   //- Elemento de mayor tamaño utilizado para poner a Zero. Large item used to zero elements.
     };
   }StValue;
 
  private:
-  std::string Name;      //-Nombre de item. Name of item.
-  bool HideAll;          //-Ignora el item en determinados metodos como SaveData(). It ignores the item in certain functions as SaveData().
-  bool HideValues;       //-Ignora los Values en determinados metodos como SaveData(). It ignores the values in certain functions as SaveData( ).
-  std::string FmtFloat;  //-Formato para valores float, por defecto "%.7E". Format for float, by default " %.7E". 
-  std::string FmtDouble; //-Formato para valores double, por defecto "%.15E" Format for double, by default " %.15E".
+  std::string Name;      ///<Nombre de item. Name of item.
+  bool HideAll;          ///<Ignora el item en determinados metodos como SaveData(). It ignores the item in certain functions as SaveData().
+  bool HideValues;       ///<Ignora los Values en determinados metodos como SaveData(). It ignores the values in certain functions as SaveData().
+  std::string FmtFloat;  ///<Formato para valores float, por defecto "%.7E". Format for float, by default " %.7E". 
+  std::string FmtDouble; ///<Formato para valores double, por defecto "%.15E" Format for double, by default " %.15E".
 
   JBinaryData* Parent;
   std::vector<JBinaryData*> Items;
@@ -257,17 +269,17 @@ class JBinaryData : protected JObject
   void           OutData   (unsigned &count,unsigned size,const byte *ptr,byte *dat,unsigned sdat)const;
   std::string    OutStr    (unsigned &count,unsigned size,const byte *ptr)const;
   bool           OutBool   (unsigned &count,unsigned size,const byte *ptr)const{  return(OutInt(count,size,ptr)!=0);  }  /// Extrae bool de ptr.
-  char           OutChar   (unsigned &count,unsigned size,const byte *ptr)const{  char v;           OutData(count,size,ptr,(byte*)&v,sizeof(char));           return(v);  }  /// Extrae char de ptr. Extracts char of ptr.
-  unsigned char  OutUchar  (unsigned &count,unsigned size,const byte *ptr)const{  unsigned char v;  OutData(count,size,ptr,(byte*)&v,sizeof(unsigned char));  return(v);  }  /// Extrae unsigned char de ptr. Extracts unsigned char of ptr.
-  short          OutShort  (unsigned &count,unsigned size,const byte *ptr)const{  short v;          OutData(count,size,ptr,(byte*)&v,sizeof(short));          return(v);  }  /// Extrae short de ptr. Extracts short of ptr.
-  unsigned short OutUshort (unsigned &count,unsigned size,const byte *ptr)const{  unsigned short v; OutData(count,size,ptr,(byte*)&v,sizeof(unsigned short)); return(v);  }  /// Extrae unsigned short de ptr. Extracts unsigned short of ptr.
-  int            OutInt    (unsigned &count,unsigned size,const byte *ptr)const{  int v;            OutData(count,size,ptr,(byte*)&v,sizeof(int));            return(v);  }  /// Extrae int de ptr. Extracts int of ptr.
-  unsigned       OutUint   (unsigned &count,unsigned size,const byte *ptr)const{  unsigned v;       OutData(count,size,ptr,(byte*)&v,sizeof(unsigned));       return(v);  }  /// Extrae unsigned de ptr. Extracts unsigned of ptr.
-  llong          OutLlong  (unsigned &count,unsigned size,const byte *ptr)const{  llong v;          OutData(count,size,ptr,(byte*)&v,sizeof(llong));          return(v);  }  /// Extrae long long de ptr. Extracts long long of ptr.
-  ullong         OutUllong (unsigned &count,unsigned size,const byte *ptr)const{  ullong v;         OutData(count,size,ptr,(byte*)&v,sizeof(ullong));         return(v);  }  /// Extrae unsigned long long de ptr. Extracts unsigned long long of ptr.
-  float          OutFloat  (unsigned &count,unsigned size,const byte *ptr)const{  float v;          OutData(count,size,ptr,(byte*)&v,sizeof(float));          return(v);  }  /// Extrae float de ptr. Extracts float of ptr.
-  double         OutDouble (unsigned &count,unsigned size,const byte *ptr)const{  double v;         OutData(count,size,ptr,(byte*)&v,sizeof(double));         return(v);  }  /// Extrae double de ptr. Extracts double of ptr.
-  tint3          OutInt3   (unsigned &count,unsigned size,const byte *ptr)const{  tint3 v;          OutData(count,size,ptr,(byte*)&v,sizeof(tint3));          return(v);  }  /// Extrae tint3 de ptr. Extracts tint3 of ptr.
+  char           OutChar   (unsigned &count,unsigned size,const byte *ptr)const{  char v;           OutData(count,size,ptr,(byte*)&v,sizeof(char));           return(v);  }  ///< Extrae char de ptr. Extracts char of ptr.
+  unsigned char  OutUchar  (unsigned &count,unsigned size,const byte *ptr)const{  unsigned char v;  OutData(count,size,ptr,(byte*)&v,sizeof(unsigned char));  return(v);  }  ///< Extrae unsigned char de ptr. Extracts unsigned char of ptr.
+  short          OutShort  (unsigned &count,unsigned size,const byte *ptr)const{  short v;          OutData(count,size,ptr,(byte*)&v,sizeof(short));          return(v);  }  ///< Extrae short de ptr. Extracts short of ptr.
+  unsigned short OutUshort (unsigned &count,unsigned size,const byte *ptr)const{  unsigned short v; OutData(count,size,ptr,(byte*)&v,sizeof(unsigned short)); return(v);  }  ///< Extrae unsigned short de ptr. Extracts unsigned short of ptr.
+  int            OutInt    (unsigned &count,unsigned size,const byte *ptr)const{  int v;            OutData(count,size,ptr,(byte*)&v,sizeof(int));            return(v);  }  ///< Extrae int de ptr. Extracts int of ptr.
+  unsigned       OutUint   (unsigned &count,unsigned size,const byte *ptr)const{  unsigned v;       OutData(count,size,ptr,(byte*)&v,sizeof(unsigned));       return(v);  }  ///< Extrae unsigned de ptr. Extracts unsigned of ptr.
+  llong          OutLlong  (unsigned &count,unsigned size,const byte *ptr)const{  llong v;          OutData(count,size,ptr,(byte*)&v,sizeof(llong));          return(v);  }  ///< Extrae long long de ptr. Extracts long long of ptr.
+  ullong         OutUllong (unsigned &count,unsigned size,const byte *ptr)const{  ullong v;         OutData(count,size,ptr,(byte*)&v,sizeof(ullong));         return(v);  }  ///< Extrae unsigned long long de ptr. Extracts unsigned long long of ptr.
+  float          OutFloat  (unsigned &count,unsigned size,const byte *ptr)const{  float v;          OutData(count,size,ptr,(byte*)&v,sizeof(float));          return(v);  }  ///< Extrae float de ptr. Extracts float of ptr.
+  double         OutDouble (unsigned &count,unsigned size,const byte *ptr)const{  double v;         OutData(count,size,ptr,(byte*)&v,sizeof(double));         return(v);  }  ///< Extrae double de ptr. Extracts double of ptr.
+  tint3          OutInt3   (unsigned &count,unsigned size,const byte *ptr)const{  tint3 v;          OutData(count,size,ptr,(byte*)&v,sizeof(tint3));          return(v);  }  ///< Extrae tint3 de ptr. Extracts tint3 of ptr.
   tuint3         OutUint3  (unsigned &count,unsigned size,const byte *ptr)const{  tuint3 v;         OutData(count,size,ptr,(byte*)&v,sizeof(tuint3));         return(v);  }  /// Extrae tuint3 de ptr. Extracts tuint3 of ptr.
   tfloat3        OutFloat3 (unsigned &count,unsigned size,const byte *ptr)const{  tfloat3 v;        OutData(count,size,ptr,(byte*)&v,sizeof(tfloat3));        return(v);  }  /// Extrae tfloat3 de ptr. Extracts tfloat3 of ptr.
   tdouble3       OutDouble3(unsigned &count,unsigned size,const byte *ptr)const{  tdouble3 v;       OutData(count,size,ptr,(byte*)&v,sizeof(tdouble3));       return(v);  }  /// Extrae tdouble3 de ptr. Extracts tdouble3 of ptr.
@@ -423,7 +435,7 @@ class JBinaryData : protected JObject
 };
 
 /*
-Estructura de fichero JBinaryData:
+Structure of file JBinaryData:
 ===================================
 uint size_item_def
 - "ITEM"

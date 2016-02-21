@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -14,6 +14,8 @@
 
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
+
+/// \file JCellDivGpu.cpp \brief Implements the class \ref JCellDivGpu.
 
 #include "JCellDivGpu.h"
 #include "JCellDivGpu_ker.h"
@@ -144,11 +146,9 @@ void JCellDivGpu::AllocMemoryNct(ullong nct){
 }
 
 //==============================================================================
-/// ES:
 /// Comprueba la reserva de memoria para el numero indicado de particulas. 
 /// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
 ///
-/// EN:
 /// Checks allocated memory for the indicated number of particles.
 /// If the allocated memeory is not sufficient, reserve the required memory.
 //==============================================================================
@@ -158,11 +158,9 @@ void JCellDivGpu::CheckMemoryNp(unsigned npmin){
 }
 
 //==============================================================================
-/// ES:
 /// Comprueba la reserva de memoria para el numero indicado de celdas. 
 /// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
 ///
-/// EN:
 /// Checks allocated memory for the indicated number of cells.
 /// If the allocated memeory is not sufficient, reserve the required memory.
 //==============================================================================
@@ -212,11 +210,9 @@ void JCellDivGpu::VisuBoundaryOut(unsigned p,unsigned id,tdouble3 pos,word code)
 }
 
 //==============================================================================
-/// ES:
 /// Calcula posiciones minimas y maximas del rango de particulas Bound indicado.
 /// En code[] ya estan marcadas las particulas excluidas.
 ///
-/// EN:
 /// Computes the maximum and minimum postion for the indicated range of boundary particles
 /// The excluded particles are already marked in code[]
 //==============================================================================
@@ -235,11 +231,9 @@ void JCellDivGpu::CalcCellDomainBound(unsigned n,unsigned pini,unsigned n2,unsig
 }
 
 //==============================================================================
-/// ES:
 /// Calcula posiciones minimas y maximas del rango de particulas Fluid indicado.
 /// Ignora particulas excluidas que ya estan marcadas en code[].
 ///
-/// EN:
 /// Computes the maximum and minimum postion for the indicated range of fluid particles
 /// Ignores the excluded particles already marked in code[]
 //==============================================================================
@@ -309,12 +303,10 @@ void JCellDivGpu::SortDataArrays(const tsymatrix3f *a,tsymatrix3f *a2){
 }
 
 //==============================================================================
-/// ES:
 /// Finaliza proceso de Divide: Revisando que todas las excluidas sean fluidas
 /// y calculando el numero de excluidas por pos, rhop o mov.
 /// Las componentes de los datos ya estan en el orden original.
 ///
-/// EN:
 /// Finalises Divide process: Checks that all excluded particles are fluid
 /// and computes the number of excluded by pos, rhop or mov.
 /// The data components are already in the original order.
@@ -335,14 +327,12 @@ void JCellDivGpu::CheckParticlesOut(unsigned npout,const unsigned *idp,const tdo
 }
 
 //==============================================================================
-/// ES:
 /// Devuelve un puntero con la memoria auxiliar reservada en GPU, que solo se usa
 /// como almacenamiento intermedio durante ciertos procesos. Asi es posible
 /// aprovechar esta memoria para otros usos.
 /// Esta memoria se redimensiona segun el numero de particulas por lo que su
 /// tamaño y direccion pueden variar.
 ///
-/// EN:
 /// Returns a pointer with the auxiliary memory allocated in the GPU, only
 /// used as intermediate in some tasks, in order to use it in other tasks.
 /// This memoery is resized according to the particle number thus its

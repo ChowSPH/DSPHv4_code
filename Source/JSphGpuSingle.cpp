@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -14,6 +14,8 @@
 
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
+
+/// \file JSphGpuSingle.cpp \brief Implements the class \ref JSphGpuSingle.
 
 #include "JSphGpuSingle.h"
 #include "JCellDivGpuSingle.h"
@@ -241,11 +243,9 @@ void JSphGpuSingle::ConfigDomain(){
 }
 
 //==============================================================================
-/// ES:
 /// Redimensiona el espacio reservado para particulas en CPU y GPU midiendo el
 /// tiempo consumido con TMG_SuResizeNp. Al terminar actualiza el divide.
 ///
-/// EN:
 /// Resizes the allocated space for particles on the CPU and the GPU measuring
 /// the time spent with TMG_SuResizeNp. At the end updates the division.
 //==============================================================================
@@ -261,14 +261,12 @@ void JSphGpuSingle::ResizeParticlesSize(unsigned newsize,float oversize,bool upd
 }
 
 //==============================================================================
-/// ES:
 /// Crea particulas duplicadas de condiciones periodicas.
 /// Crea nuevas particulas periodicas y marca las viejas para ignorarlas.
 /// Las nuevas periodicas se situan a partir del Np de entrada, primero las NpbPer
 /// de contorno y despues las NpfPer fluidas. El Np de salida contiene tambien las
 /// nuevas periodicas.
 ///
-/// EN:
 /// Creates duplicate particles for periodic conditions
 /// Creates new periodic particles and marks the old ones to be ignored.
 /// The new particles are lccated from the value of Np, first the NpbPer
@@ -434,7 +432,6 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
 /// Interaction for force computation.
 //==============================================================================
 void JSphGpuSingle::Interaction_Forces(TpInter tinter){
-  //Log->Print("000_000");
   const char met[]="Interaction_Forces";
   PreInteraction_Forces(tinter);
   TmgStart(Timers,TMG_CfForces);
@@ -444,13 +441,11 @@ void JSphGpuSingle::Interaction_Forces(TpInter tinter){
   unsigned bsbound=BlockSizes.forcesbound;
 
   if(BsAuto && !(Nstep%BsAuto->GetStepsInterval())){ //-Cada cierto numero de pasos.
-    //Log->Print("000_001");
     cusph::Interaction_Forces(Psimple,TKernel,WithFloating,UseDEM,lamsps,TDeltaSph,CellMode,Visco*ViscoBoundFactor,Visco,bsbound,bsfluid,Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,SpsTaug,SpsGradvelg,ViscDtg,Arg,Aceg,Deltag,TShifting,ShiftPosg,ShiftDetectg,Simulate2D,BsAuto);
     PreInteractionVars_Forces(tinter,Np,Npb);
     BsAuto->ProcessTimes(TimeStep,Nstep);
     bsfluid=BlockSizes.forcesfluid=BsAuto->GetKernel(0)->GetOptimumBs();
     bsbound=BlockSizes.forcesbound=BsAuto->GetKernel(1)->GetOptimumBs();
-    //Log->Print("000_002");
   }
 
   //-Interaccion Fluid-Fluid/Bound & Bound-Fluid.
@@ -479,7 +474,6 @@ void JSphGpuSingle::Interaction_Forces(TpInter tinter){
 
   TmgStop(Timers,TMG_CfForces);
   CheckCudaError(met,"Failed in reduction of viscdt.");
-  //Log->Print("000_fin");
 }
 
 //==============================================================================
@@ -496,11 +490,9 @@ double JSphGpuSingle::ComputeAceMax(float *auxmem){
 }
 
 //==============================================================================
-/// ES:
 /// Realiza interaccion y actualizacion de particulas segun las fuerzas 
 /// calculadas en la interaccion usando Verlet.
 ///
-/// EN:
 /// Particle interaction and update of particle data according to
 /// the computed forces using the Verlet time stepping scheme
 //==============================================================================
@@ -516,11 +508,9 @@ double JSphGpuSingle::ComputeStep_Ver(){
 }
 
 //==============================================================================
-/// ES:
 /// Realiza interaccion y actualizacion de particulas segun las fuerzas 
 /// calculadas en la interaccion usando Symplectic.
 ///
-/// EN:
 /// Particle interaction and update of particle data according to
 /// the computed forces using the Symplectic time stepping scheme
 //==============================================================================

@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,10 +15,12 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-/// \file JRadixSort.h \brief Declara la clase \c JRadixSort.
+/// \file JRadixSort.h \brief Declares the class  \ref JRadixSort.
+
 #ifndef _JRadixSort_
 #define _JRadixSort_
 
+//NO_COMENTARIO
 //#############################################################################
 //# ES:
 //# Cambios:
@@ -53,10 +55,12 @@
 #include "JObject.h"
 #include "TypesDef.h"
 
-/// \brief Almacena todos los datos relativos a los puntos no vacios del espacio 
-/// de dibujo definido, para convertir estos puntos en particulas.
-/// \brief Stores all the data concerning points without any empty space
-/// for the drawing pattern in order to convert these points into particles.
+
+//##############################################################################
+//# JRadixSort
+//##############################################################################
+/// \brief Implements the algorithm RadixSort.
+
 class JRadixSort : protected JObject
 {
 private:

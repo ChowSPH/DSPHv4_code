@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -14,6 +14,8 @@
 
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
+
+/// \file JSphGpu_ker.cu \brief Implements functions and CUDA kernels for the particle interaction and system update.
 
 #include "JSphGpu_ker.h"
 #include "JBlockSizeAuto.h"
@@ -35,7 +37,7 @@ namespace cusph{
 
 //==============================================================================
 /// Comprueba error y finaliza ejecucion.
-/// Checks mistake and ends execution.
+/// Checks error and ends execution.
 //==============================================================================
 #define CheckErrorCuda(text)  __CheckErrorCuda(text,__FILE__,__LINE__)
 void __CheckErrorCuda(const char *text,const char *file,const int line){
@@ -74,11 +76,9 @@ template <unsigned blockSize> __device__ void KerReduMaxFloatWarp(volatile float
 }
 
 //==============================================================================
-/// ES:
 /// Acumula la suma de n valores del vector dat[], guardando el resultado al 
 /// principio de res[] (Se usan tantas posiciones del res[] como bloques, 
 /// quedando el resultado final en res[0]).
-/// - EN:
 /// Accumulates the sum of n values of array dat[], storing the result in 
 /// the beginning of res[].(Many positions of res[] are used as blocks, 
 /// storing the final result in res[0]).
@@ -97,10 +97,8 @@ template <unsigned blockSize> __global__ void KerReduMaxFloat(unsigned n,unsigne
 }
 
 //==============================================================================
-/// ES:
 /// Devuelve el maximo de un vector, usando resu[] como vector auxiliar. El tamaño
 /// de resu[] debe ser >= a (N/SPHBSIZE+1)+(N/(SPHBSIZE*SPHBSIZE)+SPHBSIZE)
-/// - EN:
 /// Returns the maximum of an array, using resu[] as auxiliar array.
 /// Size of resu[] must be >= a (N/SPHBSIZE+1)+(N/(SPHBSIZE*SPHBSIZE)+SPHBSIZE)
 //==============================================================================
@@ -128,11 +126,9 @@ float ReduMaxFloat(unsigned ndata,unsigned inidata,float* data,float* resu){
 }
 
 //==============================================================================
-/// ES:
 /// Acumula la suma de n valores del vector dat[].w, guardando el resultado al 
 /// principio de res[] (Se usan tantas posiciones del res[] como bloques, 
 /// quedando el resultado final en res[0]).
-/// - EN:
 /// Accumulates the sum of n values of array dat[], storing the result in 
 /// the beginning of res[].(Many positions of res[] are used as blocks, 
 /// storing the final result in res[0]).
@@ -151,10 +147,8 @@ template <unsigned blockSize> __global__ void KerReduMaxFloat_w(unsigned n,unsig
 }
 
 //==============================================================================
-/// ES:
 /// Devuelve el maximo de la componente w de un vector float4, usando resu[] como 
 /// vector auxiliar. El tamaño de resu[] debe ser >= a (N/SPHBSIZE+1)+(N/(SPHBSIZE*SPHBSIZE)+SPHBSIZE)
-/// - EN:
 /// Returns the maximum of an array, using resu[] as auxiliar array.
 /// Size of resu[] must be >= a (N/SPHBSIZE+1)+(N/(SPHBSIZE*SPHBSIZE)+SPHBSIZE)
 //==============================================================================
@@ -226,7 +220,7 @@ __global__ void KerResety(unsigned n,unsigned ini,float3 *v)
 }
 
 //==============================================================================
-// Pone v[].y a cero.
+/// Pone v[].y a cero.
 /// Sets v[].y to zero.
 //==============================================================================
 void Resety(unsigned n,unsigned ini,float3 *v){
@@ -800,10 +794,8 @@ template<bool psimple,TpKernel tker,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelt
 }
 
 //------------------------------------------------------------------------------
-/// ES:
 /// Realiza interaccion entre particulas. Fluid/Float-Fluid/Float or Fluid/Float-Bound
 /// Incluye visco artificial/laminar y floatings normales/dem.
-/// EN:
 /// Interaction between particles. Fluid/Float-Fluid/Float or Fluid/Float-Bound.
 /// Includes artificial/laminar viscosity and normal/DEM floating bodies.
 //------------------------------------------------------------------------------
@@ -1164,10 +1156,8 @@ template<bool psimple> __device__ void KerInteractionForcesDemBox
 }
 
 //------------------------------------------------------------------------------
-/// ES:
 /// Realiza interaccion entre particulas. Fluid/Float-Fluid/Float or Fluid/Float-Bound
 /// Incluye visco artificial/laminar y floatings normales/dem.
-/// - EN:
 /// Interaction between particles. Fluid/Float-Fluid/Float or Fluid/Float-Bound.
 /// Includes artificial/laminar viscosity and normal/DEM floating bodies.
 //------------------------------------------------------------------------------
@@ -1417,10 +1407,8 @@ void RunShifting(unsigned np,unsigned npb,double dt
 //# Kernels for ComputeStep (vel & rhop)
 //##############################################################################
 //------------------------------------------------------------------------------
-/// ES:
 /// Calcula nuevos valores de  Pos, Check, Vel y Rhop (usando Verlet).
 /// El valor de Vel para bound siempre se pone a cero.
-/// - EN:
 /// Computes new values for Pos, Check, Vel and Ros (using Verlet).
 /// The value of Vel always set to be reset.
 //------------------------------------------------------------------------------
@@ -1431,270 +1419,6 @@ template<bool floating,bool shift> __global__ void KerComputeStepVerlet
   ,double dt,double dt205,double dt2
   ,double2 *movxy,double *movz,word *code,float4 *velrhopnew)
 {
-  unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula //-NI of the particle.
-  if(p<n){
-    if(p<npb){//-Particulas: Fixed & Moving //-Particles: Fixed & Moving
-      float rrhop=float(double(velrhop2[p].w)+dt2*ar[p]);
-      rrhop=(rrhop<CTE.rhopzero? CTE.rhopzero: rrhop); //-Evita q las boundary absorvan a las fluidas. //-To prevent absorption of fluid particles by boundaries.
-      velrhopnew[p]=make_float4(0,0,0,rrhop);
-    }
-    else{ //-Particulas: Floating & Fluid //-Particles: Floating & Fluid
-      //-Actualiza densidad.
-      //-Updates density.
-      float4 rvelrhop2=velrhop2[p];
-      rvelrhop2.w=float(double(rvelrhop2.w)+dt2*ar[p]);
-      float4 rvel1=velrhop1[p];
-      if(!floating || CODE_GetType(code[p])==CODE_TYPE_FLUID){//-Particulas: Fluid //-Particles: Fluid
-        //-Comprueba limites de rhop.
-        //-Checks rhop limits.
-        if(rvelrhop2.w<rhopoutmin||rvelrhop2.w>rhopoutmax){//-Solo marca como excluidas las normales (no periodicas). //-Only brands as excluded normal particles (not periodic)
-          const word rcode=code[p];
-          if(CODE_GetSpecialValue(rcode)==CODE_NORMAL)code[p]=CODE_SetOutRhop(rcode);
-        }
-        //-Calcula y graba desplazamiento de posicion.
-        //-Comutes and stores position displacement.
-        const float3 race=ace[p];
-        double dx=double(rvel1.x)*dt + double(race.x)*dt205;
-        double dy=double(rvel1.y)*dt + double(race.y)*dt205;
-        double dz=double(rvel1.z)*dt + double(race.z)*dt205;
-        if(shift){
-          const float3 rshiftpos=shiftpos[p];
-          dx+=double(rshiftpos.x);
-          dy+=double(rshiftpos.y);
-          dz+=double(rshiftpos.z);
-        }
-        movxy[p]=make_double2(dx,dy);
-        movz[p]=dz;
-        //-Actualiza velocidad.
-        //-Updates velocity.
-        rvelrhop2.x=float(double(rvelrhop2.x)+double(race.x)*dt2);
-        rvelrhop2.y=float(double(rvelrhop2.y)+double(race.y)*dt2);
-        rvelrhop2.z=float(double(rvelrhop2.z)+double(race.z)*dt2);
-        velrhopnew[p]=rvelrhop2;
-      }
-      else{//-Particulas: Floating //-Particles: Floating.
-        rvel1.w=(rvelrhop2.w<CTE.rhopzero? CTE.rhopzero: rvelrhop2.w); //-Evita q las floating absorvan a las fluidas. //-To prevent absorption of fluid particles by boundaries.
-        velrhopnew[p]=rvel1;
-      }
-    }
-  }
-}
-
-//------------------------------------------------------------------------------
-/// ES:
-/// Calcula nuevos valores de  Pos, Check, Vel y Rhop (usando Verlet).
-/// El valor de Vel para bound siempre se pone a cero.
-/// - EN:
-/// Computes new values for Pos, Check, Vel and Ros (using Verlet).
-/// The value of Vel always set to be reset.
-//------------------------------------------------------------------------------
-__global__ void KerComputeStepVerlet_Xff
-  (unsigned n,unsigned npb,float rhopoutmin,float rhopoutmax
-  ,const float4 *velrhop1,const float4 *velrhop2
-  ,const float *ar,const float3 *ace,const float3 *shiftpos
-  ,double dt,double dt205,double dt2
-  ,double2 *movxy,double *movz,word *code,float4 *velrhopnew)
-{
-  const bool floating=false;
-  const bool shift=false;
-  unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula //-NI of the particle.
-  if(p<n){
-    if(p<npb){//-Particulas: Fixed & Moving //-Particles: Fixed & Moving
-      float rrhop=float(double(velrhop2[p].w)+dt2*ar[p]);
-      rrhop=(rrhop<CTE.rhopzero? CTE.rhopzero: rrhop); //-Evita q las boundary absorvan a las fluidas. //-To prevent absorption of fluid particles by boundaries.
-      velrhopnew[p]=make_float4(0,0,0,rrhop);
-    }
-    else{ //-Particulas: Floating & Fluid //-Particles: Floating & Fluid
-      //-Actualiza densidad.
-      //-Updates density.
-      float4 rvelrhop2=velrhop2[p];
-      rvelrhop2.w=float(double(rvelrhop2.w)+dt2*ar[p]);
-      float4 rvel1=velrhop1[p];
-      if(!floating || CODE_GetType(code[p])==CODE_TYPE_FLUID){//-Particulas: Fluid //-Particles: Fluid
-        //-Comprueba limites de rhop.
-        //-Checks rhop limits.
-        if(rvelrhop2.w<rhopoutmin||rvelrhop2.w>rhopoutmax){//-Solo marca como excluidas las normales (no periodicas). //-Only brands as excluded normal particles (not periodic)
-          const word rcode=code[p];
-          if(CODE_GetSpecialValue(rcode)==CODE_NORMAL)code[p]=CODE_SetOutRhop(rcode);
-        }
-        //-Calcula y graba desplazamiento de posicion.
-        //-Comutes and stores position displacement.
-        const float3 race=ace[p];
-        double dx=double(rvel1.x)*dt + double(race.x)*dt205;
-        double dy=double(rvel1.y)*dt + double(race.y)*dt205;
-        double dz=double(rvel1.z)*dt + double(race.z)*dt205;
-        if(shift){
-          const float3 rshiftpos=shiftpos[p];
-          dx+=double(rshiftpos.x);
-          dy+=double(rshiftpos.y);
-          dz+=double(rshiftpos.z);
-        }
-        movxy[p]=make_double2(dx,dy);
-        movz[p]=dz;
-        //-Actualiza velocidad.
-        //-Updates velocity.
-        rvelrhop2.x=float(double(rvelrhop2.x)+double(race.x)*dt2);
-        rvelrhop2.y=float(double(rvelrhop2.y)+double(race.y)*dt2);
-        rvelrhop2.z=float(double(rvelrhop2.z)+double(race.z)*dt2);
-        velrhopnew[p]=rvelrhop2;
-      }
-      else{//-Particulas: Floating //-Particles: Floating.
-        rvel1.w=(rvelrhop2.w<CTE.rhopzero? CTE.rhopzero: rvelrhop2.w); //-Evita q las floating absorvan a las fluidas. //-To prevent absorption of fluid particles by boundaries.
-        velrhopnew[p]=rvel1;
-      }
-    }
-  }
-}
-
-//------------------------------------------------------------------------------
-/// ES:
-/// Calcula nuevos valores de  Pos, Check, Vel y Rhop (usando Verlet).
-/// El valor de Vel para bound siempre se pone a cero.
-/// - EN:
-/// Computes new values for Pos, Check, Vel and Ros (using Verlet).
-/// The value of Vel always set to be reset.
-//------------------------------------------------------------------------------
-__global__ void KerComputeStepVerlet_Xft
-  (unsigned n,unsigned npb,float rhopoutmin,float rhopoutmax
-  ,const float4 *velrhop1,const float4 *velrhop2
-  ,const float *ar,const float3 *ace,const float3 *shiftpos
-  ,double dt,double dt205,double dt2
-  ,double2 *movxy,double *movz,word *code,float4 *velrhopnew)
-{
-  const bool floating=false;
-  const bool shift=true;
-  unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula //-NI of the particle.
-  if(p<n){
-    if(p<npb){//-Particulas: Fixed & Moving //-Particles: Fixed & Moving
-      float rrhop=float(double(velrhop2[p].w)+dt2*ar[p]);
-      rrhop=(rrhop<CTE.rhopzero? CTE.rhopzero: rrhop); //-Evita q las boundary absorvan a las fluidas. //-To prevent absorption of fluid particles by boundaries.
-      velrhopnew[p]=make_float4(0,0,0,rrhop);
-    }
-    else{ //-Particulas: Floating & Fluid //-Particles: Floating & Fluid
-      //-Actualiza densidad.
-      //-Updates density.
-      float4 rvelrhop2=velrhop2[p];
-      rvelrhop2.w=float(double(rvelrhop2.w)+dt2*ar[p]);
-      float4 rvel1=velrhop1[p];
-      if(!floating || CODE_GetType(code[p])==CODE_TYPE_FLUID){//-Particulas: Fluid //-Particles: Fluid
-        //-Comprueba limites de rhop.
-        //-Checks rhop limits.
-        if(rvelrhop2.w<rhopoutmin||rvelrhop2.w>rhopoutmax){//-Solo marca como excluidas las normales (no periodicas). //-Only brands as excluded normal particles (not periodic)
-          const word rcode=code[p];
-          if(CODE_GetSpecialValue(rcode)==CODE_NORMAL)code[p]=CODE_SetOutRhop(rcode);
-        }
-        //-Calcula y graba desplazamiento de posicion.
-        //-Comutes and stores position displacement.
-        const float3 race=ace[p];
-        double dx=double(rvel1.x)*dt + double(race.x)*dt205;
-        double dy=double(rvel1.y)*dt + double(race.y)*dt205;
-        double dz=double(rvel1.z)*dt + double(race.z)*dt205;
-        if(shift){
-          const float3 rshiftpos=shiftpos[p];
-          dx+=double(rshiftpos.x);
-          dy+=double(rshiftpos.y);
-          dz+=double(rshiftpos.z);
-        }
-        movxy[p]=make_double2(dx,dy);
-        movz[p]=dz;
-        //-Actualiza velocidad.
-        //-Updates velocity.
-        rvelrhop2.x=float(double(rvelrhop2.x)+double(race.x)*dt2);
-        rvelrhop2.y=float(double(rvelrhop2.y)+double(race.y)*dt2);
-        rvelrhop2.z=float(double(rvelrhop2.z)+double(race.z)*dt2);
-        velrhopnew[p]=rvelrhop2;
-      }
-      else{//-Particulas: Floating //-Particles: Floating.
-        rvel1.w=(rvelrhop2.w<CTE.rhopzero? CTE.rhopzero: rvelrhop2.w); //-Evita q las floating absorvan a las fluidas. //-To prevent absorption of fluid particles by boundaries.
-        velrhopnew[p]=rvel1;
-      }
-    }
-  }
-}
-
-//------------------------------------------------------------------------------
-/// ES:
-/// Calcula nuevos valores de  Pos, Check, Vel y Rhop (usando Verlet).
-/// El valor de Vel para bound siempre se pone a cero.
-/// - EN:
-/// Computes new values for Pos, Check, Vel and Ros (using Verlet).
-/// The value of Vel always set to be reset.
-//------------------------------------------------------------------------------
-__global__ void KerComputeStepVerlet_Xtf
-  (unsigned n,unsigned npb,float rhopoutmin,float rhopoutmax
-  ,const float4 *velrhop1,const float4 *velrhop2
-  ,const float *ar,const float3 *ace,const float3 *shiftpos
-  ,double dt,double dt205,double dt2
-  ,double2 *movxy,double *movz,word *code,float4 *velrhopnew)
-{
-  const bool floating=true;
-  const bool shift=false;
-  unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula //-NI of the particle.
-  if(p<n){
-    if(p<npb){//-Particulas: Fixed & Moving //-Particles: Fixed & Moving
-      float rrhop=float(double(velrhop2[p].w)+dt2*ar[p]);
-      rrhop=(rrhop<CTE.rhopzero? CTE.rhopzero: rrhop); //-Evita q las boundary absorvan a las fluidas. //-To prevent absorption of fluid particles by boundaries.
-      velrhopnew[p]=make_float4(0,0,0,rrhop);
-    }
-    else{ //-Particulas: Floating & Fluid //-Particles: Floating & Fluid
-      //-Actualiza densidad.
-      //-Updates density.
-      float4 rvelrhop2=velrhop2[p];
-      rvelrhop2.w=float(double(rvelrhop2.w)+dt2*ar[p]);
-      float4 rvel1=velrhop1[p];
-      if(!floating || CODE_GetType(code[p])==CODE_TYPE_FLUID){//-Particulas: Fluid //-Particles: Fluid
-        //-Comprueba limites de rhop.
-        //-Checks rhop limits.
-        if(rvelrhop2.w<rhopoutmin||rvelrhop2.w>rhopoutmax){//-Solo marca como excluidas las normales (no periodicas). //-Only brands as excluded normal particles (not periodic)
-          const word rcode=code[p];
-          if(CODE_GetSpecialValue(rcode)==CODE_NORMAL)code[p]=CODE_SetOutRhop(rcode);
-        }
-        //-Calcula y graba desplazamiento de posicion.
-        //-Comutes and stores position displacement.
-        const float3 race=ace[p];
-        double dx=double(rvel1.x)*dt + double(race.x)*dt205;
-        double dy=double(rvel1.y)*dt + double(race.y)*dt205;
-        double dz=double(rvel1.z)*dt + double(race.z)*dt205;
-        if(shift){
-          const float3 rshiftpos=shiftpos[p];
-          dx+=double(rshiftpos.x);
-          dy+=double(rshiftpos.y);
-          dz+=double(rshiftpos.z);
-        }
-        movxy[p]=make_double2(dx,dy);
-        movz[p]=dz;
-        //-Actualiza velocidad.
-        //-Updates velocity.
-        rvelrhop2.x=float(double(rvelrhop2.x)+double(race.x)*dt2);
-        rvelrhop2.y=float(double(rvelrhop2.y)+double(race.y)*dt2);
-        rvelrhop2.z=float(double(rvelrhop2.z)+double(race.z)*dt2);
-        velrhopnew[p]=rvelrhop2;
-      }
-      else{//-Particulas: Floating //-Particles: Floating.
-        rvel1.w=(rvelrhop2.w<CTE.rhopzero? CTE.rhopzero: rvelrhop2.w); //-Evita q las floating absorvan a las fluidas. //-To prevent absorption of fluid particles by boundaries.
-        velrhopnew[p]=rvel1;
-      }
-    }
-  }
-}
-
-//------------------------------------------------------------------------------
-/// ES:
-/// Calcula nuevos valores de  Pos, Check, Vel y Rhop (usando Verlet).
-/// El valor de Vel para bound siempre se pone a cero.
-/// - EN:
-/// Computes new values for Pos, Check, Vel and Ros (using Verlet).
-/// The value of Vel always set to be reset.
-//------------------------------------------------------------------------------
-__global__ void KerComputeStepVerlet_Xtt
-  (unsigned n,unsigned npb,float rhopoutmin,float rhopoutmax
-  ,const float4 *velrhop1,const float4 *velrhop2
-  ,const float *ar,const float3 *ace,const float3 *shiftpos
-  ,double dt,double dt205,double dt2
-  ,double2 *movxy,double *movz,word *code,float4 *velrhopnew)
-{
-  const bool floating=true;
-  const bool shift=true;
   unsigned p=blockIdx.y*gridDim.x*blockDim.x + blockIdx.x*blockDim.x + threadIdx.x; //-Nº de la partícula //-NI of the particle.
   if(p<n){
     if(p<npb){//-Particulas: Fixed & Moving //-Particles: Fixed & Moving
@@ -1756,32 +1480,14 @@ void ComputeStepVerlet(bool floating,bool shift,unsigned np,unsigned npb
 {
   double dt205=(0.5*dt*dt);
   if(np){
-    if(1){
-      dim3 sgrid=GetGridSize(np,SPHBSIZE);
-      if(shift){    const bool shift=true;
-        if(floating)KerComputeStepVerlet<true,shift>  <<<sgrid,SPHBSIZE>>> (np,npb,rhopoutmin,rhopoutmax,velrhop1,velrhop2,ar,ace,shiftpos,dt,dt205,dt2,movxy,movz,code,velrhopnew);
-        else        KerComputeStepVerlet<false,shift> <<<sgrid,SPHBSIZE>>> (np,npb,rhopoutmin,rhopoutmax,velrhop1,velrhop2,ar,ace,shiftpos,dt,dt205,dt2,movxy,movz,code,velrhopnew);
-      }else{        const bool shift=false;
-        if(floating)KerComputeStepVerlet<true,shift>  <<<sgrid,SPHBSIZE>>> (np,npb,rhopoutmin,rhopoutmax,velrhop1,velrhop2,ar,ace,shiftpos,dt,dt205,dt2,movxy,movz,code,velrhopnew);
-        else        KerComputeStepVerlet<false,shift> <<<sgrid,SPHBSIZE>>> (np,npb,rhopoutmin,rhopoutmax,velrhop1,velrhop2,ar,ace,shiftpos,dt,dt205,dt2,movxy,movz,code,velrhopnew);
-      }
+    dim3 sgrid=GetGridSize(np,SPHBSIZE);
+    if(shift){    const bool shift=true;
+      if(floating)KerComputeStepVerlet<true,shift>  <<<sgrid,SPHBSIZE>>> (np,npb,rhopoutmin,rhopoutmax,velrhop1,velrhop2,ar,ace,shiftpos,dt,dt205,dt2,movxy,movz,code,velrhopnew);
+      else        KerComputeStepVerlet<false,shift> <<<sgrid,SPHBSIZE>>> (np,npb,rhopoutmin,rhopoutmax,velrhop1,velrhop2,ar,ace,shiftpos,dt,dt205,dt2,movxy,movz,code,velrhopnew);
+    }else{        const bool shift=false;
+      if(floating)KerComputeStepVerlet<true,shift>  <<<sgrid,SPHBSIZE>>> (np,npb,rhopoutmin,rhopoutmax,velrhop1,velrhop2,ar,ace,shiftpos,dt,dt205,dt2,movxy,movz,code,velrhopnew);
+      else        KerComputeStepVerlet<false,shift> <<<sgrid,SPHBSIZE>>> (np,npb,rhopoutmin,rhopoutmax,velrhop1,velrhop2,ar,ace,shiftpos,dt,dt205,dt2,movxy,movz,code,velrhopnew);
     }
-    //else{
-    //  if(!shift && !floating){
-    //    int qblocksize=0,mingridsize=0,qgridsize=0;
-    //    //cudaOccupancyMaxPotentialBlockSize(&mingridsize,&qblocksize,(void*)KerComputeStepVerlet_Xff,0,0);
-
-    //    typedef void (*mem_fun_ptr)(unsigned,unsigned,float,float,const float4*,const float4*,const float*,const float3*,const float3*,double,double,double,double2*,double*,word*,float4*);
-    //    mem_fun_ptr p = &KerComputeStepVerlet<true,true>;
-    //    cudaOccupancyMaxPotentialBlockSize(&mingridsize,&qblocksize,(void*)p,0,0);
-
-    //    qgridsize = (np + qblocksize - 1) / qblocksize;
-    //    dim3 sgrid=GetGridSize(np,SPHBSIZE);
-    //    printf(">> np:%u  blocksize:%u  mingridsize:%u  qgridsize:%u sgrid:%u:%u\n",np,qblocksize,mingridsize,qgridsize,sgrid.x,sgrid.y);
-    //    KerComputeStepVerlet_Xff <<<sgrid,SPHBSIZE>>> (np,npb,rhopoutmin,rhopoutmax,velrhop1,velrhop2,ar,ace,shiftpos,dt,dt205,dt2,movxy,movz,code,velrhopnew);
-    //  }
-    //  else throw "Execution invalid in ComputeStepVerlet...";
-    //}
   }
 }
 
@@ -1867,10 +1573,8 @@ void ComputeStepSymplecticPre(bool floating,bool shift,unsigned np,unsigned npb
 }
 
 //------------------------------------------------------------------------------
-/// ES:
 /// Calcula los nuevos valores de Pos, Vel y Rhop (usandopara Symplectic-Corrector)
 /// Pone vel de contorno a cero.
-/// - EN:
 /// Computes new values for Pos, Check, Vel and Ros (using Verlet).
 /// The value of Vel always set to be reset.
 //------------------------------------------------------------------------------
@@ -1959,14 +1663,12 @@ void ComputeStepSymplecticCor(bool floating,bool shift,unsigned np,unsigned npb
 //# Kernels for ComputeStep (position)
 //##############################################################################
 //------------------------------------------------------------------------------
-/// ES:
 /// Actualiza pos, dcell y code a partir del desplazamiento indicado.
 /// Code puede ser CODE_OUTRHOP pq en ComputeStepVerlet/Symplectic se evalua esto 
 /// y se ejecuta antes que ComputeStepPos.
 /// Comprueba los limites en funcion de maprealposmin y maprealsize esto es valido
 /// para single-gpu pq domrealpos y maprealpos son iguales. Para multi-gpu seria 
 /// necesario marcar las particulas q salgan del dominio sin salir del mapa.
-/// - EN:
 /// Updates pos, dcell and code from the indicated displacement.
 /// The code may be CODE_OUTRHOP because in ComputeStepVerlet / Symplectic this is evaluated
 /// and is executed before ComputeStepPos.
@@ -2197,11 +1899,9 @@ __global__ void KerCalcRidp(unsigned n,unsigned ini,unsigned idini,unsigned idfi
 }
 
 //==============================================================================
-/// ES:
 /// Calcula posicion de particulas segun idp[]. Cuando no la encuentra es UINT_MAX.
 /// Cuando periactive es False sumpone que no hay particulas duplicadas (periodicas)
 /// y todas son CODE_NORMAL.
-/// - EN:
 /// Calculate particle position according to idp[]. When it does not find UINT_MAX.
 /// When periactive is false it means there are no duplicate particles (periodic)
 /// and all are CODE_NORMAL.
@@ -2625,10 +2325,8 @@ void PeriodicIgnore(unsigned n,word *code){
 }
 
 //------------------------------------------------------------------------------
-/// ES:
 /// Crea lista de nuevas particulas periodicas a duplicar y con delper activado
 /// marca las periodicas viejas para ignorar.
-/// - EN:
 /// Create list of new periodic particles to be duplicated and 
 /// marks old periodics to be ignored.
 //------------------------------------------------------------------------------
@@ -2676,10 +2374,8 @@ __global__ void KerPeriodicMakeList(unsigned n,unsigned pini,unsigned nmax
 }
 
 //==============================================================================
-/// ES:
 /// Crea lista de nuevas particulas periodicas a duplicar.
 /// Con stable activado reordena lista de periodicas.
-/// - EN:
 /// Create list of new periodic particles to be duplicated.
 /// With stable activated reorders perioc list.
 //==============================================================================
@@ -2707,14 +2403,12 @@ unsigned PeriodicMakeList(unsigned n,unsigned pini,bool stable,unsigned nmax
 }
 
 //------------------------------------------------------------------------------
-/// ES:
 /// Duplica la posicion de la particula indicada aplicandole un desplazamiento.
 /// Las particulas duplicadas se considera que siempre son validas y estan dentro
 /// del dominio.
 /// Este kernel vale para single-gpu y multi-gpu porque los calculos se hacen 
 /// a partir de domposmin.
 /// Se controla que las coordendas de celda no sobrepasen el maximo.
-/// - EN:
 /// Doubles the position of the indicated particle using a displacement.
 /// Duplicate particles are considered valid and are always within
 /// the domain.
@@ -2753,11 +2447,9 @@ __device__ void KerPeriodicDuplicatePos(unsigned pnew,unsigned pcopy
 }
 
 //------------------------------------------------------------------------------
-/// ES:
 /// Crea particulas periodicas a partir de una lista con las particulas a duplicar.
 /// Se presupone que todas las particulas son validas.
 /// Este kernel vale para single-gpu y multi-gpu porque usa domposmin. 
-/// - EN:
 /// Creates periodic particles from a list of particles to duplicate.
 /// It is assumed that all particles are valid.
 /// This kernel applies to single-GPU and multi-GPU because it uses domposmin.
@@ -2800,11 +2492,9 @@ void PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 domcells,tdouble3 p
 }
 
 //------------------------------------------------------------------------------
-/// ES:
 /// Crea particulas periodicas a partir de una lista con las particulas a duplicar.
 /// Se presupone que todas las particulas son validas.
 /// Este kernel vale para single-gpu y multi-gpu porque usa domposmin. 
-/// - EN:
 /// Creates periodic particles from a list of particles to duplicate.
 /// It is assumed that all particles are valid.
 /// This kernel applies to single-GPU and multi-GPU because it uses domposmin.

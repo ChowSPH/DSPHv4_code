@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,6 +15,9 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+/// \file JCellDivGpuSingle_ker.cu \brief Implements functions and CUDA kernels to compute operations of the Neighbour List.
+
+
 #include "JCellDivGpuSingle_ker.h"
 #include "Types.h"
 #include <float.h>
@@ -24,7 +27,7 @@ namespace cudiv{
 
 //------------------------------------------------------------------------------
 /// Carga cellpart[] y sortpart[] para ordenar particulas con radixsort
-/// Loads cellpart[] and sortpart [] to sort particles with radixsort
+/// Loads cellpart[] and sortpart[] to sort particles with radixsort
 //------------------------------------------------------------------------------
 __global__ void KerPreSortFull(unsigned np,unsigned cellcode,const unsigned *dcell,const word *code,uint3 cellzero,uint3 ncells,unsigned *cellpart,unsigned *sortpart)
 {
@@ -56,12 +59,10 @@ __global__ void KerPreSortFull(unsigned np,unsigned cellcode,const unsigned *dce
 }
 
 //==============================================================================
-/// ES:
 /// Procesa particulas bound y fluid que pueden estar mezcladas.
 /// Calcula celda de cada particula (CellPart[]) a partir de su celda en mapa,
 /// todas las particulas excluidas ya fueron marcadas en code[].
 /// Asigna valores consecutivos a SortPart[].
-/// - EN:
 /// Processes bound and fluid particles that may be mixed.
 /// Computes cell of each particle (CellPart[]) from his cell in the map,
 /// all excluded particles were already marked in code[].
@@ -101,12 +102,10 @@ __global__ void KerPreSortFluid(unsigned n,unsigned pini,unsigned cellcode,const
 }
 
 //==============================================================================
-/// ES:
 /// Procesa solo particulas fluid.
 /// Calcula celda de cada particula (CellPart[]) a partir de su celda en mapa,
 /// todas las particulas excluidas ya fueron marcadas en code[].
 /// Asigna valores consecutivos a SortPart[].
-/// - EN:
 /// Processes only fluid particles.
 /// Computes cell of each particle (CellPart[]) from his cell in the map,
 /// all excluded particles were already marked in code[].

@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,14 +15,15 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+/// \file Types.h \brief Defines specific types for the SPH application.
+
 #ifndef _Types_
 #define _Types_
 
 #include "TypesDef.h"
 #include <algorithm>
 
-
-#define HIDE_AWAS      //-Mantiene compatibilidad sin AWAS.//-Maintain compatibility without AWAS
+#define HIDE_AWAS      //-Mantiene compatibilidad sin AWAS.//-Maintain compatibility without AWAS. NO_COMENTARIO
 
 //#define DISABLE_TIMERS           //-Compilado sin timers. //-Compiles without timers
 
@@ -30,7 +31,8 @@
 #define CELLDIV_OVERMEMORYCELLS 1   //-Numero celdas que se incrementa en cada dimension al reservar memoria para celdas en JCellDivGpu. //-Number of cells in each dimension is increased to allocate memory for JCellDivGpu cells.
 #define PERIODIC_OVERMEMORYNP 0.05f //-Mermoria que se reserva de mas para la creacion de particulas periodicas en JSphGpuSingle::RunPeriodic(). //-Memory reserved for the creation of periodic particles in JSphGpuSingle::RunPeriodic().
 
-#define _WITHOMP //-Activar/desactivar tb en Props config -> C/C++ -> Lenguaje -> OpenMp //-Enable/Disable tb in Props config-> C/C++ -> Language -> OpenMP
+#define _WITHOMP        ///<Enables/Disables OpenMP.               
+//-Activar/desactivar tb en Props config -> C/C++ -> Lenguaje -> OpenMp //-Enable/Disable tb in Props config-> C/C++ -> Language -> OpenMP
 
 //#define _WITHGPU 1 //<-Esta definida en las propiedades del proyecto. //<-Is defined in the project properties.
 
@@ -48,6 +50,7 @@
 
 
 //-Codigos para particulas:
+//-Code of the particles:
 #define CODE_MASKSPECIAL 0xe000   //-Bits de special:     1110 0000 0000 0000                           //-Special bits: 1110 0000 0000 0000
 #define CODE_NORMAL   0x0         //-0  Particulas normales no excluidas.                               //-0 Normal particles (not excluded)
 #define CODE_PERIODIC 0x2000      //-1  Particulas duplicadas por periodicas.                           //-1 Duplicate particles for periodic
@@ -94,10 +97,10 @@ typedef struct{
 /// Structure with the information of the floating object in forces calculation.
 typedef struct{
   tfloat3 face;      //-Sumatorio de ace de particulas. //-Sum of particle acceleration.
-  tfloat3 fomegavel; //-Sumatorio de ace de particulas combinado con la distancia al centro. //-Sum of particle acceleration combined with distance from the center. MOMENTUM
+  tfloat3 fomegavel; //-Sumatorio de ace de particulas combinado con la distancia al centro. //-Sum of particle acceleration combined with distance from the center.
 }StFtoForces;
 
-/// Structure with the information of the floating object for DEM interaction.
+/// Structure with the information of the solid object for DEM interaction (Discrete Element Method).
 typedef struct{ //(DEM)
   float mass;          ///<Mass of the object.
   float massp;         ///<Mass of the particle of the floating object.
@@ -115,8 +118,15 @@ typedef enum{
     MOUT_Screen=1,           ///<Output on the screen.
     MOUT_None=0              ///<No output.
 }TpModeOut;   
- 
-typedef enum{ SDAT_Binx=1,SDAT_Vtk=2,SDAT_Csv=4,SDAT_Info=8,SDAT_None=0 }TpSaveDat; //-Opciones de salida de datos. //-Data output options.
+
+///Data output options.
+typedef enum{ 
+  SDAT_Binx=1,              ///<BYNARY format .bi2
+  SDAT_Vtk=2,               ///<VTK format .vtk
+  SDAT_Csv=4,               ///<CSV format .csv
+  SDAT_Info=8,
+  SDAT_None=0 
+}TpSaveDat; 
 
 ///Types of step algorithm.
 typedef enum{ 
@@ -145,14 +155,20 @@ typedef enum{
   INTER_Forces=1             ///<Interaction to compute forces using the Verlet algorithm and the predictor step of Symplectic algorithm. 
 }TpInter;   
 
-typedef enum{ DELTA_DynamicExt=3,DELTA_Dynamic=2,DELTA_None=0 }TpDeltaSph; //-Tipos de Delta-SPH. //-Types of Delta-SPH
+///Types of Delta-SPH. 
+typedef enum{ 
+  DELTA_DynamicExt=3,       ///<DeltaSPH approach applied in case of Periodic Boundary Conditions or new multiGPU implementation. 
+  DELTA_Dynamic=2,          ///<DeltaSPH approach applied only for fluid particles that are not interaction with boundaries (DBC). 
+  DELTA_None=0              ///<DeltaSPH is not applied
+}TpDeltaSph; 
 
+///Types of Shifting applied to fluid particles. 
 typedef enum{
-  SHIFT_Full=3,
-  SHIFT_NoFixed=2,
-  SHIFT_NoBound=1,
-  SHIFT_None=0
-}TpShifting; //-Modos de Shifting. //-Shifting modes.
+  SHIFT_Full=3,             ///<Shifting is applied to all fluid particles.
+  SHIFT_NoFixed=2,          ///<Shifting is applied to fluid particles except those that interact with fixed boundaries.
+  SHIFT_NoBound=1,          ///<Shifting is applied to fluid particles except those that interact with all boundaries.
+  SHIFT_None=0              ///<Shifting is not applied.
+}TpShifting; 
 
 ///Types of particles.
 typedef enum{ 
@@ -164,7 +180,14 @@ typedef enum{
     PART_BoundFt_Fluid=12    ///<Both floating and fluid particles.
 }TpParticle;
 
-typedef enum{ FTMODE_None=0,FTMODE_Sph=1,FTMODE_Dem=2 }TpFtMode;  //-Modo de interaccion para Floatings. //-Interaction mode for floatings.
+///Interaction mode for floatings and boundaries.
+typedef enum{ 
+  FTMODE_None=0,              ///<No interaction between floatings.
+  FTMODE_Sph=1,               ///<Interaction between floatings and boundaries in terms of SPH.
+  FTMODE_Dem=2                ///<Interaction between floatings and boundaries in terms of DEM.
+}TpFtMode;  
+
+
 #define USE_FLOATING (ftmode!=FTMODE_None)
 #define USE_NOFLOATING (ftmode==FTMODE_None)
 #define USE_DEM (ftmode==FTMODE_Dem)
@@ -279,8 +302,7 @@ inline tfloat3 OrderCodeValue(TpCellOrder order,const tfloat3 &v){
 ///Returns tfloat3 value in the original order.
 inline tfloat3 OrderDecodeValue(TpCellOrder order,const tfloat3 &v){ return(OrderCodeValue(GetDecodeOrder(order),v)); }
 
-///Devuelve valor tdouble3 reordenado.
-///Returns reordered tdouble3 value.
+///Returns the reordered tfloat3 value according to a given order.
 inline tdouble3 OrderCodeValue(TpCellOrder order,const tdouble3 &v){
   switch(order){
     case ORDER_XZY:   return(ReOrderXZY(v));
@@ -292,12 +314,10 @@ inline tdouble3 OrderCodeValue(TpCellOrder order,const tdouble3 &v){
   return(v);
 }
 
-///Devuelve valor tdouble3 en el orden original.
-///Returns tdouble3 value in the original order.
+///Retunrs the original order of tfloat3 value according to a given order.
 inline tdouble3 OrderDecodeValue(TpCellOrder order,const tdouble3 &v){ return(OrderCodeValue(GetDecodeOrder(order),v)); }
 
-///Devuelve valor tuint3 reordenado.
-///Returns reordered tuint3 value.
+///Returns the reordered tuint3 value according to a given order.
 inline tuint3 OrderCodeValue(TpCellOrder order,const tuint3 &v){
   switch(order){
     case ORDER_XZY:   return(ReOrderXZY(v));
@@ -309,12 +329,10 @@ inline tuint3 OrderCodeValue(TpCellOrder order,const tuint3 &v){
   return(v);
 }
 
-///Devuelve valor tuint3 en el orden original.
-///Returns tuint3 value in the original order.
+///Retunrs the original order of tuint3 value according to a given order.
 inline tuint3 OrderDecodeValue(TpCellOrder order,const tuint3 &v){ return(OrderCodeValue(GetDecodeOrder(order),v)); }
 
-///Devuelve matriz tmatrix4d reordenada.
-///Returns reordered matrix tmatrix4d.
+///Returns the reordered tmatrix4d matrix according to a given order.
 inline tmatrix4d OrderCodeValue(TpCellOrder order,tmatrix4d x){
   switch(order){
     case ORDER_XZY:   ReOrderXZY(x);   break;
@@ -326,16 +344,15 @@ inline tmatrix4d OrderCodeValue(TpCellOrder order,tmatrix4d x){
   return(x);
 } 
 
-//-Modo de division en celdas.
-//-Cell division mode.
+///Modes of cells division.
 typedef enum{ 
    CELLMODE_None=0
-  ,CELLMODE_2H=1      //-Divide en celdas de tamaño 2h. //-Cell division of size 2h.
-  ,CELLMODE_H=2       //-Divide en celdas de tamaño h.  //-Cell division of size h.
+  ,CELLMODE_2H=1      ///<Cells of size 2h.
+  ,CELLMODE_H=2       ///<Cells of size h.
 }TpCellMode; 
 
 ///Devuelve el nombre de CellMode en texto.
-///returns the name of CellMode in text.
+///Returns the name of the CellMode in text format.
 inline const char* GetNameCellMode(TpCellMode cellmode){
   switch(cellmode){
     case CELLMODE_2H:      return("2H");

@@ -352,6 +352,7 @@
   - Improvements in JPtxasInfo. (v4.0.037 / 17-02-2016)
   - Using cudaOccupancyMaxPotentialBlockSize() function. (v4.0.037 / 18-02-2016)
   - Using empirical calculation of blocksize. (v4.0.037 / 21-02-2016)
+  - Improved comments by Alex. (v4.0.038 / 21-02-2016)
   
 Remaining issues:
 ==================

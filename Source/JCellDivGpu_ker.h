@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,6 +15,8 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+/// \file JCellDivGpu_ker.h \brief Declares functions and CUDA kernels to compute operations of the Neighbour List.
+
 #ifndef _JCellDivGpu_ker_
 #define _JCellDivGpu_ker_
 
@@ -25,6 +27,7 @@ class JLog2;
 
 #define DIVBSIZE 256
 
+/// Implements a set of functions and CUDA kernels to compute operations of the Neighbour List.
 namespace cudiv{
 
 typedef enum{ ORDER_XYZ=1,ORDER_YZX=2,ORDER_XZY=3 }TpCellOrder;  //-Orden de ejes en ordenacion de particulas en celdas. //-Axes (X,Y,Z) order for the reordering of particles in cells

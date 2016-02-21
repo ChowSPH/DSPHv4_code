@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,17 +15,17 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+/// \file JCellDivGpuSingle.h \brief Declares the class \ref JCellDivGpuSingle.
+
 #ifndef _JCellDivGpuSingle_
 #define _JCellDivGpuSingle_
 
-//#############################################################################
-//# Cambios:
-//# =========
-//# Changes:
-//# =========
-//#############################################################################
-
 #include "JCellDivGpu.h"
+
+//##############################################################################
+//# JCellDivGpuSingle
+//##############################################################################
+/// \brief Defines the class responsible of computing the Neighbour List in Single-GPU.
 
 class JCellDivGpuSingle : public JCellDivGpu
 {

@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -14,6 +14,8 @@
 
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
+
+/// \file JSphGpu.cpp \brief Implements the class \ref JSphGpu.
 
 #include "JSphGpu.h"
 #include "JSphGpu_ker.h"
@@ -474,14 +476,12 @@ void JSphGpu::ParticlesDataUp(unsigned n){
 }
 
 //==============================================================================
-/// ES:
 /// Recupera datos de particulas de la GPU y devuelve el numero de particulas que
 /// sera menor que n si se eliminaron las periodicas.
 /// - code: Recupera datos de Codeg.
 /// - cellorderdecode: Reordena componentes de pos y vel segun CellOrder.
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
 ///
-/// EN:
 /// Recovers particle data from the GPU and returns the particle number that
 /// are less than n if the paeriodic particles are removed
 /// - code: Recovers data of Codeg

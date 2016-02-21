@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -14,6 +14,8 @@
 
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
+
+/// \file JSphCpuSingle.cpp \brief Implements the class \ref JSphCpuSingle.
 
 #include "JSphCpuSingle.h"
 #include "JCellDivCpuSingle.h"
@@ -647,8 +649,6 @@ void JSphCpuSingle::FtCalcForces(StFtoForces *ftoforces)const{
       fomegavel.x+= acez*dist.y - acey*dist.z;
       fomegavel.y+= acex*dist.z - acez*dist.x;
       fomegavel.z+= acey*dist.x - acex*dist.y;
-
-
       //inertia tensor
       inert.a11+=(float)  (dist.y*dist.y+dist.z*dist.z)*fmassp;
       inert.a12+=(float) -(dist.x*dist.y)*fmassp;
@@ -712,7 +712,6 @@ void JSphCpuSingle::RunFloating(double dt,bool predictor){
       face.x=(face.x+fmass*Gravity.x)/fmass;
       face.y=(face.y+fmass*Gravity.y)/fmass;
       face.z=(face.z+fmass*Gravity.z)/fmass;
-
       //-Compute fomega / Calculo de fomega.
       tfloat3 fomega=fobj.fomega;
       {

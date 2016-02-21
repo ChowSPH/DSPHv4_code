@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -14,6 +14,8 @@
 
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
+
+/// \file JCellDivGpuSingle.cpp \brief Implements the class \ref JCellDivGpuSingle.
 
 #include "JCellDivGpuSingle.h"
 #include "JCellDivGpuSingle_ker.h"
@@ -51,14 +53,12 @@ void JCellDivGpuSingle::CalcCellDomain(const unsigned *dcellg,const word* codeg)
 }
 
 //==============================================================================
-/// ES:
 /// Combina limite de celdas de contorno y fluido con limites de mapa.
 /// Con UseFluidDomain=TRUE se queda con el dominio del fluido mas 2h si hay 
 /// contorno, en caso contrario se queda con el dominio que incluya fluido y
 /// contorno.
 /// En caso de que el dominio sea nulo CellDomainMin=CellDomainMax=(0,0,0).
 ///
-/// EN:
 /// Combines cell limits of boundary and fluid with map limits
 /// If UseFluidDomain=TRUE, uses fluid domain plus 2h if there is a boundary;
 /// if not, uses the fluid and boundary domain
@@ -74,11 +74,9 @@ void JCellDivGpuSingle::MergeMapCellBoundFluid(const tuint3 &celbmin,const tuint
 }
 
 //==============================================================================
-/// ES:
 /// Calcula numero de celdas a partir de (CellDomainMin/Max). 
 /// Obtiene localizacion de celdas especiales.
 ///
-/// EN:
 /// Computes number of cells starting from (CellDomainMIN/Max)
 /// Obtains location of special cells
 //==============================================================================
@@ -99,12 +97,10 @@ void JCellDivGpuSingle::PrepareNct(){
 }
 
 //==============================================================================
-/// ES:
 /// Calcula celda de cada particula (CellPart[]) a partir de dcell[], todas las
 /// particulas excluidas ya fueron marcadas en code[].
 /// Asigna valores consecutivos a SortPart[].
 ///
-/// EN:
 /// Computes cell of each particle (CellPart[]) from dcell[],
 /// all the excluded particles have been marked in the code.
 /// Assigns consecutive values to SortPart[]

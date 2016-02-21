@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,6 +15,8 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+/// \file JSphCpuSingle.h \brief Declares the class \ref JSphCpuSingle.
+
 #ifndef _JSphCpuSingle_
 #define _JSphCpuSingle_
 
@@ -24,6 +26,11 @@
 
 class JCellDivCpuSingle;
 class JPartsLoad4;
+
+//##############################################################################
+//# JSphCpuSingle
+//##############################################################################
+/// \brief Defines the attributes and functions used only in Single-Core implementation.
 
 class JSphCpuSingle : public JSphCpu
 {

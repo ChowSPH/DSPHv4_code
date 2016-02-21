@@ -1,5 +1,5 @@
 /*
- <DUALSPHYSICS>  Copyright (c) 2015, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+ <DUALSPHYSICS>  Copyright (c) 2016, Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -15,6 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+//NO_COMENTARIO
 //#############################################################################
 //# ES:
 //# Descripcion:
@@ -63,6 +64,7 @@ class TiXmlElement;
 //# JSpacePropValue
 //##############################################################################
 /// \brief Manages the info of each value of properties.
+
 class JSpacePropValue : public JObject
 {
 private:
@@ -99,6 +101,7 @@ public:
 //# JSpacePropProperty
 //##############################################################################
 /// \brief Manages the info of each property.
+
 class JSpacePropProperty : public JObject
 {
 private:
@@ -136,6 +139,7 @@ public:
 //# JSpacePropLink
 //##############################################################################
 /// \brief Manages the info of each link.
+
 class JSpacePropLink
 {
 public:
@@ -157,6 +161,7 @@ public:
 //# JSpacePropLinks
 //##############################################################################
 /// \brief Manages the links defined in properties.
+
 class JSpacePropLinks : public JObject
 {
 private:
@@ -186,6 +191,7 @@ public:
 //# JSpaceProperties
 //##############################################################################
 /// \brief Manages the properties assigned to the particles in the XML file.
+
 class JSpaceProperties  : protected JObject
 {
 private:
