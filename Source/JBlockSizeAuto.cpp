@@ -15,6 +15,8 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+/// \file JBlockSizeAuto.cpp \brief Implements the class \ref JBlockSizeAuto.
+
 #include "JBlockSizeAuto.h"
 #include "Functions.h"
 #include "JLog2.h"
@@ -99,7 +101,7 @@ void JBlockSizeAutoKer::AllocateMemory(unsigned size){
 }
  
 //==============================================================================
-/// Asigna memoria para InfoData.
+/// Assigns memory for InfoData.
 //==============================================================================
 void JBlockSizeAutoKer::AllocateInfoData(unsigned nlines){
   delete[] InfoData; InfoData=NULL;
@@ -116,7 +118,7 @@ void JBlockSizeAutoKer::AllocateInfoData(unsigned nlines){
 }
 
 //==============================================================================
-/// Graba fichero CSV y vacia InfoData[].
+/// Stores CSV file and clears InfoData[].
 //==============================================================================
 void JBlockSizeAutoKer::SaveFileInfoData(){ 
   const char* met="SaveFileInfoData";
@@ -152,25 +154,25 @@ void JBlockSizeAutoKer::SaveFileInfoData(){
   if(pf.fail())RunException(met,"File writing failure.",fname);
   pf.close();
   InfoDataSaved=true;
-  //-Vacia buffer.
+  //-Clears buffer.
   InfoDataCount=0;
 }
 
 
 //==============================================================================
-/// Guarda datos estadisticos en InfoData[].
+/// Stores statistical data in InfoData[].
 //==============================================================================
 void JBlockSizeAutoKer::SaveInfoData(unsigned nstep,float timestep){ 
-  //-Crea buffer para datos estadisticos.
+  //-Creates buffer for statistical data.
   if(!InfoData){
     //Step;Time;Bs;Time_X;Mexp_X;Mtot_X
     InfoDataSizeLine=unsigned(3+3*BsNum);
     AllocateInfoData(1000);
     //Log->Printf("%s] Allocate",Name.c_str());
   }
-  //-Graba fichero csv con datos y vacia buffer.
+  //-Stores CSV file and clears buffer.
   if(InfoDataCount+1>=InfoDataLines)SaveFileInfoData();
-  //-Graba nueva linea de datos.
+  //-Stores new line of data.
   float *dat=InfoData+(InfoDataSizeLine*InfoDataCount);
   unsigned cpos=0;
   dat[cpos]=float(nstep);    cpos++;
@@ -193,7 +195,7 @@ void JBlockSizeAutoKer::SaveInfoData(unsigned nstep,float timestep){
 /// Processes calculated times.
 //==============================================================================
 void JBlockSizeAutoKer::ProcessTimes(double timestep,unsigned nstep){
-  //-Calcula tiempo minimo.
+  //-Computes minimum time.
   int ctmin=0;
   float tmin=FLT_MAX;
   for(int ct=0;ct<BsNum;ct++)if(BsActive[ct]){
@@ -210,7 +212,7 @@ void JBlockSizeAutoKer::ProcessTimes(double timestep,unsigned nstep){
       ctmin=ct;
     }
   }
-  //-Añade valores de overhead para calculo de promedios y calcula overmean minimo.
+  /// Adds values of overhead to compute mean values and computes minimum overmean.
   int ctmin2=0;
   float tmin2=FLT_MAX;
   for(int ct=0;ct<BsNum;ct++){
@@ -228,11 +230,11 @@ void JBlockSizeAutoKer::ProcessTimes(double timestep,unsigned nstep){
     }
     else Times[ct]=OverMean[ct]=0;
   }
-  //-Selecciona tamaño de bloque optimo.
+  //-Selects optimum Blocksize.
   BsSel=GetBs(ctmin2);
-  //-Graba datos estadisticos.
+  //-Stores statistical data.
   if(0)SaveInfoData(nstep,float(timestep));
-  //-Descarta tamaños de bloque mas lentos.
+  //-Discards the lowest sizes of block.
   if(Nrun>=REMOVESTART && NumActive>REMOVELIMIT){
     int nremove=int(float(NumActive)*REMOVEPRC/100);
     if(!nremove)nremove=1;
@@ -289,7 +291,7 @@ unsigned JBlockSizeAuto::GetKernelByName(std::string name)const{
 }
  
 //==============================================================================
-/// Add new kernel.
+/// Adds new kernel.
 //==============================================================================
 void JBlockSizeAuto::AddKernel(std::string name,int bsmin,int bsnum,int bsinc,int bsdefault){ 
   if(GetKernelByName(name)!=UINT_MAX)RunException("AddKernel","The name is already in use.");

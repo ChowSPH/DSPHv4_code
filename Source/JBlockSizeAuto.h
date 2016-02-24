@@ -15,9 +15,12 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+/// \file JBlockSizeAuto.h \brief Declares the class \ref JBlockSizeAuto.
+
 #ifndef _JBlockSizeAuto_
 #define _JBlockSizeAuto_
 
+//NO_COMENTARIO
 //#############################################################################
 //# Cambios:
 //# =========
@@ -32,9 +35,11 @@
 
 class JLog2;
 
-//==============================================================================
 //##############################################################################
-//==============================================================================
+//# JBlockSizeAutoKer
+//##############################################################################
+/// \brief Manages the automatic computation of optimum Blocksize for each kernel interaction.
+
 class JBlockSizeAutoKer : protected JObject
 {
 public:
@@ -46,14 +51,14 @@ public:
 protected:
   JLog2 *Log;
 
-  unsigned Nrun;   ///< Numero de ejecuciones.
+  unsigned Nrun;   ///< Number of executions.
   unsigned BsSel;  ///< Indicates optimum Blocksize.
 
-  static const int REMOVESTART=5; ///< Despues de cuantas ejecuciones empieza a descartar valores.
-  static const int REMOVEPRC=20;  ///< Porcentaje de descartes por ejecucion.
-  static const int REMOVELIMIT=5; ///< Numero minimo de valores sin descartar.
+  static const int REMOVESTART=5; //- Despues de cuantas ejecuciones empieza a descartar valores.
+  static const int REMOVEPRC=20;  //- Porcentaje de descartes por ejecucion.
+  static const int REMOVELIMIT=5; //- Numero minimo de valores sin descartar.
 
-  int NumActive;       ///< Numero de valores activos.
+  int NumActive;       ///< Number of active values.
   bool *BsActive;      ///< Indicates if Blocksize is active [BsNum].
   float *Times;        ///< Saves times of test [BsNum].
   float *OverMean;     ///< Stores exponential mean overhead [BsNum].
@@ -62,11 +67,11 @@ protected:
   JMeanValue *MeanTot;
   JMeanMoving *MeanExp;
 
-  bool InfoDataSaved; //-Indica si ya se grabaron datos.
-  unsigned InfoDataSizeLine; //-Numero de floats por linea de datos.
-  unsigned InfoDataLines;    //-Numero de lineas para las que se reservo memoria.
-  unsigned InfoDataCount;    //-Numero de lineas ocupadas.
-  float *InfoData;    //-Buffer para guardar valores [InfoDataSizeLine*InfoDataLines].
+  bool InfoDataSaved;        ///< Indicates if data was saved.
+  unsigned InfoDataSizeLine; ///< Number of floats per line.
+  unsigned InfoDataLines;    ///< Number of lines for which memory was allocated.
+  unsigned InfoDataCount;    ///< Number of used lines.
+  float *InfoData;           ///< Buffer to store values [InfoDataSizeLine*InfoDataLines].
 
   void AllocateMemory(unsigned size);
   void AllocateInfoData(unsigned nlines);
@@ -88,9 +93,11 @@ public:
 };
 
 
-//==============================================================================
 //##############################################################################
-//==============================================================================
+//# JBlockSizeAuto
+//##############################################################################
+/// \brief Manages the automatic computation of optimum Blocksize in kernel interactions.
+
 class JBlockSizeAuto : protected JObject
 {
 protected:

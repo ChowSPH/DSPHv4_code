@@ -15,6 +15,8 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
+/// \file JMeanValues.cpp \brief Implements the class \ref JMeanValue and class \ref JMeanMoving.
+
 #include "JMeanValues.h"
 #include <cmath>
 

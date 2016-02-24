@@ -20,6 +20,7 @@
 #ifndef _JSphVisco_
 #define _JSphVisco_
 
+//NO_COMENTARIO
 //#############################################################################
 //# ES:
 //# Cambios:

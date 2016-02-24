@@ -73,10 +73,10 @@ void JCfgRun::Reset(){
 //==============================================================================
 void JCfgRun::VisuInfo()const{
   printf("Information about execution parameters:\n\n");
-  printf("  DualSPHysics [name_case [dir_out]] [options]\n\n");
+  printf("  DualSPHysics4 [name_case [dir_out]] [options]\n\n");
   printf("  Options:\n");
   printf("    -h          Shows information about parameters\n\n");
-  printf("    -opt <file> Load a file configuration\n\n");
+  printf("    -opt <file> Loads a file configuration\n\n");
   printf("    -cpu        Execution on Cpu (option by default)\n");
   printf("    -gpu[:id]   Execution on Gpu and id of the device\n");
   printf("    -stable     The result is always the same but the execution is slower\n");
@@ -92,7 +92,7 @@ void JCfgRun::VisuInfo()const{
   printf("                   cores of the device by default (or using zero value)\n\n");
 #endif
   //printf("    -cellorder:<axis> Indicates the order of the axes. (xyz/xzy/yxz/yzx/zxy/zyx)\n");
-  printf("    -cellmode:<mode>  Specify the cell division mode\n");
+  printf("    -cellmode:<mode>  Specifies the cell division mode\n");
   printf("        2h        Lowest and the least expensive in memory (by default)\n");
   printf("        h         Fastest and the most expensive in memory\n\n");
   printf("    -symplectic      Symplectic algorithm as time step algorithm\n");
@@ -105,32 +105,32 @@ void JCfgRun::VisuInfo()const{
   printf("    -viscoboundfactor:<float>  Multiplies the viscosity value of boundary\n");
   printf("\n");
   printf("    -deltasph:<float> Constant for DeltaSPH. Typical value is 0.1 (0 by default)\n\n");
-  printf("    -shifting:<mode> Specify the use of Shifting correction\n");
+  printf("    -shifting:<mode> Specifies the use of Shifting correction\n");
   printf("        none       Shifting is disabled (by default)\n");
   printf("        nobound    Shifting is not applied near boundary\n");
   printf("        nofixed    Shifting is not applied near fixed boundary\n");
   printf("        full       Shifting is always applied\n\n");
-  printf("    -sv:[formas,...] Specify the output formats.\n");
+  printf("    -sv:[formats,...] Specifies the output formats.\n");
   printf("        none    No particles files are generated\n");
-  printf("        binx    Bynary files (option by default)\n");
+  printf("        binx    Binary files (option by default)\n");
   printf("        info    Information about execution in ibi4 format\n");
   printf("        vtk     VTK files\n");
   printf("        csv     CSV files\n");
 //  printf("    -svdouble        Save position with high precision (disabled by default)\n");
-  printf("    -svres:<0/1>     Generate file that summarizes the execution process\n");
-  printf("    -svtimers:<0/1>  Obtain timing for each individual process\n");
-  printf("    -svtimersstep:<float> Obtain timing for each individual process. Specify\n");
-  printf("     the time between output information. By default 0 (disabled)\n");
-  printf("    -svdomainvtk:<0/1>  Generate VTK file with domain limits\n");
-  printf("    -name <string>      Specify path and name of the case \n");
-  printf("    -runname <string>   Specify name for case execution\n");
-  printf("    -dirout <dir>       Specify the out directory \n\n");
+  printf("    -svres:<0/1>     Generates file that summarises the execution process\n");
+  printf("    -svtimers:<0/1>  Obtains timing for each individual process\n");
+  printf("    -svtimersstep:<float> Obtains timing for each individual process.\n");
+  printf("     Specifies the time between output information. By default 0 (disabled)\n");
+  printf("    -svdomainvtk:<0/1>  Generates VTK file with domain limits\n");
+  printf("    -name <string>      Specifies path and name of the case \n");
+  printf("    -runname <string>   Specifies name for case execution\n");
+  printf("    -dirout <dir>       Specifies the out directory \n\n");
   printf("    -partbegin:begin[:first] dir \n");
-  printf("     Specify the beginning of the simulation starting from a given PART\n");
+  printf("     Specifies the beginning of the simulation starting from a given PART\n");
   printf("     (begin) and located in the directory (dir), (first) indicates the\n");
   printf("     number of the first PART to be generated\n\n");
   printf("    -incz:<float>    Allowable increase in Z+ direction \n");
-  printf("    -rhopout:min:max Exclude fluid particles out of these density limits\n\n");
+  printf("    -rhopout:min:max Excludes fluid particles out of these density limits\n\n");
   printf("    -ftpause:<float> Time to start floating bodies movement. By default 0\n");
   printf("    -tmax:<float>   Maximum time of simulation\n");
   printf("    -tout:<float>   Time between output files\n\n");
@@ -144,7 +144,7 @@ void JCfgRun::VisuInfo()const{
   printf("     of kernels in CUDA to adjust the size of the blocks depending on the \n");
   printf("     needed registers for each kernel (only for gpu)\n\n");
   printf("  Examples:\n");
-  printf("    DualSPHysics case out_case -sv:binx2,csv \n");
+  printf("    DualSPHysics4 case out_case -sv:binx,csv \n");
 }
 
 //==============================================================================
