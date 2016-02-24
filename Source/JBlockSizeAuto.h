@@ -38,7 +38,7 @@ class JLog2;
 //##############################################################################
 //# JBlockSizeAutoKer
 //##############################################################################
-/// \brief Manages the automatic computation of optimum Blocksize for each kernel interaction.
+/// \brief Manages the automatic computation of optimum BlockSize for each kernel interaction.
 
 class JBlockSizeAutoKer : protected JObject
 {

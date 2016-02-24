@@ -52,9 +52,10 @@ public:
   int GpuId;
   bool GpuFree;
   bool Stable;
-  int PosDouble;  ///<Precision in particle interaction 0:Simple, 1:Double, 2:Uses and save double (default=0).
+  int PosDouble;  ///<Precision in particle interaction. 0:Simple, 1:Double, 2:Uses and save double (default=0).
 
   int OmpThreads;
+  TpBlockSizeMode BlockSizeMode;
 
   TpCellOrder CellOrder;
   TpCellMode  CellMode;
@@ -77,15 +78,11 @@ public:
   bool RhopOutModif;              ///<Indicates whether \ref RhopOutMin or RhopOutMax is changed.
   float RhopOutMin,RhopOutMax;    ///<Limits for \ref RhopOut density correction.
 
-  byte DomainMode; //0:Sin configurar, 1:Particles, 2:Fixed
+  byte DomainMode; //0:No configured, 1:Particles, 2:Fixed
   tdouble3 DomainParticlesMin,DomainParticlesMax;
   tdouble3 DomainParticlesPrcMin,DomainParticlesPrcMax;
   tdouble3 DomainFixedMin,DomainFixedMax;
 
-  std::string PtxasFile;           ///<File with ptxas information.
-
-
-  unsigned DgBlockSize;
 
 
   JCfgRun();

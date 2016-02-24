@@ -1,5 +1,8 @@
-#DualSPHysics v4 Re (17-12-2015)
+#DualSPHysics v4.0.040 Re (24-02-2016)
 
+#=============== CUDA selection ===============
+CUDAVER=40
+### CUDAVER=75
 #=============== Cluster selection ===============
 CLUSTER=EPH
 ### EPH -> Uses g++ compiler
@@ -22,7 +25,7 @@ OBJ_BASIC:=$(OBJ_BASIC) JRadixSort.o JRangeFilter.o JReadDatafile.o JSaveDt.o JS
 OBJ_BASIC:=$(OBJ_BASIC) JSpaceProperties.o JSph.o JSphAccInput.o JSphCpu.o JSphDtFixed.o JSphVisco.o randomc.o
 OBJ_BASIC:=$(OBJ_BASIC) JTimersStep.o
 OBJ_CPU_SINGLE=JCellDivCpuSingle.o JSphCpuSingle.o JPartsLoad4.o
-OBJ_GPU=JArraysGpu.o JCellDivGpu.o JObjectGpu.o JPtxasInfo.o JSphGpu.o
+OBJ_GPU=JArraysGpu.o JCellDivGpu.o JObjectGpu.o JSphGpu.o JBlockSizeAuto.o JMeanValues.o
 OBJ_GPU_SINGLE=JCellDivGpuSingle.o JSphGpuSingle.o
 OBJ_CUDA=JCellDivGpu_ker.o JSphGpu_ker.o
 OBJ_CUDA_SINGLE=JCellDivGpuSingle_ker.o
@@ -32,7 +35,14 @@ OBJECTS=$(OBJ_BASIC) $(OBJ_CPU_SINGLE) $(OBJ_GPU) $(OBJ_CUDA) $(OBJ_GPU_SINGLE) 
 #GENCODE:=$(GENCODE) -gencode=arch=compute_10,code=\"sm_10,compute_10\"
 #GENCODE:=$(GENCODE) -gencode=arch=compute_12,code=\"sm_12,compute_12\"
 #GENCODE:=$(GENCODE) -gencode=arch=compute_13,code=\"sm_13,compute_13\"
-GENCODE:=$(GENCODE) -gencode=arch=compute_20,code=\"sm_20,compute_20\"
+ifeq ($(CUDAVER),40)
+  GENCODE:=$(GENCODE) -gencode=arch=compute_20,code=\"sm_20,compute_20\"
+endif
+ifeq ($(CUDAVER),75)
+  GENCODE:=$(GENCODE) -gencode=arch=compute_20,code=\"sm_20,compute_20\"
+  GENCODE:=$(GENCODE) -gencode=arch=compute_30,code=\"sm_30,compute_30\"
+  GENCODE:=$(GENCODE) -gencode=arch=compute_35,code=\"sm_35,compute_35\"
+endif
 
 #=============== DualSPHysics libs to include ===============
 JLIBS=-L./ -ljxml_64 -ljformatfiles2_64 -ljsphmotion_64 -ljwavegen_64
@@ -51,7 +61,12 @@ CCFLAGS := $(CCFLAGS) $(CCMOREFLAGS)
 #=============== To compile GPU code ===============
 DIRTOOLKIT=
 ifeq ($(CLUSTER),EPH)
-  DIRTOOLKIT=/exports/opt/NVIDIA/cuda-4.0
+  ifeq ($(CUDAVER),40)
+    DIRTOOLKIT=/exports/opt/NVIDIA/cuda-4.0
+  endif
+  ifeq ($(CUDAVER),75)
+    DIRTOOLKIT=/exports/opt/NVIDIA/cuda-7.5
+  endif
 endif
 ifeq ($(CLUSTER),CSF)
   DIRTOOLKIT=/opt/gridware/libs/nvidia-cuda/toolkit/4.0.17

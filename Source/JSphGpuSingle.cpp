@@ -27,7 +27,6 @@
 #include "JSphVisco.h"
 #include "JWaveGen.h"
 #include "JSphGpu_ker.h"
-#include "JPtxasInfo.h"
 #include "JBlockSizeAuto.h"
 
 using namespace std;
@@ -113,10 +112,10 @@ void JSphGpuSingle::UpdateMaxValues(){
 //==============================================================================
 void JSphGpuSingle::LoadConfig(JCfgRun *cfg){
   const char met[]="LoadConfig";
-  PtxasFile=cfg->PtxasFile;
   //-Carga configuracion basica general
   //-Loads general configuration
   JSph::LoadConfig(cfg);
+  BlockSizeMode=cfg->BlockSizeMode;
   //-Checks compatibility of selected options.
   Log->Print("**Special case configuration is loaded");
 }
@@ -441,7 +440,7 @@ void JSphGpuSingle::Interaction_Forces(TpInter tinter){
   unsigned bsbound=BlockSizes.forcesbound;
 
   if(BsAuto && !(Nstep%BsAuto->GetStepsInterval())){ //-Cada cierto numero de pasos.
-    cusph::Interaction_Forces(Psimple,TKernel,WithFloating,UseDEM,lamsps,TDeltaSph,CellMode,Visco*ViscoBoundFactor,Visco,bsbound,bsfluid,Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,SpsTaug,SpsGradvelg,ViscDtg,Arg,Aceg,Deltag,TShifting,ShiftPosg,ShiftDetectg,Simulate2D,BsAuto);
+    cusph::Interaction_Forces(Psimple,TKernel,WithFloating,UseDEM,lamsps,TDeltaSph,CellMode,Visco*ViscoBoundFactor,Visco,bsbound,bsfluid,Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,SpsTaug,SpsGradvelg,ViscDtg,Arg,Aceg,Deltag,TShifting,ShiftPosg,ShiftDetectg,Simulate2D,NULL,BsAuto);
     PreInteractionVars_Forces(tinter,Np,Npb);
     BsAuto->ProcessTimes(TimeStep,Nstep);
     bsfluid=BlockSizes.forcesfluid=BsAuto->GetKernel(0)->GetOptimumBs();
@@ -450,11 +449,11 @@ void JSphGpuSingle::Interaction_Forces(TpInter tinter){
 
   //-Interaccion Fluid-Fluid/Bound & Bound-Fluid.
   //-Interaction Fluid-Fluid/Bound & Bound-Fluid.
-  cusph::Interaction_Forces(Psimple,TKernel,WithFloating,UseDEM,lamsps,TDeltaSph,CellMode,Visco*ViscoBoundFactor,Visco,bsbound,bsfluid,Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,SpsTaug,SpsGradvelg,ViscDtg,Arg,Aceg,Deltag,TShifting,ShiftPosg,ShiftDetectg,Simulate2D,NULL);
+  cusph::Interaction_Forces(Psimple,TKernel,WithFloating,UseDEM,lamsps,TDeltaSph,CellMode,Visco*ViscoBoundFactor,Visco,bsbound,bsfluid,Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,FtoMasspg,SpsTaug,SpsGradvelg,ViscDtg,Arg,Aceg,Deltag,TShifting,ShiftPosg,ShiftDetectg,Simulate2D,NULL,NULL);
 
   //-Interaccion DEM Floating-Bound & Floating-Floating //(DEM)
   //-Interaction DEM Floating-Bound & Floating-Floating //(DEM)
-  if(UseDEM)cusph::Interaction_ForcesDem(Psimple,CellMode,BlockSizes.forcesdem,CaseNfloat,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,FtRidpg,DemDatag,float(DemDtForce),Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,ViscDtg,Aceg);
+  if(UseDEM)cusph::Interaction_ForcesDem(Psimple,CellMode,BlockSizes.forcesdem,CaseNfloat,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellg,FtRidpg,DemDatag,float(DemDtForce),Posxyg,Poszg,PsPospressg,Velrhopg,Codeg,Idpg,ViscDtg,Aceg,NULL);
 
   //-Calculo de Tau para Laminar+SPS
   //-Computes Tau for Laminar+SPS

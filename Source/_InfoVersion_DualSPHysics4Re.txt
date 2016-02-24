@@ -354,25 +354,17 @@
   - Using empirical calculation of blocksize. (v4.0.037 / 21-02-2016)
   - Improved comments by Alex. (v4.0.038 / 21-02-2016)
   - Minor changes. (v4.0.039 / 24-02-2016) 
+  - Compilation with CUDA 7.5. (v4.0.040 / 24-02-2016) 
+  - JPtxasInfo was removed. (v4.0.040 / 24-02-2016) 
+  - Improvements in BlockSize calculation. (v4.0.040 / 24-02-2016) 
   
 Remaining issues:
 ==================
-- Eliminar referencias a DgBlockSize
-- Cambios en JBlockSizeAuto:
-  - Eliminar KerComputeStepVerlet_X.
-  - Colocar BsAuto en JSphGpu.h.
-  - Solo para GPU (win y linux).
-  - Incluir timers para simplificar kernel.
-  - Opcion para generar csv con info.
-- Cambiar a CUDA 7.5
 - Check error in JBinaryData.cpp:CheckHead(1164).
 - Use of SDAT_info?
 - Examples with DomainLimits
 - Configure project with debug.
 - Check restart with floatings and DEM.
-- Test performance with other CUDA versions.
-- Replace ptxasinfo by CUDA functions.
-- Test performance using psimple and pdouble. Remove code for psimple?
 - Use radixsort algorithm (with OpenMP) in celldivide on CPU.
 - Remove JTimersStep before creating release.  
 - Usar thrust en? diferencia en rendimiento?
@@ -384,6 +376,8 @@ Remaining issues:
   if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
 - Error en WaveGen si hay desfase importante.
   
+x Test performance with other CUDA versions.
+x Test performance using psimple and pdouble. Remove code for psimple?
 x Include -pdouble and -svdouble in XML file.
 x Example with DtFixed.
 x To use JREadDatafile in JSphDtFixed, JSphVisco and JRotationFile.

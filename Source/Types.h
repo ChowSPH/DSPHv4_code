@@ -361,6 +361,25 @@ inline const char* GetNameCellMode(TpCellMode cellmode){
   return("???");
 }
 
+///Modes of BlockSize selection.
+#define BSIZE_FIXED 128
+typedef enum{ 
+   BSIZEMODE_Fixed=0       ///<Uses fixed value (BSIZE_FIXED).
+  ,BSIZEMODE_Occupancy=1   ///<Uses Occupancy calculator of CUDA.
+  ,BSIZEMODE_Empirical=2   ///<Calculated empirically.
+}TpBlockSizeMode; 
+
+///Devuelve el nombre de CellMode en texto.
+///Returns the name of the CellMode in text format.
+inline const char* GetNameBlockSizeMode(TpBlockSizeMode bsizemode){
+  switch(bsizemode){
+    case BSIZEMODE_Fixed:      return("Fixed");
+    case BSIZEMODE_Occupancy:  return("Occupancy Calculator");
+    case BSIZEMODE_Empirical:  return("Empirical calculation");
+  }
+  return("???");
+}
+
 ///Codificacion de celdas para posicion.
 ///Codification of cells for position.
 #define PC__CodeOut 0xffffffff

@@ -339,7 +339,7 @@ IF EXIST cg_variables.h move cg_variables.h $(Configuration)\
       </OmitFramePointers>
       <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(CUDA_PATH_V5_5)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CUDA_PATH_V7_5)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WITHGPU;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -354,7 +354,7 @@ IF EXIST cg_variables.h move cg_variables.h $(Configuration)\
     <Link>
       <AdditionalDependencies>cudart.lib;JWaveGen_$(PlatformName).lib;JFormatFiles2_$(PlatformName).lib;JSphMotion_$(PlatformName).lib;JXml_$(PlatformName).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(TargetPath)</OutputFile>
-      <AdditionalLibraryDirectories>$(CUDA_PATH_V5_5)/lib/$(PlatformName);Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(CUDA_PATH_V7_5)/lib/$(PlatformName);Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -560,14 +560,14 @@ IF EXIST cg_variables.h move cg_variables.h $(Configuration)\
     <CustomBuild Include="Source\JCellDivGpu_ker.cu">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">rem ***Vars de compilacion
-set CudaPath=$(CUDA_PATH_V5_5)
+set CudaPath=$(CUDA_PATH_V7_5)
 set CudaNvcc="%CudaPath%\bin\nvcc.exe"
 set CudaInc="%CudaPath%\include"
 rem ***Seleccion de GPU hardware para compilacion
-set gpuhw=-gencode=arch=compute_30,code=\"sm_30,compute_30\"
 set gpuhw=-gencode=arch=compute_35,code=\"sm_35,compute_35\"
 set gpuhw=-gencode=arch=compute_13,code=\"sm_13,compute_13\" -gencode=arch=compute_20,code=\"sm_20,compute_20\"
 set gpuhw=-gencode=arch=compute_20,code=\"sm_20,compute_20\"
+set gpuhw=-gencode=arch=compute_30,code=\"sm_30,compute_30\"
 rem ***Activa la visualizacion de registros por kernel
 set ptxinfo=--ptxas-options -v
 set ptxinfo=
@@ -596,15 +596,15 @@ rem ***Sentencia de compilacion
     <CustomBuild Include="Source\JCellDivGpuSingle_ker.cu">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">rem ***Vars de compilacion
-set CudaPath=$(CUDA_PATH_V5_5)
+set CudaPath=$(CUDA_PATH_V7_5)
 set CudaNvcc="%CudaPath%\bin\nvcc.exe"
 set CudaInc="%CudaPath%\include"
 rem ***Seleccion de GPU hardware para compilacion
-set gpuhw=-gencode=arch=compute_30,code=\"sm_30,compute_30\"
 set gpuhw=-gencode=arch=compute_13,code=\"sm_13,compute_13\" -gencode=arch=compute_20,code=\"sm_20,compute_20\"
 set gpuhw=-gencode=arch=compute_35,code=\"sm_35,compute_35\"
 set gpuhw=-gencode=arch=compute_13,code=\"sm_13,compute_13\" -gencode=arch=compute_20,code=\"sm_20,compute_20\"
 set gpuhw=-gencode=arch=compute_20,code=\"sm_20,compute_20\"
+set gpuhw=-gencode=arch=compute_30,code=\"sm_30,compute_30\"
 rem ***Activa la visualizacion de registros por kernel
 set ptxinfo=--ptxas-options -v
 set ptxinfo=
@@ -633,22 +633,22 @@ rem ***Sentencia de compilacion
     <CustomBuild Include="Source\JSphGpu_ker.cu">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">rem ***Vars de compilacion
-set CudaPath=$(CUDA_PATH_V5_5)
+set CudaPath=$(CUDA_PATH_V7_5)
 set CudaNvcc="%CudaPath%\bin\nvcc.exe"
 set CudaInc="%CudaPath%\include"
 rem ***Seleccion de GPU hardware para compilacion
-set gpuhw=-gencode=arch=compute_30,code=\"sm_30,compute_30\"
 set gpuhw=-gencode=arch=compute_13,code=\"sm_13,compute_13\" -gencode=arch=compute_20,code=\"sm_20,compute_20\"
 set gpuhw=-gencode=arch=compute_35,code=\"sm_35,compute_35\"
 set gpuhw=-gencode=arch=compute_13,code=\"sm_13,compute_13\" -gencode=arch=compute_20,code=\"sm_20,compute_20\"
 set gpuhw=-gencode=arch=compute_20,code=\"sm_20,compute_20\"
+set gpuhw=-gencode=arch=compute_30,code=\"sm_30,compute_30\"
 rem ***Activa la visualizacion de registros por kernel y creacion de _ptxasinfo
 set ptxinfo=--ptxas-options -v
-rem set ptxinfo=
+set ptxinfo=
 rem ***Sentencia de compilacion sin salida _ptxasinfo
-rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -DWIN32 -D_CONSOLE -D_MBCS -Xcompiler /EHsc,/W3,/nologo,/O2,/Zi,/MT -m 64 -I%CudaInc% -I./ -o Intermediate\$(Configuration)\%(Filename).obj Source\%(Filename)%(Extension) -D _CRT_SECURE_NO_DEPRECATE 
+%CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -DWIN32 -D_CONSOLE -D_MBCS -Xcompiler /EHsc,/W3,/nologo,/O2,/Zi,/MT -m 64 -I%CudaInc% -I./ -o Intermediate\$(Configuration)\%(Filename).obj Source\%(Filename)%(Extension) -D _CRT_SECURE_NO_DEPRECATE 
 rem ***Sentencia de compilacion con salida _ptxasinfo
-%CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -DWIN32 -D_CONSOLE -D_MBCS -Xcompiler /EHsc,/W3,/nologo,/O2,/Zi,/MT -m 64 -I%CudaInc% -I./ -o Intermediate\$(Configuration)\%(Filename).obj Source\%(Filename)%(Extension) -D _CRT_SECURE_NO_DEPRECATE 1&gt;$(OutDir)$(ProjectName)_$(Configuration)64_ptxasinfo
+rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -DWIN32 -D_CONSOLE -D_MBCS -Xcompiler /EHsc,/W3,/nologo,/O2,/Zi,/MT -m 64 -I%CudaInc% -I./ -o Intermediate\$(Configuration)\%(Filename).obj Source\%(Filename)%(Extension) -D _CRT_SECURE_NO_DEPRECATE 1&gt;$(OutDir)$(ProjectName)_$(Configuration)64_ptxasinfo
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Intermediate\$(Configuration)\%(Filename).obj</Outputs>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
@@ -763,10 +763,6 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClInclude Include="Source\JLog2.h" />
     <ClInclude Include="Source\JObject.h" />
     <ClInclude Include="Source\JSpaceParts.h" />
-    <ClInclude Include="Source\JPtxasInfo.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Source\JSpaceCtes.h" />
     <ClInclude Include="Source\JSpaceEParms.h" />
     <ClInclude Include="Source\JSph.h" />
@@ -838,10 +834,6 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClCompile Include="Source\JLog2.cpp" />
     <ClCompile Include="Source\JObject.cpp" />
     <ClCompile Include="Source\JSpaceParts.cpp" />
-    <ClCompile Include="Source\JPtxasInfo.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Source\JSpaceCtes.cpp" />
     <ClCompile Include="Source\JSpaceEParms.cpp" />
     <ClCompile Include="Source\JSph.cpp" />

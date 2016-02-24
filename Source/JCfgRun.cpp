@@ -45,6 +45,7 @@ void JCfgRun::Reset(){
   Stable=false;
   PosDouble=-1;
   OmpThreads=0;
+  BlockSizeMode=BSIZEMODE_Empirical;
   SvTimers=true; SvTimersStep=0;
   CellOrder=ORDER_None;
   CellMode=CELLMODE_2H;
@@ -63,9 +64,7 @@ void JCfgRun::Reset(){
   PartBegin=0; PartBeginFirst=0; PartBeginDir="";
   TimeMax=-1; TimePart=-1;
   RhopOutModif=false; RhopOutMin=700; RhopOutMax=1300;
-  PtxasFile="";
   FtPause=-1;
-  DgBlockSize=0;
 }
 
 //==============================================================================
@@ -91,6 +90,10 @@ void JCfgRun::VisuInfo()const{
   printf("                   by host for parallel execution, it takes the number of \n");
   printf("                   cores of the device by default (or using zero value)\n\n");
 #endif
+  printf("    -blocksize:<mode>  Defines BlockSize to use in particle interactions on GPU\n");
+  printf("        0: Fixed value (128) is used (option by default)\n");
+  printf("        1: Optimum BlockSize indicated by Occupancy Calculator of CUDA\n");
+  printf("        2: Optimum BlockSize is calculated empirically (option by default)\n\n");
   //printf("    -cellorder:<axis> Indicates the order of the axes. (xyz/xzy/yxz/yzx/zxy/zyx)\n");
   printf("    -cellmode:<mode>  Specifies the cell division mode\n");
   printf("        2h        Lowest and the least expensive in memory (by default)\n");
@@ -140,9 +143,6 @@ void JCfgRun::VisuInfo()const{
   printf("     proportion with the case dimensions according to the initial particles\n");
   printf("    -domain_fixed:xmin,ymin,zmin,xmax,ymax,zmax    The domain is fixed\n");
   printf("     with the specified values\n\n");
-  printf("    -ptxasfile <file> Indicate the file with information about the compilation\n");
-  printf("     of kernels in CUDA to adjust the size of the blocks depending on the \n");
-  printf("     needed registers for each kernel (only for gpu)\n\n");
   printf("  Examples:\n");
   printf("    DualSPHysics4 case out_case -sv:binx,csv \n");
 }
@@ -165,6 +165,7 @@ void JCfgRun::VisuConfig()const{
   PrintVar("  Stable",Stable,ln);
   PrintVar("  PosDouble",PosDouble,ln);
   PrintVar("  OmpThreads",OmpThreads,ln);
+  PrintVar("  BlockSize",BlockSizeMode,ln);
   PrintVar("  CellOrder",GetNameCellOrder(CellOrder),ln);
   PrintVar("  CellMode",GetNameCellMode(CellMode),ln);
   PrintVar("  TStep",TStep,ln);
@@ -200,7 +201,6 @@ void JCfgRun::VisuConfig()const{
     PrintVar("  DomainFixedMin",DomainFixedMin,ln);
     PrintVar("  DomainFixedMax",DomainFixedMax,ln);
   }
-  PrintVar("  PtxasFile",PtxasFile,ln);
   PrintVar("  FtPause",FtPause,ln);
 }
 
@@ -235,7 +235,6 @@ void JCfgRun::LoadArgv(int argc,char** argv){
     if(!SvDef){ Sv_Binx=true; Sv_Info=true; }
   }
   else VisuInfo();
-  if(PtxasFile.empty())PtxasFile=fun::GetWithoutExtension(argv[0])+"_ptxasinfo";
 }
 
 //==============================================================================
@@ -313,10 +312,9 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
       }
       else if(txword=="STABLE")Stable=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
       else if(txword=="POSDOUBLE"){
-        const string tx=fun::StrUpper(txopt);
-        if(tx=="0")PosDouble=0;
-        else if(tx=="1")PosDouble=1;
-        else if(tx=="2")PosDouble=2;
+        if(txopt=="0")PosDouble=0;
+        else if(txopt=="1")PosDouble=1;
+        else if(txopt=="2")PosDouble=2;
         else ErrorParm(opt,c,lv,file);
       }
 #ifdef _WITHOMP
@@ -324,6 +322,12 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
         OmpThreads=atoi(txopt.c_str()); if(OmpThreads<0)OmpThreads=0;
       } 
 #endif
+      else if(txword=="BLOCKSIZE"){
+        if(txopt=="0")BlockSizeMode=BSIZEMODE_Fixed;
+        else if(txopt=="1")BlockSizeMode=BSIZEMODE_Occupancy;
+        else if(txopt=="2")BlockSizeMode=BSIZEMODE_Empirical;
+        else ErrorParm(opt,c,lv,file);
+      }
       //else if(txword=="CELLORDER"){
       //  bool ok=true;
       //  if(!txopt.empty()){
@@ -457,8 +461,6 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
         DomainParticlesPrcMin=DomainParticlesPrcMax=TDouble3(0);
         DomainParticlesPrcMax.z=incz;
       }
-      else if(txword=="DGBLOCKSIZE")DgBlockSize=unsigned(atoi(txopt.c_str())); 
-      else if(txword=="PTXASFILE"&&c+1<optn){ PtxasFile=optlis[c+1]; c++; }
       else if(txword=="OPT"&&c+1<optn){ LoadFile(optlis[c+1],lv+1); c++; }
       else if(txword=="H"||txword=="HELP"||txword=="?")PrintInfo=true;
       else ErrorParm(opt,c,lv,file);

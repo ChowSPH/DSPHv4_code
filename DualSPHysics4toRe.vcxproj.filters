@@ -85,9 +85,6 @@
     <ClInclude Include="Source\Types.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JPtxasInfo.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Source\JObjectGpu.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -217,9 +214,6 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\JException.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\JPtxasInfo.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\JObjectGpu.cpp">

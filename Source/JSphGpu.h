@@ -45,20 +45,14 @@ public:
   typedef struct {
     unsigned forcesfluid;
     unsigned forcesbound;
-    unsigned forcessps;
     unsigned forcesdem;
-    unsigned forcesfluid_zoleft;
-    unsigned forcesfluidcorr_zoleft;
-    unsigned forcesbound_zoleft;
-    unsigned forcesfluid_zoright;
-    unsigned forcesfluidcorr_zoright;
-    unsigned forcesbound_zoright;
   }StBlockSizes;
 
 protected:
-  std::string PtxasFile;      ///<Fichero con informacion de ptxas. File with register information for optimising the code
-  StBlockSizes BlockSizes;    ///<Almacena configuracion de BlockSizes. Stores configuration of BlockSizes
-  std::string BlockSizesStr;  ///<Almacena configuracion de BlockSizes en texto. Stores configuration of BlockSizes in text form
+  StBlockSizes BlockSizes;        ///<Almacena configuracion de BlockSizes. Stores configuration of BlockSizes
+  std::string BlockSizesStr;      ///<Almacena configuracion de BlockSizes en texto. Stores configuration of BlockSizes in text form
+  TpBlockSizeMode BlockSizeMode;  ///<Modes for BlockSize selection.
+  JBlockSizeAuto *BsAuto;         ///<Object to calculate the optimum BlockSize for particle interactions.
 
   //-Vars. con informacion del hardware GPU.
   //-Variables with information for the GPU hardware
@@ -66,7 +60,7 @@ protected:
   std::string GpuName;    ///<Nombre de la gpu seleccionada.  Name of the selected GPU
   size_t GpuGlobalMem;    ///<Tamaño de memoria global en bytes.  Size of global memory in bytes
   unsigned GpuSharedMem;  ///<Tamaño de memoria shared por bloque en bytes. Size of shared memory for each block in bytes
-  unsigned GpuCompute;    ///<Compute capability: 10,11,12,20 
+  unsigned GpuCompute;    ///<Compute capability: 10,11,12,20... 
 
   std::string RunMode;     ///<Almacena modo de ejecucion (simetria,openmp,balanceo,...). Stores execution mode (symmetry,OpenMP,balance)
 
@@ -215,8 +209,6 @@ protected:
   unsigned ParticlesDataDown(unsigned n,unsigned pini,bool code,bool cellorderdecode,bool onlynormal);
   
   void SelecDevice(int gpuid);
-  unsigned OptimizeBlockSize(unsigned compute,unsigned nreg);
-  unsigned BlockSizeConfig(const std::string& opname,unsigned compute,tuint2 data);
   void ConfigBlockSizes(bool usezone,bool useperi);
 
   void ConfigRunMode(std::string preinfo);
@@ -250,8 +242,6 @@ protected:
 public:
   JSphGpu(bool withmpi);
   ~JSphGpu();
-
-  JBlockSizeAuto *BsAuto;
 };
 
 #endif

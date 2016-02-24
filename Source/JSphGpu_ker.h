@@ -58,6 +58,19 @@ typedef struct{
   float cubic_a1,cubic_a2,cubic_aa,cubic_a24,cubic_c1,cubic_d1,cubic_c2,cubic_odwdeltap; ///<Ctes of Cubic Spline kernel.
 }StCteInteraction; 
 
+///Structure to collect kernel information.
+typedef struct{
+  int forcesbound_rg;
+  int forcesbound_bs;
+  int forcesbound_bsmax;
+  int forcesfluid_rg;
+  int forcesfluid_bs;
+  int forcesfluid_bsmax;
+  int forcesdem_rg;
+  int forcesdem_bs;
+  int forcesdem_bsmax;
+}StKerInfo; 
+
 /// Implements a set of functions and CUDA kernels for the particle interaction and system update.
 namespace cusph{
 
@@ -88,7 +101,7 @@ void PreInteractionSimple(unsigned np,const double2 *posxy,const double *posz
 //# Kernels for the force calculation.
 void Interaction_Forces(bool psimple,TpKernel tkernel,bool floating,bool usedem,bool lamsps
   ,TpDeltaSph tdelta,TpCellMode cellmode
-  ,float viscob,float viscof,unsigned &bsbound,unsigned &bsfluid
+  ,float viscob,float viscof,unsigned bsbound,unsigned bsfluid
   ,unsigned np,unsigned npb,unsigned npbok,tuint3 ncells
   ,const int2 *begincell,tuint3 cellmin,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *pospress
@@ -96,8 +109,7 @@ void Interaction_Forces(bool psimple,TpKernel tkernel,bool floating,bool usedem,
   ,const float *ftomassp,const tsymatrix3f *tau,tsymatrix3f *gradvel
   ,float *viscdt,float* ar,float3 *ace,float *delta
   ,TpShifting tshifting,float3 *shiftpos,float *shiftdetect
-  ,bool simulate2d,JBlockSizeAuto *bsauto);
-
+  ,bool simulate2d,StKerInfo *kerinfo,JBlockSizeAuto *bsauto);
 
 //# Kernels para calculo de fuerzas DEM
 //# for the calculation of the DEM forces
@@ -105,7 +117,7 @@ void Interaction_ForcesDem(bool psimple,TpCellMode cellmode,unsigned bsize
   ,unsigned nfloat,tuint3 ncells,const int2 *begincell,tuint3 cellmin,const unsigned *dcell
   ,const unsigned *ftridp,const float4 *demdata,float dtforce
   ,const double2 *posxy,const double *posz,const float4 *pospress,const float4 *velrhop
-  ,const word *code,const unsigned *idp,float *viscdt,float3 *ace);
+  ,const word *code,const unsigned *idp,float *viscdt,float3 *ace,StKerInfo *kerinfo);
 
 //# Kernels para viscosidad Laminar+SPS
 //# Kernels for calculating the Laminar+SPS viscosity

@@ -150,7 +150,6 @@ void JSph::InitVars(){
 
   FtCount=0;
   FtPause=0;
-  DgBlockSize=0;
 
   AllocMemoryFloating(0);
 
@@ -337,8 +336,6 @@ void JSph::LoadConfig(const JCfgRun *cfg){
     }
     else ShiftCoef=ShiftTFS=0;
   }
-
-  DgBlockSize=cfg->DgBlockSize;
 
   if(cfg->FtPause>=0)FtPause=cfg->FtPause;
   if(cfg->TimeMax>0)TimeMax=cfg->TimeMax;
@@ -825,7 +822,7 @@ void JSph::VisuConfig()const{
     Log->Print(fun::VarStr("ShiftCoef",ShiftCoef));
     if(ShiftTFS)Log->Print(fun::VarStr("ShiftTFS",ShiftTFS));
   }
-  Log->Print(fun::VarStr("FloatingFormulation",(!FtCount? "None": (UseDEM? "SPH+DEM": "SPH"))));
+  Log->Print(fun::VarStr("RigidAlgorithm",(!FtCount? "None": (UseDEM? "SPH+DEM": "SPH"))));
   Log->Print(fun::VarStr("FloatingCount",FtCount));
   if(FtCount)Log->Print(fun::VarStr("FtPause",FtPause));
   Log->Print(fun::VarStr("CaseNp",CaseNp));
