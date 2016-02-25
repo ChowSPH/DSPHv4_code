@@ -15,7 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-/// \file JMeanValue.h \brief Declares the class \ref JMeanValue and class \ref JMeanMoving.
+/// \file JMeanValues.h \brief Declares the class \ref JMeanValue and class \ref JMeanMoving.
 
 #ifndef _JMeanValues_
 #define _JMeanValues_
@@ -32,7 +32,7 @@
 //##############################################################################
 //# JMeanValue
 //##############################################################################
-/// \brief Calculates the average value of sequency of values.
+/// \brief Calculates the average value of a sequence of values.
 
 class JMeanValue
 {
@@ -52,7 +52,7 @@ public:
 //##############################################################################
 //# JMeanMoving
 //##############################################################################
-/// \brief Calculates the mobile and weighted average value of sequency of values.
+/// \brief Calculates the mobile and weighted average value of a sequence of values.
 
 class JMeanMoving : protected JObject
 {

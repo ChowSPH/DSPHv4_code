@@ -2,7 +2,7 @@
  <DUALSPHYSICS>  Copyright (c) 2016, 
  Dr Jose M. Dominguez, Dr Alejandro Crespo,Prof. Moncho Gomez Gesteira, Dr Anxo Barreiro,
  Dr Benedict Rogers, Dr Georgios Fourtakas, Dr Athanasios Mokos,
- Dr Renato Vacondio, Dr Ricardo Canelas,Dr Stephen Longshaw, Dr Corrado Altomare.
+ Dr Renato Vacondio, Dr Ricardo Canelas, Dr Stephen Longshaw, Dr Corrado Altomare.
 
  EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
  School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
@@ -88,7 +88,7 @@ int main(int argc, char** argv){
   std::string license=getlicense_gpl(progname);
   printf("%s",license.c_str());
   char appname[256],appnamesub[256];
-  sprintf(appname,"%s v4.0.040 (24-02-2016)%s",progname.c_str(),proginfo.c_str());
+  sprintf(appname,"%s v4.0.041 (25-02-2016)%s",progname.c_str(),proginfo.c_str());
   for(unsigned c=0;c<=strlen(appname);c++)appnamesub[c]='='; appnamesub[strlen(appname)+1]='\0';
   printf("\n%s\n%s\n",appname,appnamesub);
 

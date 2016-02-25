@@ -357,6 +357,8 @@
   - Compilation with CUDA 7.5. (v4.0.040 / 24-02-2016) 
   - JPtxasInfo was removed. (v4.0.040 / 24-02-2016) 
   - Improvements in BlockSize calculation. (v4.0.040 / 24-02-2016) 
+  - Minor changes. (v4.0.041 / 25-02-2016) 
+  - Applies DeltaSPH to fluid particles interacting with heavy floatings. (v4.0.041 / 25-02-2016) 
   
 Remaining issues:
 ==================

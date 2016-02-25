@@ -23,6 +23,8 @@
 #include "TypesDef.h"
 #include <algorithm>
 
+#define DELTA_HEAVYFLOATING  //-Applies DeltaSPH to fluid particles interacting with floatings with higher density (massp>MassFluid). //-Aplica DeltaSPH a fluido que interaccionan con floatings pesados (massp>MassFluid). NO_COMENTARIO
+
 #define HIDE_AWAS      //-Mantiene compatibilidad sin AWAS.//-Maintain compatibility without AWAS. NO_COMENTARIO
 
 //#define DISABLE_TIMERS           //-Compilado sin timers. //-Compiles without timers

@@ -844,7 +844,6 @@ void JSph::VisuConfig()const{
   Log->Print(fun::VarStr("CteB",CteB));
   Log->Print(fun::VarStr("Gamma",Gamma));
   Log->Print(fun::VarStr("RhopZero",RhopZero));
-  Log->Print(fun::VarStr("Eps",0));
   Log->Print(fun::VarStr("Cs0",Cs0));
   Log->Print(fun::VarStr("CFLnumber",CFLnumber));
   Log->Print(fun::VarStr("DtIni",DtIni));
