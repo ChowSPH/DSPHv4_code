@@ -171,16 +171,15 @@ void JSphCpuSingle::ConfigDomain(){
 
   ConfigSaveData(0,1,"");
 
-  //-Reoder particles for cell / Reordena particulas por celda.
+  //-Reorder particles for cell / Reordena particulas por celda.
   BoundChanged=true;
   RunCellDivide(true);
 }
 
 //==============================================================================
-/// (ES):
 /// Redimensiona el espacio reservado para particulas en CPU midiendo el
 /// tiempo consumido con TMC_SuResizeNp. Al terminar actualiza el divide.
-/// (EN):
+///
 /// Redimension space reserved for particles in CPU, measure 
 /// time consumed using TMC_SuResizeNp. On finishing, update divide.
 //==============================================================================
@@ -193,10 +192,9 @@ void JSphCpuSingle::ResizeParticlesSize(unsigned newsize,float oversize,bool upd
 }
 
 //==============================================================================
-/// (ES):
 /// Crea lista de nuevas particulas periodicas a duplicar.
 /// Con stable activado reordena lista de periodicas.
-/// (EN):
+///
 /// Create list of new periodic particles to duplicate.
 /// With stable activated reordered list of periodic particles.
 //==============================================================================
@@ -231,16 +229,15 @@ unsigned JSphCpuSingle::PeriodicMakeList(unsigned n,unsigned pini,bool stable,un
 }
 
 //==============================================================================
-/// (ES):
 /// Duplica la posicion de la particula indicada aplicandole un desplazamiento.
 /// Las particulas duplicadas se considera que siempre son validas y estan dentro
 /// del dominio.
 /// Este kernel vale para single-cpu y multi-cpu porque los calculos se hacen 
 /// a partir de domposmin.
 /// Se controla que las coordendas de celda no sobrepasen el maximo.
-/// (EN):
+///
 /// Duplicate the indicated particle position applying displacement.
-/// Duplicate particles are considered to be always valid and are inside
+/// Duplicated particles are considered to be always valid and are inside
 /// of the domain.
 /// This kernel works for single-cpu & multi-cpu because the computations are done  
 /// starting from domposmin.
@@ -267,11 +264,10 @@ void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inver
 }
 
 //==============================================================================
-/// (ES):
 /// Crea particulas periodicas a partir de una lista con las particulas a duplicar.
 /// Se presupone que todas las particulas son validas.
 /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
-/// (ES):
+///
 /// Create periodic particles starting from a list of the particles to duplicate.
 /// Assume that all the particles are valid.
 /// This kernel works for single-cpu & multi-cpu because it uses domposmin.
@@ -295,11 +291,10 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 cell
 }
 
 //==============================================================================
-/// (ES):
 /// Crea particulas periodicas a partir de una lista con las particulas a duplicar.
 /// Se presupone que todas las particulas son validas.
 /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
-/// (ES):
+///
 /// Create periodic particles starting from a list of the particles to duplicate.
 /// Assume that all the particles are valid.
 /// This kernel works for single-cpu & multi-cpu because it uses domposmin.
@@ -324,13 +319,12 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned n,unsigned pini,tuint3 
 }
 
 //==============================================================================
-/// (ES):
 /// Crea particulas duplicadas de condiciones periodicas.
 /// Crea nuevas particulas periodicas y marca las viejas para ignorarlas.
 /// Las nuevas periodicas se situan a partir del Np de entrada, primero las NpbPer
 /// de contorno y despues las NpfPer fluidas. El Np de salida contiene tambien las
 /// nuevas periodicas.
-/// (EN):
+///
 /// Create duplicate particles for periodic conditions.
 /// Create new periodic particles and mark the old ones to be ignored.
 /// New periodic particles are created from Np of the beginning, first the NpbPer
@@ -522,9 +516,7 @@ void JSphCpuSingle::Interaction_Forces(TpInter tinter){
 }
 
 //==============================================================================
-/// (ES):
 /// Devuelve valor maximo de (ace.x^2 + ace.y^2 + ace.z^2) a partir de Acec[].
-/// (ES):
 /// Return max value of (ace.x^2 + ace.y^2 + ace.z^2) starting from Acec[].
 /// The use of OpenMP here is not efficient.
 //==============================================================================
@@ -547,10 +539,9 @@ double JSphCpuSingle::ComputeAceMax(){
 }
 
 //==============================================================================
-/// (ES):
 /// Realiza interaccion y actualizacion de particulas segun las fuerzas 
 /// calculadas en la interaccion usando Verlet.
-/// (ES):
+///
 /// Perform interactions and updates of particles according to forces 
 /// calculated in the interaction using Verlet.
 //==============================================================================
@@ -566,10 +557,9 @@ double JSphCpuSingle::ComputeStep_Ver(){
 }
 
 //==============================================================================
-/// (ES):
 /// Realiza interaccion y actualizacion de particulas segun las fuerzas 
 /// calculadas en la interaccion usando Symplectic.
-/// (ES):
+///
 /// Perform interactions and updates of particles according to forces 
 /// calculated in the interaction using Symplectic.
 //==============================================================================

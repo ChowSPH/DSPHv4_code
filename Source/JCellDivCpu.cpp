@@ -159,10 +159,8 @@ void JCellDivCpu::AllocMemoryNct(ullong nct){
 }
 
 //==============================================================================
-/// (ES):
 /// Comprueba la reserva de memoria para el numero indicado de particulas. 
 /// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
-/// (EN):
 /// Check reserved memory for the indicated number of particles. 
 /// If there is insufficient memory or it is not reserved, then reserve the requested memory.
 //==============================================================================
@@ -172,10 +170,8 @@ void JCellDivCpu::CheckMemoryNp(unsigned npmin){
 }
 
 //==============================================================================
-/// (ES):
 /// Comprueba la reserva de memoria para el numero indicado de celdas. 
 /// Si no es suficiente o no hay reserva, entonces reserva la memoria requerida.
-/// (EN):
 /// Check reserved memory for the indicated number of cells. 
 /// If there is insufficient memory or it is not reserved, then reserve the requested memory.
 //==============================================================================
@@ -225,12 +221,10 @@ void JCellDivCpu::VisuBoundaryOut(unsigned p,unsigned id,tdouble3 pos,word code)
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula celda minima y maxima de las particulas validas.
 /// En code[] ya estan marcadas las particulas excluidas.
 /// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
 /// Si encuentra alguna particula excluida genera excepcion mostrando su info.
-/// (EN):
 /// Calculate minimum and maximum cells of valid particles.
 /// In code[] they are already marked as excluded.
 /// In case of there being no valid particles, the minimum is set to be greater than the maximum.
@@ -267,10 +261,8 @@ void JCellDivCpu::LimitsCellBound(unsigned n,unsigned pini,const unsigned* dcell
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula posiciones minimas y maximas del rango de particulas Bound indicado.
 /// En code[] ya estan marcadas las particulas excluidas.
-/// (EN):
 /// Calculate max and min positions of the indicated Bound particle range.
 /// In code[] these particles are already marked as excluded.
 //==============================================================================
@@ -289,12 +281,10 @@ void JCellDivCpu::CalcCellDomainBound(unsigned n,unsigned pini,unsigned n2,unsig
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula celda minima y maxima de las particulas validas.
 /// En code[] ya estan marcadas las particulas excluidas.
 /// En caso de no haber ninguna particula valida el minimo sera mayor que el maximo.
 /// Si encuentra alguna particula floating excluida genera excepcion mostrando su info.
-/// (EN):
 /// Calculate minimum and maximum cells of valid particles.
 /// In code[] they are already marked as excluded.
 /// In case of there being no valid particles, the minimum is set to be greater than the maximum.
@@ -338,10 +328,8 @@ void JCellDivCpu::LimitsCellFluid(unsigned n,unsigned pini,const unsigned* dcell
 }
 
 //==============================================================================
-/// (ES):
 // Calcula posiciones minimas y maximas del rango de particulas Fluid indicado.
 // Ignora particulas excluidas que ya estan marcadas en code[].
-/// (EN):
 /// Calculate max and min positions of the indicated Fluid particle range.
 /// Ignore excluded particles that are already marked in code[] 
 //==============================================================================

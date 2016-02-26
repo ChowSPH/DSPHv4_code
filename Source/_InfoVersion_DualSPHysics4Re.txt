@@ -359,25 +359,28 @@
   - Improvements in BlockSize calculation. (v4.0.040 / 24-02-2016) 
   - Minor changes. (v4.0.041 / 25-02-2016) 
   - Applies DeltaSPH to fluid particles interacting with heavy floatings. (v4.0.041 / 25-02-2016) 
+  - Minor changes. (v4.0.042 / 26-02-2016) 
   
 Remaining issues:
 ==================
+- Check timers on CPU and GPU.
+- Use radixsort algorithm (with OpenMP) in celldivide on CPU.
+- Buscar y borrar "ES:" "(ES)"
 - Check error in JBinaryData.cpp:CheckHead(1164).
 - Use of SDAT_info?
 - Examples with DomainLimits
 - Configure project with debug.
 - Check restart with floatings and DEM.
-- Use radixsort algorithm (with OpenMP) in celldivide on CPU.
 - Remove JTimersStep before creating release.  
-- Usar thrust en? diferencia en rendimiento?
+- Error en WaveGen si hay desfase importante.
+  
+x Usar thrust en? diferencia en rendimiento?
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
   const unsigned pini=(DtAllParticles? 0: Npb);
   cusph::ComputeVelMod(Np-pini,Velrhopg+pini,ViscDtg);
   float velmax=cusph::ReduMaxFloat(Np-pini,0,ViscDtg,CellDiv->GetAuxMem(cusph::ReduMaxFloatSize(Np-pini)));
-- Usar thrust en? diferencia en rendimiento?
+x Usar thrust en? diferencia en rendimiento?
   if(Np-Npb)acemax=cusph::ReduMaxFloat(Np-Npb,0,auxmem,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np-Npb)));
-- Error en WaveGen si hay desfase importante.
-  
 x Test performance with other CUDA versions.
 x Test performance using psimple and pdouble. Remove code for psimple?
 x Include -pdouble and -svdouble in XML file.

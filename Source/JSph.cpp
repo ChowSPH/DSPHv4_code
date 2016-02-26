@@ -680,6 +680,7 @@ word JSph::CodeSetType(word code,TpParticle type,unsigned value)const{
 //==============================================================================
 /// Carga el codigo de grupo de las particulas y marca las nout ultimas
 /// particulas como excluidas.
+///
 /// Loads the code of a particle group and flags the last "nout" 
 /// particles as excluded. 
 //==============================================================================
@@ -885,6 +886,7 @@ void JSph::VisuConfig()const{
 //==============================================================================
 /// Calcula celda de las particulas y comprueba que no existan mas particulas
 /// excluidas de las previstas.
+///
 /// Computes cell particles and checks if there are more particles
 /// excluded than expected.
 //==============================================================================
@@ -894,7 +896,7 @@ void JSph::LoadDcellParticles(unsigned n,const word *code,const tdouble3 *pos,un
     word codeout=CODE_GetSpecialValue(code[p]);
     if(codeout<CODE_OUTIGNORE){
       const tdouble3 ps=pos[p];
-      if(ps>=DomRealPosMin && ps<DomRealPosMax){//-Particle in
+      if(ps>=DomRealPosMin && ps<DomRealPosMax){
         const double dx=ps.x-DomPosMin.x;
         const double dy=ps.y-DomPosMin.y;
         const double dz=ps.z-DomPosMin.z;
@@ -911,7 +913,8 @@ void JSph::LoadDcellParticles(unsigned n,const word *code,const tdouble3 *pos,un
 }
 
 //==============================================================================
-// Configura CellOrder y ajusta orden de componentes en datos.
+/// Configura CellOrder y ajusta orden de componentes en datos.
+/// Configures CellOrder and adjusts order of components in data.
 //==============================================================================
 void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* velrhop){
   //-Guarda configuracion periodica en PeriodicConfig.
@@ -1555,7 +1558,7 @@ std::string JSph::GetShiftingName(TpShifting tshift){
 }
 
 //==============================================================================
-// Devuelve string con el nombre del temporizador y su valor.
+/// Devuelve string con el nombre del temporizador y su valor.
 //==============================================================================
 std::string JSph::TimerToText(const std::string &name,float value){
   string ret=name;

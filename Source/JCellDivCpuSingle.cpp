@@ -30,11 +30,9 @@ JCellDivCpuSingle::JCellDivCpuSingle(bool stable,bool floating,byte periactive,T
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula limites del dominio en celdas ajustando al fluido (CellDomainMin/Max). 
 /// Si hay alguna particula excluida de tipo boundary (incluidas floating) genera
 /// excepcion y muestra su info.
-/// (EN):
 /// Calculate limits of domain in cells adjusting to fluid (CellDomainMin/Max). 
 /// If there are some particles excluded of type boundary (including floating) generate
 /// an exception ands show its infor.
@@ -55,13 +53,11 @@ void JCellDivCpuSingle::CalcCellDomain(const unsigned *dcellc,const word* codec,
 }
 
 //==============================================================================
-/// (ES):
 /// Combina limite de celdas de contorno y fluido con limites de mapa.
 /// Con UseFluidDomain=TRUE se queda con el dominio del fluido mas 2h si hay 
 /// contorno, en caso contrario se queda con el dominio que incluya fluido y
 /// contorno.
 /// En caso de que el dominio sea nulo CellDomainMin=CellDomainMax=(0,0,0).
-/// (EN):
 /// Combine limits of boundary and fluid cells with limits of map.
 /// With UseFluidDomain=TRUE staying with the fluid domain pluss 2h if there is a 
 /// a boundary, in the contrary case, stay with domain that includes fluid and
@@ -78,10 +74,8 @@ void JCellDivCpuSingle::MergeMapCellBoundFluid(const tuint3 &celbmin,const tuint
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula numero de celdas a partir de (CellDomainMin/Max). 
 /// Obtiene localizacion de celdas especiales.
-/// (EN):
 /// Calculate number of cells starting from (CellDomainMin/Max). 
 /// Get location of special cells.
 //==============================================================================
@@ -101,13 +95,11 @@ void JCellDivCpuSingle::PrepareNct(){
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula celda de cada particula bound y fluid (cellpart[]) a partir de su celda en
 /// mapa, todas las particulas excluidas ya fueron marcadas en code[].
 /// No puede haber particulas bound o floating excluidas porque en tal caso ya se 
 /// genera una excepcion en LimitsCellBound/Fluid().
 /// Contabiliza particulas por celda (partsincell[]).
-/// (EN):
 /// Calculate cell of each boundary and fluid particle (cellpart[]) starting from its cell in 
 /// the map,all the excluded particles are already going to be marked in code[].
 /// It cannot have particles excluded bound or fluid because in such a case 
@@ -138,13 +130,11 @@ void JCellDivCpuSingle::PreSortFull(unsigned np,const unsigned *dcellc,const wor
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula celda de cada particula bound y fluid (cellpart[]) a partir de su celda en
 /// mapa, todas las particulas excluidas ya fueron marcadas en code[].
 /// No puede haber particulas bound o floating excluidas porque en tal caso ya se 
 /// genera una excepcion en LimitsCellBound/Fluid().
 /// Contabiliza particulas por celda (partsincell[]).
-/// (EN):
 /// Calculate cell of each boundary and fluid particle (cellpart[]) starting from its cell in 
 /// the map, all the excluded particles are already going to be marked in code[].
 /// It cannot have particles excluded bound or floating because in such a case 
@@ -168,10 +158,8 @@ void JCellDivCpuSingle::PreSortFluid(unsigned np,unsigned pini,const unsigned *d
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula SortPart[] (donde esta la particula que deberia ir en dicha posicion).
 /// Si hay particulas de contorno excluidas no hay ningun problema.
-/// (EN):
 /// Calculate SortPart[] (where the particle is that must go in stated position).
 /// If there are no excluded boundary particles, no problem exists.
 //==============================================================================
@@ -189,10 +177,8 @@ void JCellDivCpuSingle::MakeSortFull(const unsigned* cellpart,unsigned* begincel
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula SortPart[] (donde esta la particula que deberia ir en dicha posicion).
 /// En este caso nunca hay particulas bound excluidas pq se genera excepcion.
-/// (EN):
 /// Calculate SortPart[] (where the particle is that must go in stated position).
 /// In this case, there are mp excluded boundary particles because an exception is generated.
 //==============================================================================
@@ -210,20 +196,16 @@ void JCellDivCpuSingle::MakeSortFluid(unsigned np,unsigned pini,const unsigned* 
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula celda de cada particula (CellPart[]) a partir de cell[], todas las
 /// particulas excluidas ya fueron marcadas en code[].
 /// Calcula SortPart[] (donde esta la particula que deberia ir en dicha posicion).
-/// (EN):
 /// Calculate cell of each particle (CellPart[]) starting from cell[], all the
 /// excluded particles will already be marked in code[].
 /// Calculate SortPart[] (where the particle is that must go in stated position).
 //==============================================================================
 void JCellDivCpuSingle::PreSort(const unsigned* dcellc,const word* codec){
-  // (ES):
   //-Carga SortPart[] con la p actual en los vectores de datos donde esta la particula que deberia ir en dicha posicion.
   //-Carga BeginCell[] con primera particula de cada celda.
-  // (EN):
   //-Load SortPart[] with the current particle in the data vectors where the particle is that must go in stated position.
   //-Load BeginCell[] with first particle of each cell.
   if(DivideFull){
@@ -238,14 +220,12 @@ void JCellDivCpuSingle::PreSort(const unsigned* dcellc,const word* codec){
 }
 
 //==============================================================================
-/// (ES):
 /// Inicia proceso de Divide: Calcula limites de dominio y calcula nueva posicion
 /// para cada particula (SortPart).
 /// El valor np incluye las periodicas bound y fluid (npbper y npfper).
 /// Las floating se tratan como si fuesen fluido (tanto al ser excluidas como 
 /// ignoradas), pero en caso de haber alguna floating excluida se genera una 
 /// excepcion en CalcCellDomainFluid();
-/// (EN):
 /// Initial process of Divide: Calculate limits of domain and calculate new position
 /// for each particle (SortPart).
 /// The value np includes periodic bound & fluid particles (npbper & npfper).
@@ -268,8 +248,8 @@ void JCellDivCpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   //-Check if there is memory reserved and if it sufficient for Nptot / Comprueba si hay memoria reservada y si es suficiente para Nptot.
   CheckMemoryNp(Nptot);
 
-  //-(ES): Si la posicion del contorno cambia o hay condiciones periodicas es necesario recalcular limites y reordenar todas las particulas. 
-  //-(EN): If the position of the boundary changes or there are periodic conditions it is necessary to recalculate the limits & reorder all the particles. 
+  //- Si la posicion del contorno cambia o hay condiciones periodicas es necesario recalcular limites y reordenar todas las particulas. 
+  //- If the position of the boundary changes or there are periodic conditions it is necessary to recalculate the limits & reorder all the particles. 
   if(boundchanged || PeriActive){
     BoundLimitOk=BoundDivideOk=false;
     BoundLimitCellMin=BoundLimitCellMax=TUint3(0);
@@ -284,10 +264,8 @@ void JCellDivCpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   CheckMemoryNct(Nct);
   TmcStop(timers,TMC_NlLimits);
 
-  // (ES):
   //-Determina si el divide afecta a todas las particulas.
   //-BoundDivideOk se vuelve false al reservar o liberar memoria para particulas o celdas.
-  // (EN):
   //-Determine if divide affects all the particles.
   //-BoundDivideOk returns false in order to reserve or free memory for particles or cells.
   if(!BoundDivideOk || BoundDivideCellMin!=CellDomainMin || BoundDivideCellMax!=CellDomainMax){
@@ -296,8 +274,8 @@ void JCellDivCpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   }
   else DivideFull=false;
 
-  //-(ES): Calcula CellPart[] y SortPart[] (donde esta la particula que deberia ir en dicha posicion).
-  //-(EN): Calculate CellPart[] and SortPart[] ((where the particle is that must go in stated position)).
+  //- Calcula CellPart[] y SortPart[] (donde esta la particula que deberia ir en dicha posicion).
+  //- Calculate CellPart[] and SortPart[] ((where the particle is that must go in stated position)).
   TmcStart(timers,TMC_NlMakeSort);
   PreSort(dcellc,codec);
 

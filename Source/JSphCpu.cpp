@@ -286,12 +286,10 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 }
 
 //==============================================================================
-/// (ES):
 /// Recupera datos de un rango de particulas y devuelve el numero de particulas que
 /// sera menor que n si se eliminaron las periodicas.
 /// - cellorderdecode: Reordena componentes de pos y vel segun CellOrder.
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
-/// (EN):
 /// Collect data from a range of particles and return the number of particles that 
 /// will be less than n and eliminate the periodic ones
 /// - cellorderdecode: Reorder components of position (pos) and velocity (vel) according to CellOrder.
@@ -1434,13 +1432,11 @@ void JSphCpu::InteractionSimple_Forces(unsigned np,unsigned npb,unsigned npbok
 }
 
 //==============================================================================
-/// (ES):
 /// Actualiza pos, dcell y code a partir del desplazamiento indicado.
 /// El valor de outrhop indica si esta fuera de los limites de densidad.
 /// Comprueba los limites en funcion de MapRealPosMin y MapRealSize esto es valido
 /// para single-cpu pq DomRealPos y MapRealPos son iguales. Para multi-cpu seria 
 /// necesario marcar las particulas q salgan del dominio sin salir del mapa.
-/// (EN):
 /// Update pos, dcell and code to move with indicated displacement.
 /// The value of outrhop indicates is it outside of the density limits.
 /// Check the limits in funcion of MapRealPosMin & MapRealSize that this is valid
@@ -1543,10 +1539,8 @@ template<bool shift> void JSphCpu::ComputeVerletVarsFluid(const tfloat4 *velrhop
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula nuevos valores de densidad y pone velocidad a cero para el contorno 
 /// (fixed+moving, no floating).
-/// (EN):
 /// Calculate new values of density and set velocity=zero for cases of  
 /// (fixed+moving, no floating).
 //==============================================================================
@@ -1622,7 +1616,7 @@ template<bool shift> void JSphCpu::ComputeSymplecticPreT(double dt){
     #pragma omp parallel for schedule (static) if(np>LIMIT_COMPUTESTEP_OMP)
   #endif
   for(int p=npb;p<np;p++){
-    //-Calcula densidad.
+    //-Calculate density.
     const float rhopnew=float(double(VelrhopPrec[p].w)+dt05*Arc[p]);
     if(!WithFloating || CODE_GetType(Codec[p])==CODE_TYPE_FLUID){//-Fluid Particles / Particulas: Fluid
       //-Calculate displacement & update position / Calcula desplazamiento y actualiza posicion.
@@ -1764,11 +1758,9 @@ void JSphCpu::RunShifting(double dt){
 }
 
 //==============================================================================
-/// (ES):
 /// Calcula posicion de particulas segun idp[]. Cuando no la encuentra es UINT_MAX.
 /// Cuando periactive es False supone que no hay particulas duplicadas (periodicas)
 /// y todas son CODE_NORMAL.
-/// (EN):
 /// Calculate position of particles according to idp[]. When it is not met set as UINT_MAX.
 /// When periactive is False assume that there are no duplicate particles (periodic ones)
 /// and all are set as CODE_NORMAL.
