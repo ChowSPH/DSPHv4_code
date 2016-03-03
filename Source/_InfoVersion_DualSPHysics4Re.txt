@@ -364,6 +364,7 @@
   - Changes in comments. (v4.0.043 / 03-03-2016) 
   - Compile option to apply DeltaSPH with heavy floatings. (v4.0.044 / 03-03-2016) 
   - Minor changes in comments. (v4.0.044 / 03-03-2016) 
+  - Minor changes. (v4.0.045 / 03-03-2016) 
   
 Remaining issues:
 ==================

@@ -53,7 +53,7 @@ JBlockSizeAutoKer::JBlockSizeAutoKer(JLog2 *log,std::string name,int bsmin,int b
 /// Destructor.
 //==============================================================================
 JBlockSizeAutoKer::~JBlockSizeAutoKer(){
-  SaveFileInfoData();
+  if(SAVEINFO)SaveFileInfoData();
   Reset();
   AllocateMemory(0);
 }
@@ -233,7 +233,7 @@ void JBlockSizeAutoKer::ProcessTimes(double timestep,unsigned nstep){
   //-Selects optimum Blocksize.
   BsSel=GetBs(ctmin2);
   //-Stores statistical data.
-  if(0)SaveInfoData(nstep,float(timestep));
+  if(SAVEINFO)SaveInfoData(nstep,float(timestep));
   //-Discards the lowest sizes of block.
   if(Nrun>=REMOVESTART && NumActive>REMOVELIMIT){
     int nremove=int(float(NumActive)*REMOVEPRC/100);

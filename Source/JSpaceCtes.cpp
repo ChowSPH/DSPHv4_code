@@ -166,7 +166,7 @@ void JSpaceCtes::WriteXmlDef(JXml *sxml,TiXmlElement* node)const{
   WriteXmlElementComment(JXml::AddElementDouble3(node,"gravity",GetGravity()),"Gravitational acceleration","m/s^2");
   WriteXmlElementComment(JXml::AddElementAttrib(node,"rhop0","value",GetRhop0()),"Reference density of the fluid","kg/m^3");
   WriteXmlElementAuto(sxml,node,"hswl",GetHSwl(),GetHSwlAuto(),"Maximum still water level to calculate speedofsound using coefsound","metres (m)");
-  WriteXmlElementComment(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"Politropic constant for water used in the state equation");
+  WriteXmlElementComment(JXml::AddElementAttrib(node,"gamma","value",GetGamma()),"Polytropic constant for water used in the state equation");
   WriteXmlElementAuto(sxml,node,"speedsystem",GetSpeedSystem(),GetSpeedSystemAuto(),"Maximum system speed (by default the dam-break propagation is used)");
   WriteXmlElementComment(JXml::AddElementAttrib(node,"coefsound","value",GetCoefSound()),"Coefficient to multiply speedsystem");
   WriteXmlElementAuto(sxml,node,"speedsound",GetSpeedSound(),GetSpeedSoundAuto(),"Speed of sound to use in the simulation (by default speedofsound=coefsound*speedsystem)");
