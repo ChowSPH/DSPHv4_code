@@ -38,7 +38,7 @@
 //##############################################################################
 //# JCellDivCpu
 //##############################################################################
-/// \brief Defines the class responsible of computing the Neighbour List in CPU.
+/// \brief Defines the class responsible of generating the Neighbour List in CPU.
 
 class JCellDivCpu : protected JObject
 {

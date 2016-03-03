@@ -25,7 +25,7 @@
 //##############################################################################
 //# JObject
 //##############################################################################
-/// \brief Defines objects with methods that throws exceptions.
+/// \brief Defines objects with methods that throw exceptions.
 
 class JObject
 {

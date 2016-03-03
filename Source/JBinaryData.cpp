@@ -15,7 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-/// \file JBinaryData.cpp \brief Implements the class \ref JBinaryData
+/// \file JBinaryData.cpp \brief Implements the class \ref JBinaryData.
 
 #include "JBinaryData.h"
 #include "Functions.h"

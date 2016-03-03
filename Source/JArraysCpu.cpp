@@ -45,7 +45,7 @@ JArraysCpuSize::~JArraysCpuSize(){
 }
  
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JArraysCpuSize::Reset(){
   FreeMemory();
@@ -214,7 +214,7 @@ JArraysCpu::~JArraysCpu(){
 }
  
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JArraysCpu::Reset(){
   Arrays1b->Reset(); 

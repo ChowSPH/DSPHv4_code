@@ -34,7 +34,7 @@ Please download source files and documentation from <a href="http://dual.sphysic
 \copyright GNU Public License <a href="http://www.gnu.org/licenses/">GNU licenses.</a>
 */
 
-/// \file main.cpp \brief Main file of the project that executes the code on CPU or GPU
+/// \file main.cpp \brief Main file of the project that executes the code on CPU or GPU.
 
 #include <string>
 #include <cstring>
@@ -88,7 +88,7 @@ int main(int argc, char** argv){
   std::string license=getlicense_gpl(progname);
   printf("%s",license.c_str());
   char appname[256],appnamesub[256];
-  sprintf(appname,"%s v4.0.042 (26-02-2016)%s",progname.c_str(),proginfo.c_str());
+  sprintf(appname,"%s v4.0.043 (03-03-2016)%s",progname.c_str(),proginfo.c_str());
   for(unsigned c=0;c<=strlen(appname);c++)appnamesub[c]='='; appnamesub[strlen(appname)+1]='\0';
   printf("\n%s\n%s\n",appname,appnamesub);
 

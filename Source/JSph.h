@@ -38,7 +38,7 @@
 #include "JCfgRun.h"
 #include "JLog2.h"
 #include "JTimer.h"
-#include "JTimersStep.h"
+//#include "JTimersStep.h"
 #include <float.h>
 #include <string>
 #include <cmath>
@@ -337,7 +337,7 @@ protected:
   //-Control de tiempos de ejecucion.
   //-Control of the execution times.
   JTimer TimerTot,TimerSim,TimerPart;
-  JTimersStep* TimersStep;
+  //JTimersStep* TimersStep;
 
   void AllocMemoryFloating(unsigned ftcount);
   llong GetAllocMemoryCpu()const;
@@ -392,7 +392,7 @@ protected:
   void SaveData(unsigned npok,const unsigned *idp,const tdouble3 *pos,const tfloat3 *vel,const float *rhop,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);
   void SaveDomainVtk(unsigned ndom,const tdouble3 *vdom)const;
   void SaveMapCellsVtk(float scell)const;
-  void SaveTimersStep(unsigned np,unsigned npb,unsigned npbok,unsigned nct);
+ // void SaveTimersStep(unsigned np,unsigned npb,unsigned npbok,unsigned nct);
 
   void GetResInfo(float tsim,float ttot,const std::string &headplus,const std::string &detplus,std::string &hinfo,std::string &dinfo);
   void SaveRes(float tsim,float ttot,const std::string &headplus="",const std::string &detplus="");

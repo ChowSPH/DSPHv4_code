@@ -31,7 +31,7 @@
 //#############################################################################
 
 /// \file JMatrix4.h \brief Declares the template \ref JMatrix4
-/// and the classes \ref JMatrix4f and \ref JMatrix4d
+/// and the classes \ref JMatrix4f and \ref JMatrix4d.
 
 #ifndef _JMatrix4_
 #define _JMatrix4_

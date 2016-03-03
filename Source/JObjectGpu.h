@@ -27,7 +27,7 @@
 //##############################################################################
 //# JObject
 //##############################################################################
-/// \brief Defines objects with methods that throws exceptions for interaction with gpu.
+/// \brief Defines objects with methods that throw exceptions for tasks on the GPU.
 class JObjectGpu : protected JObject
 {
 protected:

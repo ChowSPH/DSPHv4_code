@@ -40,7 +40,7 @@
 //##############################################################################
 //# JCellDivGpu
 //##############################################################################
-/// \brief Defines the class responsible of computing the Neighbour List in GPU.
+/// \brief Defines the class responsible of generating the Neighbour List in GPU.
 
 class JCellDivGpu : protected JObjectGpu
 {

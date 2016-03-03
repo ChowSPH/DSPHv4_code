@@ -45,7 +45,7 @@ JCellDivCpu::~JCellDivCpu(){
 }
 
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JCellDivCpu::Reset(){
   SizeNp=SizeNct=0;

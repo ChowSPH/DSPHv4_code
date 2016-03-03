@@ -735,7 +735,10 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClInclude Include="Source\JSphVisco.h" />
     <ClInclude Include="Source\JPartsOut.h" />
     <ClInclude Include="Source\JSphCpuSingle.h" />
-    <ClInclude Include="Source\JTimersStep.h" />
+    <ClInclude Include="Source\JTimersStep.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Source\JWaveGen.h" />
     <ClInclude Include="Source\randomc.h" />
     <ClInclude Include="Source\Types.h" />
@@ -827,7 +830,10 @@ rem ***Sentencia de compilacion con salida _ptxasinfo
     <ClCompile Include="Source\JSphVisco.cpp" />
     <ClCompile Include="Source\JPartsOut.cpp" />
     <ClCompile Include="Source\JSphCpuSingle.cpp" />
-    <ClCompile Include="Source\JTimersStep.cpp" />
+    <ClCompile Include="Source\JTimersStep.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Source\Functions.cpp" />
     <ClCompile Include="Source\JCfgRun.cpp" />
     <ClCompile Include="Source\JException.cpp" />

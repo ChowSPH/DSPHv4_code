@@ -46,7 +46,7 @@ void JCfgRun::Reset(){
   PosDouble=-1;
   OmpThreads=0;
   BlockSizeMode=BSIZEMODE_Empirical;
-  SvTimers=true; SvTimersStep=0;
+  SvTimers=true; //SvTimersStep=0;
   CellOrder=ORDER_None;
   CellMode=CELLMODE_2H;
   DomainMode=0;
@@ -76,8 +76,8 @@ void JCfgRun::VisuInfo()const{
   printf("  Options:\n");
   printf("    -h          Shows information about parameters\n\n");
   printf("    -opt <file> Loads a file configuration\n\n");
-  printf("    -cpu        Execution on Cpu (option by default)\n");
-  printf("    -gpu[:id]   Execution on Gpu and id of the device\n");
+  printf("    -cpu        Execution on CPU (option by default)\n");
+  printf("    -gpu[:id]   Execution on GPU and id of the device\n");
   printf("    -stable     The result is always the same but the execution is slower\n");
   printf("\n");
   printf("    -posdouble:<mode>  Precision used in position for particle interactions\n");
@@ -86,8 +86,8 @@ void JCfgRun::VisuInfo()const{
   printf("        2: Use and store in double precision\n");
   printf("\n");
 #ifdef _WITHOMP
-  printf("    -ompthreads:<int>  Only for Cpu execution, indicates the number of threads\n");
-  printf("                   by host for parallel execution, it takes the number of \n");
+  printf("    -ompthreads:<int>  Only for CPU execution, indicates the number of threads\n");
+  printf("                   by host for parallel execution, this takes the number of \n");
   printf("                   cores of the device by default (or using zero value)\n\n");
 #endif
   printf("    -blocksize:<mode>  Defines BlockSize to use in particle interactions on GPU\n");
@@ -116,14 +116,14 @@ void JCfgRun::VisuInfo()const{
   printf("    -sv:[formats,...] Specifies the output formats.\n");
   printf("        none    No particles files are generated\n");
   printf("        binx    Binary files (option by default)\n");
-  printf("        info    Information about execution in ibi4 format\n");
+  printf("        info    Information about execution in .ibi4 format\n");
   printf("        vtk     VTK files\n");
   printf("        csv     CSV files\n");
 //  printf("    -svdouble        Save position with high precision (disabled by default)\n");
   printf("    -svres:<0/1>     Generates file that summarises the execution process\n");
   printf("    -svtimers:<0/1>  Obtains timing for each individual process\n");
-  printf("    -svtimersstep:<float> Obtains timing for each individual process.\n");
-  printf("     Specifies the time between output information. By default 0 (disabled)\n");
+//  printf("    -svtimersstep:<float> Obtains timing for each individual process.\n");
+//  printf("     Specifies the time between output information. By default 0 (disabled)\n");
   printf("    -svdomainvtk:<0/1>  Generates VTK file with domain limits\n");
   printf("    -name <string>      Specifies path and name of the case \n");
   printf("    -runname <string>   Specifies name for case execution\n");
@@ -132,7 +132,7 @@ void JCfgRun::VisuInfo()const{
   printf("     Specifies the beginning of the simulation starting from a given PART\n");
   printf("     (begin) and located in the directory (dir), (first) indicates the\n");
   printf("     number of the first PART to be generated\n\n");
-  printf("    -incz:<float>    Allowable increase in Z+ direction \n");
+  printf("    -incz:<float>    Allows increase in Z+ direction \n");
   printf("    -rhopout:min:max Excludes fluid particles out of these density limits\n\n");
   printf("    -ftpause:<float> Time to start floating bodies movement. By default 0\n");
   printf("    -tmax:<float>   Maximum time of simulation\n");
@@ -388,11 +388,11 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
       }
       else if(txword=="SVRES")SvRes=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
       else if(txword=="SVTIMERS")SvTimers=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
-      else if(txword=="SVTIMERSSTEP"){ 
+/*      else if(txword=="SVTIMERSSTEP"){ 
         SvTimersStep=float(atof(txopt.c_str())); 
         if(SvTimersStep<0)SvTimersStep=0;
         if(SvTimersStep>0)SvTimers=true;
-      }
+      }*/
       else if(txword=="SVDOMAINVTK")SvDomainVtk=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
       else if(txword=="SV"){
         string txop=StrUpper(txopt);

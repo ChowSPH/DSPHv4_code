@@ -360,12 +360,12 @@
   - Minor changes. (v4.0.041 / 25-02-2016) 
   - Applies DeltaSPH to fluid particles interacting with heavy floatings. (v4.0.041 / 25-02-2016) 
   - Minor changes. (v4.0.042 / 26-02-2016) 
+  - JTimersStep was commented. (v4.0.043 / 03-03-2016) 
+  - Changes in comments. (v4.0.043 / 03-03-2016) 
   
 Remaining issues:
 ==================
-- Check timers on CPU and GPU.
 - Use radixsort algorithm (with OpenMP) in celldivide on CPU.
-- Buscar y borrar "ES:" "(ES)"
 - Check error in JBinaryData.cpp:CheckHead(1164).
 - Use of SDAT_info?
 - Examples with DomainLimits
@@ -374,6 +374,8 @@ Remaining issues:
 - Remove JTimersStep before creating release.  
 - Error en WaveGen si hay desfase importante.
   
+x Check timers on CPU and GPU.
+x Buscar y borrar "ES:" "(ES)"
 x Usar thrust en? diferencia en rendimiento?
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
   const unsigned pini=(DtAllParticles? 0: Npb);

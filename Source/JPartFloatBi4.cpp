@@ -15,7 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-/// \file JPartFloatBi4.cpp \brief Implements the classes JPartFloatBi4Save and class JPartFloatBi4Load
+/// \file JPartFloatBi4.cpp \brief Implements the classes JPartFloatBi4Save and class JPartFloatBi4Load.
 
 #include "JPartFloatBi4.h"
 //#include "JBinaryData.h"

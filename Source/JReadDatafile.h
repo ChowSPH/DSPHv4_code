@@ -48,7 +48,7 @@
 //# JReadDatafile
 //##############################################################################
 /// \brief Allows reading data in ASCII files.
-/// Clase para facilitar la lectura de ficheros de datos en texto.
+// Clase para facilitar la lectura de ficheros de datos en texto.
 
 class JReadDatafile  : protected JObject
 {

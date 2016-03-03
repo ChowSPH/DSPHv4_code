@@ -43,7 +43,7 @@ JPartsLoad4::~JPartsLoad4(){
 }
 
 //==============================================================================
-// Initialization of variables.
+// Initialisation of variables.
 //==============================================================================
 void JPartsLoad4::Reset(){
   Simulate2D=false;

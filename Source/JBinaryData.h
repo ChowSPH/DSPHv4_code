@@ -88,7 +88,7 @@ class JBinaryData;
 //# JBinaryDataDef
 //##############################################################################
 /// \brief Defines types to be used in \ref JBinaryData and \ref JBinaryDataArray
-/// Define tipos usados en \ref JBinaryData y \ref JBinaryDataArray
+// Define tipos usados en \ref JBinaryData y \ref JBinaryDataArray
 
 class JBinaryDataDef
 {
@@ -108,7 +108,7 @@ class JBinaryDataDef
 //# JBinaryDataArray
 //##############################################################################
 /// \brief Defines data arrays included in binary files.
-/// Define arrays de datos incluidos en ficheros binarios.
+// Define arrays de datos incluidos en ficheros binarios.
 
 class JBinaryDataArray : protected JObject
 {
@@ -179,7 +179,7 @@ class JBinaryDataArray : protected JObject
 //# JBinaryData
 //##############################################################################
 /// \brief Defines any binary format of a file.
-/// Clase base para la definicion de cualquier formato binario de fichero.
+// Clase base para la definicion de cualquier formato binario de fichero.
 
 class JBinaryData : protected JObject
 {

@@ -59,7 +59,7 @@ JBlockSizeAutoKer::~JBlockSizeAutoKer(){
 }
  
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JBlockSizeAutoKer::Reset(){
   Nrun=0;
@@ -78,7 +78,7 @@ void JBlockSizeAutoKer::Reset(){
 }
  
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JBlockSizeAutoKer::AllocateMemory(unsigned size){
   delete[] BsActive;   BsActive=NULL;
@@ -274,7 +274,7 @@ JBlockSizeAuto::~JBlockSizeAuto(){
 }
  
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JBlockSizeAuto::Reset(){
   for(unsigned c=0;c<GetKernelsCount();c++)delete Kernels[c];

@@ -318,7 +318,7 @@ bool StrOnlyChars(const std::string &cad,const std::string &chars){
 }
 
 //==============================================================================
-/// Returns the text till the indicated mark and saves the rest in text format.
+/// Returns the text untill the indicated mark and saves the rest in text format.
 //==============================================================================
 std::string StrSplit(const std::string mark,std::string &text){
   const unsigned smark=unsigned(mark.size());

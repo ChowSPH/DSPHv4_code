@@ -15,7 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-/// \file JSph.cpp \brief Implements the class \ref JSph
+/// \file JSph.cpp \brief Implements the class \ref JSph.
 
 #include "JSph.h"
 #include "Functions.h"
@@ -61,7 +61,7 @@ JSph::JSph(bool cpu,bool withmpi):Cpu(cpu),WithMpi(withmpi){
   FtObjs=NULL;
   WaveGen=NULL;
   AccInput=NULL;
-  TimersStep=NULL;
+  //TimersStep=NULL;
   InitVars();
 }
 
@@ -81,7 +81,7 @@ JSph::~JSph(){
   AllocMemoryFloating(0);
   delete WaveGen;
   delete AccInput;
-  delete TimersStep;
+  //delete TimersStep;
 }
 
 //==============================================================================
@@ -260,7 +260,7 @@ llong JSph::GetAllocMemoryCpu()const{
   if(FtObjs)s+=sizeof(StFloatingData)*FtCount;
   //-Allocated in other objects.
   if(PartsOut)s+=PartsOut->GetAllocMemory();
-  if(TimersStep)s+=TimersStep->GetAllocMemory();
+  //if(TimersStep)s+=TimersStep->GetAllocMemory();
   if(ViscoTime)s+=ViscoTime->GetAllocMemory();
   if(DtFixed)s+=DtFixed->GetAllocMemory();
   if(AccInput)s+=AccInput->GetAllocMemory();
@@ -807,7 +807,7 @@ void JSph::VisuConfig()const{
   Log->Print(fun::VarStr("RunName",RunName));
   Log->Print(fun::VarStr("PosDouble",GetPosDoubleName(Psimple,SvDouble)));
   Log->Print(fun::VarStr("SvTimers",SvTimers));
-  Log->Print(fun::VarStr("SvTimersStep",(TimersStep!=NULL? TimersStep->GetTimeInterval(): 0)));
+  //Log->Print(fun::VarStr("SvTimersStep",(TimersStep!=NULL? TimersStep->GetTimeInterval(): 0)));
   Log->Print(fun::VarStr("StepAlgorithm",GetStepName(TStep)));
   if(TStep==STEP_None)RunException(met,"StepAlgorithm value is invalid.");
   if(TStep==STEP_Verlet)Log->Print(fun::VarStr("VerletSteps",VerletSteps));
@@ -904,7 +904,7 @@ void JSph::LoadDcellParticles(unsigned n,const word *code,const tdouble3 *pos,un
         dcell[p]=PC__Cell(DomCellCode,cx,cy,cz);
       }
       else{ //-Particle out
-        RunException(met,"Found new particles out."); //-No puede haber nuevas particulas excluidas. //-There cannot be new particles excluded.
+        RunException(met,"Found new particles out."); //-No puede haber nuevas particulas excluidas. //-There can not be new particles excluded.
         dcell[p]=PC__CodeOut;
       }
     }
@@ -918,6 +918,7 @@ void JSph::LoadDcellParticles(unsigned n,const word *code,const tdouble3 *pos,un
 //==============================================================================
 void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* velrhop){
   //-Guarda configuracion periodica en PeriodicConfig.
+  //-Stores periodic configuration in PeriodicConfig.  
   PeriodicConfig.PeriActive=PeriActive;
   PeriodicConfig.PeriX=PeriX;
   PeriodicConfig.PeriY=PeriY;
@@ -929,15 +930,18 @@ void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* 
   PeriodicConfig.PeriYinc=PeriYinc;
   PeriodicConfig.PeriZinc=PeriZinc;
   //-Aplica CellOrder.
+  //-Applies CellOrder.  
   CellOrder=order;
   if(CellOrder==ORDER_None)CellOrder=ORDER_XYZ;
   if(Simulate2D&&CellOrder!=ORDER_XYZ&&CellOrder!=ORDER_ZYX)RunException("ConfigCellOrder","In 2D simulations the value of CellOrder must be XYZ or ZYX.");
   Log->Print(fun::VarStr("CellOrder",string(GetNameCellOrder(CellOrder))));
   if(CellOrder!=ORDER_XYZ){
     //-Modifica datos iniciales de particulas.
+    //-Modifies initial particle data.
     OrderCodeData(CellOrder,np,pos);
     OrderCodeData(CellOrder,np,velrhop);
     //-Modifica otras constantes.
+    //-Modifies other constants.
     Gravity=OrderCodeValue(CellOrder,Gravity);
     MapRealPosMin=OrderCodeValue(CellOrder,MapRealPosMin);
     MapRealPosMax=OrderCodeValue(CellOrder,MapRealPosMax);
@@ -946,6 +950,7 @@ void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* 
     Map_PosMax=OrderCodeValue(CellOrder,Map_PosMax);
     Map_Size=OrderCodeValue(CellOrder,Map_Size);
     //-Modifica config periodica.
+    //-Modifies periodic configuration.	
     bool perix=PeriX,periy=PeriY,periz=PeriZ;
     bool perixy=PeriXY,perixz=PeriXZ,periyz=PeriYZ;
     tdouble3 perixinc=PeriXinc,periyinc=PeriYinc,perizinc=PeriZinc;
@@ -977,7 +982,8 @@ void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* 
 }
 
 //==============================================================================
-// Convierte pos[] y vel[] al orden dimensional original.
+/// Convierte pos[] y vel[] al orden dimensional original.
+/// Converts pos[] and vel[] to the original dimension order.
 //==============================================================================
 void JSph::DecodeCellOrder(unsigned np,tdouble3 *pos,tfloat3 *vel)const{
   if(CellOrder!=ORDER_XYZ){
@@ -987,7 +993,8 @@ void JSph::DecodeCellOrder(unsigned np,tdouble3 *pos,tfloat3 *vel)const{
 }
 
 //==============================================================================
-// Modifica orden de componentes de un array de tipo tfloat3.
+/// Modifica orden de componentes de un array de tipo tfloat3.
+/// Modifies order of components of an array of type tfloat3.
 //==============================================================================
 void JSph::OrderCodeData(TpCellOrder order,unsigned n,tfloat3 *v){
   if(order==ORDER_XZY)for(unsigned c=0;c<n;c++)v[c]=ReOrderXZY(v[c]);
@@ -998,7 +1005,8 @@ void JSph::OrderCodeData(TpCellOrder order,unsigned n,tfloat3 *v){
 }
 
 //==============================================================================
-// Modifica orden de componentes de un array de tipo tdouble3.
+/// Modifica orden de componentes de un array de tipo tdouble3.
+/// Modifies order of components of an array of type tdouble3.
 //==============================================================================
 void JSph::OrderCodeData(TpCellOrder order,unsigned n,tdouble3 *v){
   if(order==ORDER_XZY)for(unsigned c=0;c<n;c++)v[c]=ReOrderXZY(v[c]);
@@ -1009,7 +1017,8 @@ void JSph::OrderCodeData(TpCellOrder order,unsigned n,tdouble3 *v){
 }
 
 //==============================================================================
-// Modifica orden de componentes de un array de tipo tfloat4.
+/// Modifica orden de componentes de un array de tipo tfloat4.
+/// Modifies order of components of an array of type tfloat4.
 //==============================================================================
 void JSph::OrderCodeData(TpCellOrder order,unsigned n,tfloat4 *v){
   if(order==ORDER_XZY)for(unsigned c=0;c<n;c++)v[c]=ReOrderXZY(v[c]);
@@ -1020,7 +1029,8 @@ void JSph::OrderCodeData(TpCellOrder order,unsigned n,tfloat4 *v){
 }
 
 //==============================================================================
-// Configura division en celdas.
+/// Configura division en celdas.
+/// Configures cell division.
 //==============================================================================
 void JSph::ConfigCellDivision(){
   if(CellMode!=CELLMODE_2H && CellMode!=CELLMODE_H)RunException("ConfigCellDivision","The CellMode is invalid.");
@@ -1028,11 +1038,11 @@ void JSph::ConfigCellDivision(){
   Scell=Dosh/Hdiv;
   MovLimit=Scell*0.9f;
   Map_Cells=TUint3(unsigned(ceil(Map_Size.x/Scell)),unsigned(ceil(Map_Size.y/Scell)),unsigned(ceil(Map_Size.z/Scell)));
-  //-Print configurantion.
+  //-Prints configuration.
   Log->Print(fun::VarStr("CellMode",string(GetNameCellMode(CellMode))));
   Log->Print(fun::VarStr("Hdiv",Hdiv));
   Log->Print(string("MapCells=(")+fun::Uint3Str(OrderDecode(Map_Cells))+")");
-  //-Creates VTK file with cells of map.
+  //-Creates VTK file with map cells.
   if(SvDomainVtk){
     const llong n=llong(Map_Cells.x)*llong(Map_Cells.y)*llong(Map_Cells.z);
     if(n<1000000)SaveMapCellsVtk(Scell);
@@ -1041,7 +1051,8 @@ void JSph::ConfigCellDivision(){
 }
 
 //==============================================================================
-// Establece dominio local de simulacion dentro de Map_Cells y calcula DomCellCode.
+/// Establece dominio local de simulacion dentro de Map_Cells y calcula DomCellCode.
+/// Sets local domain of simulation within Map_Cells and computes DomCellCode.
 //==============================================================================
 void JSph::SelecDomain(tuint3 celini,tuint3 celfin){
   const char met[]="SelecDomain";
@@ -1052,6 +1063,7 @@ void JSph::SelecDomain(tuint3 celini,tuint3 celfin){
   if(DomCelFin.x>Map_Cells.x || DomCelFin.y>Map_Cells.y || DomCelFin.z>Map_Cells.z )RunException(met,"DomCelFin is invalid.");
   if(DomCells.x<1 || DomCells.y<1 || DomCells.z<1 )RunException(met,"The domain of cells is invalid.");
   //-Calcula limites del dominio local.
+  //-Computes local domain limits.
   DomPosMin.x=Map_PosMin.x+(DomCelIni.x*Scell);
   DomPosMin.y=Map_PosMin.y+(DomCelIni.y*Scell);
   DomPosMin.z=Map_PosMin.z+(DomCelIni.z*Scell);
@@ -1059,10 +1071,12 @@ void JSph::SelecDomain(tuint3 celini,tuint3 celfin){
   DomPosMax.y=Map_PosMin.y+(DomCelFin.y*Scell);
   DomPosMax.z=Map_PosMin.z+(DomCelFin.z*Scell);
   //-Ajusta limites finales.
+  //-Adjusts final limits.
   if(DomPosMax.x>Map_PosMax.x)DomPosMax.x=Map_PosMax.x;
   if(DomPosMax.y>Map_PosMax.y)DomPosMax.y=Map_PosMax.y;
   if(DomPosMax.z>Map_PosMax.z)DomPosMax.z=Map_PosMax.z;
   //-Calcula limites reales del dominio local.
+  //-Computes actual limits of local domain.
   DomRealPosMin=DomPosMin;
   DomRealPosMax=DomPosMax;
   if(DomRealPosMax.x>MapRealPosMax.x)DomRealPosMax.x=MapRealPosMax.x;
@@ -1072,15 +1086,17 @@ void JSph::SelecDomain(tuint3 celini,tuint3 celfin){
   if(DomRealPosMin.y<MapRealPosMin.y)DomRealPosMin.y=MapRealPosMin.y;
   if(DomRealPosMin.z<MapRealPosMin.z)DomRealPosMin.z=MapRealPosMin.z;
   //-Calcula codificacion de celdas para el dominio seleccionado.
+  //-Computes cofification of cells for the selected domain.
   DomCellCode=CalcCellCode(DomCells+TUint3(1));
   if(!DomCellCode)RunException(met,string("Failed to select a valid CellCode for ")+fun::UintStr(DomCells.x)+"x"+fun::UintStr(DomCells.y)+"x"+fun::UintStr(DomCells.z)+" cells (CellMode="+GetNameCellMode(CellMode)+").");
-  //-Print configurantion.
+  //-Prints configurantion.
   Log->Print(string("DomCells=(")+fun::Uint3Str(OrderDecode(DomCells))+")");
   Log->Print(fun::VarStr("DomCellCode",fun::UintStr(PC__GetSx(DomCellCode))+"_"+fun::UintStr(PC__GetSy(DomCellCode))+"_"+fun::UintStr(PC__GetSz(DomCellCode))));
 }
 
 //==============================================================================
-// Selecciona un codigo adecuado para la codificion de celda.
+/// Selecciona un codigo adecuado para la codificion de celda.
+/// Selects an adequate code for cell configuration.
 //==============================================================================
 unsigned JSph::CalcCellCode(tuint3 ncells){
   unsigned sxmin=2; for(;ncells.x>>sxmin;sxmin++);
@@ -1102,25 +1118,30 @@ unsigned JSph::CalcCellCode(tuint3 ncells){
 }
 
 //==============================================================================
-// Calcula distancia maxima entre particulas y centro de cada floating.
+/// Calcula distancia maxima entre particulas y centro de cada floating.
+/// Computes maximum distance between particles and center of floating.
 //==============================================================================
 void JSph::CalcFloatingRadius(unsigned np,const tdouble3 *pos,const unsigned *idp){
   const char met[]="CalcFloatingsRadius";
-  const float overradius=1.2f; //-Porcentaje de incremento de radio
+  const float overradius=1.2f; //-Porcentaje de incremento de radio. Percentage of ration increase.
   unsigned *ridp=new unsigned[CaseNfloat];
-  //-Asigna valores UINT_MAX
+  //-Asigna valores UINT_MAX.
+  //-Assigns values UINT_MAX. 
   memset(ridp,255,sizeof(unsigned)*CaseNfloat); 
   //-Calcula posicion segun id suponiendo que todas las particulas son normales (no periodicas).
+  //-Computes position according to id assuming that all particles are not periodic.
   const unsigned idini=CaseNpb,idfin=CaseNpb+CaseNfloat;
   for(unsigned p=0;p<np;p++){
     const unsigned id=idp[p];
     if(idini<=id && id<idfin)ridp[id-idini]=p;
   }
   //-Comprueba que todas las particulas floating estan localizadas.
+  //-Checks that all floating particles are located.  
   for(unsigned fp=0;fp<CaseNfloat;fp++){
     if(ridp[fp]==UINT_MAX)RunException(met,"There are floating particles not found.");
   }
   //-Calcula distancia maxima entre particulas y centro de floating (todas son validas).
+  //-Calculates maximum distance between particles and center of the floating (all are valid).  
   float radiusmax=0;
   for(unsigned cf=0;cf<FtCount;cf++){
     StFloatingData *fobj=FtObjs+cf;
@@ -1138,15 +1159,18 @@ void JSph::CalcFloatingRadius(unsigned np,const tdouble3 *pos,const unsigned *id
     if(radiusmax<fobj->radius)radiusmax=fobj->radius;
   }
   //-Libera memoria.
+  //-Release of memory.  
   delete[] ridp; ridp=NULL;
   //-Comprueba que el radio maximo sea menor que las dimensiones del dominio periodico.
+  //-Checks maximum radius < dimensions of the periodic domain.
   if(PeriX && fabs(PeriXinc.x)<=radiusmax)RunException(met,fun::PrintStr("The floating radius (%g) is too large for periodic distance in X (%g).",radiusmax,abs(PeriXinc.x)));
   if(PeriY && fabs(PeriYinc.y)<=radiusmax)RunException(met,fun::PrintStr("The floating radius (%g) is too large for periodic distance in Y (%g).",radiusmax,abs(PeriYinc.y)));
   if(PeriZ && fabs(PeriZinc.z)<=radiusmax)RunException(met,fun::PrintStr("The floating radius (%g) is too large for periodic distance in Z (%g).",radiusmax,abs(PeriZinc.z)));
 }
 
 //==============================================================================
-// Devuelve la posicion corregida tras aplicar condiciones periodicas.
+/// Devuelve la posicion corregida tras aplicar condiciones periodicas.
+/// Returns the corrected position after applying periodic conditions.
 //==============================================================================
 tdouble3 JSph::UpdatePeriodicPos(tdouble3 ps)const{
   double dx=ps.x-MapRealPosMin.x;
@@ -1154,6 +1178,7 @@ tdouble3 JSph::UpdatePeriodicPos(tdouble3 ps)const{
   double dz=ps.z-MapRealPosMin.z;
   const bool out=(dx!=dx || dy!=dy || dz!=dz || dx<0 || dy<0 || dz<0 || dx>=MapRealSize.x || dy>=MapRealSize.y || dz>=MapRealSize.z);
   //-Ajusta posicion segun condiciones periodicas y vuelve a comprobar los limites del dominio.
+  //-Adjusts position according to periodic conditions and checks again domain limtis.
   if(PeriActive && out){
     bool xperi=((PeriActive&1)!=0),yperi=((PeriActive&2)!=0),zperi=((PeriActive&4)!=0);
     if(xperi){
@@ -1174,15 +1199,16 @@ tdouble3 JSph::UpdatePeriodicPos(tdouble3 ps)const{
 }
 
 //==============================================================================
-// Muestra un mensaje con la memoria reservada para los datos basicos de las
-// particulas.
+/// Muestra un mensaje con la memoria reservada para los datos basicos de las particulas.
+/// Display a message with reserved memory for the basic data of particles.
 //==============================================================================
 void JSph::PrintSizeNp(unsigned np,llong size)const{
   Log->Printf("**Requested %s memory for %u particles: %.1f MB.",(Cpu? "cpu": "gpu"),np,double(size)/(1024*1024));
 }
 
 //==============================================================================
-// Visualiza cabeceras de PARTs
+/// Visualiza cabeceras de PARTs.
+/// Display headers of PARTs
 //==============================================================================
 void JSph::PrintHeadPart(){
   Log->Print("PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        ");
@@ -1191,11 +1217,13 @@ void JSph::PrintHeadPart(){
 }
 
 //==============================================================================
-// Establece configuracion para grabacion de particulas.
+/// Establece configuracion para grabacion de particulas.
+/// Sets configuration for recordering of particles.
 //==============================================================================
 void JSph::ConfigSaveData(unsigned piece,unsigned pieces,std::string div){
   const char met[]="ConfigSaveData";
   //-Configura objeto para grabacion de particulas e informacion.
+  //-Configures object to store particles and information.  
   if(SvData&SDAT_Info || SvData&SDAT_Binx){
     DataBi4=new JPartDataBi4();
     DataBi4->ConfigBasic(piece,pieces,RunCode,AppName,Simulate2D,DirOut);
@@ -1220,6 +1248,7 @@ void JSph::ConfigSaveData(unsigned piece,unsigned pieces,std::string div){
     else RunException(met,"The division configuration is invalid.");
   }
   //-Configura objeto para grabacion de particulas excluidas.
+  //-Configures object to store excluded particles.  
   if(SvData&SDAT_Binx){
     DataOutBi4=new JPartOutBi4Save();
     DataOutBi4->ConfigBasic(piece,pieces,RunCode,AppName,Simulate2D,DirOut);
@@ -1228,6 +1257,7 @@ void JSph::ConfigSaveData(unsigned piece,unsigned pieces,std::string div){
     DataOutBi4->SaveInitial();
   }
   //-Configura objeto para grabacion de datos de floatings.
+  //-Configures object to store data of floatings.
   if(SvData&SDAT_Binx && FtCount){
     DataFloatBi4=new JPartFloatBi4Save();
     DataFloatBi4->Config(AppName,DirOut,FtCount);
@@ -1235,19 +1265,21 @@ void JSph::ConfigSaveData(unsigned piece,unsigned pieces,std::string div){
     DataFloatBi4->SaveInitial();
   }
   //-Crea objeto para almacenar las particulas excluidas hasta su grabacion.
+  //-Creates object to store excluded particles until recordering. 
   PartsOut=new JPartsOut();
 }
 
 //==============================================================================
-// Almacena nuevas particulas excluidas hasta la grabacion del proximo PART.
+/// Almacena nuevas particulas excluidas hasta la grabacion del proximo PART.
+/// Stores new excluded particles until recordering next PART.
 //==============================================================================
 void JSph::AddParticlesOut(unsigned nout,const unsigned *idp,const tdouble3* pos,const tfloat3 *vel,const float *rhop,unsigned noutrhop,unsigned noutmove){
   PartsOut->AddParticles(nout,idp,pos,vel,rhop,noutrhop,noutmove);
 }
 
 //==============================================================================
-// Devuelve puntero de memoria dinamica con los datos transformados en tfloat3.
-// EL PUNTERO DEBE SER LIBERADO DESPUES DE USARLO.
+/// Devuelve puntero de memoria dinamica con los datos transformados en tfloat3.
+/// Returns dynamic memory pointer with data transformed in tfloat3.
 //==============================================================================
 tfloat3* JSph::GetPointerDataFloat3(unsigned n,const tdouble3* v)const{
   tfloat3* v2=new tfloat3[n];
@@ -1256,10 +1288,12 @@ tfloat3* JSph::GetPointerDataFloat3(unsigned n,const tdouble3* v)const{
 }
 
 //==============================================================================
-// Graba los ficheros de datos de particulas.
+/// Graba los ficheros de datos de particulas.
+/// Stores files of particle data.
 //==============================================================================
 void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const tdouble3 *pos,const tfloat3 *vel,const float *rhop,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus){
   //-Graba datos de particulas y/o informacion en formato bi4.
+  //-Stores particle data and/or information in bi4 format.
   if(DataBi4){
     tfloat3* posf3=NULL;
     TimerPart.Stop();
@@ -1297,8 +1331,10 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
   }
 
   //-Graba ficheros VKT y/o CSV.
+  //-Stores VTK nd/or CSV files.
   if((SvData&SDAT_Csv)||(SvData&SDAT_Vtk)){
     //-Genera array con posf3 y tipo de particula.
+    //-Generates array with posf3 and type of particle.
     tfloat3* posf3=GetPointerDataFloat3(npok,pos);
     byte *type=new byte[npok];
     for(unsigned p=0;p<npok;p++){
@@ -1306,6 +1342,7 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
       type[p]=(id>=CaseNbound? 3: (id<CaseNfixed? 0: (id<CaseNpb? 1: 2)));
     }
     //-Define campos a grabar.
+    //-Defines fields to be stored.
     JFormatFiles2::StScalarData fields[8];
     unsigned nfields=0;
     if(idp){   fields[nfields]=JFormatFiles2::DefineField("Id",JFormatFiles2::UInt32,1,idp);      nfields++; }
@@ -1315,11 +1352,13 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
     if(SvData&SDAT_Vtk)JFormatFiles2::SaveVtk(DirOut+fun::FileNameSec("PartVtk.vtk",Part),npok,posf3,nfields,fields);
     if(SvData&SDAT_Csv)JFormatFiles2::SaveCsv(DirOut+fun::FileNameSec("PartCsv.csv",Part),npok,posf3,nfields,fields);
     //-libera memoria.
+    //-release of memory.
     delete[] posf3;
     delete[] type; 
   }
 
   //-Graba datos de particulas excluidas.
+  //-Stores data of excluded particles.
   if(DataOutBi4 && PartsOut->GetCount()){
     if(SvDouble)DataOutBi4->SavePartOut(Part,TimeStep,PartsOut->GetCount(),PartsOut->GetIdpOut(),PartsOut->GetPosOut(),PartsOut->GetVelOut(),PartsOut->GetRhopOut());
     else{
@@ -1330,6 +1369,7 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
   }
 
   //-Graba datos de floatings.
+  //-Stores data of floatings.
   if(DataFloatBi4){
     if(CellOrder==ORDER_XYZ)for(unsigned cf=0;cf<FtCount;cf++)DataFloatBi4->AddPartData(cf,FtObjs[cf].center,FtObjs[cf].fvel,FtObjs[cf].fomega);
     else                    for(unsigned cf=0;cf<FtCount;cf++)DataFloatBi4->AddPartData(cf,OrderDecodeValue(CellOrder,FtObjs[cf].center),OrderDecodeValue(CellOrder,FtObjs[cf].fvel),OrderDecodeValue(CellOrder,FtObjs[cf].fomega));
@@ -1337,11 +1377,13 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
   }
 
   //-Vacia almacen de particulas excluidas.
+  //-Empties stock of excluded particles.
   PartsOut->Clear();
 }
 
 //==============================================================================
-// Genera los ficheros de salida de datos
+/// Genera los ficheros de salida de datos.
+/// Generates data output files.
 //==============================================================================
 void JSph::SaveData(unsigned npok,const unsigned *idp,const tdouble3 *pos,const tfloat3 *vel,const float *rhop
   ,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus)
@@ -1349,18 +1391,22 @@ void JSph::SaveData(unsigned npok,const unsigned *idp,const tdouble3 *pos,const 
   const char met[]="SaveData";
   string suffixpartx=fun::PrintStr("_%04d",Part);
 
-  //-Contabiliza nuevas particulas excluidas
+  //-Contabiliza nuevas particulas excluidas.
+  //-Counts new excluded particles.
   const unsigned noutpos=PartsOut->GetOutPosCount(),noutrhop=PartsOut->GetOutRhopCount(),noutmove=PartsOut->GetOutMoveCount();
   const unsigned nout=noutpos+noutrhop+noutmove;
   AddOutCount(noutpos,noutrhop,noutmove);
 
   //-Graba ficheros con datos de particulas.
+  //-Stores data files of particles.
   SavePartData(npok,nout,idp,pos,vel,rhop,ndom,vdom,infoplus);
   
-  //-Reinicia limites de dt
+  //-Reinicia limites de dt.
+  //-Reinitialises limits of dt.
   PartDtMin=DBL_MAX; PartDtMax=-DBL_MAX;
 
-  //-Calculo de tiempo
+  //-Calculo de tiempo.
+  //-Computation of time.
   if(Part>PartIni||Nstep){
     TimerPart.Stop();
     double tpart=TimerPart.GetElapsedTimeD()/1000;
@@ -1372,7 +1418,8 @@ void JSph::SaveData(unsigned npok,const unsigned *idp,const tdouble3 *pos,const 
   }
   else Log->Printf("Part%s        %u particles successfully stored",suffixpartx.c_str(),npok);   
   
-  //-Muestra info de particulas excluidas.
+  //-Muestra info de particulas excluidas
+  //-Shows info of the excluded particles
   if(nout){
     PartOut+=nout;
     Log->Printf("  Particles out: %u  (total: %u)",nout,PartOut);
@@ -1382,7 +1429,8 @@ void JSph::SaveData(unsigned npok,const unsigned *idp,const tdouble3 *pos,const 
 }
 
 //==============================================================================
-// Genera fichero VTK con el dominio de las particulas.
+/// Genera fichero VTK con el dominio de las particulas.
+/// Generates VTK file with domain of the particles.
 //==============================================================================
 void JSph::SaveDomainVtk(unsigned ndom,const tdouble3 *vdom)const{ 
   if(vdom){
@@ -1395,7 +1443,8 @@ void JSph::SaveDomainVtk(unsigned ndom,const tdouble3 *vdom)const{
 }
 
 //==============================================================================
-// Genera fichero VTK con las celdas del mapa.
+/// Genera fichero VTK con las celdas del mapa.
+/// Generates VTK file with map cells.
 //==============================================================================
 void JSph::SaveMapCellsVtk(float scell)const{
   JFormatFiles2::SaveVtkCells(DirOut+"MapCells.vtk",ToTFloat3(OrderDecode(MapRealPosMin)),OrderDecode(Map_Cells),scell);
@@ -1404,15 +1453,16 @@ void JSph::SaveMapCellsVtk(float scell)const{
 //==============================================================================
 // Almacena informacion de timers en TimersStep.
 //==============================================================================
-void JSph::SaveTimersStep(unsigned np,unsigned npb,unsigned npbok,unsigned nct){
+/*void JSph::SaveTimersStep(unsigned np,unsigned npb,unsigned npbok,unsigned nct){
   if(TimersStep&&TimersStep->Check(float(TimeStep))){
     TimerSim.Stop();
     TimersStep->AddStep(float(TimeStep),TimerSim.GetElapsedTimeD()/1000,Nstep,np,npb,npbok,nct);
   }  
 }
-
+*/
 //==============================================================================
-// Añade la informacion basica de resumen a hinfo y dinfo.
+/// Añade la informacion basica de resumen a hinfo y dinfo.
+/// Adds basic information of resume to hinfo & dinfo.
 //==============================================================================
 void JSph::GetResInfo(float tsim,float ttot,const std::string &headplus,const std::string &detplus,std::string &hinfo,std::string &dinfo){
   hinfo=hinfo+"#RunName;RunCode;DateTime;Np;TSimul;TSeg;TTotal;MemCpu;MemGpu;Steps;PartFiles;PartsOut;MaxParticles;MaxCells;Hw;StepAlgo;Kernel;Viscosity;ViscoValue;DeltaSPH;TMax;Nbound;Nfixed;H;RhopOut;PartsRhopOut;PartsVelOut;CellMode"+headplus;
@@ -1431,7 +1481,8 @@ void JSph::GetResInfo(float tsim,float ttot,const std::string &headplus,const st
 }
 
 //==============================================================================
-// Genera fichero Run.csv con resumen de ejecucion
+/// Genera fichero Run.csv con resumen de ejecucion.
+/// Generates file Run.csv with resume of execution.
 //==============================================================================
 void JSph::SaveRes(float tsim,float ttot,const std::string &headplus,const std::string &detplus){
   const char* met="SaveRes";
@@ -1449,7 +1500,8 @@ void JSph::SaveRes(float tsim,float ttot,const std::string &headplus,const std::
 }
 
 //==============================================================================
-// Muestra resumen de ejecucion.
+/// Muestra resumen de ejecucion.
+/// Shows resume of execution.
 //==============================================================================
 void JSph::ShowResume(bool stop,float tsim,float ttot,bool all,std::string infoplus){
   Log->Printf("\n[Simulation %s  %s]",(stop? "INTERRUPTED": "finished"),fun::GetDateTime().c_str());
@@ -1488,7 +1540,8 @@ void JSph::ShowResume(bool stop,float tsim,float ttot,bool all,std::string infop
 }
 
 //==============================================================================
-// Returns text about PosDouble configuration.
+/// Devuelve texto sobre la configuracion de PosDouble.
+/// Returns text about PosDouble configuration.
 //==============================================================================
 std::string JSph::GetPosDoubleName(bool psimple,bool svdouble){
   string tx;
@@ -1500,7 +1553,8 @@ std::string JSph::GetPosDoubleName(bool psimple,bool svdouble){
 }
 
 //==============================================================================
-// Devuelve el nombre del algoritmo en texto.
+/// Devuelve el nombre del algoritmo en texto.
+/// Returns the name of the time algorithm in text format.
 //==============================================================================
 std::string JSph::GetStepName(TpStep tstep){
   string tx;
@@ -1511,7 +1565,8 @@ std::string JSph::GetStepName(TpStep tstep){
 }
 
 //==============================================================================
-// Devuelve el nombre del kernel en texto.
+/// Devuelve el nombre del kernel en texto.
+/// Returns the name of the kernel in text format.
 //==============================================================================
 std::string JSph::GetKernelName(TpKernel tkernel){
   string tx;
@@ -1522,7 +1577,8 @@ std::string JSph::GetKernelName(TpKernel tkernel){
 }
 
 //==============================================================================
-// Devuelve el nombre de la viscosidad en texto.
+/// Devuelve el nombre de la viscosidad en texto.
+/// Returns value of viscosity in text format.
 //==============================================================================
 std::string JSph::GetViscoName(TpVisco tvisco){
   string tx;
@@ -1533,7 +1589,8 @@ std::string JSph::GetViscoName(TpVisco tvisco){
 }
 
 //==============================================================================
-// Devuelve el valor de DeltaSPH en texto.
+/// Devuelve el valor de DeltaSPH en texto.
+/// Returns value of DeltaSPH in text format.
 //==============================================================================
 std::string JSph::GetDeltaSphName(TpDeltaSph tdelta){
   string tx;
@@ -1545,7 +1602,8 @@ std::string JSph::GetDeltaSphName(TpDeltaSph tdelta){
 }
 
 //==============================================================================
-// Devuelve el valor de Shifting en texto.
+/// Devuelve el valor de Shifting en texto.
+/// Returns value of Shifting in text format.
 //==============================================================================
 std::string JSph::GetShiftingName(TpShifting tshift){
   string tx;
@@ -1559,6 +1617,7 @@ std::string JSph::GetShiftingName(TpShifting tshift){
 
 //==============================================================================
 /// Devuelve string con el nombre del temporizador y su valor.
+/// Returns string with the name of timer and value.
 //==============================================================================
 std::string JSph::TimerToText(const std::string &name,float value){
   string ret=name;

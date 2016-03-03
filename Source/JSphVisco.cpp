@@ -43,7 +43,7 @@ JSphVisco::~JSphVisco(){
 }
 
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JSphVisco::Reset(){
   delete[] Times;  Times=NULL;

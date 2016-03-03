@@ -62,7 +62,7 @@ JSphGpu::~JSphGpu(){
 }
 
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JSphGpu::InitVars(){
   RunMode="";
@@ -463,7 +463,7 @@ void JSphGpu::ConstantDataUp(){
 
 //==============================================================================
 /// Sube datos de particulas a la GPU.
-/// Uploads particle data to the GPU
+/// Uploads particle data to the GPU.
 //==============================================================================
 void JSphGpu::ParticlesDataUp(unsigned n){
   cudaMemcpy(Idpg    ,Idp    ,sizeof(unsigned)*n,cudaMemcpyHostToDevice);
@@ -584,13 +584,10 @@ void JSphGpu::SelecDevice(int gpuid){
 }
 
 //==============================================================================
-/// Configura datos de DeviceContext y DeviceCtes. Devuelve true en caso de error.
-/// Configures DeviceContext and DeviceCtes data. Returns true in case of error.
+/// Configures BlockSizeMode to compute optimum size of CUDA blocks.
 //==============================================================================
 void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
   const char met[]="ConfigBlockSizes";
-  //-Obtiene configuracion segun CellMode
-  //-Obtains configuration according to CellMode
   //--------------------------------------
   Log->Print(" ");
   BlockSizesStr="";
@@ -797,7 +794,7 @@ void JSphGpu::InitRun(){
   Part=PartIni; Nstep=0; PartNstep=0; PartOut=0;
   TimeStep=TimeStepIni; TimeStepM1=TimeStep;
   if(DtFixed)DtIni=DtFixed->GetDt(TimeStep,DtIni);
-  if(TimersStep)TimersStep->SetInitialTime(float(TimeStep));
+  //if(TimersStep)TimersStep->SetInitialTime(float(TimeStep));
   CheckCudaError("InitRun","Failed initializing variables for execution.");
 }
 

@@ -15,7 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-/// \file JSphGpu_ker.cu \brief Implements functions and CUDA kernels for the particle interaction and system update.
+/// \file JSphGpu_ker.cu \brief Implements functions and CUDA kernels for the Particle Interaction and System Update.
 
 #include "JSphGpu_ker.h"
 #include "JBlockSizeAuto.h"

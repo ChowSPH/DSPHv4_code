@@ -15,7 +15,7 @@
  You should have received a copy of the GNU General Public License, along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-/// \file JPartOutBi4Save.cpp \brief Implements the class \ref JPartOutBi4Save
+/// \file JPartOutBi4Save.cpp \brief Implements the class \ref JPartOutBi4Save.
 
 #include "JPartOutBi4Save.h"
 //#include "JBinaryData.h"

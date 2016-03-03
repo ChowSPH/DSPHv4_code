@@ -62,7 +62,7 @@ JSphCpu::~JSphCpu(){
 }
 
 //==============================================================================
-// Initialization of variables.
+// Initialisation of variables.
 //==============================================================================
 void JSphCpu::InitVars(){
   RunMode="";
@@ -369,7 +369,7 @@ void JSphCpu::ConfigOmp(const JCfgRun *cfg){
 
 //==============================================================================
 /// Configura modo de ejecucion en CPU.
-/// Configure execution mode on CPU.
+/// Configures execution mode in CPU.
 //==============================================================================
 void JSphCpu::ConfigRunMode(const JCfgRun *cfg,std::string preinfo){
   #ifndef WIN32
@@ -390,7 +390,7 @@ void JSphCpu::ConfigRunMode(const JCfgRun *cfg,std::string preinfo){
 
 //==============================================================================
 /// Inicializa vectores y variables para la ejecucion.
-/// Initialize vectors and variables for execution.
+/// Initialisation of arrays and variables for execution.
 //==============================================================================
 void JSphCpu::InitRun(){
   const char met[]="InitRun";
@@ -445,7 +445,7 @@ void JSphCpu::InitRun(){
   Part=PartIni; Nstep=0; PartNstep=0; PartOut=0;
   TimeStep=TimeStepIni; TimeStepM1=TimeStep;
   if(DtFixed)DtIni=DtFixed->GetDt(TimeStep,DtIni);
-  if(TimersStep)TimersStep->SetInitialTime(float(TimeStep));
+  //if(TimersStep)TimersStep->SetInitialTime(float(TimeStep));
 }
 
 //==============================================================================
@@ -574,11 +574,11 @@ void JSphCpu::PreInteraction_Forces(TpInter tinter){
 }
 
 //==============================================================================
-/// Libera memoria asignada de ArraysGpu.
-/// Free memory assigned to ArraysGpu.
+/// Libera memoria asignada de ArraysCpu.
+/// Free memory assigned to ArraysCpu.
 //==============================================================================
 void JSphCpu::PosInteraction_Forces(){
-  //-Free memory assinged in PreInteraction_Forces() / Libera memoria asignada en PreInteraction_Forces().
+  //-Free memory assigned in PreInteraction_Forces() / Libera memoria asignada en PreInteraction_Forces().
   ArraysCpu->Free(Arc);          Arc=NULL;
   ArraysCpu->Free(Acec);         Acec=NULL;
   ArraysCpu->Free(Deltac);       Deltac=NULL;
@@ -1437,6 +1437,7 @@ void JSphCpu::InteractionSimple_Forces(unsigned np,unsigned npb,unsigned npbok
 /// Comprueba los limites en funcion de MapRealPosMin y MapRealSize esto es valido
 /// para single-cpu pq DomRealPos y MapRealPos son iguales. Para multi-cpu seria 
 /// necesario marcar las particulas q salgan del dominio sin salir del mapa.
+///
 /// Update pos, dcell and code to move with indicated displacement.
 /// The value of outrhop indicates is it outside of the density limits.
 /// Check the limits in funcion of MapRealPosMin & MapRealSize that this is valid

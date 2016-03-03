@@ -576,10 +576,10 @@ void JSphGpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
   //-------------------
   TmgCreation(Timers,cfg->SvTimers);
   TmgStart(Timers,TMG_Init);
-  if(cfg->SvTimersStep>0){
+  /*if(cfg->SvTimersStep>0){
     TimersStep=new JTimersStep(cfg->DirOut,cfg->SvTimersStep,0,0);
     for(unsigned ct=0;ct<TimerGetCount();ct++)if(TimerIsActive(ct))TimersStep->AddTimer(TimerGetName(ct),TimerGetPtrValue(ct));
-  }
+  }*/
 
   //-Carga de parametros y datos de entrada
   //-Loads parameters and input data
@@ -630,7 +630,7 @@ void JSphGpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
     }
     UpdateMaxValues();
     Nstep++;
-    if(TimersStep&&TimersStep->Check(float(TimeStep)))SaveTimersStep(Np,Npb,NpbOk,CellDivSingle->GetNct());
+    //if(TimersStep&&TimersStep->Check(float(TimeStep)))SaveTimersStep(Np,Npb,NpbOk,CellDivSingle->GetNct());
     //if(Nstep>=2)break;
   }
   TimerSim.Stop(); TimerTot.Stop();
@@ -694,7 +694,7 @@ void JSphGpuSingle::SaveData(){
   JSph::SaveData(npsave,Idp,AuxPos,AuxVel,AuxRhop,1,vdom,&infoplus);
   //-Graba informacion de ejecucion.
   //-Stores information of the execution.
-  if(TimersStep)TimersStep->SaveData();
+  //if(TimersStep)TimersStep->SaveData();
   TmgStop(Timers,TMG_SuSavePart);
 }
 
@@ -704,7 +704,7 @@ void JSphGpuSingle::SaveData(){
 //==============================================================================
 void JSphGpuSingle::FinishRun(bool stop){
   float tsim=TimerSim.GetElapsedTimeF()/1000.f,ttot=TimerTot.GetElapsedTimeF()/1000.f;
-  if(TimersStep)TimersStep->SaveData();
+  //if(TimersStep)TimersStep->SaveData();
   JSph::ShowResume(stop,tsim,ttot,true,"");
   string hinfo=";RunMode",dinfo=string(";")+RunMode;
   if(SvTimers){

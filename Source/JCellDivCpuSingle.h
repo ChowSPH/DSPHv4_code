@@ -25,7 +25,7 @@
 //##############################################################################
 //# JCellDivCpuSingle
 //##############################################################################
-/// \brief Defines the class responsible of computing the Neighbour List in Single-Core.
+/// \brief Defines the class responsible of generating the Neighbour List in Single-Core.
 
 class JCellDivCpuSingle : public JCellDivCpu
 {

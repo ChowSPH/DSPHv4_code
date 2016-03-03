@@ -41,7 +41,7 @@
 //##############################################################################
 //# JTimerCuda
 //##############################################################################
-/// \brief Defines a class to measure short time intervals in GPU using cudaEvent.
+/// \brief Defines a class to measure short time intervals on the GPU using cudaEvent.
 
 class JTimerCuda
 {

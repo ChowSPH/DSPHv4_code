@@ -135,9 +135,9 @@ void JSphCpuSingle::ConfigDomain(){
   const char* met="ConfigDomain";
   //-Calculate number of particles / Calcula numero de particulas.
   Np=PartsLoaded->GetCount(); Npb=CaseNpb; NpbOk=Npb;
-  //-Reserve fixed memory for moving & floating particles / Reserva memoria fija para moving y floating.
+  //-Allocates fixed memory for moving & floating particles / Reserva memoria fija para moving y floating.
   AllocCpuMemoryFixed();
-  //-Reserve memory in CPU for particles / Reserva memoria en Cpu para particulas.
+  //-Allocates memory in CPU for particles / Reserva memoria en Cpu para particulas.
   AllocCpuMemoryParticles(Np,0);
 
   //-Copy particle values / Copia datos de particulas.
@@ -272,11 +272,15 @@ void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inver
 /// Assume that all the particles are valid.
 /// This kernel works for single-cpu & multi-cpu because it uses domposmin.
 //==============================================================================
-void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
+void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
   ,unsigned *idp,word *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1)const
 {
-  for(unsigned p=0;p<n;p++){
-    const unsigned pnew=p+pini;
+  const int n=int(np);
+  #ifdef _WITHOMP
+    #pragma omp parallel for schedule (static) if(n>LIMIT_COMPUTELIGHT_OMP)
+  #endif
+  for(int p=0;p<n;p++){
+    const unsigned pnew=unsigned(p)+pini;
     const unsigned rp=listp[p];
     const unsigned pcopy=(rp&0x7FFFFFFF);
     //-Adjust position and cell of new particle / Ajusta posicion y celda de nueva particula.
@@ -299,11 +303,15 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 cell
 /// Assume that all the particles are valid.
 /// This kernel works for single-cpu & multi-cpu because it uses domposmin.
 //==============================================================================
-void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned n,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
+void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
   ,unsigned *idp,word *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre)const
 {
-  for(unsigned p=0;p<n;p++){
-    const unsigned pnew=p+pini;
+  const int n=int(np);
+  #ifdef _WITHOMP
+    #pragma omp parallel for schedule (static) if(n>LIMIT_COMPUTELIGHT_OMP)
+  #endif
+  for(int p=0;p<n;p++){
+    const unsigned pnew=unsigned(p)+pini;
     const unsigned rp=listp[p];
     const unsigned pcopy=(rp&0x7FFFFFFF);
     //-Adjust position and cell of new particle / Ajusta posicion y celda de nueva particula.
@@ -769,10 +777,10 @@ void JSphCpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
   //-------------------
   TmcCreation(Timers,cfg->SvTimers);
   TmcStart(Timers,TMC_Init);
-  if(cfg->SvTimersStep>0){
+  /*if(cfg->SvTimersStep>0){
     TimersStep=new JTimersStep(cfg->DirOut,cfg->SvTimersStep,0,0);
     for(unsigned ct=0;ct<TimerGetCount();ct++)if(TimerIsActive(ct))TimersStep->AddTimer(TimerGetName(ct),TimerGetPtrValue(ct));
-  }
+  }*/
 
   //-Load parameters and values of input / Carga de parametros y datos de entrada
   //-----------------------------------------
@@ -782,7 +790,7 @@ void JSphCpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
   ConfigDomain();
   ConfigRunMode(cfg);
 
-  //-Initialization of execution variables / Inicializacion de variables de ejecucion
+  //-Initialisation of execution variables / Inicializacion de variables de ejecucion
   //-------------------------------------------
   InitRun();
   UpdateMaxValues();
@@ -820,7 +828,7 @@ void JSphCpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
     }
     UpdateMaxValues();
     Nstep++;
-    if(TimersStep&&TimersStep->Check(float(TimeStep)))SaveTimersStep(Np,Npb,NpbOk,CellDivSingle->GetNct());
+    //if(TimersStep&&TimersStep->Check(float(TimeStep)))SaveTimersStep(Np,Npb,NpbOk,CellDivSingle->GetNct());
     //if(Nstep>=3)break;
   }
   TimerSim.Stop(); TimerTot.Stop();
@@ -831,8 +839,8 @@ void JSphCpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
 }
 
 //==============================================================================
-/// Genera los ficheros de salida de datos
-/// Generate out file data
+/// Genera los ficheros de salida de datos.
+/// Generates files with output data.
 //==============================================================================
 void JSphCpuSingle::SaveData(){
   const bool save=(SvData!=SDAT_None&&SvData!=SDAT_Info);
@@ -876,7 +884,7 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(vel);
   ArraysCpu->Free(rhop);
   //-Record execution information / Graba informacion de ejecucion.
-  if(TimersStep)TimersStep->SaveData();
+  //if(TimersStep)TimersStep->SaveData();
   TmcStop(Timers,TMC_SuSavePart);
 }
 
@@ -886,7 +894,7 @@ void JSphCpuSingle::SaveData(){
 //==============================================================================
 void JSphCpuSingle::FinishRun(bool stop){
   float tsim=TimerSim.GetElapsedTimeF()/1000.f,ttot=TimerTot.GetElapsedTimeF()/1000.f;
-  if(TimersStep)TimersStep->SaveData();
+  //if(TimersStep)TimersStep->SaveData();
   JSph::ShowResume(stop,tsim,ttot,true,"");
   string hinfo=";RunMode",dinfo=string(";")+RunMode;
   if(SvTimers){

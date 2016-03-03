@@ -43,7 +43,7 @@ JMeanMoving::~JMeanMoving(){
 }
  
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JMeanMoving::Reset(){
   delete[] Values;  Values=NULL;

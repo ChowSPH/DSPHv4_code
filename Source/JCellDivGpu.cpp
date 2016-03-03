@@ -43,7 +43,7 @@ JCellDivGpu::~JCellDivGpu(){
 }
  
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JCellDivGpu::Reset(){
   SizeNp=SizeAuxMem=SizeNct=0;

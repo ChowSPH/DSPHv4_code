@@ -50,7 +50,7 @@
 //##############################################################################
 //# JLog2
 //##############################################################################
-/// \brief Manages the output of information in the file Run.out and on screen.
+/// \brief Manages the output of information in the file Run.out and on screen
 
 class JLog2 : protected JObject
 {

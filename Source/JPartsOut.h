@@ -44,7 +44,7 @@
 //##############################################################################
 //# JPartsOut
 //##############################################################################
-/// \brief Stores excluded particles at each instant till writing the output file. 
+/// \brief Stores excluded particles at each instant untill writing the output file. 
 
 class JPartsOut : protected JObject
 {

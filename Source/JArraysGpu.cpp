@@ -45,7 +45,7 @@ JArraysGpuSize::~JArraysGpuSize(){
 }
  
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JArraysGpuSize::Reset(){
   FreeMemory();
@@ -172,7 +172,7 @@ JArraysGpu::~JArraysGpu(){
 }
  
 //==============================================================================
-/// Initialization of variables.
+/// Initialisation of variables.
 //==============================================================================
 void JArraysGpu::Reset(){
   Arrays1b->Reset(); 

@@ -25,7 +25,7 @@
 //##############################################################################
 //# JCellDivGpuSingle
 //##############################################################################
-/// \brief Defines the class responsible of computing the Neighbour List in Single-GPU.
+/// \brief Defines the class responsible of generating the Neighbour List in Single-GPU.
 
 class JCellDivGpuSingle : public JCellDivGpu
 {
