@@ -111,13 +111,11 @@ void JCellDivGpuSingle::PreSort(const unsigned *dcellg,const word *codeg){
 }
 
 //==============================================================================
-/// ES:
 /// Inicia proceso de Divide: Calcula limites de dominio y calcula nueva posicion
 /// para cada particula (SortPart).
 /// El valor np incluye las periodicas bound y fluid (npbper y npfper).
 /// Las floating se tratan como si fuesen fluido (tanto al ser excluidas como ignoradas).
 ///
-/// EN:
 /// Initial processing of Divide: Calculte the limits of the domain and
 /// compute the new position of each particle (SortPart).
 /// The value for np includes periodic boundary and fluid particles (npbper and npfper)
@@ -159,10 +157,8 @@ void JCellDivGpuSingle::Divide(unsigned npb1,unsigned npf1,unsigned npb2,unsigne
   CheckMemoryNct(Nct);
   TmgStop(timers,TMG_NlLimits);
 
-  //-ES:
   //-Determina si el divide afecta a todas las particulas.
   //-BoundDivideOk se vuelve false al reservar o liberar memoria para particulas o celdas.
-  //-EN:
   //-Determines if the divide affects all the particles
   //-If BoundDivideOk becomes false, reserve free memory for particles or cells
   if(!BoundDivideOk || BoundDivideCellMin!=CellDomainMin || BoundDivideCellMax!=CellDomainMax){

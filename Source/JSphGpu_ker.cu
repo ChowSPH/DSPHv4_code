@@ -714,7 +714,7 @@ template<bool psimple,TpKernel tker,TpFtMode ftmode,bool lamsps,TpDeltaSph tdelt
         ftp2=(CODE_GetType(cod)==CODE_TYPE_FLOATING);
         ftmassp2=(ftp2? ftomassp[CODE_GetTypeValue(cod)]: massp2);
         #ifdef DELTA_HEAVYFLOATING
-          if(ftp2 && ftmassp2<=massp2 && (tdelta==DELTA_Dynamic || tdelta==DELTA_DynamicExt))deltap1=FLT_MAX;
+          if(ftp2 && ftmassp2<=(massp2*1.2f) && (tdelta==DELTA_Dynamic || tdelta==DELTA_DynamicExt))deltap1=FLT_MAX;
         #else
           if(ftp2 && (tdelta==DELTA_Dynamic || tdelta==DELTA_DynamicExt))deltap1=FLT_MAX;
         #endif

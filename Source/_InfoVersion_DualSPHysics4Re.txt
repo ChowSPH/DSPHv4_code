@@ -362,6 +362,8 @@
   - Minor changes. (v4.0.042 / 26-02-2016) 
   - JTimersStep was commented. (v4.0.043 / 03-03-2016) 
   - Changes in comments. (v4.0.043 / 03-03-2016) 
+  - Compile option to apply DeltaSPH with heavy floatings. (v4.0.044 / 03-03-2016) 
+  - Minor changes in comments. (v4.0.044 / 03-03-2016) 
   
 Remaining issues:
 ==================

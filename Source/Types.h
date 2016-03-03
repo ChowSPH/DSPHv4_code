@@ -23,13 +23,13 @@
 #include "TypesDef.h"
 #include <algorithm>
 
-#define DELTA_HEAVYFLOATING  //-Applies DeltaSPH to fluid particles interacting with floatings with higher density (massp>MassFluid). //-Aplica DeltaSPH a fluido que interaccionan con floatings pesados (massp>MassFluid). NO_COMENTARIO
+#define DELTA_HEAVYFLOATING  //-Applies DeltaSPH to fluid particles interacting with floatings with higher density (massp>MassFluid*1.2). //-Aplica DeltaSPH a fluido que interaccionan con floatings pesados (massp>MassFluid*1.2). NO_COMENTARIO
 
-#define HIDE_AWAS      //-Mantiene compatibilidad sin AWAS.//-Maintain compatibility without AWAS. NO_COMENTARIO
+#define HIDE_AWAS      //-Mantiene compatibilidad sin AWAS.//-Maintains compatibility without AWAS. NO_COMENTARIO
 
 //#define DISABLE_TIMERS           //-Compilado sin timers. //-Compiles without timers
 
-#define CELLDIV_OVERMEMORYNP 0.05f  //-Mermoria que se reserva de mas para la gestion de particulas en JCellDivGpu. //-Memory that is reserved for the particle management in JCellDivGpu.
+#define CELLDIV_OVERMEMORYNP 0.05f  //-Memoria que se reserva de mas para la gestion de particulas en JCellDivGpu. //-Memory that is reserved for the particle management in JCellDivGpu.
 #define CELLDIV_OVERMEMORYCELLS 1   //-Numero celdas que se incrementa en cada dimension al reservar memoria para celdas en JCellDivGpu. //-Number of cells in each dimension is increased to allocate memory for JCellDivGpu cells.
 #define PERIODIC_OVERMEMORYNP 0.05f //-Mermoria que se reserva de mas para la creacion de particulas periodicas en JSphGpuSingle::RunPeriodic(). //-Memory reserved for the creation of periodic particles in JSphGpuSingle::RunPeriodic().
 

@@ -83,7 +83,7 @@ protected:
 
   //-Variables con datos de las particulas para ejecucion (size=ParticlesSize).
   //-Variables holding particle data for the execution (size=ParticlesSize)
-  unsigned *Idp;   ///<Identificador de particula. EN: Particle identifier
+  unsigned *Idp;   ///<Identificador de particula. Particle identifier
   word *Code;      ///<Indica el grupo de las particulas y otras marcas especiales. Indicates particle group and other special marks
   unsigned *Dcell; ///<Celda dentro de DomCells codificada con DomCellCode. Cell within DomCells encoded with DomCellCode.
   tdouble2 *Posxy;
@@ -132,8 +132,8 @@ protected:
   unsigned *FtRidpg;         ///<Identifier to access the particles of the floating object [CaseNfloat] in GPU.
   float *FtoMasspg;          ///<Mass of the particle for each floating body [FtCount] in GPU (used in interaction forces).
 
-  float4 *FtoDatag;    ///<Datos constantes de floatings {pini_u,np_u,radius_f,mass_f} [FtCount] //__device__ int __float_as_int(float x) //__device__ float __int_as_float(int x) EN: Constant data of floating bodies {pini_u,np_u,radius_f,mass_f} [FtCount] //__device__ int __float_as_int (float x) //__device__ float __int_as_float(int x)
-  float3 *FtoForcesg;  ///<Almacena fuerzas de floatings {face_f3,fomegavel_f3} equivalente a JSphCpu::FtoForces [FtCount]. EN: Stores forces for the floating bodies {face_f3,fomegavel_f3} equivalent to JSphCpu::FtoForces [FtCount]
+  float4 *FtoDatag;    ///<Datos constantes de floatings {pini_u,np_u,radius_f,mass_f} [FtCount] //__device__ int __float_as_int(float x) //__device__ float __int_as_float(int x) Constant data of floating bodies {pini_u,np_u,radius_f,mass_f} [FtCount] //__device__ int __float_as_int (float x) //__device__ float __int_as_float(int x)
+  float3 *FtoForcesg;  ///<Almacena fuerzas de floatings {face_f3,fomegavel_f3} equivalente a JSphCpu::FtoForces [FtCount]. Stores forces for the floating bodies {face_f3,fomegavel_f3} equivalent to JSphCpu::FtoForces [FtCount]
 
   double3 *FtoCenterg; ///<Mantiene centro de floating. [FtCount]   Maintains centre of floating bodies [Ftcount]
   float3 *FtoVelg;     ///<Mantiene vel de floating. [FtCount]  Maintains velocity of floating bodies [FtCount]
@@ -159,7 +159,7 @@ protected:
 
   double VelMax;      ///<Maximum value of Vel[] sqrt(vel.x^2 + vel.y^2 + vel.z^2) computed in PreInteraction_Forces().
   double AceMax;      ///<Maximum value of Ace[] (ace.x^2 + ace.y^2 + ace.z^2) computed in Interaction_Forces().
-  float ViscDtMax;    ///<ES: Valor maximo de ViscDt calculado en Interaction_Forces(). Maximum value of ViscDt computed in Interaction_Forces()
+  float ViscDtMax;    ///<Valor maximo de ViscDt calculado en Interaction_Forces(). Maximum value of ViscDt computed in Interaction_Forces()
 
   //-Variables for Laminar+SPS viscosity.  
   tsymatrix3f *SpsTaug;       ///<SPS sub-particle stress tensor.

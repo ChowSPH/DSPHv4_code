@@ -1545,9 +1545,9 @@ void JSph::ShowResume(bool stop,float tsim,float ttot,bool all,std::string infop
 //==============================================================================
 std::string JSph::GetPosDoubleName(bool psimple,bool svdouble){
   string tx;
-  if(psimple && !svdouble)tx="0: Use and store in single precision";
-  else if(!psimple && !svdouble)tx="1: Use double and store in single precision";
-  else if(!psimple && svdouble)tx="2: Use and store in double precision";
+  if(psimple && !svdouble)tx="0: Uses and stores in single precision";
+  else if(!psimple && !svdouble)tx="1: Uses double and stores in single precision";
+  else if(!psimple && svdouble)tx="2: Uses and stores in double precision";
   else tx="???";
   return(tx);
 }
