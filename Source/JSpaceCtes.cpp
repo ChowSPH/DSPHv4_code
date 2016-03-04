@@ -20,6 +20,7 @@
 #include "JSpaceCtes.h"
 #include "JXml.h"
 #include <cmath>
+#include <algorithm>
 
 //##############################################################################
 //# JSpaceCtes

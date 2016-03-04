@@ -31,6 +31,10 @@
 #include "JSphAccInput.h"
 #include "JXml.h"
 
+#ifndef WIN32
+  #include <unistd.h>
+#endif
+
 using namespace std;
 
 //==============================================================================

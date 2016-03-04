@@ -59,7 +59,8 @@
 //# - Nuevos metodos XXXStats() que permiten calcular y grabar ficheros CSV
 //#   con valores de minimo, maximo y media. (16-01-2014)
 //# - Error corregido en funcion DefineStatsField(). (18-02-2015)
-//# - Funciones SaveCsv() y SaveCsv() para POS en doble precision. (24-03-2015)
+//# - Funciones SaveCsv() y SaveAsc() para POS en doble precision. (24-03-2015)
+//# - En funciones SaveCsv() se indica el nombre del campo. (03-03-2016)
 //# - EN:
 //# Changes:
 //# ========
@@ -102,6 +103,7 @@
 //#   minimum, maximum and average values for CSV files. (16-01-2014)
 //# - Corrected error in DefineStatsField(). (18-02-2015)
 //# - Functions SaveCsv() and SaveCsv() to store POS in double precision. (24-03-2015)
+//# - In functions SaveCsv() data name is indicated. (03-03-2016)
 //#############################################################################
 
 /// \file JFormatFiles2.h \brief Declares the class \ref JFormatFiles2.
@@ -273,32 +275,32 @@ public:
   //==============================================================================
   /// Stores information of points in CSV file for variables of type float.
   //==============================================================================
-  static void SaveCsvPointsVar(const std::string &fname,int part,double timestep,unsigned np,const tfloat3* pos,const float* data,bool first=false);
+  static void SaveCsvPointsVar(const std::string &fname,const std::string &dataname,int part,double timestep,unsigned np,const tfloat3* pos,const float* data,bool first=false);
 
   //==============================================================================
   /// Stores information of points in CSV file for variables of type float3.
   //==============================================================================
-  static void SaveCsvPointsVar3(const std::string &fname,int part,double timestep,unsigned np,const tfloat3* pos,const tfloat3* data,bool first=false);
+  static void SaveCsvPointsVar3(const std::string &fname,const std::string &dataname,int part,double timestep,unsigned np,const tfloat3* pos,const tfloat3* data,bool first=false);
 
   //==============================================================================
   /// Stores information of points in CSV file for variables of type float.
   //==============================================================================
-  static void SaveCsvPointsVar(const std::string &fname,int part,double timestep,unsigned np,const tdouble3* pos,const float* data,bool first=false);
+  static void SaveCsvPointsVar(const std::string &fname,const std::string &dataname,int part,double timestep,unsigned np,const tdouble3* pos,const float* data,bool first=false);
 
   //==============================================================================
   /// Stores information of points in CSV file for variables of type double.
   //==============================================================================
-  static void SaveCsvPointsVar(const std::string &fname,int part,double timestep,unsigned np,const tdouble3* pos,const double* data,bool first=false);
+  static void SaveCsvPointsVar(const std::string &fname,const std::string &dataname,int part,double timestep,unsigned np,const tdouble3* pos,const double* data,bool first=false);
 
   //==============================================================================
   /// Stores information of points in CSV file for variables of type float3.
   //==============================================================================
-  static void SaveCsvPointsVar3(const std::string &fname,int part,double timestep,unsigned np,const tdouble3* pos,const tfloat3* data,bool first=false);
+  static void SaveCsvPointsVar3(const std::string &fname,const std::string &dataname,int part,double timestep,unsigned np,const tdouble3* pos,const tfloat3* data,bool first=false);
 
   //==============================================================================
   /// Stores information of points in CSV file for variables of type double3.
   //==============================================================================
-  static void SaveCsvPointsVar3(const std::string &fname,int part,double timestep,unsigned np,const tdouble3* pos,const tdouble3* data,bool first=false);
+  static void SaveCsvPointsVar3(const std::string &fname,const std::string &dataname,int part,double timestep,unsigned np,const tdouble3* pos,const tdouble3* data,bool first=false);
 
   //==============================================================================
   /// Stores information of points in ASCII file for variables of type float.

@@ -19,6 +19,7 @@
 
 #include "JPartsOut.h"
 #include "Functions.h"
+#include <algorithm>
 
 using namespace std;
 

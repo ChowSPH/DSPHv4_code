@@ -21,6 +21,8 @@
 #include <string>
 #include <cstring>
 #include <climits>
+#include <algorithm>
+
 using namespace std;
 
 #ifdef _WITHOMP

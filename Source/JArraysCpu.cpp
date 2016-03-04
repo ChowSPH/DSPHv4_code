@@ -20,6 +20,7 @@
 #include "JArraysCpu.h"
 #include "Functions.h"
 #include <cstdio>
+#include <algorithm>
 
 using namespace std;
 

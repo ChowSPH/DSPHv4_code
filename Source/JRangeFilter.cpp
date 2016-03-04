@@ -22,6 +22,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <climits>
+#include <algorithm>
 
 //==============================================================================
 /// Constructor.

@@ -38,6 +38,10 @@
   #define omp_get_max_threads() 1
 #endif
 
+#ifndef WIN32
+  #include <unistd.h>
+#endif
+
 using namespace std;
 
 //==============================================================================

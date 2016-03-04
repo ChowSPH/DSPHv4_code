@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <stdarg.h>
+#include <algorithm>
 
 #pragma warning(disable : 4996) //Cancels sprintf() deprecated.
 

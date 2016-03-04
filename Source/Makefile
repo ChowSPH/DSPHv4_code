@@ -1,8 +1,8 @@
-#DualSPHysics v4.0.040 Re (24-02-2016)
+#DualSPHysics v4.0.046 Re (03-03-2016)
 
 #=============== CUDA selection ===============
-CUDAVER=40
-### CUDAVER=75
+### CUDAVER=40
+CUDAVER=75
 #=============== Cluster selection ===============
 CLUSTER=EPH
 ### EPH -> Uses g++ compiler
