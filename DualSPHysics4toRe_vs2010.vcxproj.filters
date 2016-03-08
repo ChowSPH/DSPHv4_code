@@ -148,9 +148,6 @@
     <ClInclude Include="Source\JArraysCpu.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\FunctionsMath.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Source\randomc.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -163,20 +160,23 @@
     <ClInclude Include="Source\JWaveGen.h">
       <Filter>Libs</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JSphAccInput.h">
-      <Filter>Source</Filter>
+    <ClInclude Include="Source\FunctionsMath.h">
+      <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Source\JReadDatafile.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JMatrix4.h">
-      <Filter>Common</Filter>
+    <ClInclude Include="Source\JSphAccInput.h">
+      <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JMeanValues.h">
+    <ClInclude Include="Source\JMatrix4.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Source\JBlockSizeAuto.h">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\JMeanValues.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -276,9 +276,6 @@
     <ClCompile Include="Source\JArraysCpu.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\FunctionsMath.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="Source\randomc.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -288,17 +285,20 @@
     <ClCompile Include="Source\JSaveDt.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\JSphAccInput.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Source\FunctionsMath.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Source\JReadDatafile.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Source\JMeanValues.cpp">
-      <Filter>Common</Filter>
+    <ClCompile Include="Source\JSphAccInput.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\JBlockSizeAuto.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\JMeanValues.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -313,14 +313,14 @@
     </CustomBuildStep>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Source\JCellDivGpu_ker.cu">
+    <CudaCompile Include="Source\JCellDivGpu_ker.cu">
       <Filter>Cuda</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Source\JCellDivGpuSingle_ker.cu">
+    </CudaCompile>
+    <CudaCompile Include="Source\JCellDivGpuSingle_ker.cu">
       <Filter>Cuda</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Source\JSphGpu_ker.cu">
+    </CudaCompile>
+    <CudaCompile Include="Source\JSphGpu_ker.cu">
       <Filter>Cuda</Filter>
-    </CustomBuild>
+    </CudaCompile>
   </ItemGroup>
 </Project>

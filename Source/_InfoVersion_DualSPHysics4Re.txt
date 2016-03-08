@@ -367,6 +367,8 @@
   - Minor changes. (v4.0.045 / 03-03-2016) 
   - Improvements in JFormatFiles. (v4.0.046 / 03-03-2016) 
   - Changes to compile C++11. (v4.0.046 / 03-03-2016) 
+  - Project configuration for vs2010/vs2013 and release/debug. (v4.0.047 / 08-03-2016) 
+  - HIDE_AWAS was removed. (v4.0.047 / 08-03-2016) 
   
 Remaining issues:
 ==================

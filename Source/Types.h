@@ -25,8 +25,6 @@
 
 #define DELTA_HEAVYFLOATING  //-Applies DeltaSPH to fluid particles interacting with floatings with higher density (massp>MassFluid*1.2). //-Aplica DeltaSPH a fluido que interaccionan con floatings pesados (massp>MassFluid*1.2). NO_COMENTARIO
 
-#define HIDE_AWAS      //-Mantiene compatibilidad sin AWAS.//-Maintains compatibility without AWAS. NO_COMENTARIO
-
 //#define DISABLE_TIMERS           //-Compilado sin timers. //-Compiles without timers
 
 #define CELLDIV_OVERMEMORYNP 0.05f  //-Memoria que se reserva de mas para la gestion de particulas en JCellDivGpu. //-Memory that is reserved for the particle management in JCellDivGpu.
@@ -34,7 +32,7 @@
 #define PERIODIC_OVERMEMORYNP 0.05f //-Mermoria que se reserva de mas para la creacion de particulas periodicas en JSphGpuSingle::RunPeriodic(). //-Memory reserved for the creation of periodic particles in JSphGpuSingle::RunPeriodic().
 
 #define _WITHOMP        ///<Enables/Disables OpenMP.               
-//-Activar/desactivar tb en Props config -> C/C++ -> Lenguaje -> OpenMp //-Enable/Disable tb in Props config-> C/C++ -> Language -> OpenMP
+//-Activar/desactivar en Props config -> C/C++ -> Lenguaje -> OpenMp //-Enables/Disables in Props config-> C/C++ -> Language -> OpenMP
 
 //#define _WITHGPU 1 //<-Esta definida en las propiedades del proyecto. //<-Is defined in the project properties.
 
