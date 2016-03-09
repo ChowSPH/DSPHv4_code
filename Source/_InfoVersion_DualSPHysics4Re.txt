@@ -369,6 +369,8 @@
   - Changes to compile C++11. (v4.0.046 / 03-03-2016) 
   - Project configuration for vs2010/vs2013 and release/debug. (v4.0.047 / 08-03-2016) 
   - HIDE_AWAS was removed. (v4.0.047 / 08-03-2016) 
+  - JWaveGen: New option autofit in <serieini> to avoid problems using irregular generation. (v4.0.048 / 09-03-2016)
+  - JWaveGen: Define HIDE_2NDORDER was removed. (v4.0.048 / 09-03-2016)
   
 Remaining issues:
 ==================
@@ -379,8 +381,8 @@ Remaining issues:
 - Configure project with debug.
 - Check restart with floatings and DEM.
 - Remove JTimersStep before creating release.  
-- Error en WaveGen si hay desfase importante.
-  
+
+x Error en WaveGen si hay desfase importante.
 x Check timers on CPU and GPU.
 x Buscar y borrar "ES:" "(ES)"
 x Usar thrust en? diferencia en rendimiento?
