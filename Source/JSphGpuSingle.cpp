@@ -194,7 +194,7 @@ void JSphGpuSingle::ConfigDomain(){
 
   //-Calcula radio de floatings.
   //-Computes radius of floating bodies.
-  if(CaseNfloat && PeriActive!=0)CalcFloatingRadius(Np,AuxPos,Idp);
+  if(CaseNfloat && PeriActive!=0 && !PartBegin)CalcFloatingRadius(Np,AuxPos,Idp);
 
   //-Carga code de particulas.
   //-Loads Code of the particles.

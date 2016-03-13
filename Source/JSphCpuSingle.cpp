@@ -147,7 +147,7 @@ void JSphCpuSingle::ConfigDomain(){
   memcpy(Velrhopc,PartsLoaded->GetVelRhop(),sizeof(tfloat4)*Np);
 
   //-Calculate floating radius / Calcula radio de floatings.
-  if(CaseNfloat && PeriActive!=0)CalcFloatingRadius(Np,Posc,Idpc);
+  if(CaseNfloat && PeriActive!=0 && !PartBegin)CalcFloatingRadius(Np,Posc,Idpc);
 
   //-Load particle data / Carga code de particulas.
   LoadCodeParticles(Np,Idpc,Codec);
