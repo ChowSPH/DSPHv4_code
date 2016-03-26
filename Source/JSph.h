@@ -38,7 +38,6 @@
 #include "JCfgRun.h"
 #include "JLog2.h"
 #include "JTimer.h"
-//#include "JTimersStep.h"
 #include <float.h>
 #include <string>
 #include <cmath>
@@ -337,7 +336,6 @@ protected:
   //-Control de tiempos de ejecucion.
   //-Control of the execution times.
   JTimer TimerTot,TimerSim,TimerPart;
-  //JTimersStep* TimersStep;
 
   void AllocMemoryFloating(unsigned ftcount);
   llong GetAllocMemoryCpu()const;

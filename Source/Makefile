@@ -1,4 +1,4 @@
-#DualSPHysics v4.0.046 Re (03-03-2016)
+#DualSPHysics v4.0.051 Re (26-03-2016)
 
 #=============== CUDA selection ===============
 ### CUDAVER=40
@@ -23,7 +23,6 @@ OBJ_BASIC=main.o Functions.o FunctionsMath.o JArraysCpu.o JBinaryData.o JCellDiv
 OBJ_BASIC:=$(OBJ_BASIC) JLog2.o JObject.o JPartDataBi4.o JPartFloatBi4.o JPartOutBi4Save.o JPartsOut.o 
 OBJ_BASIC:=$(OBJ_BASIC) JRadixSort.o JRangeFilter.o JReadDatafile.o JSaveDt.o JSpaceCtes.o JSpaceEParms.o JSpaceParts.o 
 OBJ_BASIC:=$(OBJ_BASIC) JSpaceProperties.o JSph.o JSphAccInput.o JSphCpu.o JSphDtFixed.o JSphVisco.o randomc.o
-OBJ_BASIC:=$(OBJ_BASIC) JTimersStep.o
 OBJ_CPU_SINGLE=JCellDivCpuSingle.o JSphCpuSingle.o JPartsLoad4.o
 OBJ_GPU=JArraysGpu.o JCellDivGpu.o JObjectGpu.o JSphGpu.o JBlockSizeAuto.o JMeanValues.o
 OBJ_GPU_SINGLE=JCellDivGpuSingle.o JSphGpuSingle.o
@@ -49,7 +48,7 @@ JLIBS=-L./ -ljxml_64 -ljformatfiles2_64 -ljsphmotion_64 -ljwavegen_64
 
 #=============== To compile CPU code ===============
 CC=g++
-CCFLAGS=-c -O3 -fopenmp -D_WITHGPU
+CCFLAGS=-c -O3 -fopenmp -ffast-math -D_WITHGPU
 CCLINKFLAGS=-fopenmp -lgomp
 ifneq (,$(filter $(CLUSTER),BSC EME))
   CC=icpc

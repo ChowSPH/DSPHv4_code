@@ -112,9 +112,6 @@
     <ClInclude Include="Source\JLog2.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Source\JTimersStep.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\JSphDtFixed.h">
       <Filter>Source</Filter>
     </ClInclude>
@@ -239,9 +236,6 @@
     </ClCompile>
     <ClCompile Include="Source\JLog2.cpp">
       <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\JTimersStep.cpp">
-      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\JSphDtFixed.cpp">
       <Filter>Source</Filter>

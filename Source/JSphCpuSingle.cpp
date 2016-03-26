@@ -815,10 +815,6 @@ void JSphCpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
   //-------------------
   TmcCreation(Timers,cfg->SvTimers);
   TmcStart(Timers,TMC_Init);
-  /*if(cfg->SvTimersStep>0){
-    TimersStep=new JTimersStep(cfg->DirOut,cfg->SvTimersStep,0,0);
-    for(unsigned ct=0;ct<TimerGetCount();ct++)if(TimerIsActive(ct))TimersStep->AddTimer(TimerGetName(ct),TimerGetPtrValue(ct));
-  }*/
 
   //-Load parameters and values of input / Carga de parametros y datos de entrada
   //-----------------------------------------

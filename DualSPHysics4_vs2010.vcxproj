@@ -168,6 +168,7 @@
       <UseHostInclude>false</UseHostInclude>
       <AdditionalOptions>-use_fast_math -Xcompiler "/wd 4267" %(AdditionalOptions)</AdditionalOptions>
       <CodeGeneration>compute_30,sm_30</CodeGeneration>
+      <FastMath>true</FastMath>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -512,7 +513,6 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
     <ClInclude Include="Source\JSphVisco.h" />
     <ClInclude Include="Source\JPartsOut.h" />
     <ClInclude Include="Source\JSphCpuSingle.h" />
-    <ClInclude Include="Source\JTimersStep.h" />
     <ClInclude Include="Source\JWaveGen.h" />
     <ClInclude Include="Source\randomc.h" />
     <ClInclude Include="Source\Types.h" />
@@ -606,7 +606,6 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
     <ClCompile Include="Source\JSphVisco.cpp" />
     <ClCompile Include="Source\JPartsOut.cpp" />
     <ClCompile Include="Source\JSphCpuSingle.cpp" />
-    <ClCompile Include="Source\JTimersStep.cpp" />
     <ClCompile Include="Source\Functions.cpp" />
     <ClCompile Include="Source\JCfgRun.cpp" />
     <ClCompile Include="Source\JException.cpp" />
