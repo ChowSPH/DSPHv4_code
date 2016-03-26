@@ -526,7 +526,7 @@ void JSphCpu::PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb)
   //-Prepare values of rhop for interaction / Prepara datos derivados de rhop para interaccion.
   const int n=int(np);
   #ifdef _WITHOMP
-    #pragma omp parallel for schedule (static) if(n>LIMIT_PREINTERACTION_OMP)
+    #pragma omp parallel for schedule (static) if(n>LIMIT_COMPUTELIGHT_OMP)
   #endif
   for(int p=0;p<n;p++){
     const float rhop=Velrhopc[p].w,rhop_r0=rhop/RhopZero;
@@ -556,7 +556,7 @@ void JSphCpu::PreInteraction_Forces(TpInter tinter){
     PsPosc=ArraysCpu->ReserveFloat3();
     const int np=int(Np);
     #ifdef _WITHOMP
-      #pragma omp parallel for schedule (static) if(np>LIMIT_PREINTERACTION_OMP)
+      #pragma omp parallel for schedule (static) if(np>LIMIT_COMPUTELIGHT_OMP)
     #endif
     for(int p=0;p<np;p++){ PsPosc[p]=ToTFloat3(Posc[p]); }
   }
@@ -566,15 +566,59 @@ void JSphCpu::PreInteraction_Forces(TpInter tinter){
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
   //-Calculate VelMax: Floating object particles are included and do not affect use of periodic condition.
   const unsigned pini=(DtAllParticles? 0: Npb);
+  VelMax=CalcVelMaxOmp(Np-pini,Velrhopc+pini);
+  ViscDtMax=0;
+  TmcStop(Timers,TMC_CfPreForces);
+}
+
+//==============================================================================
+/// Devuelve la velociad maxima de un array tfloat4.
+/// Returns maximum velocity from an array tfloat4.
+//==============================================================================
+float JSphCpu::CalcVelMaxSeq(unsigned np,const tfloat4* velrhop)const{
   float velmax=0;
-  for(unsigned p=pini;p<Np;p++){
-    const tfloat4 v=Velrhopc[p];
+  for(unsigned p=0;p<np;p++){
+    const tfloat4 v=velrhop[p];
     const float v2=v.x*v.x+v.y*v.y+v.z*v.z;
     velmax=max(velmax,v2);
   }
-  VelMax=sqrt(velmax);
-  ViscDtMax=0;
-  TmcStop(Timers,TMC_CfPreForces);
+  return(sqrt(velmax));
+}
+
+//==============================================================================
+/// Devuelve la velociad maxima de un array tfloat4 usando OpenMP.
+/// Returns maximum velocity from an array tfloat4 using OpenMP.
+//==============================================================================
+float JSphCpu::CalcVelMaxOmp(unsigned np,const tfloat4* velrhop)const{
+  const char met[]="CalcVelMax";
+  float velmax=0;
+  #ifdef _WITHOMP
+    if(np>LIMIT_COMPUTELIGHT_OMP){
+      const int n=int(np);
+      if(n<0)RunException(met,"Number of values is too big.");
+      float vmax=0;
+      #pragma omp parallel 
+      {
+        float vmax2=0;
+        #pragma omp for nowait
+        for(int c=0;c<n;++c){
+          const tfloat4 v=velrhop[c];
+          const float v2=v.x*v.x+v.y*v.y+v.z*v.z;
+          if(vmax2<v2)vmax2=v2;
+        }
+        #pragma omp critical 
+        {
+          if(vmax<vmax2)vmax=vmax2;
+        }
+      }
+      //-Guarda resultado.
+      velmax=sqrt(vmax);
+    }
+    else if(np)velmax=CalcVelMaxSeq(np,velrhop);
+  #else
+    if(np)velmax=CalcVelMaxSeq(np,velrhop);
+  #endif
+  return(velmax);
 }
 
 //==============================================================================
@@ -1774,11 +1818,13 @@ void JSphCpu::CalcRidp(bool periactive,unsigned np,unsigned pini,unsigned idini,
   //-Assign values UINT_MAX / Asigna valores UINT_MAX
   const unsigned nsel=idfin-idini;
   memset(ridp,255,sizeof(unsigned)*nsel); 
-
   //-Calculate position according to id / Calcula posicion segun id.
-  const unsigned pfin=pini+np;
+  const int pfin=int(pini+np);
   if(periactive){//-Calculate position according to id checking that the particles are normal (i.e. not periodic) /Calcula posicion segun id comprobando que las particulas son normales (no periodicas).
-    for(unsigned p=pini;p<pfin;p++){
+    #ifdef _WITHOMP
+      #pragma omp parallel for schedule (static) if(pfin>LIMIT_COMPUTELIGHT_OMP)
+    #endif
+    for(int p=int(pini);p<pfin;p++){
       const unsigned id=idp[p];
       if(idini<=id && id<idfin){
         if(CODE_GetSpecialValue(code[p])==CODE_NORMAL)ridp[id-idini]=p;
@@ -1786,7 +1832,10 @@ void JSphCpu::CalcRidp(bool periactive,unsigned np,unsigned pini,unsigned idini,
     }
   }
   else{//-Calculate position according to id assuming that all the particles are normal (i.e. not periodic) / Calcula posicion segun id suponiendo que todas las particulas son normales (no periodicas).
-    for(unsigned p=pini;p<pfin;p++){
+    #ifdef _WITHOMP
+      #pragma omp parallel for schedule (static) if(pfin>LIMIT_COMPUTELIGHT_OMP)
+    #endif
+    for(int p=int(pini);p<pfin;p++){
       const unsigned id=idp[p];
       if(idini<=id && id<idfin)ridp[id-idini]=p;
     }

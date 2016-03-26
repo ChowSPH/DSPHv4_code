@@ -468,7 +468,7 @@ void JSphGpuSingle::Interaction_Forces(TpInter tinter){
 
   //-Calculates maximum value of ViscDt.
   if(Np)ViscDtMax=cusph::ReduMaxFloat(Np,0,ViscDtg,CellDivSingle->GetAuxMem(cusph::ReduMaxFloatSize(Np)));
-  //-Calculates maximum value of Ace.
+  //-Calculates maximum value of Ace using ViscDtg like auxiliar memory.
   AceMax=ComputeAceMax(ViscDtg); 
 
   TmgStop(Timers,TMG_CfForces);

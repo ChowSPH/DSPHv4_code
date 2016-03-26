@@ -152,6 +152,9 @@ protected:
 
   void AddAccInput();
 
+  float CalcVelMaxSeq(unsigned np,const tfloat4* velrhop)const;
+  float CalcVelMaxOmp(unsigned np,const tfloat4* velrhop)const;
+
   void PreInteractionVars_Forces(TpInter tinter,unsigned np,unsigned npb);
   void PreInteraction_Forces(TpInter tinter);
   void PosInteraction_Forces();

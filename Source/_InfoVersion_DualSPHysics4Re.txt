@@ -372,15 +372,20 @@
   - JWaveGen: New option autofit in <serieini> to avoid problems using irregular generation. (v4.0.048 / 09-03-2016)
   - JWaveGen: Define HIDE_2NDORDER was removed. (v4.0.048 / 09-03-2016)
   - Solved error using restarting with floatings and periodic conditions. (v4.0.049 / 13-03-2016)
+  - Use of OpenMP in several parts of CPU code: JCellDivCpu::SortArray(), JSphCpu::CalcRidp(), calculation of VelMax
+    in JSphCpu::PreInteraction_Forces(), upadating Ace.y for 2D simulations in JSphCpuSingle::Interaction_Forces()
+	and calculation of AceMax in JSphCpu::Interaction_Forces(). (v4.0.050 / 26-03-2016)
+
+	
   
 Remaining issues:
 ==================
-- Use radixsort algorithm (with OpenMP) in celldivide on CPU.
 - Check error in JBinaryData.cpp:CheckHead(1164).
 - Use of SDAT_info?
 - Examples with DomainLimits
 - Remove JTimersStep before creating release.  
 
+x Use radixsort algorithm (with OpenMP) in celldivide on CPU.
 x Check restart with floatings and DEM.
 x Configure project with debug.
 x Error en WaveGen si hay desfase importante.

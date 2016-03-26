@@ -504,7 +504,13 @@ void JSphCpuSingle::Interaction_Forces(TpInter tinter){
   else JSphCpu::Interaction_Forces(Np,Npb,NpbOk,CellDivSingle->GetNcells(),CellDivSingle->GetBeginCell(),CellDivSingle->GetCellDomainMin(),Dcellc,Posc,Velrhopc,Idpc,Codec,Pressc,viscdt,Arc,Acec,Deltac,SpsTauc,SpsGradvelc,ShiftPosc,ShiftDetectc);
 
   //-For 2-D simulations zero the 2nd component / Para simulaciones 2D anula siempre la 2º componente
-  if(Simulate2D)for(unsigned p=Npb;p<Np;p++)Acec[p].y=0;
+  if(Simulate2D){
+    const int ini=int(Npb),fin=int(Np),npf=int(Np-Npb);
+    #ifdef _WITHOMP
+      #pragma omp parallel for schedule (static) if(npf>LIMIT_COMPUTELIGHT_OMP)
+    #endif
+    for(int p=ini;p<fin;p++)Acec[p].y=0;
+  }
 
   //-Add Delta-SPH correction to Arg[] / Añade correccion de Delta-SPH a Arg[].
   if(Deltac){
@@ -518,32 +524,64 @@ void JSphCpuSingle::Interaction_Forces(TpInter tinter){
   //-Calculates maximum value of ViscDt.
   ViscDtMax=viscdt;
   //-Calculates maximum value of Ace.
-  AceMax=ComputeAceMax();
+  AceMax=ComputeAceMaxOmp(PeriActive!=0,Np-Npb,Acec+Npb,Codec+Npb);
 
   TmcStop(Timers,TMC_CfForces);
 }
 
 //==============================================================================
-/// Devuelve valor maximo de (ace.x^2 + ace.y^2 + ace.z^2) a partir de Acec[].
-/// Return max value of (ace.x^2 + ace.y^2 + ace.z^2) starting from Acec[].
-/// The use of OpenMP here is not efficient.
+/// Devuelve el valor maximo de ace (modulo).
+/// Returns maximum value of ace (modulus).
 //==============================================================================
-double JSphCpuSingle::ComputeAceMax(){
+double JSphCpuSingle::ComputeAceMaxSeq(const bool checkcodenormal,unsigned np,const tfloat3* ace,const word* code)const{
   float acemax=0;
-  const int ini=int(Npb),fin=int(Np),npf=int(Np-Npb);
-  if(!PeriActive){//-Without periodic conditions / Sin condiciones periodicas.
-    for(int p=ini;p<fin;p++){
-      const float ace=Acec[p].x*Acec[p].x+Acec[p].y*Acec[p].y+Acec[p].z*Acec[p].z;
-      acemax=max(acemax,ace);
-    }
-  }
-  else{//-With periodic conditions ignore periodic particles / Con condiciones periodicas ignora las particulas periodicas.
-    for(int p=ini;p<fin;p++)if(CODE_GetSpecialValue(Codec[p])==CODE_NORMAL){
-      const float ace=Acec[p].x*Acec[p].x+Acec[p].y*Acec[p].y+Acec[p].z*Acec[p].z;
-      acemax=max(acemax,ace);
-    }
+  const int n=int(np);
+  //-With periodic conditions ignore periodic particles / Con condiciones periodicas ignora las particulas periodicas.
+  for(int p=0;p<n;p++)if(!checkcodenormal || CODE_GetSpecialValue(code[p])==CODE_NORMAL){
+    const tfloat3 a=ace[p];
+    const float a2=a.x*a.x+a.y*a.y+a.z*a.z;
+    acemax=max(acemax,a2);
   }
   return(sqrt(double(acemax)));
+}
+
+//==============================================================================
+/// Devuelve el valor maximo de ace (modulo) using OpenMP.
+/// Returns maximum value of ace (modulus) using OpenMP.
+//==============================================================================
+double JSphCpuSingle::ComputeAceMaxOmp(const bool checkcodenormal,unsigned np,const tfloat3* ace,const word* code)const{
+  const char met[]="ComputeAceMaxOmp";
+  double acemax=0;
+  #ifdef _WITHOMP
+    if(np>LIMIT_COMPUTELIGHT_OMP){
+      const int n=int(np);
+      if(n<0)RunException(met,"Number of values is too big.");
+      float amax=0;
+      #pragma omp parallel 
+      {
+        float amax2=0;
+        #pragma omp for nowait
+        for(int p=0;p<n;++p){
+          //-With periodic conditions ignore periodic particles / Con condiciones periodicas ignora las particulas periodicas.
+          if(!checkcodenormal || CODE_GetSpecialValue(code[p])==CODE_NORMAL){
+            const tfloat3 a=ace[p];
+            const float a2=a.x*a.x+a.y*a.y+a.z*a.z;
+            if(amax2<a2)amax2=a2;
+          }
+        }
+        #pragma omp critical 
+        {
+          if(amax<amax2)amax=amax2;
+        }
+      }
+      //-Guarda resultado.
+      acemax=sqrt(double(amax));
+    }
+    else if(np)acemax=ComputeAceMaxSeq(checkcodenormal,np,ace,code);
+  #else
+    if(np)acemax=ComputeAceMaxSeq(checkcodenormal,np,ace,code);
+  #endif
+  return(acemax);
 }
 
 //==============================================================================

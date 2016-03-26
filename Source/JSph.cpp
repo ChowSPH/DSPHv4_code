@@ -1373,7 +1373,7 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
   if(DataFloatBi4){
     if(CellOrder==ORDER_XYZ)for(unsigned cf=0;cf<FtCount;cf++)DataFloatBi4->AddPartData(cf,FtObjs[cf].center,FtObjs[cf].fvel,FtObjs[cf].fomega);
     else                    for(unsigned cf=0;cf<FtCount;cf++)DataFloatBi4->AddPartData(cf,OrderDecodeValue(CellOrder,FtObjs[cf].center),OrderDecodeValue(CellOrder,FtObjs[cf].fvel),OrderDecodeValue(CellOrder,FtObjs[cf].fomega));
-    DataFloatBi4->SavePartFloat(Part,TimeStep,DemDtForce);
+    DataFloatBi4->SavePartFloat(Part,TimeStep,(UseDEM? DemDtForce: 0));
   }
 
   //-Vacia almacen de particulas excluidas.
