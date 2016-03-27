@@ -513,6 +513,7 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
     <ClInclude Include="Source\JSphVisco.h" />
     <ClInclude Include="Source\JPartsOut.h" />
     <ClInclude Include="Source\JSphCpuSingle.h" />
+    <ClInclude Include="Source\JTimeOut.h" />
     <ClInclude Include="Source\JWaveGen.h" />
     <ClInclude Include="Source\randomc.h" />
     <ClInclude Include="Source\Types.h" />
@@ -620,6 +621,7 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Source\JTimeOut.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\randomc.cpp" />
   </ItemGroup>

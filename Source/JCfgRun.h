@@ -69,7 +69,6 @@ public:
   float DeltaSph;
   int Shifting; //-Shifting mode -1:sin definir, 0:none, 1:nobound, 2:nofixed, 3:full
   bool SvRes,SvTimers,SvDomainVtk;
-  //float SvTimersStep;
   bool Sv_Binx,Sv_Info,Sv_Csv,Sv_Vtk;
   std::string CaseName,RunName,DirOut;
   std::string PartBeginDir;

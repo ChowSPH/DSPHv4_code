@@ -46,7 +46,7 @@ void JCfgRun::Reset(){
   PosDouble=-1;
   OmpThreads=0;
   BlockSizeMode=BSIZEMODE_Empirical;
-  SvTimers=true; //SvTimersStep=0;
+  SvTimers=true;
   CellOrder=ORDER_None;
   CellMode=CELLMODE_2H;
   DomainMode=0;
@@ -119,11 +119,8 @@ void JCfgRun::VisuInfo()const{
   printf("        info    Information about execution in .ibi4 format\n");
   printf("        vtk     VTK files\n");
   printf("        csv     CSV files\n");
-//  printf("    -svdouble        Save position with high precision (disabled by default)\n");
   printf("    -svres:<0/1>     Generates file that summarises the execution process\n");
   printf("    -svtimers:<0/1>  Obtains timing for each individual process\n");
-//  printf("    -svtimersstep:<float> Obtains timing for each individual process.\n");
-//  printf("     Specifies the time between output information. By default 0 (disabled)\n");
   printf("    -svdomainvtk:<0/1>  Generates VTK file with domain limits\n");
   printf("    -name <string>      Specifies path and name of the case \n");
   printf("    -runname <string>   Specifies name for case execution\n");
@@ -178,7 +175,6 @@ void JCfgRun::VisuConfig()const{
   PrintVar("  Shifting",Shifting,ln);
   PrintVar("  SvRes",SvRes,ln);
   PrintVar("  SvTimers",SvTimers,ln);
-  PrintVar("  SvTimersStep",SvTimers,ln);
   PrintVar("  SvDomainVtk",SvDomainVtk,ln);
   PrintVar("  Sv_Binx",Sv_Binx,ln);
   PrintVar("  Sv_Info",Sv_Info,ln);
@@ -388,11 +384,6 @@ void JCfgRun::LoadOpts(string *optlis,int optn,int lv,string file){
       }
       else if(txword=="SVRES")SvRes=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
       else if(txword=="SVTIMERS")SvTimers=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
-/*      else if(txword=="SVTIMERSSTEP"){ 
-        SvTimersStep=float(atof(txopt.c_str())); 
-        if(SvTimersStep<0)SvTimersStep=0;
-        if(SvTimersStep>0)SvTimers=true;
-      }*/
       else if(txword=="SVDOMAINVTK")SvDomainVtk=(txopt!=""? atoi(txopt.c_str()): 1)!=0;
       else if(txword=="SV"){
         string txop=StrUpper(txopt);

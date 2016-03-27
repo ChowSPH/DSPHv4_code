@@ -376,6 +376,8 @@
     in JSphCpu::PreInteraction_Forces(), upadating Ace.y for 2D simulations in JSphCpuSingle::Interaction_Forces()
 	and calculation of AceMax in JSphCpu::Interaction_Forces(). (v4.0.050 / 26-03-2016)
   - JTimersStep code was removed. (v4.0.051 / 26-03-2016)
+  - New option to configure variable interval to save PART files. (v4.0.052 / 27-03-2016)
+  - Commented code about JTimersStep was removed. (v4.0.052 / 27-03-2016)
 
 	
   

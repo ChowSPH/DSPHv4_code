@@ -60,6 +60,7 @@ class JPartOutBi4Save;
 class JPartFloatBi4Save;
 class JPartsOut;
 class JXml;
+class JTimeOut;
 
 //##############################################################################
 //# JSph
@@ -190,6 +191,7 @@ protected:
 
   double TimeMax;
   double TimePart;
+  JTimeOut *TimeOut;
 
   double DtIni;       //-Dt inicial                                                                             ///<Initial Dt
   double DtMin;       //-Dt minimo permitido (si el calculado es menor se sustituye por DtMin).                 ///<Minimum allowed Dt (if the calculated is lower is replaced by DTmin).
@@ -328,11 +330,11 @@ protected:
   int Part;           //-Siguiente PART a guardar.                                          ///<Saves subsequent PART.
   int Nstep;
   int PartNstep;
-  unsigned PartOut;   ///<Numero total de particulas excluidas al grabar el ultimo PART.    ///<Total number of excluded particles to be recorded to the last PART.
-  double TimeStepIni; ///<Instante inicial de la simulación.                                ///<Initial instant of the simulation
-  double TimeStep;    ///<Instante actual de la simulación.                                 ///<Current instant of the simulation
-  double TimeStepM1;  ///<Instante de la simulación en que se grabo el último PART.         ///<Instant of the simulation when the last PART was stored.
-
+  unsigned PartOut;    ///<Numero total de particulas excluidas al grabar el ultimo PART.    ///<Total number of excluded particles to be recorded to the last PART.
+  double TimeStepIni;  ///<Instante inicial de la simulación.                                ///<Initial instant of the simulation
+  double TimeStep;     ///<Instante actual de la simulación.                                 ///<Current instant of the simulation
+  double TimeStepM1;   ///<Instante de la simulación en que se grabo el último PART.         ///<Instant of the simulation when the last PART was stored.
+  double TimePartNext; ///<Instante para grabar siguiente fichero PART.                      ///<Instant to store next PART file.
   //-Control de tiempos de ejecucion.
   //-Control of the execution times.
   JTimer TimerTot,TimerSim,TimerPart;
@@ -390,8 +392,7 @@ protected:
   void SaveData(unsigned npok,const unsigned *idp,const tdouble3 *pos,const tfloat3 *vel,const float *rhop,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);
   void SaveDomainVtk(unsigned ndom,const tdouble3 *vdom)const;
   void SaveMapCellsVtk(float scell)const;
- // void SaveTimersStep(unsigned np,unsigned npb,unsigned npbok,unsigned nct);
-
+ 
   void GetResInfo(float tsim,float ttot,const std::string &headplus,const std::string &detplus,std::string &hinfo,std::string &dinfo);
   void SaveRes(float tsim,float ttot,const std::string &headplus="",const std::string &detplus="");
   void ShowResume(bool stop,float tsim,float ttot,bool all,std::string infoplus);

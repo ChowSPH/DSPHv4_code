@@ -26,6 +26,7 @@
 #include "JPartsLoad4.h"
 #include "JSphVisco.h"
 #include "JWaveGen.h"
+#include "JTimeOut.h"
 #include "JSphGpu_ker.h"
 #include "JBlockSizeAuto.h"
 
@@ -613,7 +614,7 @@ void JSphGpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
     RunCellDivide(true);
     TimeStep+=stepdt;
     partoutstop=(Np<NpMinimum || !Np);
-    if((TimeStep-TimeStepIni)-TimePart*((Part-PartIni)-1)>=TimePart || partoutstop){
+    if(TimeStep>=TimePartNext || partoutstop){
       if(partoutstop){
         Log->Print("\n**** Particles OUT limit reached...\n");
         TimeMax=TimeStep;
@@ -622,11 +623,11 @@ void JSphGpuSingle::Run(std::string appname,JCfgRun *cfg,JLog2 *log){
       Part++;
       PartNstep=Nstep;
       TimeStepM1=TimeStep;
+      TimePartNext=TimeOut->GetNextTime(TimeStep);
       TimerPart.Start();
     }
     UpdateMaxValues();
     Nstep++;
-    //if(TimersStep&&TimersStep->Check(float(TimeStep)))SaveTimersStep(Np,Npb,NpbOk,CellDivSingle->GetNct());
     //if(Nstep>=2)break;
   }
   TimerSim.Stop(); TimerTot.Stop();
@@ -688,9 +689,6 @@ void JSphGpuSingle::SaveData(){
   //-Stores particle data.
   const tdouble3 vdom[2]={OrderDecode(CellDivSingle->GetDomainLimits(true)),OrderDecode(CellDivSingle->GetDomainLimits(false))};
   JSph::SaveData(npsave,Idp,AuxPos,AuxVel,AuxRhop,1,vdom,&infoplus);
-  //-Graba informacion de ejecucion.
-  //-Stores information of the execution.
-  //if(TimersStep)TimersStep->SaveData();
   TmgStop(Timers,TMG_SuSavePart);
 }
 
@@ -700,7 +698,6 @@ void JSphGpuSingle::SaveData(){
 //==============================================================================
 void JSphGpuSingle::FinishRun(bool stop){
   float tsim=TimerSim.GetElapsedTimeF()/1000.f,ttot=TimerTot.GetElapsedTimeF()/1000.f;
-  //if(TimersStep)TimersStep->SaveData();
   JSph::ShowResume(stop,tsim,ttot,true,"");
   string hinfo=";RunMode",dinfo=string(";")+RunMode;
   if(SvTimers){

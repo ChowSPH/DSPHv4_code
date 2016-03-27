@@ -175,6 +175,9 @@
     <ClInclude Include="Source\JMeanValues.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Source\JTimeOut.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\JCfgRun.cpp">
@@ -293,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="Source\JMeanValues.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\JTimeOut.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -29,6 +29,7 @@
 #include "JFormatFiles2.h"
 #include "JSphDtFixed.h"
 #include "JSaveDt.h"
+#include "JTimeOut.h"
 #include "JSphVisco.h"
 #include "JWaveGen.h"
 #include "JSphAccInput.h"
@@ -56,12 +57,12 @@ JSph::JSph(bool cpu,bool withmpi):Cpu(cpu),WithMpi(withmpi){
   ViscoTime=NULL;
   DtFixed=NULL;
   SaveDt=NULL;
+  TimeOut=NULL;
   MkList=NULL;
   Motion=NULL;
   FtObjs=NULL;
   WaveGen=NULL;
   AccInput=NULL;
-  //TimersStep=NULL;
   InitVars();
 }
 
@@ -76,12 +77,12 @@ JSph::~JSph(){
   delete ViscoTime;
   delete DtFixed;
   delete SaveDt;
+  delete TimeOut;
   ResetMkInfo();
   delete Motion;
   AllocMemoryFloating(0);
   delete WaveGen;
   delete AccInput;
-  //delete TimersStep;
 }
 
 //==============================================================================
@@ -183,6 +184,7 @@ void JSph::InitVars(){
 
   TimeStepIni=0;
   TimeStep=TimeStepM1=0;
+  TimePartNext=0;
 }
 
 //==============================================================================
@@ -260,7 +262,6 @@ llong JSph::GetAllocMemoryCpu()const{
   if(FtObjs)s+=sizeof(StFloatingData)*FtCount;
   //-Allocated in other objects.
   if(PartsOut)s+=PartsOut->GetAllocMemory();
-  //if(TimersStep)s+=TimersStep->GetAllocMemory();
   if(ViscoTime)s+=ViscoTime->GetAllocMemory();
   if(DtFixed)s+=DtFixed->GetAllocMemory();
   if(AccInput)s+=AccInput->GetAllocMemory();
@@ -339,7 +340,13 @@ void JSph::LoadConfig(const JCfgRun *cfg){
 
   if(cfg->FtPause>=0)FtPause=cfg->FtPause;
   if(cfg->TimeMax>0)TimeMax=cfg->TimeMax;
-  if(cfg->TimePart>=0)TimePart=cfg->TimePart;
+  //-Configuration of JTimeOut with TimePart.
+  TimeOut=new JTimeOut();
+  if(cfg->TimePart>=0){
+    TimePart=cfg->TimePart;
+    TimeOut->Config(TimePart);
+  }
+  else TimeOut->Config(FileXml,"case.execution.special.timeout",TimePart);
 
   CellOrder=cfg->CellOrder;
   CellMode=cfg->CellMode;
@@ -807,7 +814,6 @@ void JSph::VisuConfig()const{
   Log->Print(fun::VarStr("RunName",RunName));
   Log->Print(fun::VarStr("PosDouble",GetPosDoubleName(Psimple,SvDouble)));
   Log->Print(fun::VarStr("SvTimers",SvTimers));
-  //Log->Print(fun::VarStr("SvTimersStep",(TimersStep!=NULL? TimersStep->GetTimeInterval(): 0)));
   Log->Print(fun::VarStr("StepAlgorithm",GetStepName(TStep)));
   if(TStep==STEP_None)RunException(met,"StepAlgorithm value is invalid.");
   if(TStep==STEP_Verlet)Log->Print(fun::VarStr("VerletSteps",VerletSteps));
@@ -1450,16 +1456,6 @@ void JSph::SaveMapCellsVtk(float scell)const{
   JFormatFiles2::SaveVtkCells(DirOut+"MapCells.vtk",ToTFloat3(OrderDecode(MapRealPosMin)),OrderDecode(Map_Cells),scell);
 }
 
-//==============================================================================
-// Almacena informacion de timers en TimersStep.
-//==============================================================================
-/*void JSph::SaveTimersStep(unsigned np,unsigned npb,unsigned npbok,unsigned nct){
-  if(TimersStep&&TimersStep->Check(float(TimeStep))){
-    TimerSim.Stop();
-    TimersStep->AddStep(float(TimeStep),TimerSim.GetElapsedTimeD()/1000,Nstep,np,npb,npbok,nct);
-  }  
-}
-*/
 //==============================================================================
 /// Añade la informacion basica de resumen a hinfo y dinfo.
 /// Adds basic information of resume to hinfo & dinfo.

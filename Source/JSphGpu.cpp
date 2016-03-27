@@ -27,6 +27,7 @@
 #include "JArraysGpu.h"
 #include "JSphDtFixed.h"
 #include "JSaveDt.h"
+#include "JTimeOut.h"
 #include "JWaveGen.h"
 #include "JSphAccInput.h"
 #include "JXml.h"
@@ -788,6 +789,7 @@ void JSphGpu::InitRun(){
 
   //-Process Special configurations in XML.
   JXml xml; xml.LoadFile(FileXml);
+
   //-Configuration of SaveDt.
   if(xml.GetNode("case.execution.special.savedt",false)){
     SaveDt=new JSaveDt(Log);
@@ -795,10 +797,13 @@ void JSphGpu::InitRun(){
     SaveDt->VisuConfig("\nSaveDt configuration:"," ");
   }
 
+  //-Shows configuration of JTimeOut.
+  if(TimeOut->UseXmlConfig())TimeOut->VisuConfig(Log,"\nTimeOut configuration:"," ");
+
   Part=PartIni; Nstep=0; PartNstep=0; PartOut=0;
   TimeStep=TimeStepIni; TimeStepM1=TimeStep;
   if(DtFixed)DtIni=DtFixed->GetDt(TimeStep,DtIni);
-  //if(TimersStep)TimersStep->SetInitialTime(float(TimeStep));
+  TimePartNext=TimeOut->GetNextTime(TimeStep);
   CheckCudaError("InitRun","Failed initializing variables for execution.");
 }
 
