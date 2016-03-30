@@ -798,7 +798,7 @@ void JSphGpu::InitRun(){
   }
 
   //-Shows configuration of JTimeOut.
-  if(TimeOut->UseXmlConfig())TimeOut->VisuConfig(Log,"\nTimeOut configuration:"," ");
+  if(TimeOut->UseSpecialConfig())TimeOut->VisuConfig(Log,"\nTimeOut configuration:"," ");
 
   Part=PartIni; Nstep=0; PartNstep=0; PartOut=0;
   TimeStep=TimeStepIni; TimeStepM1=TimeStep;

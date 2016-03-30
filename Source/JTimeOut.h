@@ -55,7 +55,7 @@ class JLog2;
 //##############################################################################
 //# JTimeOut
 //##############################################################################
-/// \brief Manage the use of variable time to save PARTs.
+/// \brief Manage the use of variable output time to save PARTs.
 
 class JTimeOut : protected JObject
 {
@@ -69,7 +69,7 @@ protected:
   std::vector<StTimeOut> Times;  ///<List values for timeout.
   unsigned TimeBase;
 
-  bool XmlConfig; ///<Configuration loaded from XML file.
+  bool SpecialConfig; ///<Configuration loaded from XML file in special section.
 
   void ReadXml(JXml *sxml,TiXmlElement* ele);
   void LoadXml(JXml *sxml,const std::string &place);
@@ -82,7 +82,7 @@ public:
   void Reset();
   void Config(double timeoutdef);
   void Config(std::string filexml,const std::string &place,double timeoutdef);
-  bool UseXmlConfig()const{ return(XmlConfig); }
+  bool UseSpecialConfig()const{ return(SpecialConfig); }
   void VisuConfig(JLog2 *log,std::string txhead,std::string txfoot);
   double GetNextTime(double t);
 };

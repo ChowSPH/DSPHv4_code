@@ -47,7 +47,7 @@ JTimeOut::~JTimeOut(){
 void JTimeOut::Reset(){
   Times.clear();
   TimeBase=0;
-  XmlConfig=false;
+  SpecialConfig=false;
 }
 
 //==============================================================================
@@ -57,7 +57,7 @@ void JTimeOut::Config(double timeoutdef){
   Reset();
   if(timeoutdef<=0)RunException("Config","Value timeout by default is invalid.");
   AddTimeOut(0,timeoutdef);
-  XmlConfig=false;
+  SpecialConfig=false;
 }
 
 //==============================================================================
@@ -69,7 +69,7 @@ void JTimeOut::Config(std::string filexml,const std::string &place,double timeou
   LoadXml(&xml,place);
   //-It uses timeoutdef when there is not special configuration in XML the file.
   if(!GetCount())Config(timeoutdef);
-  else XmlConfig=true;
+  else SpecialConfig=true;
 }
 
 //==============================================================================
@@ -116,33 +116,48 @@ void JTimeOut::LoadXml(JXml *sxml,const std::string &place){
 /// Shows object configuration using Log.
 //==============================================================================
 void JTimeOut::VisuConfig(JLog2 *log,std::string txhead,std::string txfoot){
-  if(!txhead.empty())log->Print(txhead);
-  for(unsigned c=0;c<GetCount();c++){
-    log->Printf("  Time: %f  (tout:%f)",Times[c].time,Times[c].tout);
+  if(!txhead.empty()){
+    if(log)log->Print(txhead); 
+    else printf("%s\n",txhead.c_str());
   }
-  if(!txfoot.empty())log->Print(txfoot);
+  for(unsigned c=0;c<GetCount();c++){
+    if(log)log->Printf("  Time: %f  (tout:%f)",Times[c].time,Times[c].tout);
+    else printf("  Time: %f  (tout:%f)\n",Times[c].time,Times[c].tout);
+  }
+  if(!txfoot.empty()){
+    if(log)log->Print(txfoot);
+    else printf("%s\n",txfoot.c_str());
+  }
 }
 
 //==============================================================================
 /// Returns next time to save PART file.
 //==============================================================================
 double JTimeOut::GetNextTime(double t){
+  //printf("\n++> GetNextTime(%f)\n",t);
   double nexttime=0;
   double tb=Times[TimeBase].time;
   double tnext=(TimeBase+1<GetCount()? Times[TimeBase+1].time: DBL_MAX);
+  //printf("++>INI TimeBase::%d tb:%f \n",TimeBase,tb);
   //-Avanza hasta tb <= t < tnext.
   while(t>=tnext){
     TimeBase++;
     tb=Times[TimeBase].time;
     tnext=(TimeBase+1<GetCount()? Times[TimeBase+1].time: DBL_MAX);
   }
+  //printf("++> TimeBase::%d tb:%f \n",TimeBase,tb);
   if(t<tb)nexttime=tb;
   else{
     const double tbout=Times[TimeBase].tout;
-    nexttime=tb+tbout*unsigned((t-tb)/tbout);
-    if(t>=nexttime)nexttime+=tbout;
+    unsigned nt=unsigned((t-tb)/tbout);
+    nexttime=tb+tbout*nt;
+    for(;nexttime<=t;nt++){
+      nexttime=tb+tbout*nt;
+      //printf("++> nexttime:%f dif:%f %20.12E\n",nexttime,nexttime-t,nexttime-t);
+    }
     if(nexttime>tnext)nexttime=tnext;
   }
+  //printf("++> nexttime:%f\n",nexttime);
   return(nexttime);
 }
 

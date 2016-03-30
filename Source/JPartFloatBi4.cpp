@@ -359,6 +359,7 @@ void JPartFloatBi4Load::LoadFile(const std::string &dir){
   if(!head)RunException(met,"The head item is missing.");
   FtCount=head->GetvUint("FtCount",true,0);
   PartCount=Data->GetItemsCount()-1;
+  FirstPart=(Data->GetItemsCount()>1? Data->GetItem(1)->GetvUint("Cpart",true,0): 0);
   //-Carga datos constantes de floatings (head). Load constant data of floatings (head).
   ResizeFtData(FtCount);
   {//-Loads array mkbound.

@@ -139,6 +139,7 @@ class JPartFloatBi4Load : protected JObject
   unsigned FtCount;       ///<Numero de floatings. Floating number
   unsigned PartCount;     ///<Numero de PARTs. PARTs number
   JBinaryData *Part;      ///<Pertenece a Data y almacena informacion de un part (incluyendo datos de floatings). Belongs to data and stores information of a part (including data of floatings).
+  unsigned FirstPart;     ///<Primer PART almacenado. First number of stored PART.
 
   //-Datos constantes de floatings (head). Constant data of floatings (head).
   word *HeadMkbound;
@@ -172,6 +173,7 @@ class JPartFloatBi4Load : protected JObject
 
   unsigned GetFtCount()const{ return(FtCount); }
   unsigned GetCount()const{ return(PartCount); }
+  unsigned GetFirstPart()const{ return(FirstPart); }
 
   word     GetHeadMkbound(unsigned cf)const{ CheckFloating(cf); return(HeadMkbound[cf]); }
   unsigned GetHeadBegin  (unsigned cf)const{ CheckFloating(cf); return(HeadBegin[cf]);   }

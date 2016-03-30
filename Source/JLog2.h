@@ -55,20 +55,21 @@
 class JLog2 : protected JObject
 {
 public:
-  typedef enum{ Out_ScrFile=3,Out_File=2,Out_Screen=1,Out_None=0 }TpMode_Out;
+  typedef enum{ Out_Default=4,Out_ScrFile=3,Out_File=2,Out_Screen=1,Out_None=0 }TpMode_Out;
 protected:
   std::string FileName;
   std::ofstream *Pf;
   bool Ok;
   bool MpiRun;
   int MpiRank,MpiLaunch;
+  TpMode_Out ModeOutDef; 
 public:
-  JLog2();
+  JLog2(TpMode_Out modeoutdef=Out_ScrFile);
   ~JLog2();
   void Reset();
   void Init(std::string fname,bool mpirun=false,int mpirank=0,int mpilaunch=0);
-  void Print(const std::string &tx,TpMode_Out mode=Out_ScrFile,bool flush=false);
-  void PrintDbg(const std::string &tx,TpMode_Out mode=Out_ScrFile,bool flush=true){ Print(tx,mode,flush); }
+  void Print(const std::string &tx,TpMode_Out mode=Out_Default,bool flush=false);
+  void PrintDbg(const std::string &tx,TpMode_Out mode=Out_Default,bool flush=true){ Print(tx,mode,flush); }
   bool IsOk()const{ return(Ok); }
   int GetMpiRank()const{ return(MpiRun? MpiRank: -1); }
   std::string GetDirOut()const;

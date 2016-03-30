@@ -378,6 +378,7 @@
   - JTimersStep code was removed. (v4.0.051 / 26-03-2016)
   - New option to configure variable interval to save PART files. (v4.0.052 / 27-03-2016)
   - Commented code about JTimersStep was removed. (v4.0.052 / 27-03-2016)
+  - Code synchronisation. (v4.0.053 / 30-03-2016)
 
 	
   

@@ -24,10 +24,12 @@
 //#
 //# Cambios:
 //# =========
-//# - Implementacion. (19/03/2013)
-//# - Metodos para calcular area de un triangulo. (01/04/2013)
-//# - Nuevos metodos para interpolacion lineal y bilineal. (08/05/2013)
-//# - Nuevas funciones trigonometricas. (20/08/2015)
+//# - Implementacion. (19-03-2013)
+//# - Metodos para calcular area de un triangulo. (01-04-2013)
+//# - Nuevos metodos para interpolacion lineal y bilineal. (08-05-2013)
+//# - Nuevas funciones trigonometricas. (20-08-2015)
+//# - Nuevas funcion DistLine(). (15-03-2016)
+//# - Nuevas funciones PointPlane() y PlanePtVec(). (23-03-2016)
 //# - EN:
 //# Description:
 //# =============
@@ -35,10 +37,12 @@
 //#
 //# Changes:
 //# ========
-//# - Implementation. (19.03.2013)
-//# - Methods for calculating area of a triangle. (01/04/2013)
-//# - New methods for linear and bilinear interpolation. (08.05.2013)
-//# - New trigonometric functions. (20.08.2015)
+//# - Implementation. (19-03-2013)
+//# - Methods for calculating area of a triangle. (01-04-2013)
+//# - New methods for linear and bilinear interpolation. (08-05-2013)
+//# - New trigonometric functions. (20-08-2015)
+//# - New function DistLine(). (15-03-2016)
+//# - New functions PointPlane() y PlanePtVec(). (23-03-2016)
 //#############################################################################
 
 
@@ -76,6 +80,19 @@ inline double InterpolationBilinear(double x,double y,double px,double py,double
 
 
 //==============================================================================
+/// Devuelve el area de un triangulo formado por 3 puntos.
+/// Returns the area of a triangle formed by 3 points.
+//==============================================================================
+double AreaTriangle(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3);
+
+//==============================================================================
+/// Devuelve el area de un triangulo formado por 3 puntos.
+/// Returns the area of a triangle formed by 3 points.
+//==============================================================================
+float AreaTriangle(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3);
+
+
+//==============================================================================
 /// Devuelve el producto escalar de 2 vectores.
 /// Returns the scalar product of two vectors.
 //==============================================================================
@@ -104,6 +121,7 @@ inline tdouble3 ProductVec(const tdouble3 &v1,const tdouble3 &v2){
   return(r);
 }
 
+
 //==============================================================================
 /// Devuelve el producto vectorial de 2 vectores.
 /// Returns the vectorial product of two vectors.
@@ -114,6 +132,23 @@ inline tfloat3 ProductVec(const tfloat3 &v1,const tfloat3 &v2){
   r.y=v1.z*v2.x - v1.x*v2.z;
   r.z=v1.x*v2.y - v1.y*v2.x;
   return(r);
+}
+
+
+//==============================================================================
+/// Resuelve punto en el plano.
+/// Solves point in the plane.
+//==============================================================================
+inline double PointPlane(const tdouble4 &pla,const tdouble3 &pt){ 
+  return(pla.x*pt.x+pla.y*pt.y+pla.z*pt.z+pla.w);
+}
+
+//==============================================================================
+/// Resuelve punto en el plano.
+/// Solves point in the plane.
+//==============================================================================
+inline float PointPlane(const tfloat4 &pla,const tfloat3 &pt){ 
+  return(pla.x*pt.x+pla.y*pt.y+pla.z*pt.z+pla.w);
 }
 
 
@@ -167,6 +202,33 @@ inline double DistPoint(const tdouble3 &p1){
 //==============================================================================
 inline float DistPoint(const tfloat3 &p1){
   return(sqrt(p1.x*p1.x+p1.y*p1.y+p1.z*p1.z));
+}
+
+
+//==============================================================================
+/// Devuelve la distancia entre un punto y una recta definida por dos puntos.
+/// Returns the distance between a point and a line defined by two points.
+/// \param p Point to calculate distance.
+/// \param pr1 First point of line.
+/// \param pr2 Second point of line.
+//==============================================================================
+inline double DistLine(const tdouble3& p,const tdouble3& pr1,const tdouble3& pr2){
+  double ar=AreaTriangle(p,pr1,pr2);
+  double dis=DistPoints(pr1,pr2);
+  return((ar*2)/dis);
+}
+
+//==============================================================================
+/// Devuelve la distancia entre un punto y una recta definida por dos puntos.
+/// Returns the distance between a point and a line defined by two points.
+/// \param p Point to calculate distance.
+/// \param pr1 First point of line.
+/// \param pr2 Second point of line.
+//==============================================================================
+inline float DistLine(const tfloat3& p,const tfloat3& pr1,const tfloat3& pr2){ 
+  float ar=AreaTriangle(p,pr1,pr2);
+  float dis=DistPoints(pr1,pr2);
+  return((ar*2)/dis);
 }
 
 
@@ -234,6 +296,25 @@ tfloat4 Plane3Pt(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3);
 
 
 //==============================================================================
+/// Devuelve el plano formado por un punto y un vector.
+/// Returns the plane defined by a point and a vector.
+//==============================================================================
+inline tdouble4 PlanePtVec(const tdouble3 &pt,const tdouble3 &vec){
+  const tdouble3 v=VecUnitary(vec);//-No es necesario pero asi el modulo del vector no afecta al resultado de PointPlane().
+  return(TDouble4(v.x,v.y,v.z,-v.x*pt.x-v.y*pt.y-v.z*pt.z));
+}
+
+//==============================================================================
+/// Devuelve el plano formado por un punto y un vector.
+/// Returns the plane defined by a point and a vector.
+//==============================================================================
+inline tfloat4 PlanePtVec(const tfloat3 &pt,const tfloat3 &vec){
+  const tfloat3 v=VecUnitary(vec);//-No es necesario pero asi el modulo del vector no afecta al resultado de PointPlane().
+  return(TFloat4(v.x,v.y,v.z,-v.x*pt.x-v.y*pt.y-v.z*pt.z));
+}
+
+
+//==============================================================================
 /// Devuelve los tres planos normales que limitan un triangulo formado por 3 puntos.
 /// Con openingdist puedes abrir o cerrar los planos normales.
 /// Returns the three normal planes which bound a triangle formed by 3 points.
@@ -292,18 +373,6 @@ void OpenTriangle3Pt(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3,do
 /// a triangle more or less open according to openingdist.
 //==============================================================================
 void OpenTriangle3Pt(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3,float openingdist,tfloat3 &pt1,tfloat3 &pt2,tfloat3 &pt3);
-
-//==============================================================================
-/// Devuelve el area de un triangulo formado por 3 puntos.
-/// Returns the area of a triangle formed by 3 points.
-//==============================================================================
-double AreaTriangle(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3);
-
-//==============================================================================
-/// Devuelve el area de un triangulo formado por 3 puntos.
-/// Returns the area of a triangle formed by 3 points.
-//==============================================================================
-float AreaTriangle(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3);
 
 
 //==============================================================================
