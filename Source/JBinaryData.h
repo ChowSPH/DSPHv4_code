@@ -101,6 +101,7 @@ class JBinaryDataDef
 
   static std::string TypeToStr(TpData type);
   static size_t SizeOfType(TpData type);
+  static bool TypeIsTriple(TpData type);
 };
 
 

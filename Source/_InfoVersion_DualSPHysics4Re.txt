@@ -379,6 +379,8 @@
   - New option to configure variable interval to save PART files. (v4.0.052 / 27-03-2016)
   - Commented code about JTimersStep was removed. (v4.0.052 / 27-03-2016)
   - Code synchronisation. (v4.0.053 / 30-03-2016)
+  - Example for saving a new array (Pressure) in JSph::SavePartData(). (v4.0.054 / 13-04-2016)
+  - Code synchronisation. (v4.0.054 / 13-04-2016)
 
 	
   

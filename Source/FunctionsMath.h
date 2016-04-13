@@ -30,6 +30,7 @@
 //# - Nuevas funciones trigonometricas. (20-08-2015)
 //# - Nuevas funcion DistLine(). (15-03-2016)
 //# - Nuevas funciones PointPlane() y PlanePtVec(). (23-03-2016)
+//# - Nuevas funciones. (05-04-2016)
 //# - EN:
 //# Description:
 //# =============
@@ -43,6 +44,7 @@
 //# - New trigonometric functions. (20-08-2015)
 //# - New function DistLine(). (15-03-2016)
 //# - New functions PointPlane() y PlanePtVec(). (23-03-2016)
+//# - New functions. (05-04-2016)
 //#############################################################################
 
 
@@ -80,19 +82,6 @@ inline double InterpolationBilinear(double x,double y,double px,double py,double
 
 
 //==============================================================================
-/// Devuelve el area de un triangulo formado por 3 puntos.
-/// Returns the area of a triangle formed by 3 points.
-//==============================================================================
-double AreaTriangle(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3);
-
-//==============================================================================
-/// Devuelve el area de un triangulo formado por 3 puntos.
-/// Returns the area of a triangle formed by 3 points.
-//==============================================================================
-float AreaTriangle(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3);
-
-
-//==============================================================================
 /// Devuelve el producto escalar de 2 vectores.
 /// Returns the scalar product of two vectors.
 //==============================================================================
@@ -120,7 +109,6 @@ inline tdouble3 ProductVec(const tdouble3 &v1,const tdouble3 &v2){
   r.z=v1.x*v2.y - v1.y*v2.x;
   return(r);
 }
-
 
 //==============================================================================
 /// Devuelve el producto vectorial de 2 vectores.
@@ -206,33 +194,6 @@ inline float DistPoint(const tfloat3 &p1){
 
 
 //==============================================================================
-/// Devuelve la distancia entre un punto y una recta definida por dos puntos.
-/// Returns the distance between a point and a line defined by two points.
-/// \param p Point to calculate distance.
-/// \param pr1 First point of line.
-/// \param pr2 Second point of line.
-//==============================================================================
-inline double DistLine(const tdouble3& p,const tdouble3& pr1,const tdouble3& pr2){
-  double ar=AreaTriangle(p,pr1,pr2);
-  double dis=DistPoints(pr1,pr2);
-  return((ar*2)/dis);
-}
-
-//==============================================================================
-/// Devuelve la distancia entre un punto y una recta definida por dos puntos.
-/// Returns the distance between a point and a line defined by two points.
-/// \param p Point to calculate distance.
-/// \param pr1 First point of line.
-/// \param pr2 Second point of line.
-//==============================================================================
-inline float DistLine(const tfloat3& p,const tfloat3& pr1,const tfloat3& pr2){ 
-  float ar=AreaTriangle(p,pr1,pr2);
-  float dis=DistPoints(pr1,pr2);
-  return((ar*2)/dis);
-}
-
-
-//==============================================================================
 /// Devuelve vector unitario del vector (0,0,0)->p1.
 /// Returns a unit vector of the vector (0,0,0)->p1.
 //==============================================================================
@@ -279,6 +240,25 @@ inline double Determinant3x3(const tmatrix3d &d){
 //==============================================================================
 inline float Determinant3x3(const tmatrix3f &d){
   return(d.a11 * d.a22 * d.a33 + d.a12 * d.a23 * d.a31 + d.a13 * d.a21 * d.a32 - d.a31 * d.a22 * d.a13 - d.a32 * d.a23 * d.a11 - d.a33 * d.a21 * d.a12);
+}
+
+
+//==============================================================================
+/// Devuelve proyeccion ortogonal del punto en el plano.
+/// Returns orthogonal projection of the point in the plane.
+//==============================================================================
+inline tdouble3 PtOrthogonal(const tdouble3 &pt,const tdouble4 &pla){
+  const double t=-(pla.x*pt.x+pla.y*pt.y+pla.z*pt.z+pla.w)/(pla.x*pla.x+pla.y*pla.y+pla.z*pla.z);
+  return(TDouble3(pt.x+pla.x*t,pt.y+pla.y*t,pt.z+pla.z*t));
+}
+
+//==============================================================================
+/// Devuelve proyeccion ortogonal del punto en el plano.
+/// Returns orthogonal projection of the point in the plane.
+//==============================================================================
+inline tfloat3 PtOrthogonal(const tfloat3 &pt,const tfloat4 &pla){
+  const float t=-(pla.x*pt.x+pla.y*pt.y+pla.z*pt.z+pla.w)/(pla.x*pla.x+pla.y*pla.y+pla.z*pla.z);
+  return(TFloat3(pt.x+pla.x*t,pt.y+pla.y*t,pt.z+pla.z*t));
 }
 
 
@@ -374,24 +354,73 @@ void OpenTriangle3Pt(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3,do
 //==============================================================================
 void OpenTriangle3Pt(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3,float openingdist,tfloat3 &pt1,tfloat3 &pt2,tfloat3 &pt3);
 
+//==============================================================================
+/// Devuelve el area de un triangulo formado por 3 puntos.
+/// Returns the area of a triangle formed by 3 points.
+//==============================================================================
+double AreaTriangle(const tdouble3 &p1,const tdouble3 &p2,const tdouble3 &p3);
+
+//==============================================================================
+/// Devuelve el area de un triangulo formado por 3 puntos.
+/// Returns the area of a triangle formed by 3 points.
+//==============================================================================
+float AreaTriangle(const tfloat3 &p1,const tfloat3 &p2,const tfloat3 &p3);
+
+
+//==============================================================================
+/// Devuelve la distancia entre un punto y una recta entre dos puntos.
+/// Returns the distance between a point and a line between two points.
+//==============================================================================
+inline double DistLine(const tdouble3 &pt,const tdouble3 &pr1,const tdouble3 &pr2){
+  double ar=AreaTriangle(pt,pr1,pr2);
+  double dis=DistPoints(pr1,pr2);
+  return((ar*2)/dis);
+}
+
+//==============================================================================
+/// Devuelve la distancia entre un punto y una recta entre dos puntos.
+/// Returns the distance between a point and a line between two points.
+//==============================================================================
+inline float DistLine(const tfloat3 &pt,const tfloat3 &pr1,const tfloat3 &pr2){
+  float ar=AreaTriangle(pt,pr1,pr2);
+  float dis=DistPoints(pr1,pr2);
+  return((ar*2)/dis);
+}
+
 
 //==============================================================================
 /// Devuelve el angulo en grados que forman dos vectores.
+/// Returns angle in degrees between two vectors.
 //==============================================================================
-inline double AngleVector(tdouble3 v1,tdouble3 v2){
+inline double AngleVector(const tdouble3 &v1,const tdouble3 &v2){
   return(acos(ProductScalar(v1,v2)/(DistPoint(v1)*DistPoint(v2)))*TODEG);
 }
 
-////==============================================================================
-///// Devuelve el plano formado por 1 vector y un punto.
-///// Returns the plane created by 1 vector and 1 point.
-////==============================================================================
-//jplane JSpaceDraw::PlaneVect1Pt(tdouble3 v,tdouble3 p){ 
-//  jplane plano;
-//  plano.a=v.x; plano.b=v.y; plano.c=v.z; 
-//  plano.d=-((v.x*p.x)+(v.y*p.y)+(v.z*p.z));
-//  return(plano);
-//}
+//==============================================================================
+/// Devuelve el angulo en grados que forman dos vectores.
+/// Returns angle in degrees between two vectors.
+//==============================================================================
+inline float AngleVector(const tfloat3 &v1,const tfloat3 &v2){
+  return(float(acos(ProductScalar(v1,v2)/(DistPoint(v1)*DistPoint(v2)))*TODEG));
+}
+
+
+//==============================================================================
+/// Devuelve el angulo en grados que forman dos planos.
+/// Returns angle in degrees between two planes.
+//==============================================================================
+inline double AnglePlanes(tdouble4 v1,tdouble4 v2){
+  return(AngleVector(TDouble3(v1.x,v1.y,v1.z),TDouble3(v2.x,v2.y,v2.z)));
+}
+
+//==============================================================================
+/// Devuelve el angulo en grados que forman dos planos.
+/// Returns angle in degrees between two planes.
+//==============================================================================
+inline float AnglePlanes(tfloat4 v1,tfloat4 v2){
+  return(AngleVector(TFloat3(v1.x,v1.y,v1.z),TFloat3(v2.x,v2.y,v2.z)));
+}
+
 
 //==============================================================================
 /// Devuelve normal eliminando error de precision en double.

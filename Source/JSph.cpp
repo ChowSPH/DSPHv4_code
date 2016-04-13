@@ -1303,25 +1303,25 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
   if(DataBi4){
     tfloat3* posf3=NULL;
     TimerPart.Stop();
-    JBinaryData* bdat=DataBi4->AddPartInfo(Part,TimeStep,npok,nout,Nstep,TimerPart.GetElapsedTimeD()/1000.,vdom[0],vdom[1],TotalNp);
+    JBinaryData* bdpart=DataBi4->AddPartInfo(Part,TimeStep,npok,nout,Nstep,TimerPart.GetElapsedTimeD()/1000.,vdom[0],vdom[1],TotalNp);
     if(infoplus && SvData&SDAT_Info){
-      bdat->SetvDouble("dtmean",(!Nstep? 0: (TimeStep-TimeStepM1)/(Nstep-PartNstep)));
-      bdat->SetvDouble("dtmin",(!Nstep? 0: PartDtMin));
-      bdat->SetvDouble("dtmax",(!Nstep? 0: PartDtMax));
-      if(DtFixed)bdat->SetvDouble("dterror",DtFixed->GetDtError(true));
-      bdat->SetvDouble("timesim",infoplus->timesim);
-      bdat->SetvUint("nct",infoplus->nct);
-      bdat->SetvUint("npbin",infoplus->npbin);
-      bdat->SetvUint("npbout",infoplus->npbout);
-      bdat->SetvUint("npf",infoplus->npf);
-      bdat->SetvUint("npbper",infoplus->npbper);
-      bdat->SetvUint("npfper",infoplus->npfper);
-      bdat->SetvLlong("cpualloc",infoplus->memorycpualloc);
+      bdpart->SetvDouble("dtmean",(!Nstep? 0: (TimeStep-TimeStepM1)/(Nstep-PartNstep)));
+      bdpart->SetvDouble("dtmin",(!Nstep? 0: PartDtMin));
+      bdpart->SetvDouble("dtmax",(!Nstep? 0: PartDtMax));
+      if(DtFixed)bdpart->SetvDouble("dterror",DtFixed->GetDtError(true));
+      bdpart->SetvDouble("timesim",infoplus->timesim);
+      bdpart->SetvUint("nct",infoplus->nct);
+      bdpart->SetvUint("npbin",infoplus->npbin);
+      bdpart->SetvUint("npbout",infoplus->npbout);
+      bdpart->SetvUint("npf",infoplus->npf);
+      bdpart->SetvUint("npbper",infoplus->npbper);
+      bdpart->SetvUint("npfper",infoplus->npfper);
+      bdpart->SetvLlong("cpualloc",infoplus->memorycpualloc);
       if(infoplus->gpudata){
-        bdat->SetvLlong("nctalloc",infoplus->memorynctalloc);
-        bdat->SetvLlong("nctused",infoplus->memorynctused);
-        bdat->SetvLlong("npalloc",infoplus->memorynpalloc);
-        bdat->SetvLlong("npused",infoplus->memorynpused);
+        bdpart->SetvLlong("nctalloc",infoplus->memorynctalloc);
+        bdpart->SetvLlong("nctused",infoplus->memorynctused);
+        bdpart->SetvLlong("npalloc",infoplus->memorynpalloc);
+        bdpart->SetvLlong("npused",infoplus->memorynpused);
       }
     }
     if(SvData&SDAT_Binx){
@@ -1330,7 +1330,14 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
         posf3=GetPointerDataFloat3(npok,pos);
         DataBi4->AddPartData(npok,idp,posf3,vel,rhop);
       }
+      float *press=NULL;
+      if(0){//-Example saving a new array (Preassure) in files BI4.
+        press=new float[npok];
+        for(unsigned p=0;p<npok;p++)press[p]=(idp[p]>=CaseNbound? CteB*(pow(rhop[p]/RhopZero,Gamma)-1.0f): 0.f);
+        DataBi4->AddPartData("Preassure",npok,press);
+      }
       DataBi4->SaveFilePart();
+      delete[] press; press=NULL;//-Memory must to be deallocated after saving file because DataBi4 uses this memory space.
     }
     if(SvData&SDAT_Info)DataBi4->SaveFileInfo();
     delete[] posf3;

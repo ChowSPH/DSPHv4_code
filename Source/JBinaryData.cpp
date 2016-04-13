@@ -91,6 +91,37 @@ size_t JBinaryDataDef::SizeOfType(TpData type){
   return(ret);
 }
 
+//==============================================================================
+/// Devuelve true cuando el tipo es triple.
+/// Returns true when the type is triple.
+//==============================================================================
+bool JBinaryDataDef::TypeIsTriple(TpData type){
+  bool ret=false;
+  switch(type){
+    //case JBinaryDataDef::DatText:
+    case JBinaryDataDef::DatBool:
+    case JBinaryDataDef::DatChar:
+    case JBinaryDataDef::DatUchar:
+    case JBinaryDataDef::DatShort:
+    case JBinaryDataDef::DatUshort:
+    case JBinaryDataDef::DatInt:
+    case JBinaryDataDef::DatUint:
+    case JBinaryDataDef::DatLlong:
+    case JBinaryDataDef::DatUllong:
+    case JBinaryDataDef::DatFloat:
+    case JBinaryDataDef::DatDouble:   
+      ret=false;
+    break;
+    case JBinaryDataDef::DatInt3:
+    case JBinaryDataDef::DatUint3:
+    case JBinaryDataDef::DatFloat3:
+    case JBinaryDataDef::DatDouble3:
+      ret=true;
+    break;
+  }
+  return(ret);
+}
+
 //##############################################################################
 //# JBinaryDataArray
 //##############################################################################

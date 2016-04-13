@@ -288,6 +288,18 @@ JBinaryData* JPartDataBi4::AddPartInfo(unsigned cpart,double timestep,unsigned n
   return(Part);
 }
 
+//==============================================================================
+/// Añade datos (definidos por el usuario) de particulas de de nuevo part.
+/// Add data (defined by user) of particles to new part.
+//==============================================================================
+void JPartDataBi4::AddPartDataVar(const std::string &name,JBinaryDataDef::TpData type,unsigned npok,const void *v){
+  const char met[]="AddPartDataVar";
+  if(!v)RunException(met,"The pointer data is invalid.");
+  //-Comprueba valor de npok. Checks value of npok.
+  if(Part->GetvUint("Npok")!=npok)RunException(met,"Part information is invalid.");
+  //-Crea array con particulas validas. Creates valid particles array.
+  Part->CreateArray(name,type,npok,v,true);
+}
 
 //==============================================================================
 /// Añade datos de particulas de de nuevo part.
@@ -312,15 +324,15 @@ void JPartDataBi4::AddPartData(unsigned npok,const unsigned *idp,const ullong *i
 /// Añade datos Splitting de particulas de de nuevo part.
 /// Add data Splitting of particles to new part.
 //==============================================================================
-void JPartDataBi4::AddPartDataSplitting(unsigned npok,const float *splitmass,const float *splithvar){
+void JPartDataBi4::AddPartDataSplitting(unsigned npok,const float *mass,const float *hvar){
   const char met[]="AddPartDataSplitting";
-  if(!splitmass || !splithvar)RunException(met,"The pointer data is invalid.");
+  if(!mass || !hvar)RunException(met,"The pointer data is invalid.");
   //-Comprueba valor de npok. Checks value of npok.
   if(Part->GetvUint("Npok")!=npok)RunException(met,"Part information is invalid.");
   if(!Data->GetvBool("Splitting"))RunException(met,"Splitting is not configured.");
   //-Crea array con particulas validas. Creates valid particles array.
-  Part->CreateArray("SplitMass",JBinaryDataDef::DatFloat,npok,splitmass,true);
-  Part->CreateArray("SplitHvar",JBinaryDataDef::DatFloat,npok,splithvar,true);
+  Part->CreateArray("Mass",JBinaryDataDef::DatFloat,npok,mass,true);
+  Part->CreateArray("Hvar",JBinaryDataDef::DatFloat,npok,hvar,true);
 }
 
 //==============================================================================
@@ -450,13 +462,29 @@ JBinaryData* JPartDataBi4::GetPart()const{
 }
 
 //==============================================================================
-/// Devuelve el puntero a Part con los datos del PART.
-/// Returns a pointer to Part with the data of the PART.
+/// Devuelve el numero de arrays en los datos del PART.
+/// Returns number of arrays in PART data.
 //==============================================================================
-JBinaryDataArray* JPartDataBi4::GetArray(std::string name)const{
-  JBinaryDataArray* ar=GetPart()->GetArray(name);
-  if(!ar)RunException("GetArray","Array is not available.");
-  return(ar);
+unsigned JPartDataBi4::ArraysCount()const{
+  return(GetPart()->GetArraysCount());
+}
+
+//==============================================================================
+/// Devuelve el nombre del array indicado.
+/// Returns name of requested array.
+//==============================================================================
+std::string JPartDataBi4::ArrayName(unsigned num)const{
+  if(num>=ArraysCount())RunException("ArraysName","Array is not available.");
+  return(GetPart()->GetArray(num)->GetName());
+}
+
+//==============================================================================
+/// Devuelve true cuando el array es triple.
+/// Returns true when the array is triple.
+//==============================================================================
+bool JPartDataBi4::ArrayTriple(unsigned num)const{
+  if(num>=ArraysCount())RunException("ArrayTriple","Array is not available.");
+  return(JBinaryDataDef::TypeIsTriple(GetPart()->GetArray(num)->GetType()));
 }
 
 //==============================================================================
@@ -466,6 +494,28 @@ JBinaryDataArray* JPartDataBi4::GetArray(std::string name)const{
 bool JPartDataBi4::ArrayExists(std::string name)const{
   return(GetPart()->GetArray(name)!=NULL);
 }
+
+//==============================================================================
+/// Devuelve el puntero a Part con los datos del PART.
+/// Returns a pointer to Part with the data of the PART.
+//==============================================================================
+JBinaryDataArray* JPartDataBi4::GetArray(std::string name)const{
+  JBinaryDataArray* ar=GetPart()->GetArray(name);
+  if(!ar)RunException("GetArray",fun::PrintStr("Array \'%s\' is not available.",name.c_str()));
+  return(ar);
+}
+
+//==============================================================================
+/// Devuelve el puntero a Part con los datos del PART y comprueba el tipo.
+/// Returns a pointer to Part with the data of the PART and checks the type.
+//==============================================================================
+JBinaryDataArray* JPartDataBi4::GetArray(std::string name,JBinaryDataDef::TpData type)const{
+  JBinaryDataArray* ar=GetArray(name);
+  if(ar->GetType()!=type)RunException("GetArray",fun::PrintStr("Type of array \'%s\' is not %s.",name.c_str(),JBinaryDataDef::TypeToStr(type).c_str()));
+  return(ar);
+}
+
+
 
 
 
