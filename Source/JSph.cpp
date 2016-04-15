@@ -758,10 +758,10 @@ void JSph::ConfigConstants(bool simulate2d){
       Awen=float(0.557/(h*h));
       Bwen=float(-2.7852/(h*h*h));
     }
-	else if(TKernel==KERNEL_Cubic){
+    else if(TKernel==KERNEL_Cubic){
       const double a1=10./(PI*7.);
-	  const double a2=a1/(h*h);
-	  const double aa=a1/(h*h*h);
+      const double a2=a1/(h*h);
+      const double aa=a1/(h*h*h);
       const double deltap=1./1.5;
       const double wdeltap=a2*(1.-1.5*deltap*deltap+0.75*deltap*deltap*deltap);
       CubicCte.od_wdeltap=float(1./wdeltap);
@@ -772,17 +772,17 @@ void JSph::ConfigConstants(bool simulate2d){
       CubicCte.c1=float(-3.*aa);
       CubicCte.d1=float(9.*aa/4.);
       CubicCte.c2=float(-3.*aa/4.);
-	}
+    }
   }
   else{
     if(TKernel==KERNEL_Wendland){
       Awen=float(0.41778/(h*h*h));
       Bwen=float(-2.08891/(h*h*h*h));
     }
-	else if(TKernel==KERNEL_Cubic){
+    else if(TKernel==KERNEL_Cubic){
       const double a1=1./PI;
       const double a2=a1/(h*h*h);
-	  const double aa=a1/(h*h*h*h);
+      const double aa=a1/(h*h*h*h);
       const double deltap=1./1.5;
       const double wdeltap=a2*(1.-1.5*deltap*deltap+0.75*deltap*deltap*deltap);
       CubicCte.od_wdeltap=float(1./wdeltap);
@@ -793,7 +793,7 @@ void JSph::ConfigConstants(bool simulate2d){
       CubicCte.c1=float(-3.*aa);
       CubicCte.d1=float(9.*aa/4.);
       CubicCte.c2=float(-3.*aa/4.);
-	}
+    }
   }
   //-Constants for Laminar viscosity + SPS turbulence model.
   if(TVisco==VISCO_LaminarSPS){  
@@ -956,7 +956,7 @@ void JSph::ConfigCellOrder(TpCellOrder order,unsigned np,tdouble3* pos,tfloat4* 
     Map_PosMax=OrderCodeValue(CellOrder,Map_PosMax);
     Map_Size=OrderCodeValue(CellOrder,Map_Size);
     //-Modifica config periodica.
-    //-Modifies periodic configuration.	
+    //-Modifies periodic configuration. 
     bool perix=PeriX,periy=PeriY,periz=PeriZ;
     bool perixy=PeriXY,perixz=PeriXZ,periyz=PeriYZ;
     tdouble3 perixinc=PeriXinc,periyinc=PeriYinc,perizinc=PeriZinc;
@@ -1331,10 +1331,10 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
         DataBi4->AddPartData(npok,idp,posf3,vel,rhop);
       }
       float *press=NULL;
-      if(0){//-Example saving a new array (Preassure) in files BI4.
+      if(0){//-Example saving a new array (Pressure) in files BI4.
         press=new float[npok];
         for(unsigned p=0;p<npok;p++)press[p]=(idp[p]>=CaseNbound? CteB*(pow(rhop[p]/RhopZero,Gamma)-1.0f): 0.f);
-        DataBi4->AddPartData("Preassure",npok,press);
+        DataBi4->AddPartData("Pressure",npok,press);
       }
       DataBi4->SaveFilePart();
       delete[] press; press=NULL;//-Memory must to be deallocated after saving file because DataBi4 uses this memory space.
@@ -1358,10 +1358,10 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const unsigned *idp,const td
     //-Defines fields to be stored.
     JFormatFiles2::StScalarData fields[8];
     unsigned nfields=0;
-    if(idp){   fields[nfields]=JFormatFiles2::DefineField("Id",JFormatFiles2::UInt32,1,idp);      nfields++; }
-    if(vel){   fields[nfields]=JFormatFiles2::DefineField("Vel",JFormatFiles2::Float32,3,vel);    nfields++; }
+    if(idp){   fields[nfields]=JFormatFiles2::DefineField("Idp" ,JFormatFiles2::UInt32 ,1,idp);   nfields++; }
+    if(vel){   fields[nfields]=JFormatFiles2::DefineField("Vel" ,JFormatFiles2::Float32,3,vel);   nfields++; }
     if(rhop){  fields[nfields]=JFormatFiles2::DefineField("Rhop",JFormatFiles2::Float32,1,rhop);  nfields++; }
-    if(type){  fields[nfields]=JFormatFiles2::DefineField("Type",JFormatFiles2::UChar8,1,type);   nfields++; }
+    if(type){  fields[nfields]=JFormatFiles2::DefineField("Type",JFormatFiles2::UChar8 ,1,type);  nfields++; }
     if(SvData&SDAT_Vtk)JFormatFiles2::SaveVtk(DirOut+fun::FileNameSec("PartVtk.vtk",Part),npok,posf3,nfields,fields);
     if(SvData&SDAT_Csv)JFormatFiles2::SaveCsv(DirOut+fun::FileNameSec("PartCsv.csv",Part),npok,posf3,nfields,fields);
     //-libera memoria.

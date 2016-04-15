@@ -381,7 +381,7 @@
   - Code synchronisation. (v4.0.053 / 30-03-2016)
   - Example for saving a new array (Pressure) in JSph::SavePartData(). (v4.0.054 / 13-04-2016)
   - Code synchronisation. (v4.0.054 / 13-04-2016)
-
+  - Cambio de nombres en ficheros VTK: Id -> Idp y PartMk -> Mk. (v4.0.055 / 15-04-2016) 
 	
   
 Remaining issues:

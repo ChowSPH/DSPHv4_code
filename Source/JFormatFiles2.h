@@ -226,8 +226,8 @@ public:
   static void SaveVtkBasic(std::string fname,unsigned np,const tfloat3* pos,const unsigned* idp,const tfloat3* vel,const float* rhop){
     StScalarData fields[3];
     unsigned nfields=0;
-    if(idp){  fields[nfields]=DefineField("Id",UInt32,1,idp);     nfields++; }
-    if(vel){  fields[nfields]=DefineField("Vel",Float32,3,vel);   nfields++; }
+    if(idp){  fields[nfields]=DefineField("Idp" ,UInt32 ,1,idp);  nfields++; }
+    if(vel){  fields[nfields]=DefineField("Vel" ,Float32,3,vel);  nfields++; }
     if(rhop){ fields[nfields]=DefineField("Rhop",Float32,1,rhop); nfields++; }
     SaveVtk(fname,np,pos,nfields,fields);
   }
