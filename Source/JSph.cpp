@@ -1232,7 +1232,7 @@ void JSph::ConfigSaveData(unsigned piece,unsigned pieces,std::string div){
   //-Configures object to store particles and information.  
   if(SvData&SDAT_Info || SvData&SDAT_Binx){
     DataBi4=new JPartDataBi4();
-    DataBi4->ConfigBasic(piece,pieces,RunCode,AppName,Simulate2D,DirOut);
+    DataBi4->ConfigBasic(piece,pieces,RunCode,AppName,CaseName,Simulate2D,DirOut);
     DataBi4->ConfigParticles(CaseNp,CaseNfixed,CaseNmoving,CaseNfloat,CaseNfluid,CasePosMin,CasePosMax,NpDynamic,ReuseIds);
     DataBi4->ConfigCtes(Dp,H,CteB,RhopZero,Gamma,MassBound,MassFluid);
     DataBi4->ConfigSimMap(OrderDecode(MapRealPosMin),OrderDecode(MapRealPosMax));

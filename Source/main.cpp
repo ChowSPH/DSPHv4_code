@@ -30,7 +30,7 @@ School of Mechanical, Aerospace and Civil Engineering, University of Manchester,
 Please download source files and documentation from <a href="http://dual.sphysics.org">DualSPHysics website.</a> \n
 \author <a href="http://dual.sphysics.org/index.php/developers">DualSPHysics Developers.</a> 
 \version 4.00
-\date 29-02-2016
+\date 18-05-2016
 \copyright GNU Public License <a href="http://www.gnu.org/licenses/">GNU licenses.</a>
 */
 
@@ -88,7 +88,7 @@ int main(int argc, char** argv){
   std::string license=getlicense_gpl(progname);
   printf("%s",license.c_str());
   char appname[256],appnamesub[256];
-  sprintf(appname,"%s v4.0.055 (15-04-2016)%s",progname.c_str(),proginfo.c_str());
+  sprintf(appname,"%s v4.0.056 (18-05-2016)%s",progname.c_str(),proginfo.c_str());
   for(unsigned c=0;c<=strlen(appname);c++)appnamesub[c]='='; appnamesub[strlen(appname)+1]='\0';
   printf("\n%s\n%s\n",appname,appnamesub);
 

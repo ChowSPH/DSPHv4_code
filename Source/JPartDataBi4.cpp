@@ -175,7 +175,7 @@ std::string JPartDataBi4::GetFileData(std::string casename,std::string dirname,u
 /// Configuracion de variables basicas.
 /// Configuration of basic variables.
 //==============================================================================
-void JPartDataBi4::ConfigBasic(unsigned piece,unsigned npiece,std::string runcode,std::string appname,bool data2d,const std::string &dir){
+void JPartDataBi4::ConfigBasic(unsigned piece,unsigned npiece,std::string runcode,std::string appname,std::string casename,bool data2d,const std::string &dir){
   ResetData();
   Piece=piece; Npiece=npiece;
   Dir=fun::GetDirWithSlash(dir);
@@ -184,6 +184,7 @@ void JPartDataBi4::ConfigBasic(unsigned piece,unsigned npiece,std::string runcod
   Data->SetvText("RunCode",runcode);
   Data->SetvText("Date",fun::GetDateTime());
   Data->SetvText("AppName",appname);
+  Data->SetvText("CaseName",casename);
   Data->SetvBool("Data2d",data2d);
   ConfigSimMap(TDouble3(0),TDouble3(0));
   ConfigSimPeri(PERI_Unknown,TDouble3(0),TDouble3(0),TDouble3(0));

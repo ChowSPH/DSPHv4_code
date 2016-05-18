@@ -382,6 +382,8 @@
   - Example for saving a new array (Pressure) in JSph::SavePartData(). (v4.0.054 / 13-04-2016)
   - Code synchronisation. (v4.0.054 / 13-04-2016)
   - Cambio de nombres en ficheros VTK: Id -> Idp y PartMk -> Mk. (v4.0.055 / 15-04-2016) 
+  - Reajuste de BORDER_MAP a 0.05 para evitar que se vayan particulas en el limite. (v4.0.056 / 18-05-2016) 
+  - Graba el nombre del caso en el fichero BI4 para poder usarlo en otras herramientas. (v4.0.056 / 18-05-2016) 
 	
   
 Remaining issues:

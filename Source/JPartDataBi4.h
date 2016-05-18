@@ -43,6 +43,7 @@
 //# - Grabacion de datos propios de Splitting. (26-01-2014)
 //# - Grabacion de datos definidos por el usuario. (31-03-2016)
 //# - Ahora los arrays de splitting son Mass y Hvar. (07-04-2016)
+//# - Almacena el nombre del caso. (11-05-2016)
 //#
 //# EN:
 //# Description: 
@@ -134,7 +135,7 @@ class JPartDataBi4 : protected JObject
   //Recording of data
   //====================
   //-Configuracion de objeto. Object Configuration
-  void ConfigBasic(unsigned piece,unsigned npiece,std::string runcode,std::string appname,bool data2d,const std::string &dir);
+  void ConfigBasic(unsigned piece,unsigned npiece,std::string runcode,std::string appname,std::string casename,bool data2d,const std::string &dir);
   void ConfigParticles(ullong casenp,ullong casenfixed,ullong casenmoving,ullong casenfloat,ullong casenfluid,tdouble3 caseposmin,tdouble3 caseposmax,bool npdynamic=false,bool reuseids=false);
   void ConfigCtes(double dp,double h,double b,double rhop0,double gamma,double massbound,double massfluid);
   void ConfigSimMap(tdouble3 mapposmin,tdouble3 mapposmax);
@@ -190,6 +191,7 @@ class JPartDataBi4 : protected JObject
   std::string Get_RunCode()const{ return(GetData()->GetvText("RunCode")); } 
   std::string Get_Date()const{    return(GetData()->GetvText("Date"));    } 
   std::string Get_AppName()const{ return(GetData()->GetvText("AppName")); } 
+  std::string Get_CaseName()const{return(GetData()->GetvText("CaseName",true,"")); } 
   bool Get_Data2d()const{         return(GetData()->GetvBool("Data2d"));  } 
   bool Get_Splitting()const{      return(GetData()->GetvBool("Splitting",true,false));  } 
 
